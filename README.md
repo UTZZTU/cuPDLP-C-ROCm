@@ -112,3 +112,8 @@ This project is based on cuPDLP-C. The original project files and license are pr
 
 This repository preserves the original project license. See `LICENSE`.
 
+## Porting guide
+
+For a detailed record of how this CUDA-based project was migrated to ROCm/HIP, see:
+
+- [ROCm/HIP porting guide](docs/PORTING_GUIDE_ROCM_HIP.md)
