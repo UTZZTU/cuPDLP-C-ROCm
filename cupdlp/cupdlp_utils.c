@@ -999,7 +999,7 @@ cupdlp_retcode timers_Alloc(CUPDLPtimers *timers) {
   timers->DeviceMatVecProdTime = 0.0;
   timers->CopyVecToHostTime = 0.0;
   timers->FreeDeviceMemTime = 0.0;
-  timers->CudaPrepareTime = 0.0;
+  timers->HIPPrepareTime = 0.0;
 #endif
 
 exit_cleanup:

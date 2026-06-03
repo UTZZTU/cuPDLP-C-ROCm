@@ -352,9 +352,9 @@ cupdlp_int print_cuda_info(cusparseHandle_t handle)
   CHECK_CUDA(cudaDriverGetVersion(&v_cuda_driver))
   CHECK_CUSPARSE(cusparseGetVersion(handle, &v_cusparse))
 
-  printf("Cuda runtime %d\n", v_cuda_runtime);
-  printf("Cuda driver %d\n", v_cuda_driver);
-  printf("cuSparse %d\n", v_cusparse);
+  printf("HIP runtime %d\n", v_cuda_runtime);
+  printf("HIP driver %d\n", v_cuda_driver);
+  printf("hipSPARSE %d\n", v_cusparse);
 
   int n_devices = 0;
   CHECK_CUDA(cudaGetDeviceCount(&n_devices))
@@ -363,7 +363,7 @@ cupdlp_int print_cuda_info(cusparseHandle_t handle)
     cudaDeviceProp prop;
     CHECK_CUDA(cudaGetDeviceProperties(&prop, i));
 
-    printf("Cuda device %d: %s\n", i, prop.name);
+    printf("HIP device %d: %s\n", i, prop.name);
 #if PRINT_DETAILED_CUDA_INFO
     printf("  Clock rate (KHz): %d\n", prop.clockRate);
     printf("  Memory clock rate (KHz): %d\n", prop.memoryClockRate);

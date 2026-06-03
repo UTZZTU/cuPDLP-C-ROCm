@@ -230,7 +230,7 @@ cupdlp_retcode main(int argc, char **argv) {
 #if !(CUPDLP_CPU)
   w->timers->AllocMem_CopyMatToDeviceTime += alloc_matrix_time;
   w->timers->CopyVecToDeviceTime += copy_vec_time;
-  w->timers->CudaPrepareTime = cuda_prepare_time;
+  w->timers->HIPPrepareTime = cuda_prepare_time;
 #endif
 
   cupdlp_printf("--------------------------------------------------\n");

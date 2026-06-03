@@ -394,7 +394,7 @@ struct CUPDLP_TIMERS {
   cupdlp_float DeviceMatVecProdTime;
   cupdlp_float CopyVecToHostTime;
   cupdlp_float FreeDeviceMemTime;
-  cupdlp_float CudaPrepareTime;
+  cupdlp_float HIPPrepareTime;
 #endif
 };
 

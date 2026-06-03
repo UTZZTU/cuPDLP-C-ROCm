@@ -356,8 +356,8 @@ cupdlp_int print_cuda_info(hipsparseHandle_t handle)
   CHECK_CUSPARSE(hipsparseGetVersion(handle, &v_cusparse))
 
   printf("HIP runtime %d\n", v_hip_runtime);
-  printf("Cuda driver %d\n", v_cuda_driver);
-  printf("cuSparse %d\n", v_cusparse);
+  printf("HIP driver %d\n", v_cuda_driver);
+  printf("hipSPARSE %d\n", v_cusparse);
 
   int n_devices = 0;
   CHECK_CUDA(hipGetDeviceCount(&n_devices))
@@ -366,7 +366,7 @@ cupdlp_int print_cuda_info(hipsparseHandle_t handle)
     hipDeviceProp_t prop;
     CHECK_CUDA(hipGetDeviceProperties(&prop, i));
 
-    printf("Cuda device %d: %s\n", i, prop.name);
+    printf("HIP device %d: %s\n", i, prop.name);
 #if PRINT_DETAILED_HIP_INFO
     printf("  Clock rate (KHz): %d\n", prop.clockRate);
     printf("  Memory clock rate (KHz): %d\n", prop.memoryClockRate);
