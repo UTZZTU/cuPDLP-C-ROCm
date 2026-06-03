@@ -379,8 +379,8 @@ void cupdlp_init_vector(cupdlp_float *x, const cupdlp_float val,
 
 #if !(CUPDLP_CPU)
 
-void Ax_single_gpu(CUPDLPwork *w, cusparseDnVecDescr_t vecX,
-                   cusparseDnVecDescr_t vecAx) {
+void Ax_single_gpu(CUPDLPwork *w, cupdlp_sp_dnvec_descr_t vecX,
+                   cupdlp_sp_dnvec_descr_t vecAx) {
   cupdlp_float begin = getTimeStamp();
   cupdlp_float alpha = 1.0;
   cupdlp_float beta = 0.0;
@@ -410,8 +410,8 @@ void Ax_multi_gpu(CUPDLPdata *d, cupdlp_float *ax, const cupdlp_float *x) {
   exit(1);
 }
 
-void ATy_single_gpu(CUPDLPwork *w, cusparseDnVecDescr_t vecY,
-                    cusparseDnVecDescr_t vecATy) {
+void ATy_single_gpu(CUPDLPwork *w, cupdlp_sp_dnvec_descr_t vecY,
+                    cupdlp_sp_dnvec_descr_t vecATy) {
   cupdlp_float begin = getTimeStamp();
 
   cupdlp_float alpha = 1.0;
@@ -527,9 +527,9 @@ cupdlp_int cupdlp_axpy(CUPDLPwork *w, const cupdlp_int n,
                        cupdlp_float *y) {
 #if !(CUPDLP_CPU)
 #ifndef SFLOAT
-  CHECK_CUBLAS(cublasDaxpy(w->cublashandle, n, alpha, x, 1, y, 1));
+  CHECK_CUBLAS(hipblasDaxpy(w->cublashandle, n, alpha, x, 1, y, 1));
 #else
-  CHECK_CUBLAS(cublasSaxpy(w->cublashandle, n, alpha, x, 1, y, 1));
+  CHECK_CUBLAS(hipblasSaxpy(w->cublashandle, n, alpha, x, 1, y, 1));
 #endif
 #else
   // AddToVector(x, *alpha, y, n);
@@ -542,9 +542,9 @@ cupdlp_int cupdlp_dot(CUPDLPwork *w, const cupdlp_int n, const cupdlp_float *x,
                       const cupdlp_float *y, cupdlp_float *res) {
 #if !(CUPDLP_CPU)
 #ifndef SFLOAT
-  CHECK_CUBLAS(cublasDdot(w->cublashandle, n, x, 1, y, 1, res));
+  CHECK_CUBLAS(hipblasDdot(w->cublashandle, n, x, 1, y, 1, res));
 #else
-  CHECK_CUBLAS(cublasSdot(w->cublashandle, n, x, 1, y, 1 res));
+  CHECK_CUBLAS(hipblasSdot(w->cublashandle, n, x, 1, y, 1, res));
 #endif
 #else
   *res = dot(n, x, 1, y, 1);
@@ -556,9 +556,9 @@ cupdlp_int cupdlp_twoNorm(CUPDLPwork *w, const cupdlp_int n,
                           const cupdlp_float *x, cupdlp_float *res) {
 #if !(CUPDLP_CPU)
 #ifndef SFLOAT
-  CHECK_CUBLAS(cublasDnrm2(w->cublashandle, n, x, 1, res));
+  CHECK_CUBLAS(hipblasDnrm2(w->cublashandle, n, x, 1, res));
 #else
-  CHECK_CUBLAS(cublasSnrm2(w->cublashandle, n, x, 1, res));
+  CHECK_CUBLAS(hipblasSnrm2(w->cublashandle, n, x, 1, res));
 #endif
 #else
   *res = nrm2(n, x, 1);
@@ -570,9 +570,9 @@ cupdlp_int cupdlp_scaleVector(CUPDLPwork *w, const cupdlp_float weight,
                               cupdlp_float *x, const cupdlp_int n) {
 #if !(CUPDLP_CPU)
 #ifndef SFLOAT
-  CHECK_CUBLAS(cublasDscal(w->cublashandle, n, &weight, x, 1));
+  CHECK_CUBLAS(hipblasDscal(w->cublashandle, n, &weight, x, 1));
 #else
-  CHECK_CUBLAS(cublasSscal(w->cublashandle, n, &weight, x, 1));
+  CHECK_CUBLAS(hipblasSscal(w->cublashandle, n, &weight, x, 1));
 #endif
 #else
   ScaleVector(weight, x, n);

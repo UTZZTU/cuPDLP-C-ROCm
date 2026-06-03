@@ -8,9 +8,20 @@
 #define CUPDLP_DEBUG (0)
 #endif
 
-#if !(CUPDLP_CPU)
+#if defined(CUPDLP_USE_HIP)
+#include "hip/cupdlp_hip_kernels.h"
+#include "hip/cupdlp_hip_linalg.h"
+typedef hipsparseDnVecDescr_t cupdlp_sp_dnvec_descr_t;
+typedef hipsparseSpMatDescr_t cupdlp_sp_mat_descr_t;
+typedef hipsparseHandle_t cupdlp_sp_handle_t;
+typedef hipblasHandle_t cupdlp_blas_handle_t;
+#elif !(CUPDLP_CPU)
 #include "cuda/cupdlp_cuda_kernels.cuh"
 #include "cuda/cupdlp_cudalinalg.cuh"
+typedef cusparseDnVecDescr_t cupdlp_sp_dnvec_descr_t;
+typedef cusparseSpMatDescr_t cupdlp_sp_mat_descr_t;
+typedef cusparseHandle_t cupdlp_sp_handle_t;
+typedef cublasHandle_t cupdlp_blas_handle_t;
 #endif
 #ifdef __cplusplus
 extern "C" {
@@ -122,7 +133,7 @@ struct CUPDLP_CUDA_DENSE_VEC {
   cupdlp_int len;
   cupdlp_float *data;
 #if !(CUPDLP_CPU)
-  cusparseDnVecDescr_t cuda_vec;
+  cupdlp_sp_dnvec_descr_t cuda_vec;
 #endif
 };
 
@@ -141,7 +152,7 @@ struct CUPDLP_CSR_MATRIX {
   cupdlp_float *rowMatElem;
 #if !(CUPDLP_CPU)
   // Pointers to GPU vectors
-  cusparseSpMatDescr_t cuda_csr;
+  cupdlp_sp_mat_descr_t cuda_csr;
 #endif
 };
 
@@ -157,7 +168,7 @@ struct CUPDLP_CSC_MATRIX {
   cupdlp_float MatElemNormInf;
 #if !(CUPDLP_CPU)
   // Pointers to GPU vectors
-  cusparseSpMatDescr_t cuda_csc;
+  cupdlp_sp_mat_descr_t cuda_csc;
 #endif
 };
 
@@ -404,11 +415,11 @@ struct CUPDLP_WORK {
   cupdlp_float *colScale;
 #if !(CUPDLP_CPU)
   // CUDAmv *MV;
-  cusparseHandle_t cusparsehandle;
+  cupdlp_sp_handle_t cusparsehandle;
   void *dBuffer_csc_ATy;
   void *dBuffer_csr_Ax;
-  // cusparseDnVecDescr_t vecbuffer;
-  cublasHandle_t cublashandle;
+  // cupdlp_sp_dnvec_descr_t vecbuffer;
+  cupdlp_blas_handle_t cublashandle;
 #endif
 };
 

@@ -1,71 +1,36 @@
-.DS_Store
-solution-sum.json
-solution.json
-# data
-data 
-results
-*.whl
-notes
-release*
-debug*
-__pycache__
-.vscode
+# Build directories
+build-*/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+build.ninja
+.ninja_deps
+.ninja_log
 
-# IDE files
-.ipynb
-.ipynb_checkpoints
-.idea
-build/
-mps/
-# Prerequisites
-*.d
-
-# Object files
+# Compiled objects and libraries
 *.o
-*.ko
-*.obj
-*.elf
-
-# Linker output
-*.ilk
-*.map
-*.exp
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
 *.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
 *.so
 *.so.*
+*.dll
 *.dylib
-
-# Executables
 *.exe
+
+# Local logs and temporary outputs
+*.log
 *.out
-*.app
-*.i*86
-*.x86_64
-*.hex
+*.tmp
+*.bak
+*.before_*
+*.before_*
+*.tar.gz
 
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
-
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
+# Python/cache/editor
+__pycache__/
+*.pyc
+.cache/
+.vscode/
+.idea/
+*.swp
+*~

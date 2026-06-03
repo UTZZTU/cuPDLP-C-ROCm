@@ -11,10 +11,10 @@
 #include "cupdlp_linalg.h"
 #include "glbopts.h"
 
-#if !(CUPDLP_CPU)
-
+#if defined(CUPDLP_USE_HIP)
+#include "hip/cupdlp_hip_linalg.h"
+#elif !(CUPDLP_CPU)
 #include "cuda/cupdlp_cudalinalg.cuh"
-
 #endif
 
 void dense_clear(CUPDLPdense *dense) {
@@ -30,7 +30,7 @@ cupdlp_int csc_clear(CUPDLPcsc *csc) {
   if (csc) {
 #if !(CUPDLP_CPU)
     if (csc->cuda_csc != NULL) {
-      CHECK_CUSPARSE(cusparseDestroySpMat(csc->cuda_csc))
+      CHECK_CUSPARSE(hipsparseDestroySpMat(csc->cuda_csc))
     }
 #endif
     if (csc->colMatBeg) {
@@ -67,7 +67,7 @@ cupdlp_int csr_clear(CUPDLPcsr *csr) {
   if (csr) {
 #if !(CUPDLP_CPU)
     if (csr->cuda_csr != NULL) {
-      CHECK_CUSPARSE(cusparseDestroySpMat(csr->cuda_csr))
+      CHECK_CUSPARSE(hipsparseDestroySpMat(csr->cuda_csr))
     }
 #endif
     if (csr->rowMatBeg) {
@@ -162,7 +162,7 @@ cupdlp_int vec_clear(CUPDLPvec *vec) {
       CUPDLP_FREE_VEC(vec->data);
     }
 #if !(CUPDLP_CPU)
-    CHECK_CUSPARSE(cusparseDestroyDnVec(vec->cuda_vec))
+    CHECK_CUSPARSE(hipsparseDestroyDnVec(vec->cuda_vec))
 #endif
     cupdlp_free(vec);
   }
@@ -342,10 +342,10 @@ cupdlp_int PDHG_Clear(CUPDLPwork *w) {
   //     cuda_free_mv(MV);
   //     timers->FreeDeviceMemTime += getTimeStamp() - begin;
   // }
-  CHECK_CUBLAS(cublasDestroy(w->cublashandle))
-  CHECK_CUSPARSE(cusparseDestroy(w->cusparsehandle))
-  CHECK_CUDA(cudaFree(w->dBuffer_csc_ATy))
-  CHECK_CUDA(cudaFree(w->dBuffer_csr_Ax))
+  CHECK_CUBLAS(hipblasDestroy(w->cublashandle))
+  CHECK_CUSPARSE(hipsparseDestroy(w->cusparsehandle))
+  CHECK_CUDA(hipFree(w->dBuffer_csc_ATy))
+  CHECK_CUDA(hipFree(w->dBuffer_csr_Ax))
   if (w->buffer2) CUPDLP_FREE_VEC(w->buffer2);
   if (w->buffer3) CUPDLP_FREE_VEC(w->buffer3);
 #endif
@@ -1012,7 +1012,7 @@ cupdlp_retcode vec_Alloc(CUPDLPvec *vec, cupdlp_int n) {
   CUPDLP_INIT_ZERO_VEC(vec->data, n);
   vec->len = n;
 #if !(CUPDLP_CPU)
-  CHECK_CUSPARSE(cusparseCreateDnVec(&vec->cuda_vec, n, vec->data, CudaComputeType))
+  CHECK_CUSPARSE(hipsparseCreateDnVec(&vec->cuda_vec, n, vec->data, HipComputeType))
 #endif
 
 exit_cleanup:
@@ -1133,10 +1133,10 @@ cupdlp_int csc_copy(CUPDLPcsc *dst, CUPDLPcsc *src) {
 
 #if !(CUPDLP_CPU)
   // Pointer to GPU csc matrix
-  CHECK_CUSPARSE(cusparseCreateCsc(
+  CHECK_CUSPARSE(hipsparseCreateCsc(
       &dst->cuda_csc, src->nRows, src->nCols, src->nMatElem, dst->colMatBeg,
-      dst->colMatIdx, dst->colMatElem, CUSPARSE_INDEX_32I, CUSPARSE_INDEX_32I,
-      CUSPARSE_INDEX_BASE_ZERO, CudaComputeType));
+      dst->colMatIdx, dst->colMatElem, HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
+      HIPSPARSE_INDEX_BASE_ZERO, HipComputeType));
 #endif
 
   return 0;
@@ -1190,10 +1190,10 @@ cupdlp_int csc2csr(CUPDLPcsr *csr, CUPDLPcsc *csc) {
 
 #if !(CUPDLP_CPU)
   // Pointer to GPU csc matrix
-  CHECK_CUSPARSE(cusparseCreateCsr(
+  CHECK_CUSPARSE(hipsparseCreateCsr(
       &csr->cuda_csr, csr->nRows, csr->nCols, csr->nMatElem, csr->rowMatBeg,
-      csr->rowMatIdx, csr->rowMatElem, CUSPARSE_INDEX_32I, CUSPARSE_INDEX_32I,
-      CUSPARSE_INDEX_BASE_ZERO, CudaComputeType));
+      csr->rowMatIdx, csr->rowMatElem, HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
+      HIPSPARSE_INDEX_BASE_ZERO, HipComputeType));
 #endif
 
   return 0;

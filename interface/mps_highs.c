@@ -183,8 +183,8 @@ cupdlp_retcode main(int argc, char **argv) {
   CUPDLP_INIT_ZERO(w, 1);
 #if !(CUPDLP_CPU)
   cupdlp_float cuda_prepare_time = getTimeStamp();
-  CHECK_CUSPARSE(cusparseCreate(&w->cusparsehandle));
-  CHECK_CUBLAS(cublasCreate(&w->cublashandle));
+  CHECK_CUSPARSE(hipsparseCreate(&w->cusparsehandle));
+  CHECK_CUBLAS(hipblasCreate(&w->cublashandle));
   cuda_prepare_time = getTimeStamp() - cuda_prepare_time;
 #endif
 
@@ -334,7 +334,7 @@ exit_cleanup:
   csc_clear_host(csc_cpu);
   problem_clear(prob);
   #if !(CUPDLP_CPU)
-    CHECK_CUDA(cudaDeviceReset())
+    CHECK_CUDA(hipDeviceReset())
   #endif
 
   return retcode;
