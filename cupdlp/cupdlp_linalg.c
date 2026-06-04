@@ -520,7 +520,7 @@ void ATy(CUPDLPwork *w, CUPDLPvec *aty, const CUPDLPvec *y)
 /*-------------- Apis compatible with both CPU and GPU -------------------*/
 // only implemented the APis need to be used on GPU
 
-// functions in cublas
+// functions in hipBLAS
 
 cupdlp_int cupdlp_axpy(CUPDLPwork *w, const cupdlp_int n,
                        const cupdlp_float *alpha, const cupdlp_float *x,
@@ -619,7 +619,7 @@ void cupdlp_diffDotDiff(CUPDLPwork *w, const cupdlp_float *x1,
   cupdlp_dot(w, len, w->buffer2, w->buffer3, res);
 }
 
-// functions not in cublas
+// functions not in hipBLAS
 
 /* element wise dot: x = x .* y*/
 void cupdlp_edot(cupdlp_float *x, const cupdlp_float *y, const cupdlp_int len) {

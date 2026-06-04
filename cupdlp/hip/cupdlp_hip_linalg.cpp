@@ -25,7 +25,7 @@ cupdlp_int cuda_alloc_MVbuffer(
   size_t ATyBufferSize = 0;
   cupdlp_float alpha = 1.0;
   cupdlp_float beta = 0.0;
-  // cusparseSpSVAlg_t alg = CUSPARSE_SPSV_ALG_DEFAULT;
+  // hipsparseSpSVAlg_t alg = HIPSPARSE_SPSV_ALG_DEFAULT;
   hipsparseSpMVAlg_t alg = HIPSPARSE_SPMV_CSR_ALG2; //deterministic
 
   // get the buffer size needed by csr Ax
@@ -349,15 +349,15 @@ cupdlp_int print_cuda_info(hipsparseHandle_t handle)
 #if PRINT_HIP_INFO
 
   int v_hip_runtime = 0;
-  int v_cuda_driver = 0;
-  int v_cusparse = 0;
+  int v_hip_driver = 0;
+  int v_hipsparse = 0;
   CHECK_CUDA(hipRuntimeGetVersion(&v_hip_runtime))
-  CHECK_CUDA(hipDriverGetVersion(&v_cuda_driver))
-  CHECK_CUSPARSE(hipsparseGetVersion(handle, &v_cusparse))
+  CHECK_CUDA(hipDriverGetVersion(&v_hip_driver))
+  CHECK_CUSPARSE(hipsparseGetVersion(handle, &v_hipsparse))
 
   printf("HIP runtime %d\n", v_hip_runtime);
-  printf("HIP driver %d\n", v_cuda_driver);
-  printf("hipSPARSE %d\n", v_cusparse);
+  printf("HIP driver %d\n", v_hip_driver);
+  printf("hipSPARSE %d\n", v_hipsparse);
 
   int n_devices = 0;
   CHECK_CUDA(hipGetDeviceCount(&n_devices))

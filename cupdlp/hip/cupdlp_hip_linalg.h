@@ -1,9 +1,9 @@
-#ifndef CUPDLP_CUDA_LINALG_H
-#define CUPDLP_CUDA_LINALG_H
+#ifndef CUPDLP_HIP_LINALG_H
+#define CUPDLP_HIP_LINALG_H
 
-#include <hipblas/hipblas.h>         // cublas
-#include <hip/hip_runtime_api.h>  // cudaMalloc, cudaMemcpy, etc.
-#include <hipsparse/hipsparse.h>          // hipsparseSpMV
+#include <hipblas/hipblas.h>         // hipBLAS
+#include <hip/hip_runtime_api.h>  // hipMalloc, hipMemcpy, etc.
+#include <hipsparse/hipsparse.h>          // hipSPARSE SpMV
 
 #include "cupdlp_hip_kernels.h"
 

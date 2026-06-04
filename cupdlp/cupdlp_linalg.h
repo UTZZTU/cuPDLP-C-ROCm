@@ -3,7 +3,9 @@
 
 #include "cupdlp_defs.h"
 #include "cupdlp_utils.h"
-#if !(CUPDLP_CPU)
+#if defined(CUPDLP_USE_HIP)
+#include "hip/cupdlp_hip_linalg.h"
+#elif !(CUPDLP_CPU)
 #include "cuda/cupdlp_cudalinalg.cuh"
 #endif
 
@@ -100,7 +102,7 @@ void ATy(CUPDLPwork *w, CUPDLPvec *aty, const CUPDLPvec *y);
 /*-------------- Apis compatible with both CPU and GPU -------------------*/
 // only implemented the APis need to be used on GPU
 
-// functions in cublas
+// functions in hipBLAS
 cupdlp_int cupdlp_axpy(CUPDLPwork *w, const cupdlp_int n,
                        const cupdlp_float *alpha, const cupdlp_float *x,
                        cupdlp_float *y);
@@ -130,7 +132,7 @@ void cupdlp_diffDotDiff(CUPDLPwork *w, const cupdlp_float *x1,
                         const cupdlp_float *y2, const cupdlp_int len,
                         cupdlp_float *res);
 
-// functions not in cublas
+// functions not in hipBLAS
 /* element wise dot: x = x .* y*/
 void cupdlp_edot(cupdlp_float *x, const cupdlp_float *y, const cupdlp_int len);
 /* element wise div: x = x ./ y*/

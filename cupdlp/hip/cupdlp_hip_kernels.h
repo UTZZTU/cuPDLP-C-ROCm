@@ -1,5 +1,5 @@
-#ifndef CUPDLP_CUDA_KERNALS_H
-#define CUPDLP_CUDA_KERNALS_H
+#ifndef CUPDLP_HIP_KERNELS_H
+#define CUPDLP_HIP_KERNELS_H
 
 #include <stdio.h>
 #include <stdlib.h>  /* EXIT_FAILURE */
@@ -32,7 +32,7 @@ static inline hipError_t check_cuda_call(hipError_t status,
                                           const char *filename, int line)
 {
   if (status != hipSuccess) {
-    printf("CUDA API failed at line %d of %s with error: %s (%d)\n",
+    printf("HIP API failed at line %d of %s with error: %s (%d)\n",
       line, filename, hipGetErrorString(status), status);
   }
   return status;
@@ -42,7 +42,7 @@ static inline hipsparseStatus_t check_cusparse_call(hipsparseStatus_t status,
                                                    const char *filename, int line)
 {
   if (status != HIPSPARSE_STATUS_SUCCESS) {
-    printf("CUSPARSE API failed at line %d of %s with error: %s (%d)\n",
+    printf("hipSPARSE API failed at line %d of %s with error: %s (%d)\n",
       line, filename, hipsparseGetErrorString(status), status);
   }
   return status;
@@ -52,7 +52,7 @@ static inline hipblasStatus_t check_cublas_call(hipblasStatus_t status,
                                                const char *filename, int line)
 {
   if (status != HIPBLAS_STATUS_SUCCESS) {
-    printf("CUBLAS API failed at line %d of %s with error: %s (%d)\n",
+    printf("hipBLAS API failed at line %d of %s with error: %s (%d)\n",
       line, filename, "hipBLAS error", status);
   }
   return status;
@@ -62,7 +62,7 @@ static inline hipError_t check_cuda_last(const char *filename, int line)
 {
   hipError_t status = hipGetLastError();
   if (status != hipSuccess) {
-    printf("CUDA API failed at line %d of %s with error: %s (%d)\n",
+    printf("HIP API failed at line %d of %s with error: %s (%d)\n",
       line, filename, hipGetErrorString(status), status);
   }
   return status;
