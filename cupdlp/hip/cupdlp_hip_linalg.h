@@ -15,31 +15,31 @@ extern "C" {
 #endif
 
 cupdlp_int cuda_alloc_MVbuffer(
-    hipsparseHandle_t handle, hipsparseSpMatDescr_t cuda_csc,
+    hipsparseHandle_t handle, hipsparseSpMatDescr_t hip_csc,
     hipsparseDnVecDescr_t vecX, hipsparseDnVecDescr_t vecAx,
-    hipsparseSpMatDescr_t cuda_csr, hipsparseDnVecDescr_t vecY,
+    hipsparseSpMatDescr_t hip_csr, hipsparseDnVecDescr_t vecY,
     hipsparseDnVecDescr_t vecATy, void **dBuffer_csc_ATy, void **dBuffer_csr_Ax);
 
 /*
 cupdlp_int cuda_csc_Ax(hipsparseHandle_t handle,
-                       hipsparseSpMatDescr_t cuda_csc,
+                       hipsparseSpMatDescr_t hip_csc,
                        hipsparseDnVecDescr_t vecX,
                        hipsparseDnVecDescr_t vecAx, void *dBuffer,
                        cupdlp_float alpha, cupdlp_float beta);
 */
 cupdlp_int cuda_csr_Ax(hipsparseHandle_t handle,
-                       hipsparseSpMatDescr_t cuda_csr,
+                       hipsparseSpMatDescr_t hip_csr,
                        hipsparseDnVecDescr_t vecX,
                        hipsparseDnVecDescr_t vecAx, void *dBuffer,
                        cupdlp_float alpha, cupdlp_float beta);
 cupdlp_int cuda_csc_ATy(hipsparseHandle_t handle,
-                        hipsparseSpMatDescr_t cuda_csc,
+                        hipsparseSpMatDescr_t hip_csc,
                         hipsparseDnVecDescr_t vecY,
                         hipsparseDnVecDescr_t vecATy, void *dBuffer,
                         cupdlp_float alpha, cupdlp_float beta);
 /*
 cupdlp_int cuda_csr_ATy(hipsparseHandle_t handle,
-                        hipsparseSpMatDescr_t cuda_csr,
+                        hipsparseSpMatDescr_t hip_csr,
                         hipsparseDnVecDescr_t vecY,
                         hipsparseDnVecDescr_t vecATy, void *dBuffer,
                         cupdlp_float alpha, cupdlp_float beta);

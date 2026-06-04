@@ -9,16 +9,16 @@
 inline int nBlocks256(int n) {
   constexpr int BLOCKS_PER_SM = 32;
   int numSMs;
-  CHECK_CUDA_IGNORE(hipDeviceGetAttribute(&numSMs, hipDeviceAttributeMultiprocessorCount, 0))
+  CHECK_HIP_IGNORE(hipDeviceGetAttribute(&numSMs, hipDeviceAttributeMultiprocessorCount, 0))
   return std::min((n + 256 - 1) / 256, BLOCKS_PER_SM * numSMs);
 }
 
 extern "C" {
 
 cupdlp_int cuda_alloc_MVbuffer(
-    hipsparseHandle_t handle, hipsparseSpMatDescr_t cuda_csc,
+    hipsparseHandle_t handle, hipsparseSpMatDescr_t hip_csc,
     hipsparseDnVecDescr_t vecX, hipsparseDnVecDescr_t vecAx,
-    hipsparseSpMatDescr_t cuda_csr, hipsparseDnVecDescr_t vecY,
+    hipsparseSpMatDescr_t hip_csr, hipsparseDnVecDescr_t vecY,
     hipsparseDnVecDescr_t vecATy, void **dBuffer_csc_ATy, void **dBuffer_csr_Ax) {
 
   size_t AxBufferSize = 0;
@@ -29,27 +29,27 @@ cupdlp_int cuda_alloc_MVbuffer(
   hipsparseSpMVAlg_t alg = HIPSPARSE_SPMV_CSR_ALG2; //deterministic
 
   // get the buffer size needed by csr Ax
-  CHECK_CUSPARSE(hipsparseSpMV_bufferSize(
-      handle, HIPSPARSE_OPERATION_NON_TRANSPOSE, &alpha, cuda_csr, vecX, &beta,
+  CHECK_HIPSPARSE(hipsparseSpMV_bufferSize(
+      handle, HIPSPARSE_OPERATION_NON_TRANSPOSE, &alpha, hip_csr, vecX, &beta,
       vecAx, HipComputeType, alg, &AxBufferSize))
 
   // allocate an external buffer if needed
-  CHECK_CUDA(hipMalloc(dBuffer_csr_Ax, AxBufferSize))
+  CHECK_HIP(hipMalloc(dBuffer_csr_Ax, AxBufferSize))
 
   // get the buffer size needed by csc ATy
-  CHECK_CUSPARSE(hipsparseSpMV_bufferSize(
-      handle, HIPSPARSE_OPERATION_TRANSPOSE, &alpha, cuda_csc, vecY, &beta,
+  CHECK_HIPSPARSE(hipsparseSpMV_bufferSize(
+      handle, HIPSPARSE_OPERATION_TRANSPOSE, &alpha, hip_csc, vecY, &beta,
       vecATy, HipComputeType, alg, &ATyBufferSize))
 
   // allocate an external buffer if needed
-  CHECK_CUDA(hipMalloc(dBuffer_csc_ATy, ATyBufferSize))
+  CHECK_HIP(hipMalloc(dBuffer_csc_ATy, ATyBufferSize))
 
   return EXIT_SUCCESS;
 }
 
 /*
 cupdlp_int cuda_csc_Ax(hipsparseHandle_t handle,
-                       hipsparseSpMatDescr_t cuda_csc,
+                       hipsparseSpMatDescr_t hip_csc,
                        hipsparseDnVecDescr_t vecX,
                        hipsparseDnVecDescr_t vecAx, void *dBuffer,
                        cupdlp_float alpha, cupdlp_float beta) {
@@ -57,7 +57,7 @@ cupdlp_int cuda_csc_Ax(hipsparseHandle_t handle,
 
   hipsparseOperation_t op = HIPSPARSE_OPERATION_NON_TRANSPOSE;
 
-  CHECK_CUSPARSE(hipsparseSpMV(handle, op, &alpha, cuda_csc, vecX, &beta, vecAx,
+  CHECK_HIPSPARSE(hipsparseSpMV(handle, op, &alpha, hip_csc, vecX, &beta, vecAx,
                               // HipComputeType, HIPSPARSE_SPMV_ALG_DEFAULT, dBuffer))
                               HipComputeType, HIPSPARSE_SPMV_CSR_ALG2, dBuffer))
 
@@ -66,7 +66,7 @@ cupdlp_int cuda_csc_Ax(hipsparseHandle_t handle,
 */
 
 cupdlp_int cuda_csr_Ax(hipsparseHandle_t handle,
-                       hipsparseSpMatDescr_t cuda_csr,
+                       hipsparseSpMatDescr_t hip_csr,
                        hipsparseDnVecDescr_t vecX,
                        hipsparseDnVecDescr_t vecAx, void *dBuffer,
                        cupdlp_float alpha, cupdlp_float beta) {
@@ -74,7 +74,7 @@ cupdlp_int cuda_csr_Ax(hipsparseHandle_t handle,
 
   hipsparseOperation_t op = HIPSPARSE_OPERATION_NON_TRANSPOSE;
 
-  CHECK_CUSPARSE(hipsparseSpMV(handle, op, &alpha, cuda_csr, vecX, &beta, vecAx,
+  CHECK_HIPSPARSE(hipsparseSpMV(handle, op, &alpha, hip_csr, vecX, &beta, vecAx,
                               // HipComputeType, HIPSPARSE_SPMV_ALG_DEFAULT, dBuffer))
                               HipComputeType, HIPSPARSE_SPMV_CSR_ALG2, dBuffer))
 
@@ -82,14 +82,14 @@ cupdlp_int cuda_csr_Ax(hipsparseHandle_t handle,
 }
 
 cupdlp_int cuda_csc_ATy(hipsparseHandle_t handle,
-                        hipsparseSpMatDescr_t cuda_csc,
+                        hipsparseSpMatDescr_t hip_csc,
                         hipsparseDnVecDescr_t vecY,
                         hipsparseDnVecDescr_t vecATy, void *dBuffer,
                         cupdlp_float alpha, cupdlp_float beta) {
   // ATy = alpha * Acsc^T * Y + beta * ATy
   hipsparseOperation_t op = HIPSPARSE_OPERATION_TRANSPOSE;
 
-  CHECK_CUSPARSE(hipsparseSpMV(handle, op, &alpha, cuda_csc, vecY, &beta, vecATy,
+  CHECK_HIPSPARSE(hipsparseSpMV(handle, op, &alpha, hip_csc, vecY, &beta, vecATy,
                               // HipComputeType, HIPSPARSE_SPMV_ALG_DEFAULT, dBuffer))
                               HipComputeType, HIPSPARSE_SPMV_CSR_ALG2, dBuffer))
 
@@ -98,14 +98,14 @@ cupdlp_int cuda_csc_ATy(hipsparseHandle_t handle,
 
 /*
 cupdlp_int cuda_csr_ATy(hipsparseHandle_t handle,
-                        hipsparseSpMatDescr_t cuda_csr,
+                        hipsparseSpMatDescr_t hip_csr,
                         hipsparseDnVecDescr_t vecY,
                         hipsparseDnVecDescr_t vecATy, void *dBuffer,
                         cupdlp_float alpha, cupdlp_float beta) {
   // ATy = alpha * Acsr^T * Y + beta * ATy
   hipsparseOperation_t op = HIPSPARSE_OPERATION_TRANSPOSE;
 
-  CHECK_CUSPARSE(hipsparseSpMV(handle, op, &alpha, cuda_csr, vecY, &beta, vecATy,
+  CHECK_HIPSPARSE(hipsparseSpMV(handle, op, &alpha, hip_csr, vecY, &beta, vecATy,
                               // HipComputeType, HIPSPARSE_SPMV_ALG_DEFAULT, dBuffer))
                               HipComputeType, HIPSPARSE_SPMV_CSR_ALG2, dBuffer))
 
@@ -261,7 +261,7 @@ void cupdlp_movement_interaction_cuda(
     int nRows, int nCols)
 {
   int warpSize;
-  CHECK_CUDA_IGNORE(hipDeviceGetAttribute(&warpSize, hipDeviceAttributeWarpSize, 0))
+  CHECK_HIP_IGNORE(hipDeviceGetAttribute(&warpSize, hipDeviceAttributeWarpSize, 0))
   if (warpSize != 32) {
     printf("warpSize\n");
     exit(1);
@@ -318,8 +318,8 @@ void cupdlp_movement_interaction_cuda(
     buf_4 = tmp;
   }
 
-  CHECK_CUDA_STRICT(hipMemcpyAsync(buf_5 + 0, buf_1, sizeof(cupdlp_float), hipMemcpyDeviceToDevice))
-  CHECK_CUDA_STRICT(hipMemcpyAsync(buf_5 + 1, buf_2, sizeof(cupdlp_float), hipMemcpyDeviceToDevice))
+  CHECK_HIP_STRICT(hipMemcpyAsync(buf_5 + 0, buf_1, sizeof(cupdlp_float), hipMemcpyDeviceToDevice))
+  CHECK_HIP_STRICT(hipMemcpyAsync(buf_5 + 1, buf_2, sizeof(cupdlp_float), hipMemcpyDeviceToDevice))
 
   nBlocks = nBlocksRows;
   movement_2_kernel<<<nBlocks, RED_BLOCK_SIZE>>>(buf_1, yUpdate, y, nRows);
@@ -334,10 +334,10 @@ void cupdlp_movement_interaction_cuda(
   }
 
   cupdlp_float res[3];
-  CHECK_CUDA_STRICT(hipMemcpyAsync(buf_5 + 2, buf_1, sizeof(cupdlp_float), hipMemcpyDeviceToDevice))
-  CHECK_CUDA_STRICT(hipDeviceSynchronize())
-  CHECK_CUDA_STRICT(hipMemcpy(res, buf_5, 3 * sizeof(cupdlp_float), hipMemcpyDeviceToHost))
-  CHECK_CUDA_LAST();
+  CHECK_HIP_STRICT(hipMemcpyAsync(buf_5 + 2, buf_1, sizeof(cupdlp_float), hipMemcpyDeviceToDevice))
+  CHECK_HIP_STRICT(hipDeviceSynchronize())
+  CHECK_HIP_STRICT(hipMemcpy(res, buf_5, 3 * sizeof(cupdlp_float), hipMemcpyDeviceToHost))
+  CHECK_HIP_LAST();
 
   *dX2 = res[0];
   *dY2 = res[2];
@@ -351,20 +351,20 @@ cupdlp_int print_cuda_info(hipsparseHandle_t handle)
   int v_hip_runtime = 0;
   int v_hip_driver = 0;
   int v_hipsparse = 0;
-  CHECK_CUDA(hipRuntimeGetVersion(&v_hip_runtime))
-  CHECK_CUDA(hipDriverGetVersion(&v_hip_driver))
-  CHECK_CUSPARSE(hipsparseGetVersion(handle, &v_hipsparse))
+  CHECK_HIP(hipRuntimeGetVersion(&v_hip_runtime))
+  CHECK_HIP(hipDriverGetVersion(&v_hip_driver))
+  CHECK_HIPSPARSE(hipsparseGetVersion(handle, &v_hipsparse))
 
   printf("HIP runtime %d\n", v_hip_runtime);
   printf("HIP driver %d\n", v_hip_driver);
   printf("hipSPARSE %d\n", v_hipsparse);
 
   int n_devices = 0;
-  CHECK_CUDA(hipGetDeviceCount(&n_devices))
+  CHECK_HIP(hipGetDeviceCount(&n_devices))
 
   for (int i = 0; i < n_devices; i++) {
     hipDeviceProp_t prop;
-    CHECK_CUDA(hipGetDeviceProperties(&prop, i));
+    CHECK_HIP(hipGetDeviceProperties(&prop, i));
 
     printf("HIP device %d: %s\n", i, prop.name);
 #if PRINT_DETAILED_HIP_INFO
