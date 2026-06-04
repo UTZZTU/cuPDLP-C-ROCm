@@ -1,0 +1,7 @@
+# name,mps_path,nIterLim
+afiro,example/afiro.mps,200
+adlittle,validation/netlib/adlittle.mps,5000
+blend,validation/netlib/blend.mps,5000
+sc50a,validation/netlib/sc50a.mps,5000
+sc50b,validation/netlib/sc50b.mps,5000
+share2b,validation/netlib/share2b.mps,5000
