@@ -11,6 +11,7 @@ ROCM_ARCH="${ROCM_ARCH:-gfx1150}"
 CPU_BUILD_DIR="build-cpu"
 ROCM_BUILD_DIR="build-rocm-plc"
 
+rm -rf "$RESULT_ROOT"
 mkdir -p "$RESULT_ROOT"
 
 echo "== cuPDLP-C-ROCm validation =="
