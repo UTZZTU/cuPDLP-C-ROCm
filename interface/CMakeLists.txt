@@ -111,19 +111,19 @@ endif ()
 if (${BUILD_HIP} STREQUAL "ON")
     add_custom_target(
             deploy
-            COMMAND mv "${CMAKE_BINARY_DIR}/bin/plc" "${CMAKE_BINARY_DIR}/bin/plchip"
+            COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${CMAKE_BINARY_DIR}/bin/plc" "${CMAKE_BINARY_DIR}/bin/plcrocm"
             DEPENDS plc plc
     )
 elseif (${CUDA_LIBRARY-NOTFOUND})
     add_custom_target(
             deploy
-            COMMAND mv "${CMAKE_BINARY_DIR}/bin/plc" "${CMAKE_BINARY_DIR}/bin/plccpu"
+            COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${CMAKE_BINARY_DIR}/bin/plc" "${CMAKE_BINARY_DIR}/bin/plccpu"
             DEPENDS plc plc
     )
 else()
     add_custom_target(
             deploy
-            COMMAND mv "${CMAKE_BINARY_DIR}/bin/plc" "${CMAKE_BINARY_DIR}/bin/plcgpu"
+            COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${CMAKE_BINARY_DIR}/bin/plc" "${CMAKE_BINARY_DIR}/bin/plcgpu"
             DEPENDS plc plc
     )
 endif()
