@@ -285,6 +285,12 @@ roc::hipblas
 roc::hipsparse
 ```
 
+### BUILD_ROCM and BUILD_HIP
+
+`BUILD_ROCM=ON` is the recommended public build option for this repository.
+
+`BUILD_HIP=ON` is kept as a legacy compatibility alias. Internally, the ROCm backend is still implemented with HIP, hipBLAS, and hipSPARSE.
+
 ## 9. Host-side code adaptation
 
 Not all migration work happened inside `.cu` or `.cuh` files.
@@ -328,28 +334,28 @@ This allowed the main solver data structures to use project-level type aliases i
 For the current gfx1150 target:
 
 ```bash
-cmake -S . -B build-hip-plc -G Ninja \
+cmake -S . -B build-rocm-plc -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_CUDA=OFF \
-  -DBUILD_HIP=ON \
+  -DBUILD_ROCM=ON \
   -DBUILD_APPS=OFF \
   -DBUILD_PYTHON=OFF \
   -DCMAKE_PREFIX_PATH=/opt/rocm \
   -DCMAKE_HIP_ARCHITECTURES=gfx1150
 
-cmake --build build-hip-plc --target plc -j"$(nproc)"
+cmake --build build-rocm-plc --target plc -j"$(nproc)"
 ```
 
 The generated executable is:
 
 ```text
-build-hip-plc/bin/plc
+build-rocm-plc/bin/plc
 ```
 
 ## 11. Running the validation example
 
 ```bash
-./build-hip-plc/bin/plc \
+./build-rocm-plc/bin/plc \
   -fname ./example/afiro.mps \
   -out ~/cupdlp_rocm_port_logs/hip_run/afiro_hip_sum.json \
   -nIterLim 200

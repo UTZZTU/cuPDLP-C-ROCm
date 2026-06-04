@@ -14,20 +14,20 @@ This repository contains an experimental ROCm/HIP port of cuPDLP-C targeting AMD
 ## Build
 
 ```bash
-cmake -S . -B build-hip-plc -G Ninja \
+cmake -S . -B build-rocm-plc -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_CUDA=OFF \
-  -DBUILD_HIP=ON \
+  -DBUILD_ROCM=ON \
   -DBUILD_APPS=OFF \
   -DBUILD_PYTHON=OFF \
   -DCMAKE_PREFIX_PATH=/opt/rocm \
   -DCMAKE_HIP_ARCHITECTURES=gfx1150
 
-cmake --build build-hip-plc --target plc -j"$(nproc)"
+cmake --build build-rocm-plc --target plc -j"$(nproc)"
 
 Run
 
-./build-hip-plc/bin/plc \
+./build-rocm-plc/bin/plc \
   -fname ./example/afiro.mps \
   -out /tmp/afiro_hip_sum.json \
   -nIterLim 200

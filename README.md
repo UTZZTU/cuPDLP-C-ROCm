@@ -50,7 +50,7 @@ Important ROCm-related files and directories:
 
 ```text
 cupdlp/hip/                 ROCm/HIP backend source files
-CMakeLists.txt              Top-level build options, including BUILD_HIP
+CMakeLists.txt              Top-level build options, including BUILD_ROCM
 cupdlp/CMakeLists.txt       cuPDLP core library build logic
 interface/CMakeLists.txt    plc executable and HiGHS wrapper build logic
 README_UPSTREAM.md          Original upstream README backup
@@ -62,28 +62,28 @@ docs/                       ROCm porting, validation, and tuning notes
 For the currently verified AMD Radeon 890M / gfx1150 target:
 
 ```bash
-cmake -S . -B build-hip-plc -G Ninja \
+cmake -S . -B build-rocm-plc -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_CUDA=OFF \
-  -DBUILD_HIP=ON \
+  -DBUILD_ROCM=ON \
   -DBUILD_APPS=OFF \
   -DBUILD_PYTHON=OFF \
   -DCMAKE_PREFIX_PATH=/opt/rocm \
   -DCMAKE_HIP_ARCHITECTURES=gfx1150
 
-cmake --build build-hip-plc --target plc -j"$(nproc)"
+cmake --build build-rocm-plc --target plc -j"$(nproc)"
 ```
 
 The generated executable is:
 
 ```text
-build-hip-plc/bin/plc
+build-rocm-plc/bin/plc
 ```
 
 ## Run the verified example
 
 ```bash
-./build-hip-plc/bin/plc \
+./build-rocm-plc/bin/plc \
   -fname ./example/afiro.mps \
   -out /tmp/afiro_hip_sum.json \
   -nIterLim 200
@@ -157,6 +157,12 @@ with your target architecture, for example:
 ```
 
 Actual support depends on your ROCm version, Linux distribution, kernel, and AMD GPU/APU support status.
+
+## Build option compatibility
+
+`BUILD_ROCM=ON` is the recommended build option for the ROCm/HIP backend.
+
+`BUILD_HIP=ON` is kept as a legacy compatibility alias because the current ROCm backend is implemented with HIP, hipBLAS, and hipSPARSE.
 
 ## Porting notes
 

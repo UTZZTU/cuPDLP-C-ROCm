@@ -99,7 +99,7 @@ Recommended workflow:
   -nIterLim 200
 
 # ROCm/HIP run
-./build-hip-plc/bin/plc \
+./build-rocm-plc/bin/plc \
   -fname ./example/afiro.mps \
   -out /tmp/afiro_hip_sum.json \
   -nIterLim 200
