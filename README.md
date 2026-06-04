@@ -130,6 +130,23 @@ Example run:
   -nIterLim 200
 ```
 
+## Validation
+
+Run the CPU-vs-ROCm validation workflow:
+
+```bash
+./scripts/run_validation.sh
+
+The default validation case list is:
+
+validation/cases.txt
+
+Generated validation outputs are written to:
+
+validation/results/latest/
+
+These generated outputs are ignored by Git. A summarized validation record is maintained in docs/VALIDATION.md.
+
 ## Adapting to other ROCm GPUs
 
 This repository is currently verified on `gfx1150`.
