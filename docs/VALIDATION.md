@@ -199,3 +199,21 @@ dDualFeas
 dDualityGap
 
 This is intentional because CPU and ROCm runs can follow slightly different floating-point trajectories while still reaching equivalent relative feasibility and gap criteria
+
+## CTest integration
+
+The ROCm port checks are also registered with CTest when the project is configured with `BUILD_TESTING=ON`.
+
+Example:
+
+```bash
+ctest --test-dir build-rocm-plc --output-on-failure
+
+Current registered tests:
+
+Test	Purpose	Expected result
+rocm_port_hygiene	Checks ROCm/HIP naming and compatibility guardrails	PASS
+rocm_smoke_validation	Runs CPU-vs-ROCm smoke validation	PASS
+
+CTest is the recommended standard entry point after configuring a ROCm build tree.
+

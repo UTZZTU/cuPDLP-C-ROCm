@@ -207,11 +207,11 @@ docs/PORTING_GUIDE_ROCM_HIP.md
 
 Planned next steps:
 
-* Rewrite user-facing logs to use ROCm/HIP wording instead of legacy CUDA wording.
-* Replace visible `CudaPrepare`, `Cuda device`, and `cuSparse` labels with ROCm/HIP labels.
-* Add CPU-vs-ROCm validation scripts.
+* Keep user-facing ROCm/HIP wording clean as the validation matrix grows.
+* Maintain CTest-backed smoke validation and ROCm hygiene checks.
+* Extend validation beyond the current smoke and extended Netlib cases.
 * Test more MPS examples beyond `afiro.mps`.
-* Add a validation result table.
+* Add more documented validation result snapshots.
 * Add ROCm tuning notes for gfx1150.
 * Add guidance for other ROCm-supported AMD GPU/APU targets.
 * Gradually clean internal CUDA-style names once tests are stable.
