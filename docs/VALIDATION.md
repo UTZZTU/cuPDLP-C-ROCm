@@ -115,3 +115,30 @@ Add scripts/run_validation.sh
 Add more MPS test cases
 Record CPU vs ROCm result tables
 Add validation results for other ROCm-supported GPUs
+
+## Current validation result
+
+Latest verified case:
+
+| Case | CPU status | ROCm status | Result |
+|---|---|---|---|
+| `example/afiro.mps` | `OPTIMAL` | `OPTIMAL` | PASS |
+
+For `afiro.mps` with `nIterLim=200`, CPU and ROCm results match within the current validation tolerances.
+
+Key comparison:
+
+| Metric | CPU | ROCm | Result |
+|---|---:|---:|---|
+| `nIter` | `199` | `199` | PASS |
+| `dPrimalObj` | `-464.7634630424535` | `-464.7634605703561` | PASS |
+| `dDualObj` | `-464.8342621613099` | `-464.8342273564149` | PASS |
+| `dRelPrimalFeas` | `3.926084712e-05` | `3.927125321e-05` | PASS |
+| `dRelDualFeas` | `5.66716996e-06` | `5.655315e-06` | PASS |
+| `dRelDualityGap` | `7.607918754e-05` | `7.604444646e-05` | PASS |
+
+Generated detailed reports are written under:
+
+```text
+validation/results/latest/
+This directory is ignored by Git because it contains generated validation outputs.
