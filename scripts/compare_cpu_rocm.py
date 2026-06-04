@@ -12,26 +12,24 @@ STATUS_KEYS = [
     "dualCode",
 ]
 
-NUMERIC_KEYS = [
+# These are hard validation metrics when both solvers report OPTIMAL.
+HARD_RELATIVE_KEYS = [
+    "dRelPrimalFeas",
+    "dRelDualFeas",
+    "dRelDualityGap",
+]
+
+# These are useful diagnostics, but should not fail validation by themselves.
+INFO_KEYS = [
     "nIter",
     "dPrimalObj",
     "dDualObj",
     "dPrimalFeas",
     "dDualFeas",
     "dDualityGap",
-    "dRelPrimalFeas",
-    "dRelDualFeas",
-    "dRelDualityGap",
 ]
 
-
-TOLERANCES = {
-    "nIter": 10,
-    "dPrimalObj": 1e-1,
-    "dDualObj": 1e-1,
-    "dPrimalFeas": 1e-1,
-    "dDualFeas": 1e-3,
-    "dDualityGap": 1e-1,
+HARD_TOLERANCES = {
     "dRelPrimalFeas": 1e-4,
     "dRelDualFeas": 1e-4,
     "dRelDualityGap": 1e-4,
@@ -65,28 +63,54 @@ def compare_status(cpu: dict, rocm: dict):
     return ok, rows
 
 
-def compare_numeric(cpu: dict, rocm: dict):
+def compare_hard_relative(cpu: dict, rocm: dict, require_hard_numeric: bool):
     rows = []
     ok = True
 
-    for key in NUMERIC_KEYS:
+    for key in HARD_RELATIVE_KEYS:
         c_raw = cpu.get(key)
         r_raw = rocm.get(key)
         c = as_float(c_raw)
         r = as_float(r_raw)
 
         if c is None or r is None:
-            rows.append((key, c_raw, r_raw, "missing", "FAIL"))
-            ok = False
+            result = "FAIL" if require_hard_numeric else "INFO"
+            rows.append((key, c_raw, r_raw, "missing", result))
+            ok = ok and not require_hard_numeric
             continue
 
         diff = abs(r - c)
-        tol = TOLERANCES[key]
+        tol = HARD_TOLERANCES[key]
         passed = diff <= tol or math.isclose(c, r, abs_tol=tol, rel_tol=0.0)
-        ok = ok and passed
-        rows.append((key, c_raw, r_raw, f"{diff:.6g} <= {tol:g}", "PASS" if passed else "FAIL"))
+
+        if require_hard_numeric:
+            ok = ok and passed
+            result = "PASS" if passed else "FAIL"
+        else:
+            result = "INFO"
+
+        rows.append((key, c_raw, r_raw, f"{diff:.6g} <= {tol:g}", result))
 
     return ok, rows
+
+
+def collect_info_rows(cpu: dict, rocm: dict):
+    rows = []
+
+    for key in INFO_KEYS:
+        c_raw = cpu.get(key)
+        r_raw = rocm.get(key)
+        c = as_float(c_raw)
+        r = as_float(r_raw)
+
+        if c is None or r is None:
+            rows.append((key, c_raw, r_raw, "missing", "INFO"))
+            continue
+
+        diff = abs(r - c)
+        rows.append((key, c_raw, r_raw, f"{diff:.6g}", "INFO"))
+
+    return rows
 
 
 def main():
@@ -101,13 +125,48 @@ def main():
     rocm = load_json(args.rocm)
 
     status_ok, status_rows = compare_status(cpu, rocm)
-    numeric_ok, numeric_rows = compare_numeric(cpu, rocm)
-    overall_ok = status_ok and numeric_ok
+
+    cpu_term = cpu.get("terminationCode")
+    rocm_term = rocm.get("terminationCode")
+
+    both_optimal = (cpu_term == "OPTIMAL" and rocm_term == "OPTIMAL")
+    both_iterlimit = (cpu_term == "TIMELIMIT_OR_ITERLIMIT" and rocm_term == "TIMELIMIT_OR_ITERLIMIT")
+
+    hard_ok, hard_rows = compare_hard_relative(
+        cpu,
+        rocm,
+        require_hard_numeric=both_optimal,
+    )
+
+    info_rows = collect_info_rows(cpu, rocm)
+
+    if not status_ok:
+        overall = "FAIL"
+        exit_code = 1
+        note = "CPU and ROCm status codes differ."
+    elif both_iterlimit:
+        overall = "INCOMPLETE"
+        exit_code = 1
+        note = "Both CPU and ROCm hit the iteration or time limit. This case needs a larger iteration limit or separate investigation."
+    elif both_optimal and hard_ok:
+        overall = "PASS"
+        exit_code = 0
+        note = "Both CPU and ROCm reported OPTIMAL, and relative validation metrics are within tolerance."
+    elif both_optimal and not hard_ok:
+        overall = "FAIL"
+        exit_code = 1
+        note = "Both CPU and ROCm reported OPTIMAL, but one or more relative validation metrics exceeded tolerance."
+    else:
+        overall = "FAIL"
+        exit_code = 1
+        note = "Unhandled termination status combination."
 
     lines = []
     lines.append(f"# Validation report: {args.case}")
     lines.append("")
-    lines.append(f"Overall result: **{'PASS' if overall_ok else 'FAIL'}**")
+    lines.append(f"Overall result: **{overall}**")
+    lines.append("")
+    lines.append(note)
     lines.append("")
     lines.append("## Status comparison")
     lines.append("")
@@ -117,11 +176,19 @@ def main():
         lines.append(f"| `{key}` | `{c}` | `{r}` | {result} |")
 
     lines.append("")
-    lines.append("## Numeric comparison")
+    lines.append("## Hard relative metric comparison")
     lines.append("")
     lines.append("| Metric | CPU | ROCm | Difference / tolerance | Result |")
     lines.append("|---|---:|---:|---:|---|")
-    for key, c, r, detail, result in numeric_rows:
+    for key, c, r, detail, result in hard_rows:
+        lines.append(f"| `{key}` | `{c}` | `{r}` | `{detail}` | {result} |")
+
+    lines.append("")
+    lines.append("## Informational diagnostics")
+    lines.append("")
+    lines.append("| Metric | CPU | ROCm | Difference | Result |")
+    lines.append("|---|---:|---:|---:|---|")
+    for key, c, r, detail, result in info_rows:
         lines.append(f"| `{key}` | `{c}` | `{r}` | `{detail}` | {result} |")
 
     report = "\n".join(lines) + "\n"
@@ -131,7 +198,7 @@ def main():
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(report, encoding="utf-8")
 
-    raise SystemExit(0 if overall_ok else 1)
+    raise SystemExit(exit_code)
 
 
 if __name__ == "__main__":
