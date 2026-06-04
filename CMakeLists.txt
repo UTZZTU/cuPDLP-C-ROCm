@@ -11,6 +11,7 @@ option(BUILD_PYTHON "<BUILD_PYTHON_OR_NOT>" OFF)
 message(NOTICE "-----------------------      cuPDLP-C      ------------------------")
 
 enable_language(C CXX)
+include(CTest)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
@@ -87,4 +88,26 @@ message(NOTICE "-- Sets build PYTHON ${BUILD_PYTHON}")
 if (${BUILD_PYTHON} STREQUAL "ON")
     add_subdirectory("pycupdlp")
 else ()
+endif ()
+
+if (BUILD_TESTING)
+    add_test(
+            NAME rocm_port_hygiene
+            COMMAND ${CMAKE_COMMAND} -E env
+                    bash "${PROJECT_SOURCE_DIR}/scripts/check_rocm_port_hygiene.sh"
+            WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+    )
+
+    if (${BUILD_ROCM} STREQUAL "ON")
+        add_test(
+                NAME rocm_smoke_validation
+                COMMAND ${CMAKE_COMMAND} -E env
+                        CPU_BUILD_DIR=build-ctest-cpu
+                        ROCM_BUILD_DIR=build-ctest-rocm
+                        RESULT_ROOT=validation/results/ctest
+                        ROCM_ARCH=${CMAKE_HIP_ARCHITECTURES}
+                        bash "${PROJECT_SOURCE_DIR}/scripts/run_validation.sh"
+                WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+        )
+    endif ()
 endif ()
