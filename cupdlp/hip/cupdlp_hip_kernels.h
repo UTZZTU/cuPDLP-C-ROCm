@@ -28,7 +28,7 @@ typedef float cupdlp_float;
 
 #endif
 
-static inline hipError_t check_cuda_call(hipError_t status,
+static inline hipError_t check_hip_call(hipError_t status,
                                           const char *filename, int line)
 {
   if (status != hipSuccess) {
@@ -38,7 +38,7 @@ static inline hipError_t check_cuda_call(hipError_t status,
   return status;
 }
 
-static inline hipsparseStatus_t check_cusparse_call(hipsparseStatus_t status,
+static inline hipsparseStatus_t check_hipsparse_call(hipsparseStatus_t status,
                                                    const char *filename, int line)
 {
   if (status != HIPSPARSE_STATUS_SUCCESS) {
@@ -48,7 +48,7 @@ static inline hipsparseStatus_t check_cusparse_call(hipsparseStatus_t status,
   return status;
 }
 
-static inline hipblasStatus_t check_cublas_call(hipblasStatus_t status,
+static inline hipblasStatus_t check_hipblas_call(hipblasStatus_t status,
                                                const char *filename, int line)
 {
   if (status != HIPBLAS_STATUS_SUCCESS) {
@@ -58,7 +58,7 @@ static inline hipblasStatus_t check_cublas_call(hipblasStatus_t status,
   return status;
 }
 
-static inline hipError_t check_cuda_last(const char *filename, int line)
+static inline hipError_t check_hip_last(const char *filename, int line)
 {
   hipError_t status = hipGetLastError();
   if (status != hipSuccess) {
@@ -68,59 +68,59 @@ static inline hipError_t check_cuda_last(const char *filename, int line)
   return status;
 }
 
-#define CHECK_CUDA(res) \
-  { if (check_cuda_call(res, __FILE__, __LINE__) != hipSuccess) \
+#define CHECK_HIP(res) \
+  { if (check_hip_call(res, __FILE__, __LINE__) != hipSuccess) \
       return EXIT_FAILURE; }
 #define CHECK_CUDA_STRICT(res) \
-  { if (check_cuda_call(res, __FILE__, __LINE__) != hipSuccess) \
+  { if (check_hip_call(res, __FILE__, __LINE__) != hipSuccess) \
       exit(EXIT_FAILURE); }
-#define CHECK_CUDA_IGNORE(res) \
-  { check_cuda_call(res, __FILE__, __LINE__); }
+#define CHECK_HIP_IGNORE(res) \
+  { check_hip_call(res, __FILE__, __LINE__); }
 
-#define CHECK_CUSPARSE(res) \
-  { if (check_cusparse_call(res, __FILE__, __LINE__) != HIPSPARSE_STATUS_SUCCESS) \
+#define CHECK_HIPSPARSE(res) \
+  { if (check_hipsparse_call(res, __FILE__, __LINE__) != HIPSPARSE_STATUS_SUCCESS) \
       return EXIT_FAILURE; }
-#define CHECK_CUSPARSE_STRICT(res) \
-  { if (check_cusparse_call(res, __FILE__, __LINE__) != HIPSPARSE_STATUS_SUCCESS) \
+#define CHECK_HIPSPARSE_STRICT(res) \
+  { if (check_hipsparse_call(res, __FILE__, __LINE__) != HIPSPARSE_STATUS_SUCCESS) \
       exit(EXIT_FAILURE); }
-#define CHECK_CUSPARSE_IGNORE(res) \
-  { check_cusparse_call(res, __FILE__, __LINE__); }
+#define CHECK_HIPSPARSE_IGNORE(res) \
+  { check_hipsparse_call(res, __FILE__, __LINE__); }
 
-#define CHECK_CUBLAS(res) \
-  { if (check_cublas_call(res, __FILE__, __LINE__) != HIPBLAS_STATUS_SUCCESS) \
+#define CHECK_HIPBLAS(res) \
+  { if (check_hipblas_call(res, __FILE__, __LINE__) != HIPBLAS_STATUS_SUCCESS) \
       return EXIT_FAILURE; }
-#define CHECK_CUBLAS_STRICT(res) \
-  { if (check_cublas_call(res, __FILE__, __LINE__) != HIPBLAS_STATUS_SUCCESS) \
+#define CHECK_HIPBLAS_STRICT(res) \
+  { if (check_hipblas_call(res, __FILE__, __LINE__) != HIPBLAS_STATUS_SUCCESS) \
       exit(EXIT_FAILURE); }
-#define CHECK_CUBLAS_IGNORE(res) \
-  { check_cublas_call(res, __FILE__, __LINE__); }
+#define CHECK_HIPBLAS_IGNORE(res) \
+  { check_hipblas_call(res, __FILE__, __LINE__); }
 
-#define CHECK_CUDA_LAST() check_cuda_last(__FILE__, __LINE__)
+#define CHECK_HIP_LAST() check_hip_last(__FILE__, __LINE__)
 
 
 #define CUPDLP_FREE_VEC(x) \
-  { check_cuda_call(hipFree(x), __FILE__, __LINE__); x = cupdlp_NULL; }
+  { check_hip_call(hipFree(x), __FILE__, __LINE__); x = cupdlp_NULL; }
 
 #define CUPDLP_COPY_VEC(dst, src, type, size) \
-  check_cuda_call( \
+  check_hip_call( \
     hipMemcpy(dst, src, sizeof(type) * (size), hipMemcpyDefault), \
     __FILE__, __LINE__)
 
 #define CUPDLP_ZERO_VEC(var, type, size) \
-  check_cuda_call( \
+  check_hip_call( \
     hipMemset(var, 0, sizeof(type) * (size)), __FILE__, __LINE__)
 
 #define CUPDLP_INIT_VEC(var, size)                                             \
   {                                                                            \
     hipError_t status = hipMalloc((void **)&var, (size) * sizeof(__typeof__(*var))); \
-    check_cuda_call(status, __FILE__, __LINE__);                               \
+    check_hip_call(status, __FILE__, __LINE__);                               \
     if (status != hipSuccess) goto exit_cleanup;                              \
   }
 
 #define CUPDLP_INIT_ZERO_VEC(var, size)                                         \
   {                                                                            \
     hipError_t status = hipMalloc((void **)&var, (size) * sizeof(__typeof__(*var))); \
-    check_cuda_call(status, __FILE__, __LINE__);                               \
+    check_hip_call(status, __FILE__, __LINE__);                               \
     if (status != hipSuccess) goto exit_cleanup;                              \
     status = hipMemset(var, 0, (size) * sizeof(__typeof__(*var)));            \
     if (status != hipSuccess) goto exit_cleanup;                              \
@@ -238,5 +238,43 @@ __global__ void movement_2_kernel(cupdlp_float * __restrict__ res,
                                   int nRows);
 
 __global__ void sum_kernel(cupdlp_float * __restrict__ res, const cupdlp_float * __restrict__ x, int n);
+
+
+/*
+ * Legacy CUDA-style macro aliases.
+ *
+ * These aliases keep existing host-side call sites working while the ROCm/HIP
+ * port is being cleaned up incrementally. New HIP backend code should prefer
+ * CHECK_HIP, CHECK_HIPSPARSE, and CHECK_HIPBLAS.
+ */
+#ifndef CHECK_CUDA
+#define CHECK_CUDA(res) CHECK_HIP(res)
+#endif
+#ifndef CHECK_CUDA_IGNORE
+#define CHECK_CUDA_IGNORE(res) CHECK_HIP_IGNORE(res)
+#endif
+#ifndef CHECK_CUDA_LAST
+#define CHECK_CUDA_LAST() CHECK_HIP_LAST()
+#endif
+
+#ifndef CHECK_CUSPARSE
+#define CHECK_CUSPARSE(res) CHECK_HIPSPARSE(res)
+#endif
+#ifndef CHECK_CUSPARSE_STRICT
+#define CHECK_CUSPARSE_STRICT(res) CHECK_HIPSPARSE_STRICT(res)
+#endif
+#ifndef CHECK_CUSPARSE_IGNORE
+#define CHECK_CUSPARSE_IGNORE(res) CHECK_HIPSPARSE_IGNORE(res)
+#endif
+
+#ifndef CHECK_CUBLAS
+#define CHECK_CUBLAS(res) CHECK_HIPBLAS(res)
+#endif
+#ifndef CHECK_CUBLAS_STRICT
+#define CHECK_CUBLAS_STRICT(res) CHECK_HIPBLAS_STRICT(res)
+#endif
+#ifndef CHECK_CUBLAS_IGNORE
+#define CHECK_CUBLAS_IGNORE(res) CHECK_HIPBLAS_IGNORE(res)
+#endif
 
 #endif
