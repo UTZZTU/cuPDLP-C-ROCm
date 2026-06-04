@@ -18,7 +18,7 @@ if (${BUILD_HIP} STREQUAL "ON")
             -DCUPDLP_USE_HIP=1
             -D__HIP_PLATFORM_AMD__=1
     )
-elseif (${CUDA_LIBRARY-NOTFOUND})
+elseif (NOT CUPDLP_USE_LEGACY_CUDA)
     message(NOTICE "- CPU version PDLP")
     target_compile_definitions(wrapper_lp
             PUBLIC
@@ -55,7 +55,7 @@ if (${BUILD_HIP} STREQUAL "ON")
             -DCUPDLP_USE_HIP=1
             -D__HIP_PLATFORM_AMD__=1
     )
-elseif (${CUDA_LIBRARY-NOTFOUND})
+elseif (NOT CUPDLP_USE_LEGACY_CUDA)
     message(NOTICE "- CPU version PDLP")
     target_compile_definitions(wrapper_highs
             PUBLIC
@@ -102,7 +102,7 @@ if (${BUILD_HIP} STREQUAL "ON")
             roc::hipsparse
             m
     )
-elseif (${CUDA_LIBRARY-NOTFOUND})
+elseif (NOT CUPDLP_USE_LEGACY_CUDA)
     target_link_libraries(plc PRIVATE cupdlp m)
 else ()
     target_link_libraries(plc PRIVATE cupdlp ${CUDA_LIBRARY} m)
@@ -114,7 +114,7 @@ if (${BUILD_HIP} STREQUAL "ON")
             COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${CMAKE_BINARY_DIR}/bin/plc" "${CMAKE_BINARY_DIR}/bin/plcrocm"
             DEPENDS plc plc
     )
-elseif (${CUDA_LIBRARY-NOTFOUND})
+elseif (NOT CUPDLP_USE_LEGACY_CUDA)
     add_custom_target(
             deploy
             COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${CMAKE_BINARY_DIR}/bin/plc" "${CMAKE_BINARY_DIR}/bin/plccpu"

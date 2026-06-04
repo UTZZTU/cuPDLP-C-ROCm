@@ -35,6 +35,10 @@ message(NOTICE "--------------------- cuPDLP CPU/GPU CONFIG --------------------
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
+# Internal selector for the legacy CUDA backend.
+# CPU and ROCm/HIP builds keep this OFF.
+set(CUPDLP_USE_LEGACY_CUDA OFF)
+
 # BUILD_HIP is kept as a legacy compatibility alias.
 # New ROCm builds should prefer BUILD_ROCM=ON.
 if (BUILD_HIP AND NOT BUILD_ROCM)
@@ -56,6 +60,7 @@ message(NOTICE "-- Sets build with ROCm/HIP backend ${BUILD_HIP}")
 
 if (BUILD_CUDA)
     include(FindCUDAConf.cmake)
+    set(CUPDLP_USE_LEGACY_CUDA ON)
 elseif (BUILD_ROCM)
     enable_language(HIP)
 
@@ -66,9 +71,7 @@ elseif (BUILD_ROCM)
     find_package(hipsparse REQUIRED CONFIG)
 
     set(CMAKE_HIP_ARCHITECTURES gfx1150 CACHE STRING "AMD GPU architecture")
-    set(CUDA_LIBRARY-NOTFOUND true)
 else ()
-    set(CUDA_LIBRARY-NOTFOUND true)
 endif ()
 
 add_subdirectory(cupdlp)
@@ -84,5 +87,4 @@ message(NOTICE "-- Sets build PYTHON ${BUILD_PYTHON}")
 if (${BUILD_PYTHON} STREQUAL "ON")
     add_subdirectory("pycupdlp")
 else ()
-    set(CUDA_LIBRARY-NOTFOUND true)
 endif ()

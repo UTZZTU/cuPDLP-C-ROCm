@@ -43,7 +43,7 @@ if (${BUILD_HIP} STREQUAL "ON")
             m
     )
 
-elseif (${CUDA_LIBRARY-NOTFOUND})
+elseif (NOT CUPDLP_USE_LEGACY_CUDA)
     message(NOTICE "- CPU version PDLP")
 
     target_compile_definitions(cupdlp
