@@ -224,6 +224,22 @@ CUDA_R_64F      -> HIP_R_64F
 
 Some CUDA helper functions did not have a direct HIP equivalent. For example, `cublasGetStatusString(status)` was not directly converted. It was replaced with a simpler HIP-side error message.
 
+## Migration helper scripts
+
+Some project-level changes were applied through small helper scripts stored under:
+
+```text
+tools/migration/
+
+These scripts document the mechanical parts of the migration, such as:
+
+cleaning user-visible CUDA wording in the HIP backend
+fixing ROCm/HIP include selection
+adding BUILD_ROCM=ON while keeping BUILD_HIP=ON as a compatibility alias
+updating documentation to prefer the ROCm build option
+
+They are not required for normal users building the project. They are kept to make the porting process easier to audit and reproduce.
+
 ## 8. CMake integration
 
 A new CMake option was added:
