@@ -1,219 +1,444 @@
-# Validation Plan
+# ROCm validation
 
-This document records the validation plan for the ROCm/HIP port of cuPDLP-C.
+This document describes how this repository validates the ROCm/HIP port of cuPDLP-C against the CPU baseline.
 
-The current verified milestone is:
+The current verified ROCm target is:
 
-- Platform: AMD Radeon 890M / gfx1150
-- ROCm: 7.2.1
-- Example: `example/afiro.mps`
-- Result: `terminationCode = OPTIMAL`
+| Item | Value |
+|---|---|
+| GPU/APU | AMD Radeon 890M |
+| Architecture | `gfx1150` |
+| ROCm | 7.2.1 |
+| HIP compiler | ROCm Clang 22.0.0 |
+| Solver executable | `build-rocm-plc/bin/plc` |
+| CPU baseline executable | `build-cpu/bin/plc` |
 
 ## Validation goals
 
-The goal is to verify that the ROCm/HIP version produces numerically reasonable results compared with the CPU version.
+The validation workflow checks whether the ROCm/HIP backend produces numerically reasonable results compared with the CPU backend.
 
-The CPU version is used as the baseline because it is easier to debug and does not depend on GPU runtime behavior.
+The CPU backend is used as the baseline because it does not depend on GPU runtime behavior and is easier to debug.
 
-## Current verified case
+The goal is not bitwise equality. CPU and ROCm/HIP runs may follow slightly different floating-point trajectories because of:
 
-| Case | Backend | Iteration limit | Status | Notes |
-|---|---|---:|---|---|
-| `example/afiro.mps` | CPU | 200 | PASS | Baseline run completed |
-| `example/afiro.mps` | ROCm/HIP gfx1150 | 200 | PASS | `terminationCode = OPTIMAL` |
+- different BLAS and sparse libraries,
+- different sparse matrix-vector multiplication order,
+- different reduction order,
+- different restart trajectories,
+- different kernel launch and synchronization behavior.
 
-## Metrics to compare
-
-For each test case, compare:
-
-- `terminationCode`
-- `primalCode`
-- `dualCode`
-- `nIter`
-- `dPrimalObj`
-- `dDualObj`
-- `dPrimalFeas`
-- `dDualFeas`
-- `dDualityGap`
-- `dRelPrimalFeas`
-- `dRelDualFeas`
-- `dRelDualityGap`
-- `dSolvingTime`
-
-## Numerical tolerance policy
-
-CPU and ROCm/HIP results are not expected to be bitwise identical.
-
-Differences may come from:
-
-- different BLAS/SPARSE implementations
-- different floating-point reduction order
-- different GPU architecture behavior
-- different sparse matrix-vector execution order
-
-Validation should use tolerances instead of exact equality.
-
-Initial suggested tolerances:
-
-| Metric type | Suggested tolerance |
-|---|---:|
-| Objective value absolute difference | `1e-3` to `1e-2` |
-| Relative feasibility difference | `1e-4` |
-| Relative duality gap difference | `1e-4` |
-| Termination status | must match or be explainable |
-
-These tolerances are initial engineering values and should be refined as more cases are tested.
-
-## Planned validation cases
-
-Small cases:
-
-- `example/afiro.mps`
-- additional small Netlib LP cases
-
-Medium cases:
-
-- TBD
-
-Large cases:
-
-- TBD
-
-Stress cases:
-
-- infeasible LP
-- unbounded LP
-- badly scaled LP
-- sparse large LP
-- dense-ish LP
-
-## Validation workflow
-
-Recommended workflow:
-
-```bash
-# CPU baseline
-./build-cpu/bin/plc \
-  -fname ./example/afiro.mps \
-  -out /tmp/afiro_cpu_sum.json \
-  -nIterLim 200
-
-# ROCm/HIP run
-./build-rocm-plc/bin/plc \
-  -fname ./example/afiro.mps \
-  -out /tmp/afiro_hip_sum.json \
-  -nIterLim 200
-
-A comparison script should later be added under:
-
-scripts/compare_cpu_rocm.py
-
-# TODO
-
-Add scripts/compare_cpu_rocm.py
-Add scripts/run_validation.sh
-Add more MPS test cases
-Record CPU vs ROCm result tables
-Add validation results for other ROCm-supported GPUs
-
-## Current validation result
-
-Latest verified case:
-
-| Case | CPU status | ROCm status | Result |
-|---|---|---|---|
-| `example/afiro.mps` | `OPTIMAL` | `OPTIMAL` | PASS |
-
-For `afiro.mps` with `nIterLim=200`, CPU and ROCm results match within the current validation tolerances.
-
-Key comparison:
-
-| Metric | CPU | ROCm | Result |
-|---|---:|---:|---|
-| `nIter` | `199` | `199` | PASS |
-| `dPrimalObj` | `-464.7634630424535` | `-464.7634605703561` | PASS |
-| `dDualObj` | `-464.8342621613099` | `-464.8342273564149` | PASS |
-| `dRelPrimalFeas` | `3.926084712e-05` | `3.927125321e-05` | PASS |
-| `dRelDualFeas` | `5.66716996e-06` | `5.655315e-06` | PASS |
-| `dRelDualityGap` | `7.607918754e-05` | `7.604444646e-05` | PASS |
-
-Generated detailed reports are written under:
+The validation goal is therefore:
 
 ```text
-validation/results/latest/
-This directory is ignored by Git because it contains generated validation outputs.
+same solver status + comparable relative feasibility and gap metrics
+```
 
 ## Validation levels
 
-This project currently uses two validation levels.
+This project currently uses two validation levels:
 
-### Smoke validation
+1. Smoke validation
+2. Extended Netlib validation
+
+Smoke validation is the default required check before changing ROCm/HIP backend code.
+
+Extended validation is used to broaden coverage with additional small Netlib LP cases.
+
+## Smoke validation
 
 Smoke validation is the default workflow:
 
 ```bash
 ./scripts/run_validation.sh
+```
+
+Current smoke cases are listed in:
+
+```text
+validation/cases.txt
+```
 
 Current smoke cases:
 
-Case	Backend comparison	Result
-example/afiro.mps	CPU vs ROCm	PASS
-validation/netlib/sc50b.mps	CPU vs ROCm	PASS
+| Case | MPS path | Iteration limit | Result |
+|---|---|---:|---|
+| `afiro` | `example/afiro.mps` | 200 | PASS |
+| `sc50b` | `validation/netlib/sc50b.mps` | 5000 | PASS |
 
-Smoke validation must pass before changing ROCm/HIP backend code.
+Expected summary:
 
-Extended Netlib validation
+```text
+PASS: 2
+INCOMPLETE: 0
+FAIL: 0
+```
 
-Extended validation uses additional small Netlib LP cases prepared through scripts/prepare_netlib_cases.sh.
+Smoke validation writes generated reports under:
 
-Run extended validation with:
+```text
+validation/results/latest/
+```
 
-RESULT_ROOT=validation/results/extended_netlib ./scripts/run_validation.sh validation/cases_extended_netlib.txt
+This directory is generated output and is ignored by Git.
 
-Current extended status:
+## Full ROCm port check
 
-Case	Result	Notes
-afiro	PASS	Baseline example
-adlittle	PASS	Relative validation metrics pass
-blend	PASS	Relative validation metrics pass
-sc50a	PASS	Relative validation metrics pass
-sc50b	PASS	Smoke + extended case
-share2b	INCOMPLETE	Hits iteration/time limit at current settings
-Comparison semantics
+The recommended local check is:
 
-The validation comparison script treats solver status codes as hard checks.
+```bash
+./scripts/check_rocm_port.sh
+```
 
-When both CPU and ROCm report OPTIMAL, the main hard numeric checks are:
+This runs:
 
-dRelPrimalFeas
-dRelDualFeas
-dRelDualityGap
+1. `scripts/check_rocm_port_hygiene.sh`
+2. `scripts/run_validation.sh`
 
-The following fields are recorded as diagnostics and are not hard failure criteria by themselves:
+Use this command before pushing ROCm/HIP backend or validation changes.
 
-nIter
-dPrimalObj
-dDualObj
-dPrimalFeas
-dDualFeas
-dDualityGap
+## ROCm hygiene checks
 
-This is intentional because CPU and ROCm runs can follow slightly different floating-point trajectories while still reaching equivalent relative feasibility and gap criteria
+The hygiene check script is:
+
+```bash
+./scripts/check_rocm_port_hygiene.sh
+```
+
+It checks guardrails such as:
+
+- HIP backend `.cpp` files should not reintroduce direct `CHECK_CUDA`, `CHECK_CUSPARSE`, or `CHECK_CUBLAS` calls.
+- CMake files should not reintroduce `plchip`.
+- CMake files should not reintroduce the old misleading `CUDA_LIBRARY-NOTFOUND` flag.
+- Required HIP check macros such as `CHECK_HIP_STRICT` must remain present.
+- Legacy exported compatibility symbols such as `cuda_csr_Ax`, `cuda_csc_ATy`, and `cuda_alloc_MVbuffer` must remain present until the C/HIP boundary is refactored safely.
+
+These checks are intentionally conservative. Some CUDA-style names are still kept because they are compatibility symbols used across C and HIP/C++ boundaries.
+
+## Extended Netlib validation
+
+Extended validation uses additional small Netlib LP cases prepared by:
+
+```bash
+./scripts/prepare_netlib_cases.sh
+```
+
+Then run:
+
+```bash
+RESULT_ROOT=validation/results/extended_netlib \
+  ./scripts/run_validation.sh validation/cases_extended_netlib.txt
+```
+
+Current extended cases are listed in:
+
+```text
+validation/cases_extended_netlib.txt
+```
+
+Current extended validation status:
+
+| Case | MPS path | Iteration limit | Result | Notes |
+|---|---|---:|---|---|
+| `afiro` | `example/afiro.mps` | 200 | PASS | Baseline example |
+| `adlittle` | `validation/netlib/adlittle.mps` | 5000 | PASS | Relative validation metrics pass |
+| `blend` | `validation/netlib/blend.mps` | 5000 | PASS | Relative validation metrics pass |
+| `sc50a` | `validation/netlib/sc50a.mps` | 5000 | PASS | Relative validation metrics pass |
+| `sc50b` | `validation/netlib/sc50b.mps` | 5000 | PASS | Smoke + extended case |
+| `share2b` | `validation/netlib/share2b.mps` | 5000 | INCOMPLETE | Hits iteration/time limit at current settings |
+
+Expected extended summary:
+
+```text
+PASS: 5
+INCOMPLETE: 1
+FAIL: 0
+```
+
+`INCOMPLETE` is not treated as a ROCm port failure when both CPU and ROCm hit the current iteration or time limit consistently.
+
+## Preparing Netlib cases
+
+Some Netlib LP cases are distributed in compressed MPS format. This project uses:
+
+```bash
+./scripts/prepare_netlib_cases.sh
+```
+
+This script prepares the local Netlib validation inputs under:
+
+```text
+validation/netlib/
+validation/netlib_compressed/
+```
+
+These directories are generated outputs and are ignored by Git.
+
+The helper tool:
+
+```text
+tools/emps
+tools/emps.c
+```
+
+is also generated or downloaded locally and ignored by Git.
+
+## Comparison script
+
+The comparison script is:
+
+```bash
+scripts/compare_cpu_rocm.py
+```
+
+It reads CPU and ROCm JSON output files and generates a Markdown comparison report.
+
+The report includes:
+
+- status comparison,
+- hard relative metric comparison,
+- informational diagnostics.
+
+## Status comparison
+
+The following status fields are hard checks:
+
+| Field | Meaning |
+|---|---|
+| `terminationCode` | Solver termination status |
+| `primalCode` | Primal feasibility status |
+| `dualCode` | Dual feasibility status |
+
+CPU and ROCm status codes must match for a PASS result.
+
+## Hard numeric checks
+
+When both CPU and ROCm report:
+
+```text
+terminationCode = OPTIMAL
+```
+
+the hard numeric checks are:
+
+| Metric | Tolerance |
+|---|---:|
+| `dRelPrimalFeas` | `1e-4` |
+| `dRelDualFeas` | `1e-4` |
+| `dRelDualityGap` | `1e-4` |
+
+These metrics are used because they are relative measures of feasibility and gap, and are more robust across CPU and GPU execution paths than raw absolute objective differences.
+
+## Informational diagnostics
+
+The following fields are recorded in reports but are not hard failure criteria by themselves:
+
+| Field | Reason |
+|---|---|
+| `nIter` | CPU and ROCm may follow different restart or floating-point trajectories |
+| `dPrimalObj` | Absolute objective differences can be scale-dependent |
+| `dDualObj` | Absolute objective differences can be scale-dependent |
+| `dPrimalFeas` | Absolute feasibility can be scale-dependent |
+| `dDualFeas` | Absolute feasibility can be scale-dependent |
+| `dDualityGap` | Absolute gap can be scale-dependent |
+
+This is intentional. A CPU and ROCm run can differ in iteration count or absolute intermediate values while still reaching equivalent relative feasibility and gap criteria.
+
+## PASS, INCOMPLETE, and FAIL
+
+### PASS
+
+A case is PASS when:
+
+- status fields match,
+- both CPU and ROCm report `OPTIMAL`,
+- hard relative metrics are within tolerance.
+
+### INCOMPLETE
+
+A case is INCOMPLETE when:
+
+- CPU and ROCm both hit the current iteration or time limit,
+- the case therefore needs a larger iteration limit or separate investigation,
+- the result does not indicate a ROCm-specific correctness failure.
+
+Current example:
+
+```text
+share2b
+```
+
+### FAIL
+
+A case is FAIL when:
+
+- CPU and ROCm status codes differ,
+- or both report `OPTIMAL` but hard relative metrics exceed tolerance,
+- or an unhandled status combination appears.
+
+FAIL means the case needs investigation before the ROCm/HIP backend can be considered validated for that case.
 
 ## CTest integration
 
-The ROCm port checks are also registered with CTest when the project is configured with `BUILD_TESTING=ON`.
+ROCm validation is registered with CTest when configuring with:
 
-Example:
+```bash
+-DBUILD_TESTING=ON
+```
+
+Configure example:
+
+```bash
+cmake -S . -B build-rocm-plc -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_CUDA=OFF \
+  -DBUILD_ROCM=ON \
+  -DBUILD_APPS=OFF \
+  -DBUILD_PYTHON=OFF \
+  -DBUILD_TESTING=ON \
+  -DCMAKE_PREFIX_PATH=/opt/rocm \
+  -DCMAKE_HIP_ARCHITECTURES=gfx1150
+```
+
+List tests:
+
+```bash
+ctest --test-dir build-rocm-plc -N
+```
+
+Run tests:
 
 ```bash
 ctest --test-dir build-rocm-plc --output-on-failure
+```
 
 Current registered tests:
 
-Test	Purpose	Expected result
-rocm_port_hygiene	Checks ROCm/HIP naming and compatibility guardrails	PASS
-rocm_smoke_validation	Runs CPU-vs-ROCm smoke validation	PASS
+| Test | Purpose | Expected result |
+|---|---|---|
+| `rocm_port_hygiene` | Checks ROCm/HIP naming and compatibility guardrails | PASS |
+| `rocm_smoke_validation` | Runs CPU-vs-ROCm smoke validation | PASS |
 
-CTest is the recommended standard entry point after configuring a ROCm build tree.
+CTest is the preferred standard validation entry point after configuring a ROCm build tree.
 
+## Manual validation commands
+
+The scripts automate validation, but the underlying manual commands are useful for debugging.
+
+Build CPU:
+
+```bash
+cmake -S . -B build-cpu -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_CUDA=OFF \
+  -DBUILD_ROCM=OFF \
+  -DBUILD_HIP=OFF \
+  -DBUILD_APPS=OFF \
+  -DBUILD_PYTHON=OFF
+
+cmake --build build-cpu --target plc -j"$(nproc)"
+```
+
+Build ROCm/HIP:
+
+```bash
+cmake -S . -B build-rocm-plc -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_CUDA=OFF \
+  -DBUILD_ROCM=ON \
+  -DBUILD_APPS=OFF \
+  -DBUILD_PYTHON=OFF \
+  -DBUILD_TESTING=ON \
+  -DCMAKE_PREFIX_PATH=/opt/rocm \
+  -DCMAKE_HIP_ARCHITECTURES=gfx1150
+
+cmake --build build-rocm-plc --target plc -j"$(nproc)"
+```
+
+Run CPU:
+
+```bash
+./build-cpu/bin/plc \
+  -fname ./example/afiro.mps \
+  -out /tmp/afiro_cpu_sum.json \
+  -nIterLim 200
+```
+
+Run ROCm/HIP:
+
+```bash
+./build-rocm-plc/bin/plc \
+  -fname ./example/afiro.mps \
+  -out /tmp/afiro_rocm_sum.json \
+  -nIterLim 200
+```
+
+Compare outputs:
+
+```bash
+scripts/compare_cpu_rocm.py \
+  --case afiro \
+  --cpu /tmp/afiro_cpu_sum.json \
+  --rocm /tmp/afiro_rocm_sum.json \
+  --out /tmp/afiro_compare.md
+```
+
+## Generated validation files
+
+Validation scripts generate files under:
+
+```text
+validation/results/
+```
+
+Netlib preparation generates files under:
+
+```text
+validation/netlib/
+validation/netlib_compressed/
+tools/emps
+tools/emps.c
+```
+
+These are intentionally ignored by Git.
+
+Only source scripts, case lists, and documentation should be committed.
+
+## Recommended workflow before pushing
+
+Run:
+
+```bash
+./scripts/check_rocm_port.sh
+ctest --test-dir build-rocm-plc --output-on-failure
+```
+
+Then confirm no generated files are staged:
+
+```bash
+git status --short
+git status --ignored --short | grep -E 'validation/results|validation/netlib|validation/netlib_compressed|tools/emps' || true
+```
+
+## Current limitations
+
+The current validation status should be read with the following limitations:
+
+- The tested matrix is still small.
+- Larger LP problems are not yet validated.
+- `share2b` remains INCOMPLETE at the current iteration/time limit.
+- No CI runner is currently available for ROCm validation.
+- The current ROCm/HIP backend is verified on `gfx1150`; other AMD GPU/APU architectures require separate validation.
+- Some legacy CUDA-style names remain intentionally for compatibility across C and HIP/C++ boundaries.
+
+## Future validation work
+
+Planned validation improvements:
+
+- Add more Netlib LP cases.
+- Add larger sparse LP cases.
+- Add infeasible and unbounded LP cases.
+- Add badly scaled cases.
+- Record periodic validation result snapshots.
+- Add ROCm CI when a suitable runner is available.
+- Validate additional ROCm architectures beyond `gfx1150`.
+- Add performance regression checks once profiling and tuning are more mature.
