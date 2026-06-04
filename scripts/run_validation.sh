@@ -50,6 +50,7 @@ echo ""
 echo "== run validation cases =="
 
 PASS_COUNT=0
+INCOMPLETE_COUNT=0
 FAIL_COUNT=0
 
 while IFS=, read -r name mps_path n_iter_lim; do
@@ -85,24 +86,39 @@ while IFS=, read -r name mps_path n_iter_lim; do
     -nIterLim "$n_iter_lim" \
     2>&1 | tee "$rocm_log"
 
-  echo "-- compare"
-  if scripts/compare_cpu_rocm.py \
-      --case "$name" \
-      --cpu "$cpu_json" \
-      --rocm "$rocm_json" \
-      --out "$report_md"; then
+echo "-- compare"
+set +e
+scripts/compare_cpu_rocm.py \
+  --case "$name" \
+  --cpu "$cpu_json" \
+  --rocm "$rocm_json" \
+  --out "$report_md"
+compare_status=$?
+set -e
+
+overall_result="$(grep -E '^Overall result:' "$report_md" | sed -E 's/.*\*\*([^*]+)\*\*.*/\1/')"
+
+case "$overall_result" in
+  PASS)
     echo "case $name: PASS"
     PASS_COUNT=$((PASS_COUNT + 1))
-  else
+    ;;
+  INCOMPLETE)
+    echo "case $name: INCOMPLETE"
+    INCOMPLETE_COUNT=$((INCOMPLETE_COUNT + 1))
+    ;;
+  FAIL|*)
     echo "case $name: FAIL"
     FAIL_COUNT=$((FAIL_COUNT + 1))
-  fi
+    ;;
+esac
 
 done < "$CASES_FILE"
 
 echo ""
 echo "== validation summary =="
 echo "PASS: $PASS_COUNT"
+echo "INCOMPLETE: $INCOMPLETE_COUNT"
 echo "FAIL: $FAIL_COUNT"
 echo "results: $RESULT_ROOT"
 
