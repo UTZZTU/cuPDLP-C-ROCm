@@ -4,7 +4,7 @@ project(CUPDLP VERSION 0.0.1)
 
 option(BUILD_CUDA "<BUILD_CUDA_OR_NOT>" OFF)
 option(BUILD_ROCM "<BUILD_ROCM_OR_NOT>" OFF)
-option(BUILD_HIP "<BUILD_HIP_OR_NOT_LEGACY_ALIAS>" OFF)
+option(BUILD_HIP "<LEGACY_ALIAS_FOR_BUILD_ROCM>" OFF)
 option(BUILD_APPS "<BUILD_APPS_OR_NOT>" OFF)
 option(BUILD_PYTHON "<BUILD_PYTHON_OR_NOT>" OFF)
 
@@ -43,7 +43,7 @@ if (BUILD_HIP AND NOT BUILD_ROCM)
 endif ()
 
 if (BUILD_ROCM)
-    set(BUILD_HIP ON CACHE BOOL "Enable HIP backend implementation for ROCm" FORCE)
+    set(BUILD_HIP ON CACHE BOOL "Enable ROCm/HIP backend implementation" FORCE)
 endif ()
 
 if (BUILD_CUDA AND BUILD_ROCM)
@@ -52,7 +52,7 @@ endif ()
 
 message(NOTICE "-- Sets build with CUDA ${BUILD_CUDA}")
 message(NOTICE "-- Sets build with ROCm ${BUILD_ROCM}")
-message(NOTICE "-- Sets build with HIP backend ${BUILD_HIP}")
+message(NOTICE "-- Sets build with ROCm/HIP backend ${BUILD_HIP}")
 
 if (BUILD_CUDA)
     include(FindCUDAConf.cmake)

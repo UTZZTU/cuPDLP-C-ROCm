@@ -21,7 +21,7 @@ target_compile_definitions(cupdlp
 if (${BUILD_HIP} STREQUAL "ON")
     add_subdirectory(hip)
 
-    message(NOTICE "- HIP version PDLP")
+    message(NOTICE "- ROCm/HIP version PDLP")
 
     target_compile_definitions(cupdlp
             PUBLIC

@@ -12,7 +12,7 @@ target_link_libraries(
 )
 
 if (${BUILD_HIP} STREQUAL "ON")
-    message(NOTICE "- HIP version PDLP")
+    message(NOTICE "- ROCm/HIP version PDLP")
     target_compile_definitions(wrapper_lp
             PUBLIC
             -DCUPDLP_USE_HIP=1
@@ -49,7 +49,7 @@ target_link_libraries(
 )
 
 if (${BUILD_HIP} STREQUAL "ON")
-    message(NOTICE "- HIP version PDLP")
+    message(NOTICE "- ROCm/HIP version PDLP")
     target_compile_definitions(wrapper_highs
             PUBLIC
             -DCUPDLP_USE_HIP=1
