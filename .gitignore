@@ -39,3 +39,6 @@ validation/netlib/
 validation/netlib_compressed/
 tools/emps
 tools/emps.c
+
+# ROCm profiling outputs
+profiling/results/
