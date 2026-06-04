@@ -142,3 +142,60 @@ Generated detailed reports are written under:
 ```text
 validation/results/latest/
 This directory is ignored by Git because it contains generated validation outputs.
+
+## Validation levels
+
+This project currently uses two validation levels.
+
+### Smoke validation
+
+Smoke validation is the default workflow:
+
+```bash
+./scripts/run_validation.sh
+
+Current smoke cases:
+
+Case	Backend comparison	Result
+example/afiro.mps	CPU vs ROCm	PASS
+validation/netlib/sc50b.mps	CPU vs ROCm	PASS
+
+Smoke validation must pass before changing ROCm/HIP backend code.
+
+Extended Netlib validation
+
+Extended validation uses additional small Netlib LP cases prepared through scripts/prepare_netlib_cases.sh.
+
+Run extended validation with:
+
+RESULT_ROOT=validation/results/extended_netlib ./scripts/run_validation.sh validation/cases_extended_netlib.txt
+
+Current extended status:
+
+Case	Result	Notes
+afiro	PASS	Baseline example
+adlittle	PASS	Relative validation metrics pass
+blend	PASS	Relative validation metrics pass
+sc50a	PASS	Relative validation metrics pass
+sc50b	PASS	Smoke + extended case
+share2b	INCOMPLETE	Hits iteration/time limit at current settings
+Comparison semantics
+
+The validation comparison script treats solver status codes as hard checks.
+
+When both CPU and ROCm report OPTIMAL, the main hard numeric checks are:
+
+dRelPrimalFeas
+dRelDualFeas
+dRelDualityGap
+
+The following fields are recorded as diagnostics and are not hard failure criteria by themselves:
+
+nIter
+dPrimalObj
+dDualObj
+dPrimalFeas
+dDualFeas
+dDualityGap
+
+This is intentional because CPU and ROCm runs can follow slightly different floating-point trajectories while still reaching equivalent relative feasibility and gap criteria
