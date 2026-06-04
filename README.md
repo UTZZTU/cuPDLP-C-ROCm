@@ -1,63 +1,110 @@
 # cuPDLP-C-ROCm
 
-A ROCm/HIP port of **cuPDLP-C**, currently verified on **AMD Radeon 890M / gfx1150**.
+A ROCm/HIP port of **cuPDLP-C** for AMD GPUs/APUs.
 
-This repository is based on the original CUDA-oriented cuPDLP-C project. The goal of this fork is to provide a ROCm-focused version with two main build paths:
+This fork keeps the original CPU path and adds a ROCm/HIP accelerated backend. The current working target is **AMD Radeon 890M / gfx1150** with **ROCm 7.2.1**.
 
-* CPU-only PDLP
-* ROCm/HIP accelerated PDLP
+> Status: experimental but buildable and validated on smoke cases. This is not yet a fully tuned or broadly certified ROCm solver release.
 
-The first working ROCm milestone has been validated on `example/afiro.mps`.
+## What this repository provides
+
+- CPU-only cuPDLP-C build path.
+- ROCm/HIP backend built from migrated CUDA backend code.
+- `plc` executable linked against the ROCm/HIP backend.
+- CPU-vs-ROCm smoke validation scripts.
+- Extended Netlib validation cases.
+- CTest integration for ROCm port checks.
+- Initial `rocprofv3` profiling workflow for gfx1150.
+- Documentation for migration, validation, and tuning.
 
 ## Current status
 
-This project is currently an experimental ROCm/HIP port.
+### Working
 
-Verified so far:
+- Builds successfully with ROCm 7.2.1.
+- Builds the ROCm/HIP backend library.
+- Links against HIP runtime, hipBLAS, hipSPARSE, rocBLAS, and rocSPARSE.
+- Builds the `plc` executable.
+- Runs CPU-vs-ROCm smoke validation.
+- Registers ROCm checks through CTest.
+- Runs initial `rocprofv3` profiling on smoke cases.
 
-* Builds successfully with ROCm 7.2.1.
-* Builds a ROCm/HIP backend library.
-* Links against HIP runtime, hipBLAS, hipSPARSE, rocBLAS, and rocSPARSE.
-* Builds the `plc` executable.
-* Runs `example/afiro.mps` successfully on AMD Radeon 890M / gfx1150.
-* Produces `terminationCode = OPTIMAL` for the validated `afiro.mps` run.
+### Validated cases
 
-Not yet complete:
+Smoke validation currently passes:
 
-* Only `example/afiro.mps` has been validated so far.
-* Larger LP instances still need to be tested.
-* Some internal names still use legacy CUDA-style naming.
-* User-visible logs may still contain some legacy CUDA wording.
-* No broad CPU-vs-ROCm validation matrix has been added yet.
-* No ROCm CI workflow has been added yet.
-* No performance tuning has been performed for gfx1150 yet.
+| Case | Source | ROCm result |
+|---|---|---|
+| `afiro` | `example/afiro.mps` | PASS |
+| `sc50b` | `validation/netlib/sc50b.mps` | PASS |
+
+Extended Netlib validation currently reports:
+
+| Case | Result | Notes |
+|---|---|---|
+| `afiro` | PASS | Baseline example |
+| `adlittle` | PASS | Relative validation metrics pass |
+| `blend` | PASS | Relative validation metrics pass |
+| `sc50a` | PASS | Relative validation metrics pass |
+| `sc50b` | PASS | Smoke + extended case |
+| `share2b` | INCOMPLETE | Hits current iteration/time limit; not treated as a ROCm port failure |
+
+See [`docs/VALIDATION.md`](docs/VALIDATION.md) for validation semantics.
+
+### Still incomplete
+
+- Only a small validation matrix has been exercised so far.
+- Larger LP instances still need to be tested.
+- No ROCm CI workflow has been added yet.
+- The ROCm/HIP backend has not been performance tuned yet.
+- Some internal symbols still use legacy CUDA-style names for compatibility across C and HIP/C++ boundaries.
+- The legacy CUDA backend is still present for upstream reference and future cleanup.
 
 ## Tested environment
 
-The first working ROCm/HIP milestone was tested with:
+The current ROCm/HIP milestone was tested with:
 
-* OS: Ubuntu 24.04.4
-* ROCm: 7.2.1
-* HIP compiler: ROCm Clang 22.0.0
-* GPU/APU: AMD Radeon 890M
-* GPU architecture: `gfx1150`
-* HiGHS: 1.6.0
-* Build system: CMake + Ninja
+| Component | Version / value |
+|---|---|
+| OS | Ubuntu 24.04.x |
+| ROCm | 7.2.1 |
+| HIP compiler | ROCm Clang 22.0.0 |
+| GPU/APU | AMD Radeon 890M |
+| GPU architecture | `gfx1150` |
+| HiGHS | 1.6.0 |
+| Build system | CMake + Ninja |
 
 ## Repository layout
 
 Important ROCm-related files and directories:
 
 ```text
-cupdlp/hip/                 ROCm/HIP backend source files
-CMakeLists.txt              Top-level build options, including BUILD_ROCM
-cupdlp/CMakeLists.txt       cuPDLP core library build logic
-interface/CMakeLists.txt    plc executable and HiGHS wrapper build logic
-README_UPSTREAM.md          Original upstream README backup
-docs/                       ROCm porting, validation, and tuning notes
+cupdlp/hip/                         ROCm/HIP backend source files
+scripts/check_rocm_port.sh           Full local ROCm port check
+scripts/check_rocm_port_hygiene.sh   ROCm/HIP naming and compatibility guardrails
+scripts/run_validation.sh            CPU-vs-ROCm validation runner
+scripts/profile_rocm_smoke.sh        ROCm profiling smoke workflow
+scripts/prepare_netlib_cases.sh      Netlib compressed MPS preparation helper
+validation/cases.txt                 Default smoke validation case list
+validation/cases_extended_netlib.txt Extended Netlib validation case list
+docs/PORTING_GUIDE_ROCM_HIP.md       ROCm/HIP migration notes
+docs/VALIDATION.md                   Validation plan and result semantics
+docs/TUNING_GUIDE_ROCM.md            ROCm profiling and tuning notes
+README_UPSTREAM.md                   Original upstream README backup
 ```
 
-## Build ROCm/HIP version
+Generated outputs are intentionally ignored by Git:
+
+```text
+validation/results/
+validation/netlib/
+validation/netlib_compressed/
+profiling/results/
+tools/emps
+tools/emps.c
+```
+
+## Quick start: build the ROCm/HIP version
 
 For the currently verified AMD Radeon 890M / gfx1150 target:
 
@@ -68,6 +115,7 @@ cmake -S . -B build-rocm-plc -G Ninja \
   -DBUILD_ROCM=ON \
   -DBUILD_APPS=OFF \
   -DBUILD_PYTHON=OFF \
+  -DBUILD_TESTING=ON \
   -DCMAKE_PREFIX_PATH=/opt/rocm \
   -DCMAKE_HIP_ARCHITECTURES=gfx1150
 
@@ -80,40 +128,36 @@ The generated executable is:
 build-rocm-plc/bin/plc
 ```
 
-## Run the verified example
+## Run a ROCm/HIP example
 
 ```bash
 ./build-rocm-plc/bin/plc \
   -fname ./example/afiro.mps \
-  -out /tmp/afiro_hip_sum.json \
+  -out /tmp/afiro_rocm_sum.json \
   -nIterLim 200
 ```
 
-A verified ROCm/HIP run on AMD Radeon 890M / gfx1150 produced:
+A representative successful ROCm/HIP smoke run on `afiro` reports:
 
 ```json
 {
   "solver": "cuPDLP-C",
   "nIter": 199,
-  "dPrimalObj": -464.76346057035607,
-  "dDualObj": -464.83422735641489,
-  "dRelPrimalFeas": 0.00003927125321,
-  "dRelDualFeas": 0.00000565531500,
-  "dRelDualityGap": 0.00007604444646,
   "terminationCode": "OPTIMAL",
   "primalCode": "FEASIBLE",
   "dualCode": "FEASIBLE"
 }
 ```
 
-## Build CPU-only version
+## Build the CPU baseline
 
-The CPU-only version remains useful as a correctness baseline.
+The CPU-only build is used as a correctness baseline for ROCm validation.
 
 ```bash
 cmake -S . -B build-cpu -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_CUDA=OFF \
+  -DBUILD_ROCM=OFF \
   -DBUILD_HIP=OFF \
   -DBUILD_APPS=OFF \
   -DBUILD_PYTHON=OFF
@@ -121,7 +165,7 @@ cmake -S . -B build-cpu -G Ninja \
 cmake --build build-cpu --target plc -j"$(nproc)"
 ```
 
-Example run:
+Example CPU run:
 
 ```bash
 ./build-cpu/bin/plc \
@@ -132,26 +176,103 @@ Example run:
 
 ## Validation
 
-Run the CPU-vs-ROCm validation workflow:
+Recommended full local check:
+
+```bash
+./scripts/check_rocm_port.sh
+```
+
+This runs both:
+
+1. ROCm port hygiene checks.
+2. CPU-vs-ROCm smoke validation.
+
+Run only the validation workflow:
 
 ```bash
 ./scripts/run_validation.sh
+```
 
-The default validation case list is:
+Run extended Netlib validation:
 
-validation/cases.txt
+```bash
+RESULT_ROOT=validation/results/extended_netlib \
+  ./scripts/run_validation.sh validation/cases_extended_netlib.txt
+```
 
-Generated validation outputs are written to:
+Extended validation may report `INCOMPLETE` for cases that hit the current iteration or time limit on both CPU and ROCm. `INCOMPLETE` is tracked separately from `FAIL`.
 
-validation/results/latest/
+## CTest
 
-These generated outputs are ignored by Git. A summarized validation record is maintained in docs/VALIDATION.md.
+When configured with `BUILD_TESTING=ON`, ROCm checks are registered with CTest.
+
+Configure:
+
+```bash
+cmake -S . -B build-rocm-plc -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_CUDA=OFF \
+  -DBUILD_ROCM=ON \
+  -DBUILD_APPS=OFF \
+  -DBUILD_PYTHON=OFF \
+  -DBUILD_TESTING=ON \
+  -DCMAKE_PREFIX_PATH=/opt/rocm \
+  -DCMAKE_HIP_ARCHITECTURES=gfx1150
+```
+
+List tests:
+
+```bash
+ctest --test-dir build-rocm-plc -N
+```
+
+Run tests:
+
+```bash
+ctest --test-dir build-rocm-plc --output-on-failure
+```
+
+Current registered tests:
+
+| Test | Purpose |
+|---|---|
+| `rocm_port_hygiene` | Checks ROCm/HIP naming and compatibility guardrails |
+| `rocm_smoke_validation` | Runs CPU-vs-ROCm smoke validation |
+
+## ROCm profiling
+
+A first profiling workflow is available through:
+
+```bash
+./scripts/profile_rocm_smoke.sh
+```
+
+This script builds the ROCm target, runs baseline smoke cases, and then runs `rocprofv3` runtime tracing when available.
+
+Initial gfx1150 profiling on the smoke cases shows that the small-case runtime is dominated by many small operations rather than one single long-running custom kernel. The observed hot areas include:
+
+- HIP kernel launch overhead.
+- HIP memory copy activity.
+- ROCclr copy buffer dispatches.
+- rocSPARSE SpMV kernels.
+- rocBLAS vector kernels such as AXPY, dot, norm, and scaling.
+- Custom PDLP update kernels.
+
+See [`docs/TUNING_GUIDE_ROCM.md`](docs/TUNING_GUIDE_ROCM.md) for details.
+
+Profiling outputs are written under:
+
+```text
+profiling/results/
+```
+
+These outputs are ignored by Git.
 
 ## Adapting to other ROCm GPUs
 
 This repository is currently verified on `gfx1150`.
 
-For other ROCm-supported AMD GPUs or APUs, first identify the target architecture:
+For another ROCm-supported AMD GPU/APU, first identify the architecture:
 
 ```bash
 rocminfo | grep -E "Name:|Marketing Name|gfx"
@@ -164,7 +285,7 @@ Then replace:
 -DCMAKE_HIP_ARCHITECTURES=gfx1150
 ```
 
-with your target architecture, for example:
+with the target architecture, for example:
 
 ```bash
 -DCMAKE_HIP_ARCHITECTURES=gfx1030
@@ -173,48 +294,76 @@ with your target architecture, for example:
 -DCMAKE_HIP_ARCHITECTURES=gfx1150
 ```
 
-Actual support depends on your ROCm version, Linux distribution, kernel, and AMD GPU/APU support status.
+Actual support depends on the ROCm version, Linux distribution, kernel, and AMD GPU/APU support status.
 
 ## Build option compatibility
 
-`BUILD_ROCM=ON` is the recommended build option for the ROCm/HIP backend.
+Use this for the ROCm/HIP backend:
 
-`BUILD_HIP=ON` is kept as a legacy compatibility alias because the current ROCm backend is implemented with HIP, hipBLAS, and hipSPARSE.
+```bash
+-DBUILD_ROCM=ON
+```
 
-## Porting notes
+`BUILD_HIP=ON` is kept as a legacy compatibility alias because the ROCm backend is implemented with HIP, hipBLAS, and hipSPARSE.
+
+Do not enable both CUDA and ROCm:
+
+```bash
+-DBUILD_CUDA=ON -DBUILD_ROCM=ON
+```
+
+The top-level CMake configuration rejects that combination.
+
+## Porting strategy
 
 The current ROCm/HIP port followed this staged approach:
 
 1. Verify ROCm can detect the target GPU.
-2. Run a minimal HIP smoke test.
-3. Build the CPU baseline first.
-4. Use `hipify-clang` only for CUDA `.cu` / `.cuh` backend files.
-5. Manually adapt CMake and host-side C/C++ code.
-6. Replace CUDA runtime calls with HIP runtime calls.
-7. Replace cuBLAS calls with hipBLAS calls.
-8. Replace cuSPARSE calls with hipSPARSE calls.
-9. Build the HIP backend as a standalone library.
-10. Link the full `plc` executable.
-11. Validate numerical results against the CPU baseline.
+2. Build and validate the CPU baseline first.
+3. Use `hipify-clang` only for CUDA `.cu` / `.cuh` backend files.
+4. Manually adapt CMake and host-side C/C++ code.
+5. Replace CUDA runtime calls with HIP runtime calls.
+6. Replace cuBLAS calls with hipBLAS calls.
+7. Replace cuSPARSE calls with hipSPARSE calls.
+8. Build the ROCm/HIP backend as a standalone library.
+9. Link the full `plc` executable.
+10. Validate ROCm results against the CPU baseline.
+11. Add hygiene checks to avoid accidental regressions.
+12. Add CTest-backed smoke validation.
+13. Start profiling before attempting performance tuning.
 
-A more detailed migration guide will be maintained under:
+See [`docs/PORTING_GUIDE_ROCM_HIP.md`](docs/PORTING_GUIDE_ROCM_HIP.md) for the detailed migration notes.
 
-```text
-docs/PORTING_GUIDE_ROCM_HIP.md
+## Why some CUDA-style names still remain
+
+Some internal names still use legacy CUDA-style spelling, especially at C/HIP boundary points such as exported function names and struct fields.
+
+These names are currently kept intentionally because they are part of the compatibility boundary between existing C code and the migrated HIP backend. They should be cleaned only after tests are stable and with compatibility wrappers in place.
+
+The hygiene script currently protects some of these legacy exported symbols from accidental breakage:
+
+```bash
+./scripts/check_rocm_port_hygiene.sh
 ```
 
 ## Roadmap
 
-Planned next steps:
+Near-term priorities:
 
-* Keep user-facing ROCm/HIP wording clean as the validation matrix grows.
-* Maintain CTest-backed smoke validation and ROCm hygiene checks.
-* Extend validation beyond the current smoke and extended Netlib cases.
-* Test more MPS examples beyond `afiro.mps`.
-* Add more documented validation result snapshots.
-* Add ROCm tuning notes for gfx1150.
-* Add guidance for other ROCm-supported AMD GPU/APU targets.
-* Gradually clean internal CUDA-style names once tests are stable.
+- Keep README and documentation accurate.
+- Expand smoke and extended validation cases.
+- Improve validation result reporting.
+- Add more documented profiling summaries.
+- Reduce unnecessary synchronization, memory copy, and small kernel launch overhead.
+- Gradually clean internal CUDA-style names without breaking compatibility boundaries.
+- Add CI when a suitable ROCm-capable environment is available.
+
+Longer-term goals:
+
+- Generalize the porting workflow for more ROCm-supported AMD GPUs/APUs.
+- Provide tuning guidance by architecture family.
+- Remove obsolete legacy CUDA code paths if this fork becomes ROCm-only.
+- Compare performance across CPU, ROCm/HIP, and upstream CUDA-oriented baselines where available.
 
 ## Relationship to upstream cuPDLP-C
 
@@ -228,11 +377,8 @@ README_UPSTREAM.md
 
 ## License
 
-This repository preserves the original project license.
-
-See:
+This repository preserves the original project license. See:
 
 ```text
 LICENSE
 ```
-
