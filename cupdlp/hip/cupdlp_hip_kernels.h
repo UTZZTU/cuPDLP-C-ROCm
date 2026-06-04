@@ -71,7 +71,7 @@ static inline hipError_t check_hip_last(const char *filename, int line)
 #define CHECK_HIP(res) \
   { if (check_hip_call(res, __FILE__, __LINE__) != hipSuccess) \
       return EXIT_FAILURE; }
-#define CHECK_CUDA_STRICT(res) \
+#define CHECK_HIP_STRICT(res) \
   { if (check_hip_call(res, __FILE__, __LINE__) != hipSuccess) \
       exit(EXIT_FAILURE); }
 #define CHECK_HIP_IGNORE(res) \
@@ -250,6 +250,10 @@ __global__ void sum_kernel(cupdlp_float * __restrict__ res, const cupdlp_float *
 #ifndef CHECK_CUDA
 #define CHECK_CUDA(res) CHECK_HIP(res)
 #endif
+#ifndef CHECK_CUDA_STRICT
+#define CHECK_CUDA_STRICT(res) CHECK_HIP_STRICT(res)
+#endif
+
 #ifndef CHECK_CUDA_IGNORE
 #define CHECK_CUDA_IGNORE(res) CHECK_HIP_IGNORE(res)
 #endif
