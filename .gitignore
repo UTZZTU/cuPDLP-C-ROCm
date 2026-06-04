@@ -35,3 +35,7 @@ __pycache__/
 *.swp
 *~
 validation/results/
+validation/netlib/
+validation/netlib_compressed/
+tools/emps
+tools/emps.c
