@@ -87,7 +87,7 @@ scripts/profile_rocm_smoke.sh        ROCm profiling smoke workflow
 scripts/prepare_netlib_cases.sh      Netlib compressed MPS preparation helper
 validation/cases.txt                 Default smoke validation case list
 validation/cases_extended_netlib.txt Extended Netlib validation case list
-docs/PORTING_GUIDE_ROCM_HIP.md       ROCm/HIP migration notes
+docs/ROCM_PORTING_GUIDE.md       ROCm/HIP migration notes
 docs/VALIDATION.md                   Validation plan and result semantics
 docs/TUNING_GUIDE_ROCM.md            ROCm profiling and tuning notes
 README_UPSTREAM.md                   Original upstream README backup
@@ -332,7 +332,7 @@ The current ROCm/HIP port followed this staged approach:
 12. Add CTest-backed smoke validation.
 13. Start profiling before attempting performance tuning.
 
-See [`docs/PORTING_GUIDE_ROCM_HIP.md`](docs/PORTING_GUIDE_ROCM_HIP.md) for the detailed migration notes.
+See [`docs/ROCM_PORTING_GUIDE.md`](docs/ROCM_PORTING_GUIDE.md) for the detailed migration notes.
 
 ## Why some CUDA-style names still remain
 
