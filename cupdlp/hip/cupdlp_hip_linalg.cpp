@@ -335,7 +335,6 @@ void cupdlp_movement_interaction_cuda(
 
   cupdlp_float res[3];
   CHECK_HIP_STRICT(hipMemcpyAsync(buf_5 + 2, buf_1, sizeof(cupdlp_float), hipMemcpyDeviceToDevice))
-  CHECK_HIP_STRICT(hipDeviceSynchronize())
   CHECK_HIP_STRICT(hipMemcpy(res, buf_5, 3 * sizeof(cupdlp_float), hipMemcpyDeviceToHost))
   CHECK_HIP_LAST();
 
