@@ -6,11 +6,28 @@
 
 #include "cupdlp_hip_linalg.h"
 
+inline int cupdlp_get_hip_device_attribute_cached(hipDeviceAttribute_t attr,
+                                                 int fallback) {
+  int value = fallback;
+  CHECK_HIP_IGNORE(hipDeviceGetAttribute(&value, attr, 0))
+  return value > 0 ? value : fallback;
+}
+
+inline int cupdlp_get_hip_num_sms() {
+  static const int numSMs = cupdlp_get_hip_device_attribute_cached(
+      hipDeviceAttributeMultiprocessorCount, 1);
+  return numSMs;
+}
+
+inline int cupdlp_get_hip_warp_size() {
+  static const int warpSize = cupdlp_get_hip_device_attribute_cached(
+      hipDeviceAttributeWarpSize, 32);
+  return warpSize;
+}
+
 inline int nBlocks256(int n) {
   constexpr int BLOCKS_PER_SM = 32;
-  int numSMs;
-  CHECK_HIP_IGNORE(hipDeviceGetAttribute(&numSMs, hipDeviceAttributeMultiprocessorCount, 0))
-  return std::min((n + 256 - 1) / 256, BLOCKS_PER_SM * numSMs);
+  return std::min((n + 256 - 1) / 256, BLOCKS_PER_SM * cupdlp_get_hip_num_sms());
 }
 
 extern "C" {
@@ -260,8 +277,7 @@ void cupdlp_movement_interaction_cuda(
     const cupdlp_float *atyUpdate, const cupdlp_float *aty,
     int nRows, int nCols)
 {
-  int warpSize;
-  CHECK_HIP_IGNORE(hipDeviceGetAttribute(&warpSize, hipDeviceAttributeWarpSize, 0))
+  int warpSize = cupdlp_get_hip_warp_size();
   if (warpSize != 32) {
     printf("warpSize\n");
     exit(1);
