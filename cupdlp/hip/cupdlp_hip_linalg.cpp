@@ -261,6 +261,18 @@ void cupdlp_dgrad_cuda(cupdlp_float *yUpdate,
   dual_grad_step_kernel<<<nBlocks256(nRows), 256>>>(yUpdate, y, b, Ax, AxUpdate, dDualStep, nRows, nEqs);
 }
 
+void cupdlp_update_average_cuda(cupdlp_float *xSum,
+                                const cupdlp_float *xUpdate,
+                                cupdlp_float *ySum,
+                                const cupdlp_float *yUpdate,
+                                cupdlp_float dMeanStepSize,
+                                int nCols,
+                                int nRows) {
+  int n = std::max(nCols, nRows);
+  update_average_kernel<<<nBlocks256(n), 256>>>(xSum, xUpdate, ySum, yUpdate,
+                                                dMeanStepSize, nCols, nRows);
+}
+
 /*
 void cupdlp_sub_cuda(cupdlp_float *z, const cupdlp_float *x,
                      const cupdlp_float *y, int n)

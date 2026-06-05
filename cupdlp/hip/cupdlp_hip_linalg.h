@@ -128,6 +128,14 @@ void cupdlp_dgrad_cuda(cupdlp_float *yUpdate,
                        const cupdlp_float *Ax, const cupdlp_float *AxUpdate,
                        cupdlp_float dDualStep, int nRows, int nEqs);
 
+void cupdlp_update_average_cuda(cupdlp_float *xSum,
+                                const cupdlp_float *xUpdate,
+                                cupdlp_float *ySum,
+                                const cupdlp_float *yUpdate,
+                                cupdlp_float dMeanStepSize,
+                                int nCols,
+                                int nRows);
+
 /*
 void cupdlp_sub_cuda(cupdlp_float *z, const cupdlp_float *x,
                                 const cupdlp_float *y, const cupdlp_int len);

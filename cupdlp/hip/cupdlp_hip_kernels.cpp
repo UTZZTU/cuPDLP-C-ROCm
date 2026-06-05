@@ -338,3 +338,20 @@ __global__ void sum_kernel(cupdlp_float * __restrict__ res, const cupdlp_float *
     }
   }
 }
+
+__global__ void update_average_kernel(cupdlp_float * __restrict__ x_sum,
+                                      const cupdlp_float * __restrict__ x_update,
+                                      cupdlp_float * __restrict__ y_sum,
+                                      const cupdlp_float * __restrict__ y_update,
+                                      cupdlp_float alpha,
+                                      int n_cols,
+                                      int n_rows) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i < n_cols) {
+    x_sum[i] += alpha * x_update[i];
+  }
+  if (i < n_rows) {
+    y_sum[i] += alpha * y_update[i];
+  }
+}
+

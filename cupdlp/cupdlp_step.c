@@ -381,8 +381,14 @@ void PDHG_Update_Average(CUPDLPwork *work) {
       sqrt(stepsize->dPrimalStep * stepsize->dDualStep);
   // AddToVector(iterates->xSum, dMeanStepSize, xUpdate, lp->nCols);
   // AddToVector(iterates->ySum, dMeanStepSize, yUpdate, lp->nRows);
+#if !(CUPDLP_CPU) && USE_KERNELS
+  cupdlp_update_average_cuda(iterates->xSum, xUpdate->data,
+                             iterates->ySum, yUpdate->data,
+                             dMeanStepSize, (int)lp->nCols, (int)lp->nRows);
+#else
   cupdlp_axpy(work, lp->nCols, &dMeanStepSize, xUpdate->data, iterates->xSum);
   cupdlp_axpy(work, lp->nRows, &dMeanStepSize, yUpdate->data, iterates->ySum);
+#endif
 
   stepsize->dSumPrimalStep += dMeanStepSize;
   stepsize->dSumDualStep += dMeanStepSize;
