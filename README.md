@@ -6,6 +6,10 @@ This fork keeps the original CPU path and adds a ROCm/HIP accelerated backend. T
 
 > Status: experimental but buildable and validated on smoke cases. This is not yet a fully tuned or broadly certified ROCm solver release.
 
+## Documentation
+
+- [ROCm workflow guide](docs/ROCM_WORKFLOW.md) - common build, validation, profiling, and troubleshooting commands.
+
 ## What this repository provides
 
 - CPU-only cuPDLP-C build path.
