@@ -346,8 +346,7 @@ void cupdlp_movement_interaction_cuda(
     buf_4 = tmp;
   }
 
-  CHECK_HIP_STRICT(hipMemcpyAsync(buf_5 + 0, buf_1, sizeof(cupdlp_float), hipMemcpyDeviceToDevice))
-  CHECK_HIP_STRICT(hipMemcpyAsync(buf_5 + 1, buf_2, sizeof(cupdlp_float), hipMemcpyDeviceToDevice))
+  save_movement_xy_kernel<<<1, 1>>>(buf_5, buf_1, buf_2);
 
   nBlocks = nBlocksRows;
   movement_2_kernel<<<nBlocks, RED_BLOCK_SIZE>>>(buf_1, yUpdate, y, nRows);

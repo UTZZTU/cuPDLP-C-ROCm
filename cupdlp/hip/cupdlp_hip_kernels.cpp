@@ -339,6 +339,14 @@ __global__ void sum_kernel(cupdlp_float * __restrict__ res, const cupdlp_float *
   }
 }
 
+
+__global__ void save_movement_xy_kernel(cupdlp_float * __restrict__ dst,
+                                        const cupdlp_float * __restrict__ x_norm,
+                                        const cupdlp_float * __restrict__ interaction) {
+  dst[0] = x_norm[0];
+  dst[1] = interaction[0];
+}
+
 __global__ void update_average_kernel(cupdlp_float * __restrict__ x_sum,
                                       const cupdlp_float * __restrict__ x_update,
                                       cupdlp_float * __restrict__ y_sum,
