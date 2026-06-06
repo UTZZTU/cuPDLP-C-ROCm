@@ -1,0 +1,25 @@
+# name,mps_path,nIterLim
+# Medium Netlib validation set.
+#
+# This set intentionally uses higher iteration limits for cases that may not
+# converge within the small smoke limits. A case that reaches nIterLim without
+# comparable CPU/ROCm convergence should be treated as INCOMPLETE first, not as
+# a ROCm correctness failure.
+#
+# Small already-validated cases
+afiro,example/afiro.mps,200
+adlittle,validation/netlib/adlittle.mps,5000
+blend,validation/netlib/blend.mps,5000
+sc50a,validation/netlib/sc50a.mps,5000
+sc50b,validation/netlib/sc50b.mps,5000
+share2b,validation/netlib/share2b.mps,20000
+
+# Additional medium cases
+kb2,validation/netlib/kb2.mps,100000
+lotfi,validation/netlib/lotfi.mps,20000
+recipe,validation/netlib/recipe.mps,20000
+sc105,validation/netlib/sc105.mps,20000
+sc205,validation/netlib/sc205.mps,30000
+scagr7,validation/netlib/scagr7.mps,30000
+share1b,validation/netlib/share1b.mps,30000
+stocfor1,validation/netlib/stocfor1.mps,30000

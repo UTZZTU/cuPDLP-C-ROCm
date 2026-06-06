@@ -4,97 +4,129 @@ A ROCm/HIP port of **cuPDLP-C** for AMD GPUs/APUs.
 
 This fork keeps the original CPU path and adds a ROCm/HIP accelerated backend. The current working target is **AMD Radeon 890M / gfx1150** with **ROCm 7.2.1**.
 
-> Status: experimental but buildable and validated on smoke cases. This is not yet a fully tuned or broadly certified ROCm solver release.
+> Status: experimental but buildable. The ROCm/HIP backend has passed smoke validation and a cross-device Netlib benchmark matrix on AMD Radeon 890M / gfx1150. This is still not a fully tuned or broadly certified ROCm solver release.
 
 ## Documentation
 
-- [ROCm workflow guide](docs/ROCM_WORKFLOW.md) - common build, validation, profiling, and troubleshooting commands.
+* [ROCm workflow guide](docs/ROCM_WORKFLOW.md) - common build, validation, profiling, and troubleshooting commands.
+* [Validation guide](docs/VALIDATION.md) - CPU-vs-ROCm validation semantics and generated result interpretation.
+* [Cross-device benchmarks](docs/CROSS_DEVICE_BENCHMARKS.md) - RTX 3090 / RTX 4090D / Radeon 890M benchmark matrix and interpretation.
+* [ROCm porting guide](docs/ROCM_PORTING_GUIDE.md) - migration notes and CUDA-to-ROCm design decisions.
+* [ROCm tuning guide](docs/TUNING_GUIDE_ROCM.md) - profiling notes and next optimization targets.
+* [Upstream README backup](README_UPSTREAM.md) - original upstream cuPDLP-C README kept for reference.
 
 ## What this repository provides
 
-- CPU-only cuPDLP-C build path.
-- ROCm/HIP backend built from migrated CUDA backend code.
-- `plc` executable linked against the ROCm/HIP backend.
-- CPU-vs-ROCm smoke validation scripts.
-- Extended Netlib validation cases.
-- CTest integration for ROCm port checks.
-- Initial `rocprofv3` profiling workflow for gfx1150.
-- Documentation for migration, validation, and tuning.
+* CPU-only cuPDLP-C build path.
+* ROCm/HIP backend built from migrated CUDA backend code.
+* `plc` executable linked against the ROCm/HIP backend.
+* CPU-vs-ROCm smoke validation scripts.
+* Extended Netlib validation cases.
+* Cross-device benchmark workflow and summary for RTX 3090, RTX 4090D, and Radeon 890M.
+* CTest integration for ROCm port checks.
+* Initial `rocprofv3` profiling workflow for gfx1150.
+* Documentation for migration, validation, benchmarking, and tuning.
 
 ## Current status
 
 ### Working
 
-- Builds successfully with ROCm 7.2.1.
-- Builds the ROCm/HIP backend library.
-- Links against HIP runtime, hipBLAS, hipSPARSE, rocBLAS, and rocSPARSE.
-- Builds the `plc` executable.
-- Runs CPU-vs-ROCm smoke validation.
-- Registers ROCm checks through CTest.
-- Runs initial `rocprofv3` profiling on smoke cases.
+* Builds successfully with ROCm 7.2.1.
+* Builds the ROCm/HIP backend library.
+* Links against HIP runtime, hipBLAS, hipSPARSE, rocBLAS, and rocSPARSE.
+* Builds the `plc` executable.
+* Runs CPU-vs-ROCm smoke validation.
+* Registers ROCm checks through CTest.
+* Runs initial `rocprofv3` profiling on smoke cases.
+* Runs a local cross-device benchmark matrix using the same Netlib case list on:
 
-### Validated cases
+  * RTX 3090 / CUDA baseline
+  * RTX 4090D / CUDA baseline
+  * Radeon 890M / ROCm-HIP port
+
+### Validation and benchmark status
 
 Smoke validation currently passes:
 
-| Case | Source | ROCm result |
-|---|---|---|
-| `afiro` | `example/afiro.mps` | PASS |
-| `sc50b` | `validation/netlib/sc50b.mps` | PASS |
+| Case    | Source                        | ROCm result |
+| ------- | ----------------------------- | ----------- |
+| `afiro` | `example/afiro.mps`           | PASS        |
+| `sc50b` | `validation/netlib/sc50b.mps` | PASS        |
 
 Extended Netlib validation currently reports:
 
-| Case | Result | Notes |
-|---|---|---|
-| `afiro` | PASS | Baseline example |
-| `adlittle` | PASS | Relative validation metrics pass |
-| `blend` | PASS | Relative validation metrics pass |
-| `sc50a` | PASS | Relative validation metrics pass |
-| `sc50b` | PASS | Smoke + extended case |
-| `share2b` | INCOMPLETE | Hits current iteration/time limit; not treated as a ROCm port failure |
+| Case       | Result     | Notes                                                                 |
+| ---------- | ---------- | --------------------------------------------------------------------- |
+| `afiro`    | PASS       | Baseline example                                                      |
+| `adlittle` | PASS       | Relative validation metrics pass                                      |
+| `blend`    | PASS       | Relative validation metrics pass                                      |
+| `sc50a`    | PASS       | Relative validation metrics pass                                      |
+| `sc50b`    | PASS       | Smoke + extended case                                                 |
+| `share2b`  | INCOMPLETE | Hits current iteration/time limit; not treated as a ROCm port failure |
 
-See [`docs/VALIDATION.md`](docs/VALIDATION.md) for validation semantics.
+Cross-device benchmark summary:
+
+| Device             |                                     CPU result | GPU/ROCm result | Exception                                                |
+| ------------------ | ---------------------------------------------: | --------------: | -------------------------------------------------------- |
+| RTX 3090 / CUDA    | 28/28 OPTIMAL after `greenbea` 200M supplement |   27/28 OPTIMAL | `greenbea` CUDA reached solver internal 3600s time limit |
+| RTX 4090D / CUDA   |                                  28/28 OPTIMAL |   27/28 OPTIMAL | `greenbea` CUDA hit external 3600s timeout               |
+| Radeon 890M / ROCm |                                  28/28 OPTIMAL |   27/28 OPTIMAL | `greenbea` ROCm hit external 3600s timeout               |
+
+See [docs/VALIDATION.md](docs/VALIDATION.md) for validation semantics and [docs/CROSS_DEVICE_BENCHMARKS.md](docs/CROSS_DEVICE_BENCHMARKS.md) for the cross-device benchmark matrix.
 
 ### Still incomplete
 
-- Only a small validation matrix has been exercised so far.
-- Larger LP instances still need to be tested.
-- No ROCm CI workflow has been added yet.
-- The ROCm/HIP backend has not been performance tuned yet.
-- Some internal symbols still use legacy CUDA-style names for compatibility across C and HIP/C++ boundaries.
-- The legacy CUDA backend is still present for upstream reference and future cleanup.
+* The ROCm/HIP backend has not been performance tuned yet.
+* Cross-device benchmark scripts are currently local/manual workflows rather than CI.
+* Larger and more diverse LP benchmark sets should still be added.
+* No ROCm CI workflow has been added yet.
+* Some internal symbols still use legacy CUDA-style names for compatibility across C and HIP/C++ boundaries.
+* The legacy CUDA backend is still present for upstream reference and future cleanup.
 
 ## Tested environment
 
 The current ROCm/HIP milestone was tested with:
 
-| Component | Version / value |
-|---|---|
-| OS | Ubuntu 24.04.x |
-| ROCm | 7.2.1 |
-| HIP compiler | ROCm Clang 22.0.0 |
-| GPU/APU | AMD Radeon 890M |
-| GPU architecture | `gfx1150` |
-| HiGHS | 1.6.0 |
-| Build system | CMake + Ninja |
+| Component        | Version / value   |
+| ---------------- | ----------------- |
+| OS               | Ubuntu 24.04.x    |
+| ROCm             | 7.2.1             |
+| HIP compiler     | ROCm Clang 22.0.0 |
+| GPU/APU          | AMD Radeon 890M   |
+| GPU architecture | `gfx1150`         |
+| HiGHS            | 1.6.0             |
+| Build system     | CMake + Ninja     |
+
+The cross-device CUDA baselines were tested locally on:
+
+| Device      | Backend  | Notes                      |
+| ----------- | -------- | -------------------------- |
+| RTX 3090    | CUDA     | upstream cuPDLP-C baseline |
+| RTX 4090D   | CUDA     | upstream cuPDLP-C baseline |
+| Radeon 890M | ROCm/HIP | this port                  |
 
 ## Repository layout
 
 Important ROCm-related files and directories:
 
 ```text
-cupdlp/hip/                         ROCm/HIP backend source files
-scripts/check_rocm_port.sh           Full local ROCm port check
-scripts/check_rocm_port_hygiene.sh   ROCm/HIP naming and compatibility guardrails
-scripts/run_validation.sh            CPU-vs-ROCm validation runner
-scripts/profile_rocm_smoke.sh        ROCm profiling smoke workflow
-scripts/prepare_netlib_cases.sh      Netlib compressed MPS preparation helper
-validation/cases.txt                 Default smoke validation case list
-validation/cases_extended_netlib.txt Extended Netlib validation case list
-docs/ROCM_PORTING_GUIDE.md       ROCm/HIP migration notes
-docs/VALIDATION.md                   Validation plan and result semantics
-docs/TUNING_GUIDE_ROCM.md            ROCm profiling and tuning notes
-README_UPSTREAM.md                   Original upstream README backup
+cupdlp/hip/                          ROCm/HIP backend source files
+scripts/check_rocm_port.sh            Full local ROCm port check
+scripts/check_rocm_port_hygiene.sh    ROCm/HIP naming and compatibility guardrails
+scripts/run_validation.sh             CPU-vs-ROCm validation runner
+scripts/profile_rocm_smoke.sh         ROCm profiling smoke workflow
+scripts/prepare_netlib_cases.sh       Netlib compressed MPS preparation helper
+scripts/run_benchmark_890m_full.sh    Radeon 890M CPU-vs-ROCm benchmark runner
+scripts/summarize_benchmark.py        Benchmark JSON summary helper
+validation/cases.txt                  Default smoke validation case list
+validation/cases_extended_netlib.txt  Extended Netlib validation case list
+validation/cases_benchmark_200m.txt   Cross-device benchmark case list
+validation/cross_device_summary.csv   Compact benchmark result summary
+docs/ROCM_PORTING_GUIDE.md            ROCm/HIP migration notes
+docs/VALIDATION.md                    Validation plan and result semantics
+docs/CROSS_DEVICE_BENCHMARKS.md       Cross-device benchmark interpretation
+docs/TUNING_GUIDE_ROCM.md             ROCm profiling and tuning notes
+README_UPSTREAM.md                    Original upstream README backup
 ```
 
 Generated outputs are intentionally ignored by Git:
@@ -106,6 +138,7 @@ validation/netlib_compressed/
 profiling/results/
 tools/emps
 tools/emps.c
+*.tar.gz
 ```
 
 ## Quick start: build the ROCm/HIP version
@@ -206,6 +239,32 @@ RESULT_ROOT=validation/results/extended_netlib \
 
 Extended validation may report `INCOMPLETE` for cases that hit the current iteration or time limit on both CPU and ROCm. `INCOMPLETE` is tracked separately from `FAIL`.
 
+## Cross-device benchmark
+
+The current cross-device benchmark case list is:
+
+```text
+validation/cases_benchmark_200m.txt
+```
+
+The benchmark uses:
+
+```text
+nIterLim = 200000000
+per-run timeout = 3600s
+```
+
+On the Radeon 890M ROCm target:
+
+```bash
+CASE_TIMEOUT_SEC=3600 ./scripts/run_benchmark_890m_full.sh
+./scripts/summarize_benchmark.py
+```
+
+The full benchmark is intentionally a local/manual workflow. Large run directories and downloaded Netlib files are not committed.
+
+See [docs/CROSS_DEVICE_BENCHMARKS.md](docs/CROSS_DEVICE_BENCHMARKS.md) for the current cross-device result summary.
+
 ## CTest
 
 When configured with `BUILD_TESTING=ON`, ROCm checks are registered with CTest.
@@ -238,10 +297,10 @@ ctest --test-dir build-rocm-plc --output-on-failure
 
 Current registered tests:
 
-| Test | Purpose |
-|---|---|
-| `rocm_port_hygiene` | Checks ROCm/HIP naming and compatibility guardrails |
-| `rocm_smoke_validation` | Runs CPU-vs-ROCm smoke validation |
+| Test                    | Purpose                                             |
+| ----------------------- | --------------------------------------------------- |
+| `rocm_port_hygiene`     | Checks ROCm/HIP naming and compatibility guardrails |
+| `rocm_smoke_validation` | Runs CPU-vs-ROCm smoke validation                   |
 
 ## ROCm profiling
 
@@ -255,14 +314,14 @@ This script builds the ROCm target, runs baseline smoke cases, and then runs `ro
 
 Initial gfx1150 profiling on the smoke cases shows that the small-case runtime is dominated by many small operations rather than one single long-running custom kernel. The observed hot areas include:
 
-- HIP kernel launch overhead.
-- HIP memory copy activity.
-- ROCclr copy buffer dispatches.
-- rocSPARSE SpMV kernels.
-- rocBLAS vector kernels such as AXPY, dot, norm, and scaling.
-- Custom PDLP update kernels.
+* HIP kernel launch overhead.
+* HIP memory copy activity.
+* ROCclr copy buffer dispatches.
+* rocSPARSE SpMV kernels.
+* rocBLAS vector kernels such as AXPY, dot, norm, and scaling.
+* Custom PDLP update kernels.
 
-See [`docs/TUNING_GUIDE_ROCM.md`](docs/TUNING_GUIDE_ROCM.md) for details.
+See [docs/TUNING_GUIDE_ROCM.md](docs/TUNING_GUIDE_ROCM.md) for details.
 
 Profiling outputs are written under:
 
@@ -335,54 +394,28 @@ The current ROCm/HIP port followed this staged approach:
 11. Add hygiene checks to avoid accidental regressions.
 12. Add CTest-backed smoke validation.
 13. Start profiling before attempting performance tuning.
+14. Add cross-device benchmark comparison against upstream CUDA baselines.
 
-See [`docs/ROCM_PORTING_GUIDE.md`](docs/ROCM_PORTING_GUIDE.md) for the detailed migration notes.
+See [docs/ROCM_PORTING_GUIDE.md](docs/ROCM_PORTING_GUIDE.md) for the detailed migration notes.
 
 ## Why some CUDA-style names still remain
 
 Some internal names still use legacy CUDA-style spelling, especially at C/HIP boundary points such as exported function names and struct fields.
 
-These names are currently kept intentionally because they are part of the compatibility boundary between existing C code and the migrated HIP backend. They should be cleaned only after tests are stable and with compatibility wrappers in place.
+The current cleanup policy is:
 
-The hygiene script currently protects some of these legacy exported symbols from accidental breakage:
+* User-visible ROCm output and documentation should use ROCm/HIP terminology.
+* Historical migration notes and the upstream README backup may keep CUDA terminology.
+* Internal compatibility symbols may remain until the C/HIP boundary is refactored safely.
 
-```bash
-./scripts/check_rocm_port_hygiene.sh
-```
+Do not remove compatibility symbols such as `cuda_csr_Ax`, `cuda_csc_ATy`, or `cuda_alloc_MVbuffer` without updating the C/HIP call boundary and validation scripts.
 
-## Roadmap
+## Upstream reference
 
-Near-term priorities:
-
-- Keep README and documentation accurate.
-- Expand smoke and extended validation cases.
-- Improve validation result reporting.
-- Add more documented profiling summaries.
-- Reduce unnecessary synchronization, memory copy, and small kernel launch overhead.
-- Gradually clean internal CUDA-style names without breaking compatibility boundaries.
-- Add CI when a suitable ROCm-capable environment is available.
-
-Longer-term goals:
-
-- Generalize the porting workflow for more ROCm-supported AMD GPUs/APUs.
-- Provide tuning guidance by architecture family.
-- Remove obsolete legacy CUDA code paths if this fork becomes ROCm-only.
-- Compare performance across CPU, ROCm/HIP, and upstream CUDA-oriented baselines where available.
-
-## Relationship to upstream cuPDLP-C
-
-This repository is a ROCm-focused port based on the original cuPDLP-C project.
-
-The original upstream README is preserved as:
+This repository is a ROCm/HIP port of cuPDLP-C. The original upstream project is preserved in:
 
 ```text
 README_UPSTREAM.md
 ```
 
-## License
-
-This repository preserves the original project license. See:
-
-```text
-LICENSE
-```
+and upstream-derived CUDA code is kept where useful as a migration reference.
