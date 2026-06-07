@@ -9,3 +9,4 @@
 *.cu text eol=lf
 *.cuh text eol=lf
 CMakeLists.txt text eol=lf
+*.mps -text
