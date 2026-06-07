@@ -11,7 +11,7 @@ target_link_libraries(
         wrapper_lp PUBLIC cupdlp
 )
 
-if (${BUILD_HIP} STREQUAL "ON")
+if (BUILD_ROCM)
     message(NOTICE "- ROCm/HIP version PDLP")
     target_compile_definitions(wrapper_lp
             PUBLIC
@@ -48,7 +48,7 @@ target_link_libraries(
         ${HiGHS_LIBRARY}
 )
 
-if (${BUILD_HIP} STREQUAL "ON")
+if (BUILD_ROCM)
     message(NOTICE "- ROCm/HIP version PDLP")
     target_compile_definitions(wrapper_highs
             PUBLIC
@@ -82,7 +82,7 @@ target_link_libraries(
         ${HiGHS_LIBRARY}
 )
 
-if (${BUILD_HIP} STREQUAL "ON")
+if (BUILD_ROCM)
     target_compile_definitions(plc
             PRIVATE
             -DCUPDLP_USE_HIP=1
@@ -108,7 +108,7 @@ else ()
     target_link_libraries(plc PRIVATE cupdlp ${CUDA_LIBRARY} m)
 endif ()
 
-if (${BUILD_HIP} STREQUAL "ON")
+if (BUILD_ROCM)
     add_custom_target(
             deploy
             COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${CMAKE_BINARY_DIR}/bin/plc" "${CMAKE_BINARY_DIR}/bin/plcrocm"

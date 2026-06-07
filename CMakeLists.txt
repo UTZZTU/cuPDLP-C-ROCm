@@ -4,7 +4,10 @@ project(CUPDLP VERSION 0.0.1)
 
 option(BUILD_CUDA "<BUILD_CUDA_OR_NOT>" OFF)
 option(BUILD_ROCM "<BUILD_ROCM_OR_NOT>" OFF)
-option(BUILD_HIP "<LEGACY_ALIAS_FOR_BUILD_ROCM>" OFF)
+
+if (DEFINED BUILD_HIP AND BUILD_HIP)
+    message(FATAL_ERROR "BUILD_HIP has been removed. Use BUILD_ROCM=ON for the ROCm/HIP backend.")
+endif()
 option(BUILD_APPS "<BUILD_APPS_OR_NOT>" OFF)
 option(BUILD_PYTHON "<BUILD_PYTHON_OR_NOT>" OFF)
 
@@ -39,29 +42,6 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 # Internal selector for the legacy CUDA backend.
 # CPU and ROCm/HIP builds keep this OFF.
 set(CUPDLP_USE_LEGACY_CUDA OFF)
-
-# BUILD_HIP is kept as a legacy compatibility alias.
-# New ROCm builds should prefer BUILD_ROCM=ON.
-if (BUILD_HIP AND NOT BUILD_ROCM)
-    message(WARNING "BUILD_HIP is a legacy alias. Prefer BUILD_ROCM=ON for ROCm builds.")
-    set(BUILD_ROCM ON CACHE BOOL "Enable ROCm/HIP backend" FORCE)
-endif ()
-
-if (BUILD_ROCM)
-    set(BUILD_HIP ON CACHE BOOL "Enable ROCm/HIP backend implementation" FORCE)
-endif ()
-
-if (BUILD_CUDA AND BUILD_ROCM)
-    message(FATAL_ERROR "BUILD_CUDA and BUILD_ROCM cannot both be ON")
-endif ()
-
-message(NOTICE "-- Sets build with CUDA ${BUILD_CUDA}")
-message(NOTICE "-- Sets build with ROCm ${BUILD_ROCM}")
-message(NOTICE "-- Sets build with ROCm/HIP backend ${BUILD_HIP}")
-
-if (BUILD_CUDA)
-    add_compile_definitions(CUPDLP_USE_CUDA=1)
-endif()
 
 if (BUILD_ROCM)
     add_compile_definitions(CUPDLP_USE_ROCM=1)

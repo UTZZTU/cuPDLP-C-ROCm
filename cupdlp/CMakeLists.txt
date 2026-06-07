@@ -18,7 +18,7 @@ target_compile_definitions(cupdlp
         $<$<CONFIG:Debug>:-DCUPDLP_DEBUG=1>
 )
 
-if (${BUILD_HIP} STREQUAL "ON")
+if (BUILD_ROCM)
     add_subdirectory(hip)
 
     message(NOTICE "- ROCm/HIP version PDLP")
