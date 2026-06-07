@@ -13,6 +13,22 @@ The current verified ROCm target is:
 | Solver executable       | `build-rocm-plc/bin/plc` |
 | CPU baseline executable | `build-cpu/bin/plc`      |
 
+## Backend modes covered by validation
+
+This repository keeps three backend modes:
+
+| Mode | Purpose |
+|---|---|
+| CPU | Correctness and portability baseline |
+| CUDA | Upstream-compatible NVIDIA baseline |
+| ROCm/HIP | AMD Radeon 890M / gfx1150 target backend |
+
+The primary validation workflow compares CPU and ROCm/HIP on the AMD target machine. CUDA validation is performed on NVIDIA systems as a compatibility and cross-device baseline check.
+
+Recent CUDA compatibility restoration verified that the current branch can build the CUDA `plc` executable and solve `afiro`, `sc50b`, and `lotfi` to `OPTIMAL` on an RTX 4090D system.
+
+See [Backend modes and naming policy](BACKEND_MODES_AND_NAMING.md) for build-mode details and naming rules.
+
 ## Validation goals
 
 The validation workflow checks whether the ROCm/HIP backend produces numerically reasonable results compared with the CPU backend.

@@ -4,6 +4,8 @@ This document summarizes the current cross-device benchmark workflow for the ROC
 
 ## Goal
 
+The CUDA backend is retained in this repository as the upstream-compatible NVIDIA baseline. The ROCm/HIP backend is the AMD target backend. This makes the benchmark matrix a three-mode comparison rather than a CPU-vs-ROCm-only workflow.
+
 The goal is to compare the upstream CUDA baseline and the ROCm/HIP port using the same LP case list and the same high-level solver settings.
 
 The benchmark matrix covers:

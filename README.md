@@ -8,6 +8,7 @@ This fork keeps the original CPU path and adds a ROCm/HIP accelerated backend. T
 
 ## Documentation
 
+- [Backend modes and naming policy](docs/BACKEND_MODES_AND_NAMING.md) - CPU, CUDA, and ROCm/HIP build modes and naming compatibility rules.
 * [ROCm workflow guide](docs/ROCM_WORKFLOW.md) - common build, validation, profiling, and troubleshooting commands.
 * [Validation guide](docs/VALIDATION.md) - CPU-vs-ROCm validation semantics and generated result interpretation.
 * [Cross-device benchmarks](docs/CROSS_DEVICE_BENCHMARKS.md) - RTX 3090 / RTX 4090D / Radeon 890M benchmark matrix and interpretation.
@@ -26,6 +27,22 @@ This fork keeps the original CPU path and adds a ROCm/HIP accelerated backend. T
 * CTest integration for ROCm port checks.
 * Initial `rocprofv3` profiling workflow for gfx1150.
 * Documentation for migration, validation, benchmarking, and tuning.
+
+## Backend modes
+
+This repository keeps three mutually exclusive build modes:
+
+| Mode | CMake options | Role |
+|---|---|---|
+| CPU | `BUILD_CUDA=OFF`, `BUILD_ROCM=OFF` | Correctness and portability baseline |
+| CUDA | `BUILD_CUDA=ON`, `BUILD_ROCM=OFF` | Upstream-compatible NVIDIA backend and benchmark baseline |
+| ROCm/HIP | `BUILD_CUDA=OFF`, `BUILD_ROCM=ON` | AMD Radeon 890M / gfx1150 target backend |
+
+`BUILD_CUDA` and `BUILD_ROCM` must not be enabled at the same time.
+
+`BUILD_HIP` has been removed as a public option. Use `BUILD_ROCM=ON` for ROCm/HIP builds.
+
+Use separate build directories for different backend modes, for example `build-cpu`, `build-cuda`, and `build-rocm-plc`.
 
 ## Current status
 
