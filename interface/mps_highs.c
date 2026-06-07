@@ -335,7 +335,7 @@ exit_cleanup:
   csc_clear_host(csc_cpu);
   problem_clear(prob);
   #if !(CUPDLP_CPU)
-    CHECK_CUDA(hipDeviceReset())
+    CHECK_CUDA(CUPDLP_DEVICE_RESET())
   #endif
 
   return retcode;

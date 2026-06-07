@@ -18,7 +18,7 @@ void PDHG_primalGradientStep(CUPDLPwork *work, CUPDLPvec *xUpdate,
                              cupdlp_float dPrimalStepSize) {
   CUPDLPproblem *problem = work->problem;
 
-#if !(CUPDLP_CPU) && USE_KERNELS
+#if defined(CUPDLP_USE_ROCM) && USE_KERNELS
   cupdlp_pgrad_cuda(xUpdate->data, x->data, problem->cost,
                     ATy->data, problem->lower, problem->upper, dPrimalStepSize,
                     (int)problem->nCols);
@@ -45,7 +45,7 @@ void PDHG_dualGradientStep(CUPDLPwork *work, CUPDLPvec *yUpdate,
                            const CUPDLPvec *AxUpdate, cupdlp_float dDualStepSize) {
   CUPDLPproblem *problem = work->problem;
 
-#if !(CUPDLP_CPU) && USE_KERNELS
+#if defined(CUPDLP_USE_ROCM) && USE_KERNELS
   cupdlp_dgrad_cuda(yUpdate->data, y->data, problem->rhs, Ax->data,
                     AxUpdate->data, dDualStepSize, (int)problem->nRows,
                     (int)problem->nEqs);
@@ -381,7 +381,7 @@ void PDHG_Update_Average(CUPDLPwork *work) {
       sqrt(stepsize->dPrimalStep * stepsize->dDualStep);
   // AddToVector(iterates->xSum, dMeanStepSize, xUpdate, lp->nCols);
   // AddToVector(iterates->ySum, dMeanStepSize, yUpdate, lp->nRows);
-#if !(CUPDLP_CPU) && USE_KERNELS
+#if defined(CUPDLP_USE_ROCM) && USE_KERNELS
   cupdlp_update_average_cuda(iterates->xSum, xUpdate->data,
                              iterates->ySum, yUpdate->data,
                              dMeanStepSize, (int)lp->nCols, (int)lp->nRows);
