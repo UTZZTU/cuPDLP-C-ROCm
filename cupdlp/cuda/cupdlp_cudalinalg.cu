@@ -354,7 +354,7 @@ cupdlp_int print_cuda_info(cusparseHandle_t handle)
 
   printf("HIP runtime %d\n", v_cuda_runtime);
   printf("HIP driver %d\n", v_cuda_driver);
-  printf("hipSPARSE %d\n", v_cusparse);
+  printf("cuSPARSE %d\n", v_cusparse);
 
   int n_devices = 0;
   CHECK_CUDA(cudaGetDeviceCount(&n_devices))

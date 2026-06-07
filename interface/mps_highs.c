@@ -1,5 +1,6 @@
 #include "mps_lp.h"
 #include "wrapper_highs.h"
+#include "../cupdlp/cupdlp_backend_compat.h"
 
 /*
   HiGHS IO for cuPDLP.
@@ -183,8 +184,8 @@ cupdlp_retcode main(int argc, char **argv) {
   CUPDLP_INIT_ZERO(w, 1);
 #if !(CUPDLP_CPU)
   cupdlp_float cuda_prepare_time = getTimeStamp();
-  CHECK_CUSPARSE(hipsparseCreate(&w->cusparsehandle));
-  CHECK_CUBLAS(hipblasCreate(&w->cublashandle));
+  CHECK_CUSPARSE(CUPDLP_SPARSE_CREATE(&w->cusparsehandle));
+  CHECK_CUBLAS(CUPDLP_BLAS_CREATE(&w->cublashandle));
   cuda_prepare_time = getTimeStamp() - cuda_prepare_time;
 #endif
 

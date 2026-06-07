@@ -1,5 +1,6 @@
 
 #include "cupdlp_linalg.h"
+#include "cupdlp_backend_compat.h"
 
 /**
  * The function `ScatterCol` performs a scatter operation on a specific
@@ -520,16 +521,16 @@ void ATy(CUPDLPwork *w, CUPDLPvec *aty, const CUPDLPvec *y)
 /*-------------- Apis compatible with both CPU and GPU -------------------*/
 // only implemented the APis need to be used on GPU
 
-// functions in hipBLAS
+// functions in backend BLAS
 
 cupdlp_int cupdlp_axpy(CUPDLPwork *w, const cupdlp_int n,
                        const cupdlp_float *alpha, const cupdlp_float *x,
                        cupdlp_float *y) {
 #if !(CUPDLP_CPU)
 #ifndef SFLOAT
-  CHECK_CUBLAS(hipblasDaxpy(w->cublashandle, n, alpha, x, 1, y, 1));
+  CHECK_CUBLAS(CUPDLP_BLAS_DAXPY(w->cublashandle, n, alpha, x, 1, y, 1));
 #else
-  CHECK_CUBLAS(hipblasSaxpy(w->cublashandle, n, alpha, x, 1, y, 1));
+  CHECK_CUBLAS(CUPDLP_BLAS_SAXPY(w->cublashandle, n, alpha, x, 1, y, 1));
 #endif
 #else
   // AddToVector(x, *alpha, y, n);
@@ -542,9 +543,9 @@ cupdlp_int cupdlp_dot(CUPDLPwork *w, const cupdlp_int n, const cupdlp_float *x,
                       const cupdlp_float *y, cupdlp_float *res) {
 #if !(CUPDLP_CPU)
 #ifndef SFLOAT
-  CHECK_CUBLAS(hipblasDdot(w->cublashandle, n, x, 1, y, 1, res));
+  CHECK_CUBLAS(CUPDLP_BLAS_DDOT(w->cublashandle, n, x, 1, y, 1, res));
 #else
-  CHECK_CUBLAS(hipblasSdot(w->cublashandle, n, x, 1, y, 1, res));
+  CHECK_CUBLAS(CUPDLP_BLAS_SDOT(w->cublashandle, n, x, 1, y, 1, res));
 #endif
 #else
   *res = dot(n, x, 1, y, 1);
@@ -556,9 +557,9 @@ cupdlp_int cupdlp_twoNorm(CUPDLPwork *w, const cupdlp_int n,
                           const cupdlp_float *x, cupdlp_float *res) {
 #if !(CUPDLP_CPU)
 #ifndef SFLOAT
-  CHECK_CUBLAS(hipblasDnrm2(w->cublashandle, n, x, 1, res));
+  CHECK_CUBLAS(CUPDLP_BLAS_DNRM2(w->cublashandle, n, x, 1, res));
 #else
-  CHECK_CUBLAS(hipblasSnrm2(w->cublashandle, n, x, 1, res));
+  CHECK_CUBLAS(CUPDLP_BLAS_SNRM2(w->cublashandle, n, x, 1, res));
 #endif
 #else
   *res = nrm2(n, x, 1);
@@ -570,9 +571,9 @@ cupdlp_int cupdlp_scaleVector(CUPDLPwork *w, const cupdlp_float weight,
                               cupdlp_float *x, const cupdlp_int n) {
 #if !(CUPDLP_CPU)
 #ifndef SFLOAT
-  CHECK_CUBLAS(hipblasDscal(w->cublashandle, n, &weight, x, 1));
+  CHECK_CUBLAS(CUPDLP_BLAS_DSCAL(w->cublashandle, n, &weight, x, 1));
 #else
-  CHECK_CUBLAS(hipblasSscal(w->cublashandle, n, &weight, x, 1));
+  CHECK_CUBLAS(CUPDLP_BLAS_SSCAL(w->cublashandle, n, &weight, x, 1));
 #endif
 #else
   ScaleVector(weight, x, n);
@@ -619,7 +620,7 @@ void cupdlp_diffDotDiff(CUPDLPwork *w, const cupdlp_float *x1,
   cupdlp_dot(w, len, w->buffer2, w->buffer3, res);
 }
 
-// functions not in hipBLAS
+// functions not in backend BLAS
 
 /* element wise dot: x = x .* y*/
 void cupdlp_edot(cupdlp_float *x, const cupdlp_float *y, const cupdlp_int len) {

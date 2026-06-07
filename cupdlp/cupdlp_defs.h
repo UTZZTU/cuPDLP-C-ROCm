@@ -8,7 +8,7 @@
 #define CUPDLP_DEBUG (0)
 #endif
 
-#if defined(CUPDLP_USE_HIP)
+#if defined(CUPDLP_USE_ROCM) || defined(CUPDLP_USE_HIP)
 #include "hip/cupdlp_hip_kernels.h"
 #include "hip/cupdlp_hip_linalg.h"
 typedef hipsparseDnVecDescr_t cupdlp_sp_dnvec_descr_t;

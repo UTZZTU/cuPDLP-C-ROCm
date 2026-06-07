@@ -60,6 +60,14 @@ message(NOTICE "-- Sets build with ROCm ${BUILD_ROCM}")
 message(NOTICE "-- Sets build with ROCm/HIP backend ${BUILD_HIP}")
 
 if (BUILD_CUDA)
+    add_compile_definitions(CUPDLP_USE_CUDA=1)
+endif()
+
+if (BUILD_ROCM)
+    add_compile_definitions(CUPDLP_USE_ROCM=1)
+endif()
+
+if (BUILD_CUDA)
     include(FindCUDAConf.cmake)
     set(CUPDLP_USE_LEGACY_CUDA ON)
 elseif (BUILD_ROCM)
