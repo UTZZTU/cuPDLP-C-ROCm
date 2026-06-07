@@ -1,0 +1,6 @@
+afiro,example/afiro.mps,200000000,S
+sc50b,validation/netlib/sc50b.mps,200000000,S
+lotfi,validation/netlib/lotfi.mps,200000000,M
+80bau3b,validation/netlib/80bau3b.mps,200000000,M
+maros-r7,validation/netlib/maros-r7.mps,200000000,L
+pilot87,validation/netlib/pilot87.mps,200000000,L
