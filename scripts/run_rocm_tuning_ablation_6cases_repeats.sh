@@ -393,12 +393,12 @@ agg_fields = [
 ]
 
 with (out / "summary_raw.csv").open("w", newline="") as f:
-    writer = csv.DictWriter(f, fieldnames=raw_fields)
+    writer = csv.DictWriter(f, fieldnames=raw_fields, lineterminator="\n")
     writer.writeheader()
     writer.writerows(raw_rows)
 
 with (out / "summary_aggregated.csv").open("w", newline="") as f:
-    writer = csv.DictWriter(f, fieldnames=agg_fields)
+    writer = csv.DictWriter(f, fieldnames=agg_fields, lineterminator="\n")
     writer.writeheader()
     writer.writerows(agg_rows)
 
@@ -456,13 +456,13 @@ agg_fields = [
 
 raw_csv = root / "raw_runs.csv"
 with raw_csv.open("w", newline="") as f:
-    writer = csv.DictWriter(f, fieldnames=raw_fields)
+    writer = csv.DictWriter(f, fieldnames=raw_fields, lineterminator="\n")
     writer.writeheader()
     writer.writerows(raw_rows)
 
 agg_csv = root / "aggregated_summary.csv"
 with agg_csv.open("w", newline="") as f:
-    writer = csv.DictWriter(f, fieldnames=agg_fields)
+    writer = csv.DictWriter(f, fieldnames=agg_fields, lineterminator="\n")
     writer.writeheader()
     writer.writerows(agg_rows)
 

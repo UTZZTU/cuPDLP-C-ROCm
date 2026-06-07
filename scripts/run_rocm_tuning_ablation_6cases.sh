@@ -285,7 +285,7 @@ fields = [
     "dRelDualFeas","dRelDualityGap","json","log"
 ]
 with (out / "summary.csv").open("w", newline="") as f:
-    writer = csv.DictWriter(f, fieldnames=fields)
+    writer = csv.DictWriter(f, fieldnames=fields, lineterminator="\n")
     writer.writeheader()
     writer.writerows(rows)
 
@@ -327,7 +327,7 @@ fields = [
 ]
 summary_csv = root / "ablation_summary.csv"
 with summary_csv.open("w", newline="") as f:
-    writer = csv.DictWriter(f, fieldnames=fields)
+    writer = csv.DictWriter(f, fieldnames=fields, lineterminator="\n")
     writer.writeheader()
     writer.writerows(rows)
 

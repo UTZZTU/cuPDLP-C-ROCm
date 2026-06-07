@@ -170,7 +170,7 @@ fields = list(rows[0].keys()) if rows else [
 
 csv_path = run / "summary.csv"
 with csv_path.open("w", newline="") as f:
-    writer = csv.DictWriter(f, fieldnames=fields)
+    writer = csv.DictWriter(f, fieldnames=fields, lineterminator="\n")
     writer.writeheader()
     writer.writerows(rows)
 
