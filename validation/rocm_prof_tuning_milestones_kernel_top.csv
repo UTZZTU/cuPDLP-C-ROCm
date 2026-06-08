@@ -1,0 +1,361 @@
+label,case,rank,kernel,calls,total_ms,max_ms
+cache_attrs,lotfi,1,__amd_rocclr_copyBuffer,410996,544.3066730006828,0.108398
+cache_attrs,lotfi,2,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",177108,506.42914199983034,0.108237
+cache_attrs,lotfi,3,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",180514,233.23072299995127,0.085398
+cache_attrs,lotfi,4,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",86397,139.43787199997504,0.058958
+cache_attrs,lotfi,5,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",86397,130.14837900006395,0.080078
+cache_attrs,lotfi,6,"movement_2_kernel(double*, double const*, double const*, int)",86397,104.74696699999835,0.084238
+cache_attrs,lotfi,7,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",86397,95.71156500003944,0.067518
+cache_attrs,lotfi,8,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",25874,54.07654200000091,0.110837
+cache_attrs,lotfi,9,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",17528,40.12520599999965,0.083998
+cache_attrs,lotfi,10,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",17458,32.639221999999194,0.085718
+cache_attrs,lotfi,11,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",4382,10.565767999999979,0.072438
+cache_attrs,lotfi,12,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",4382,9.740587000000072,0.044399
+cache_attrs,lotfi,13,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",4382,9.281323000000006,0.016519
+cache_attrs,lotfi,14,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",4312,6.890819999999991,0.080078
+cache_attrs,lotfi,15,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",4382,6.746997000000042,0.043838
+cache_attrs,lotfi,16,"element_wise_dot_kernel(double*, double const*, int)",4386,6.716766000000118,0.0106
+cache_attrs,lotfi,17,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",4312,6.65456799999994,0.071559
+cache_attrs,lotfi,18,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",4312,6.560293999999992,0.067279
+cache_attrs,lotfi,19,"element_dual_infeas_kernel_constr(double*, double const*, double const*, double, int, int, int)",4312,6.232555999999961,0.01044
+cache_attrs,lotfi,20,"void rocblas_scal_kernel<int, 256, double, double, double, double*>(int, double, long, double*, long, int, long, int)",4310,5.407433000000061,0.007359
+cache_attrs,pilot87,1,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",84448,1522.3581240000224,0.138797
+cache_attrs,pilot87,2,"void rocsparse::csrmvn_general_kernel<256u, 8u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",84448,1289.6658329999084,0.168675
+cache_attrs,pilot87,3,__amd_rocclr_copyBuffer,392059,510.471266000386,0.087238
+cache_attrs,pilot87,4,"sum_kernel(double*, double const*, int)",247164,343.10663700002334,0.123237
+cache_attrs,pilot87,5,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",172372,297.00858100000477,0.114037
+cache_attrs,pilot87,6,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",82388,226.25173500003598,0.072958
+cache_attrs,pilot87,7,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",82388,224.3822120000297,0.091558
+cache_attrs,pilot87,8,"movement_2_kernel(double*, double const*, double const*, int)",82388,137.8402019999665,0.082678
+cache_attrs,pilot87,9,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",82388,118.06775299996619,0.092357
+cache_attrs,pilot87,10,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",24710,65.87535900000356,0.115237
+cache_attrs,pilot87,11,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",16760,54.9322469999998,0.088358
+cache_attrs,pilot87,12,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",16688,32.550193999999294,0.083198
+cache_attrs,pilot87,13,"void rocblas_reduction_kernel_part2<512, 2, rocblas_finalize_nrm2, double, double>(int, double*, double*)",16688,29.94209299999896,0.082278
+cache_attrs,pilot87,14,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",4118,13.523895000000065,0.085238
+cache_attrs,pilot87,15,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",4118,12.730618000000092,0.087438
+cache_attrs,pilot87,16,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",4118,12.379096000000025,0.076478
+cache_attrs,pilot87,17,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",4190,12.071602000000007,0.068598
+cache_attrs,pilot87,18,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",4190,10.641387000000059,0.077758
+cache_attrs,pilot87,19,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",4190,9.971741000000028,0.085598
+cache_attrs,pilot87,20,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",4190,8.886771000000051,0.01052
+cache_attrs,scfxm1,1,__amd_rocclr_copyBuffer,52670,69.5986849999986,0.083278
+cache_attrs,scfxm1,2,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",22432,69.0636849999994,0.143556
+cache_attrs,scfxm1,3,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",23098,29.583345000002122,0.078598
+cache_attrs,scfxm1,4,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",10932,18.482033999999647,0.016759
+cache_attrs,scfxm1,5,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",10932,15.888242999999965,0.072158
+cache_attrs,scfxm1,6,"movement_2_kernel(double*, double const*, double const*, int)",10932,14.31160400000063,0.037639
+cache_attrs,scfxm1,7,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",10932,12.030632999999224,0.043559
+cache_attrs,scfxm1,8,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",3398,6.847134000000047,0.01244
+cache_attrs,scfxm1,9,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",2432,5.284472999999991,0.0124
+cache_attrs,scfxm1,10,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",2390,4.231388000000024,0.066799
+cache_attrs,scfxm1,11,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",608,1.2786930000000019,0.01016
+cache_attrs,scfxm1,12,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",608,1.216736000000001,0.01012
+cache_attrs,scfxm1,13,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",608,1.2016129999999985,0.010879
+cache_attrs,scfxm1,14,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",566,0.9376559999999999,0.066958
+cache_attrs,scfxm1,15,"element_wise_dot_kernel(double*, double const*, int)",612,0.9097410000000012,0.009
+cache_attrs,scfxm1,16,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",566,0.8798640000000005,0.01012
+cache_attrs,scfxm1,17,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",608,0.8788159999999989,0.00996
+cache_attrs,scfxm1,18,"element_dual_infeas_kernel_constr(double*, double const*, double const*, double, int, int, int)",566,0.7633040000000003,0.00952
+cache_attrs,scfxm1,19,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",566,0.7531420000000014,0.00932
+cache_attrs,scfxm1,20,"void rocblas_scal_kernel<int, 256, double, double, double, double*>(int, double, long, double*, long, int, long, int)",564,0.694107999999999,0.0028
+current,lotfi,1,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",177108,497.2813859998403,0.089197
+current,lotfi,2,__amd_rocclr_copyBuffer,238202,327.90759700004025,0.094718
+current,lotfi,3,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",86397,135.99452900000136,0.079518
+current,lotfi,4,"movement_2_kernel(double*, double const*, double const*, int)",86397,124.81119899997387,0.078758
+current,lotfi,5,"update_average_kernel(double*, double const*, double*, double const*, double, int, int)",85840,121.25684599997683,0.076918
+current,lotfi,6,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",86397,120.95731300007317,0.080278
+current,lotfi,7,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",86397,95.7571520000522,0.079958
+current,lotfi,8,"save_movement_xy_kernel(double*, double const*, double const*)",86397,79.96424399995908,0.017119
+current,lotfi,9,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",25874,53.31648900000339,0.140277
+current,lotfi,10,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",17528,38.859153999999684,0.087918
+current,lotfi,11,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",17458,31.325656999999232,0.086318
+current,lotfi,12,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",8834,12.608494999999662,0.059599
+current,lotfi,13,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",4382,9.450385000000002,0.01044
+current,lotfi,14,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",4382,8.78605100000006,0.083958
+current,lotfi,15,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",4382,6.958742000000015,0.059679
+current,lotfi,16,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",4312,6.655474999999963,0.010119
+current,lotfi,17,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",4312,6.5470309999998895,0.00984
+current,lotfi,18,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",4312,6.281096999999943,0.01052
+current,lotfi,19,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",4382,6.270796000000033,0.053319
+current,lotfi,20,"element_dual_infeas_kernel_constr(double*, double const*, double const*, double, int, int, int)",4312,6.091971999999914,0.01336
+current,pilot87,1,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",84448,1484.9045940000315,0.092718
+current,pilot87,2,"void rocsparse::csrmvn_general_kernel<256u, 8u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",84448,1216.8864649999193,0.083238
+current,pilot87,3,"sum_kernel(double*, double const*, int)",247164,337.2525790000748,0.052438
+current,pilot87,4,__amd_rocclr_copyBuffer,227283,324.7659980001532,0.049919
+current,pilot87,5,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",82388,242.10685100005685,0.037159
+current,pilot87,6,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",82388,221.66667500004664,0.0318
+current,pilot87,7,"update_average_kernel(double*, double const*, double*, double const*, double, int, int)",81960,178.61973899998594,0.043039
+current,pilot87,8,"movement_2_kernel(double*, double const*, double const*, int)",82388,135.93289099993655,0.038919
+current,pilot87,9,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",82388,116.83457199995635,0.023799
+current,pilot87,10,"save_movement_xy_kernel(double*, double const*, double const*)",82388,79.44193699995567,0.01616
+current,pilot87,11,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",24710,64.77066900000393,0.054519
+current,pilot87,12,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",16760,54.00745799999991,0.056319
+current,pilot87,13,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",16688,31.89016699999962,0.030679
+current,pilot87,14,"void rocblas_reduction_kernel_part2<512, 2, rocblas_finalize_nrm2, double, double>(int, double*, double*)",16688,29.29279799999933,0.043039
+current,pilot87,15,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",8452,14.825892000000122,0.023919
+current,pilot87,16,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",4118,13.039607000000014,0.016239
+current,pilot87,17,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",4118,12.711237000000077,0.027119
+current,pilot87,18,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",4118,12.558597000000024,0.027399
+current,pilot87,19,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",4190,11.94981600000001,0.011
+current,pilot87,20,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",4190,11.025452000000124,0.034799
+current,scfxm1,1,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",22432,66.30924999999864,0.017759
+current,scfxm1,2,__amd_rocclr_copyBuffer,30806,41.676488999997645,0.02276
+current,scfxm1,3,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",10932,17.769650999999453,0.01584
+current,scfxm1,4,"movement_2_kernel(double*, double const*, double const*, int)",10932,16.209520000000573,0.0106
+current,scfxm1,5,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",10932,15.064230999999635,0.0224
+current,scfxm1,6,"update_average_kernel(double*, double const*, double*, double const*, double, int, int)",10920,14.72007400000063,0.010239
+current,scfxm1,7,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",10932,11.630579999999268,0.010079
+current,scfxm1,8,"save_movement_xy_kernel(double*, double const*, double const*)",10932,9.641638999999653,0.00988
+current,scfxm1,9,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",3398,6.524186000000055,0.015479
+current,scfxm1,10,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",2432,5.186113000000014,0.014239
+current,scfxm1,11,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",2390,4.054090999999998,0.02044
+current,scfxm1,12,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",1258,1.7333069999999993,0.00868
+current,scfxm1,13,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",608,1.3072460000000035,0.0092
+current,scfxm1,14,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",608,1.2034050000000007,0.00916
+current,scfxm1,15,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",608,0.9737410000000001,0.00972
+current,scfxm1,16,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",566,0.8276649999999983,0.00708
+current,scfxm1,17,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",608,0.8087860000000024,0.00856
+current,scfxm1,18,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",566,0.8038109999999988,0.010239
+current,scfxm1,19,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",566,0.7655800000000013,0.012039
+current,scfxm1,20,"element_wise_dot_kernel(double*, double const*, int)",612,0.7346260000000006,0.01092
+fused_average,lotfi,1,__amd_rocclr_copyBuffer,410996,530.1443880004047,0.133076
+fused_average,lotfi,2,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",177108,492.8214619998513,0.091438
+fused_average,lotfi,3,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",86397,141.67777099997866,0.077318
+fused_average,lotfi,4,"update_average_kernel(double*, double const*, double*, double const*, double, int, int)",85840,122.56024499997915,0.085878
+fused_average,lotfi,5,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",86397,109.33630000006782,0.077958
+fused_average,lotfi,6,"movement_2_kernel(double*, double const*, double const*, int)",86397,108.97181699997537,0.079358
+fused_average,lotfi,7,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",86397,98.80280600004929,0.075678
+fused_average,lotfi,8,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",25874,53.41116300000208,0.098277
+fused_average,lotfi,9,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",17528,38.90876799999971,0.119677
+fused_average,lotfi,10,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",17458,31.33244899999942,0.080558
+fused_average,lotfi,11,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",8834,12.286959999999638,0.063678
+fused_average,lotfi,12,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",4382,9.490449999999965,0.075118
+fused_average,lotfi,13,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",4382,8.986041000000007,0.025919
+fused_average,lotfi,14,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",4382,8.709511999999988,0.046119
+fused_average,lotfi,15,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",4312,6.577138999999974,0.053558
+fused_average,lotfi,16,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",4312,6.385962999999932,0.0104
+fused_average,lotfi,17,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",4382,6.200555000000002,0.055039
+fused_average,lotfi,18,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",4312,5.9355979999999695,0.01112
+fused_average,lotfi,19,"element_dual_infeas_kernel_constr(double*, double const*, double const*, double, int, int, int)",4312,5.805293999999944,0.01448
+fused_average,lotfi,20,"void rocblas_scal_kernel<int, 256, double, double, double, double*>(int, double, long, double*, long, int, long, int)",4310,5.4522890000000865,0.00808
+fused_average,pilot87,1,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",84448,1520.2559260000403,0.178036
+fused_average,pilot87,2,"void rocsparse::csrmvn_general_kernel<256u, 8u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",84448,1279.7798649998995,0.126117
+fused_average,pilot87,3,__amd_rocclr_copyBuffer,392059,503.46199500037085,0.128237
+fused_average,pilot87,4,"sum_kernel(double*, double const*, int)",247164,340.85644900000597,0.116517
+fused_average,pilot87,5,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",82388,230.60288400003174,0.080998
+fused_average,pilot87,6,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",82388,225.39200000002984,0.086838
+fused_average,pilot87,7,"update_average_kernel(double*, double const*, double*, double const*, double, int, int)",81960,171.79982899999996,0.091717
+fused_average,pilot87,8,"movement_2_kernel(double*, double const*, double const*, int)",82388,134.98039899994086,0.0164
+fused_average,pilot87,9,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",82388,117.54279399998157,0.082318
+fused_average,pilot87,10,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",24710,64.27390800000374,0.085798
+fused_average,pilot87,11,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",16760,53.06429499999948,0.088198
+fused_average,pilot87,12,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",16688,31.738680999999264,0.080038
+fused_average,pilot87,13,"void rocblas_reduction_kernel_part2<512, 2, rocblas_finalize_nrm2, double, double>(int, double*, double*)",16688,30.454719999998787,0.076278
+fused_average,pilot87,14,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",8452,15.651490000000104,0.074198
+fused_average,pilot87,15,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",4118,13.238955000000056,0.084557
+fused_average,pilot87,16,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",4118,12.31436600000002,0.093798
+fused_average,pilot87,17,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",4118,12.083058000000078,0.01808
+fused_average,pilot87,18,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",4190,11.477847000000033,0.084638
+fused_average,pilot87,19,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",4190,10.124221999999964,0.084798
+fused_average,pilot87,20,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",4190,9.695019000000034,0.075758
+fused_average,scfxm1,1,__amd_rocclr_copyBuffer,52670,70.48758799999689,0.080238
+fused_average,scfxm1,2,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",22432,69.71753299999882,0.083838
+fused_average,scfxm1,3,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",10932,19.56962399999879,0.016439
+fused_average,scfxm1,4,"update_average_kernel(double*, double const*, double*, double const*, double, int, int)",10920,16.421891000000024,0.078118
+fused_average,scfxm1,5,"movement_2_kernel(double*, double const*, double const*, int)",10932,15.3598939999998,0.01124
+fused_average,scfxm1,6,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",10932,14.901219999999318,0.080958
+fused_average,scfxm1,7,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",10932,13.49429999999885,0.015
+fused_average,scfxm1,8,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",3398,7.237321000000059,0.084238
+fused_average,scfxm1,9,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",2432,5.776449000000005,0.045199
+fused_average,scfxm1,10,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",2390,4.465076000000006,0.089318
+fused_average,scfxm1,11,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",1258,1.9411099999999957,0.00808
+fused_average,scfxm1,12,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",608,1.8527590000000043,0.010279
+fused_average,scfxm1,13,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",608,1.6447890000000003,0.008959
+fused_average,scfxm1,14,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",608,1.4419189999999957,0.01004
+fused_average,scfxm1,15,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",608,0.9930919999999998,0.083238
+fused_average,scfxm1,16,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",566,0.9220189999999998,0.00876
+fused_average,scfxm1,17,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",566,0.9109029999999994,0.00776
+fused_average,scfxm1,18,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",566,0.908778000000001,0.0104
+fused_average,scfxm1,19,"element_dual_infeas_kernel_constr(double*, double const*, double const*, double, int, int, int)",566,0.8566170000000002,0.01
+fused_average,scfxm1,20,"element_wise_dot_kernel(double*, double const*, int)",612,0.7554550000000009,0.00584
+pre_tuning,lotfi,1,__amd_rocclr_copyBuffer,410996,560.3306860004285,0.104277
+pre_tuning,lotfi,2,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",177108,519.0548389998476,0.112997
+pre_tuning,lotfi,3,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",180514,281.3221120000389,0.081238
+pre_tuning,lotfi,4,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",86397,142.2835819999787,0.082518
+pre_tuning,lotfi,5,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",86397,137.82251900002086,0.090078
+pre_tuning,lotfi,6,"movement_2_kernel(double*, double const*, double const*, int)",86397,107.50535699999732,0.080758
+pre_tuning,lotfi,7,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",86397,98.53883700004424,0.054319
+pre_tuning,lotfi,8,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",25874,56.173691999999896,0.085557
+pre_tuning,lotfi,9,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",17528,41.39925999999969,0.087077
+pre_tuning,lotfi,10,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",17458,32.80652799999909,0.077438
+pre_tuning,lotfi,11,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",4382,11.493999999999994,0.01656
+pre_tuning,lotfi,12,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",4382,10.34329300000003,0.055439
+pre_tuning,lotfi,13,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",4382,9.628896999999945,0.076998
+pre_tuning,lotfi,14,"element_wise_dot_kernel(double*, double const*, int)",4386,7.600538000000115,0.026599
+pre_tuning,lotfi,15,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",4382,7.463441000000022,0.057439
+pre_tuning,lotfi,16,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",4312,7.268000999999977,0.071638
+pre_tuning,lotfi,17,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",4312,7.197475999999986,0.072878
+pre_tuning,lotfi,18,"element_dual_infeas_kernel_constr(double*, double const*, double const*, double, int, int, int)",4312,6.5696069999999605,0.0106
+pre_tuning,lotfi,19,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",4312,6.522455999999965,0.070958
+pre_tuning,lotfi,20,"void rocblas_scal_kernel<int, 256, double, double, double, double*>(int, double, long, double*, long, int, long, int)",4310,5.2134790000000555,0.0072
+pre_tuning,pilot87,1,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",84448,1524.038991000018,0.121917
+pre_tuning,pilot87,2,"void rocsparse::csrmvn_general_kernel<256u, 8u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",84448,1291.155588999907,0.175436
+pre_tuning,pilot87,3,__amd_rocclr_copyBuffer,392059,530.7893240005579,0.105557
+pre_tuning,pilot87,4,"sum_kernel(double*, double const*, int)",247164,353.975715999961,0.105037
+pre_tuning,pilot87,5,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",172372,322.03605599999304,0.087358
+pre_tuning,pilot87,6,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",82388,233.27584800002452,0.085438
+pre_tuning,pilot87,7,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",82388,224.97425200002712,0.193435
+pre_tuning,pilot87,8,"movement_2_kernel(double*, double const*, double const*, int)",82388,138.6512759999509,0.02464
+pre_tuning,pilot87,9,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",82388,121.07006599998064,0.079998
+pre_tuning,pilot87,10,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",24710,64.96477800000476,0.086517
+pre_tuning,pilot87,11,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",16760,55.4736549999998,0.088477
+pre_tuning,pilot87,12,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",16688,31.685997999999135,0.086398
+pre_tuning,pilot87,13,"void rocblas_reduction_kernel_part2<512, 2, rocblas_finalize_nrm2, double, double>(int, double*, double*)",16688,29.25772599999886,0.084237
+pre_tuning,pilot87,14,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",4190,13.517429000000053,0.083917
+pre_tuning,pilot87,15,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",4118,13.14588599999997,0.075758
+pre_tuning,pilot87,16,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",4118,12.55850800000009,0.083038
+pre_tuning,pilot87,17,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",4118,12.398919000000005,0.01372
+pre_tuning,pilot87,18,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",4190,11.021189999999967,0.027559
+pre_tuning,pilot87,19,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",4190,10.289385000000024,0.061318
+pre_tuning,pilot87,20,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",4190,9.07206000000001,0.0102
+pre_tuning,scfxm1,1,__amd_rocclr_copyBuffer,52670,70.84436999999899,0.086678
+pre_tuning,scfxm1,2,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",22432,69.92433999999952,0.100277
+pre_tuning,scfxm1,3,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",23098,34.6957660000014,0.082477
+pre_tuning,scfxm1,4,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",10932,18.45291599999982,0.020679
+pre_tuning,scfxm1,5,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",10932,16.667441000000096,0.051518
+pre_tuning,scfxm1,6,"movement_2_kernel(double*, double const*, double const*, int)",10932,14.150443000000275,0.00696
+pre_tuning,scfxm1,7,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",10932,12.109955999999032,0.084357
+pre_tuning,scfxm1,8,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",3398,6.831938000000034,0.072918
+pre_tuning,scfxm1,9,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",2432,5.533374999999981,0.077917
+pre_tuning,scfxm1,10,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",2390,4.224449000000022,0.129876
+pre_tuning,scfxm1,11,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",608,1.5335810000000054,0.016119
+pre_tuning,scfxm1,12,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",608,1.324357000000001,0.00996
+pre_tuning,scfxm1,13,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",608,1.1906010000000011,0.009559
+pre_tuning,scfxm1,14,"element_wise_dot_kernel(double*, double const*, int)",612,1.0430100000000002,0.01044
+pre_tuning,scfxm1,15,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",608,1.0152929999999998,0.049958
+pre_tuning,scfxm1,16,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",566,0.8860160000000007,0.0154
+pre_tuning,scfxm1,17,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",566,0.883131,0.00836
+pre_tuning,scfxm1,18,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",566,0.7505290000000016,0.009359
+pre_tuning,scfxm1,19,"element_dual_infeas_kernel_constr(double*, double const*, double const*, double, int, int, int)",566,0.7419000000000002,0.009559
+pre_tuning,scfxm1,20,"void rocblas_scal_kernel<int, 256, double, double, double, double*>(int, double, long, double*, long, int, long, int)",564,0.6870579999999991,0.010999
+reduce_scalar_copies,lotfi,1,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",177108,495.81037899982607,0.124076
+reduce_scalar_copies,lotfi,2,__amd_rocclr_copyBuffer,238202,326.8367280000486,0.103317
+reduce_scalar_copies,lotfi,3,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",86397,134.64120400000857,0.078358
+reduce_scalar_copies,lotfi,4,"movement_2_kernel(double*, double const*, double const*, int)",86397,125.68644699997763,0.075838
+reduce_scalar_copies,lotfi,5,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",86397,120.8294070000713,0.111317
+reduce_scalar_copies,lotfi,6,"update_average_kernel(double*, double const*, double*, double const*, double, int, int)",85840,117.08493199996427,0.082038
+reduce_scalar_copies,lotfi,7,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",86397,93.56537000004914,0.081878
+reduce_scalar_copies,lotfi,8,"save_movement_xy_kernel(double*, double const*, double const*)",86397,79.27174199996419,0.01592
+reduce_scalar_copies,lotfi,9,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",25874,52.255123000002385,0.108717
+reduce_scalar_copies,lotfi,10,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",17528,38.382584999999736,0.082838
+reduce_scalar_copies,lotfi,11,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",17458,31.0054749999991,0.075638
+reduce_scalar_copies,lotfi,12,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",8834,12.328756999999587,0.070078
+reduce_scalar_copies,lotfi,13,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",4382,9.615768999999997,0.01552
+reduce_scalar_copies,lotfi,14,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",4382,8.862364000000063,0.023999
+reduce_scalar_copies,lotfi,15,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",4382,6.992315000000016,0.047399
+reduce_scalar_copies,lotfi,16,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",4312,6.592226999999958,0.010239
+reduce_scalar_copies,lotfi,17,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",4312,6.387090999999908,0.00972
+reduce_scalar_copies,lotfi,18,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",4312,6.24268299999996,0.053119
+reduce_scalar_copies,lotfi,19,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",4382,6.193520000000021,0.078159
+reduce_scalar_copies,lotfi,20,"element_dual_infeas_kernel_constr(double*, double const*, double const*, double, int, int, int)",4312,5.7915509999999415,0.01056
+reduce_scalar_copies,pilot87,1,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",84448,1547.042474000019,5.600848
+reduce_scalar_copies,pilot87,2,"void rocsparse::csrmvn_general_kernel<256u, 8u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",84448,1261.640113999907,0.105877
+reduce_scalar_copies,pilot87,3,"sum_kernel(double*, double const*, int)",247164,345.80479000002947,0.084038
+reduce_scalar_copies,pilot87,4,__amd_rocclr_copyBuffer,227283,331.4846830002073,0.082838
+reduce_scalar_copies,pilot87,5,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",82388,248.9498920000419,0.107357
+reduce_scalar_copies,pilot87,6,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",82388,221.05855800005352,0.084478
+reduce_scalar_copies,pilot87,7,"update_average_kernel(double*, double const*, double*, double const*, double, int, int)",81960,183.37217399998963,0.131397
+reduce_scalar_copies,pilot87,8,"movement_2_kernel(double*, double const*, double const*, int)",82388,137.67046399994683,0.086877
+reduce_scalar_copies,pilot87,9,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",82388,121.02096599997542,0.081998
+reduce_scalar_copies,pilot87,10,"save_movement_xy_kernel(double*, double const*, double const*)",82388,82.22156399994367,0.01856
+reduce_scalar_copies,pilot87,11,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",24710,64.70297500000375,0.068918
+reduce_scalar_copies,pilot87,12,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",16760,55.44562799999996,0.080838
+reduce_scalar_copies,pilot87,13,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",16688,32.15847799999941,0.01724
+reduce_scalar_copies,pilot87,14,"void rocblas_reduction_kernel_part2<512, 2, rocblas_finalize_nrm2, double, double>(int, double*, double*)",16688,29.723779999998847,0.084438
+reduce_scalar_copies,pilot87,15,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",8452,15.147466000000165,0.061358
+reduce_scalar_copies,pilot87,16,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",4118,13.203782000000015,0.01832
+reduce_scalar_copies,pilot87,17,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",4118,13.197699000000037,0.127197
+reduce_scalar_copies,pilot87,18,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",4190,12.91351000000002,0.081798
+reduce_scalar_copies,pilot87,19,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",4118,12.908437000000022,0.067719
+reduce_scalar_copies,pilot87,20,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",4190,11.253147000000123,0.066998
+reduce_scalar_copies,scfxm1,1,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",22432,72.44904300000037,0.085558
+reduce_scalar_copies,scfxm1,2,__amd_rocclr_copyBuffer,30806,44.14902599999941,0.077758
+reduce_scalar_copies,scfxm1,3,"movement_2_kernel(double*, double const*, double const*, int)",10932,19.77176499999893,0.050879
+reduce_scalar_copies,scfxm1,4,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",10932,18.609069999999452,0.00952
+reduce_scalar_copies,scfxm1,5,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",10932,18.465789000000125,0.080878
+reduce_scalar_copies,scfxm1,6,"update_average_kernel(double*, double const*, double*, double const*, double, int, int)",10920,16.8865489999999,0.076478
+reduce_scalar_copies,scfxm1,7,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",10932,12.844145999999165,0.075358
+reduce_scalar_copies,scfxm1,8,"save_movement_xy_kernel(double*, double const*, double const*)",10932,10.809089999999902,0.00948
+reduce_scalar_copies,scfxm1,9,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",3398,7.622900000000054,0.081838
+reduce_scalar_copies,scfxm1,10,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",2432,5.844216000000008,0.01128
+reduce_scalar_copies,scfxm1,11,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",2390,4.566111000000013,0.064398
+reduce_scalar_copies,scfxm1,12,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",608,1.9406300000000052,0.01044
+reduce_scalar_copies,scfxm1,13,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",1258,1.9101519999999965,0.00908
+reduce_scalar_copies,scfxm1,14,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",608,1.712871999999998,0.010039
+reduce_scalar_copies,scfxm1,15,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",608,1.1342549999999982,0.048758
+reduce_scalar_copies,scfxm1,16,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",566,1.0132590000000001,0.058678
+reduce_scalar_copies,scfxm1,17,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",608,0.9845679999999996,0.0104
+reduce_scalar_copies,scfxm1,18,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",566,0.9836950000000005,0.00708
+reduce_scalar_copies,scfxm1,19,"element_dual_infeas_kernel_constr(double*, double const*, double const*, double, int, int, int)",566,0.9784490000000009,0.01016
+reduce_scalar_copies,scfxm1,20,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",566,0.9684670000000009,0.010359
+remove_sync,lotfi,1,__amd_rocclr_copyBuffer,410996,541.0766260003841,0.122477
+remove_sync,lotfi,2,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",177108,504.37453899983086,0.097478
+remove_sync,lotfi,3,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",180514,260.71330299995066,0.085598
+remove_sync,lotfi,4,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",86397,139.563274999979,0.087117
+remove_sync,lotfi,5,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",86397,129.7676700000523,0.084358
+remove_sync,lotfi,6,"movement_2_kernel(double*, double const*, double const*, int)",86397,104.25100099999698,0.01624
+remove_sync,lotfi,7,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",86397,95.3560040000395,0.076038
+remove_sync,lotfi,8,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",25874,53.92491800000157,0.085399
+remove_sync,lotfi,9,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",17528,40.25450699999985,0.081398
+remove_sync,lotfi,10,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",17458,31.864626999999295,0.079918
+remove_sync,lotfi,11,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",4382,11.087397999999977,0.080598
+remove_sync,lotfi,12,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",4382,10.039454000000108,0.070478
+remove_sync,lotfi,13,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",4382,9.259549999999992,0.011159
+remove_sync,lotfi,14,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",4382,7.196306000000058,0.087638
+remove_sync,lotfi,15,"element_wise_dot_kernel(double*, double const*, int)",4386,6.993143000000139,0.046799
+remove_sync,lotfi,16,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",4312,6.73944899999998,0.010679
+remove_sync,lotfi,17,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",4312,6.72343399999992,0.061159
+remove_sync,lotfi,18,"element_dual_infeas_kernel_constr(double*, double const*, double const*, double, int, int, int)",4312,6.49527199999995,0.060879
+remove_sync,lotfi,19,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",4312,6.325286999999974,0.079558
+remove_sync,lotfi,20,"void rocblas_scal_kernel<int, 256, double, double, double, double*>(int, double, long, double*, long, int, long, int)",4310,5.339085000000061,0.049279
+remove_sync,pilot87,1,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",84448,1521.5632820000374,0.154196
+remove_sync,pilot87,2,"void rocsparse::csrmvn_general_kernel<256u, 8u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",84448,1289.3227599999152,0.139316
+remove_sync,pilot87,3,__amd_rocclr_copyBuffer,392059,512.4398370003798,0.107597
+remove_sync,pilot87,4,"sum_kernel(double*, double const*, int)",247164,345.4105030000076,0.113517
+remove_sync,pilot87,5,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",172372,302.49748800002226,0.090238
+remove_sync,pilot87,6,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",82388,226.78002900002784,0.125957
+remove_sync,pilot87,7,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",82388,222.56781600002407,0.085077
+remove_sync,pilot87,8,"movement_2_kernel(double*, double const*, double const*, int)",82388,137.8729659999638,0.088318
+remove_sync,pilot87,9,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",82388,118.66614299997352,0.088438
+remove_sync,pilot87,10,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",24710,65.27190700000428,0.086957
+remove_sync,pilot87,11,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",16760,54.88271899999914,0.098198
+remove_sync,pilot87,12,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",16688,33.023278999999256,0.088238
+remove_sync,pilot87,13,"void rocblas_reduction_kernel_part2<512, 2, rocblas_finalize_nrm2, double, double>(int, double*, double*)",16688,29.883493999998887,0.077958
+remove_sync,pilot87,14,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",4118,13.29223700000003,0.018159
+remove_sync,pilot87,15,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",4118,12.628649000000049,0.083558
+remove_sync,pilot87,16,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",4118,12.381288000000085,0.085277
+remove_sync,pilot87,17,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",4190,12.226402000000032,0.073958
+remove_sync,pilot87,18,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",4190,10.743051000000024,0.103358
+remove_sync,pilot87,19,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",4190,10.30665300000006,0.077878
+remove_sync,pilot87,20,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",4190,8.28732000000008,0.01008
+remove_sync,scfxm1,1,"void rocsparse::csrmvn_general_kernel<256u, 32u, int, int, double, double, double, double>(bool, int, rocsparse::const_host_device_scalar<double>, int const*, int const*, int const*, double const*, double const*, rocsparse::const_host_device_scalar<double>, double*, rocsparse_index_base_, bool)",22432,69.43660499999899,0.110477
+remove_sync,scfxm1,2,__amd_rocclr_copyBuffer,52670,68.9068019999988,0.083238
+remove_sync,scfxm1,3,"void rocblas_axpy_kernel<int, 256, double, double, double const*, double*>(int, double, long, double const*, long, int, long, double*, long, int, long, int)",23098,33.027621000001545,0.082718
+remove_sync,scfxm1,4,"movement_1_kernel(double*, double*, double const*, double const*, double const*, double const*, int)",10932,18.344912999999522,0.009839
+remove_sync,scfxm1,5,"primal_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double const*, double, int)",10932,16.207119999999843,0.052118
+remove_sync,scfxm1,6,"movement_2_kernel(double*, double const*, double const*, int)",10932,14.181035000000575,0.014239
+remove_sync,scfxm1,7,"dual_grad_step_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",10932,11.91889199999922,0.013199
+remove_sync,scfxm1,8,"void rocblas_dot_kernel_magsq<int, true, 1024, 32, false, double, double const*, double>(int, double const*, long, int, long, int, double*, double*)",3398,6.78691700000005,0.01404
+remove_sync,scfxm1,9,"void rocblas_dot_kernel_inc1by2<true, 1024, 32, false, double, double const*, double>(int, double const*, long, long, double const*, long, long, int, double*, double*)",2432,5.475742999999987,0.054038
+remove_sync,scfxm1,10,"void rocblas_reduction_kernel_part1<int, 512, 2, rocblas_fetch_nrm2<double>, double const*, double>(int, int, double const*, long, int, long, int, double*)",2390,4.309479000000016,0.082278
+remove_sync,scfxm1,11,"element_dual_feas_kernel_3(double*, double const*, double const*, int)",608,1.3573630000000014,0.00984
+remove_sync,scfxm1,12,"element_dual_feas_kernel_2(double*, double const*, double const*, int)",608,1.3105339999999999,0.077998
+remove_sync,scfxm1,13,"element_primal_feas_kernel(double*, double const*, double const*, double const*, int, int, int)",608,1.2298159999999994,0.01004
+remove_sync,scfxm1,14,"element_dual_feas_kernel_1(double*, double const*, double const*, int)",608,0.987738,0.017919
+remove_sync,scfxm1,15,"element_wise_dot_kernel(double*, double const*, int)",612,0.9513799999999997,0.00624
+remove_sync,scfxm1,16,"element_dual_infeas_kernel_ub(double*, double const*, double const*, double const*, double, int, int)",566,0.8707820000000014,0.01072
+remove_sync,scfxm1,17,"element_dual_infeas_kernel_lb(double*, double const*, double const*, double const*, double, int, int)",566,0.8486169999999984,0.0062
+remove_sync,scfxm1,18,"element_primal_infeas_kernel(double*, double const*, double const*, double const*, double const*, double, int, int)",566,0.8086970000000017,0.01
+remove_sync,scfxm1,19,"element_dual_infeas_kernel_constr(double*, double const*, double const*, double, int, int, int)",566,0.777823,0.01
+remove_sync,scfxm1,20,"void rocblas_scal_kernel<int, 256, double, double, double, double*>(int, double, long, double*, long, int, long, int)",564,0.7428289999999991,0.00776
