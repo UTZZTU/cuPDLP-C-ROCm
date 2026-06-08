@@ -91,6 +91,7 @@ docs/
   VALIDATION.md
   CROSS_DEVICE_BENCHMARKS.md
   ROCM_TUNING_HISTORY.md
+- [`docs/ROCM_PROFILING_NOTES.md`](docs/ROCM_PROFILING_NOTES.md)
   NUMERICAL_BEHAVIOR_GREENBEA.md
   CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md
 ```
@@ -267,6 +268,7 @@ REPEAT_N=3 CASE_TIMEOUT_SEC=900 \
 ## ROCm tuning 与 profiling 计划
 
 当前项目已经完成初步 tuning ablation，但后续还会继续补充 ROCm profiling 证据。
+   参考 [`docs/ROCM_PROFILING_NOTES.zh-CN.md`](docs/ROCM_PROFILING_NOTES.zh-CN.md) 与 [`docs/ROCM_PROFILING_NOTES.md`](docs/ROCM_PROFILING_NOTES.md)。
 
 计划使用 `rocprofv3` 记录：
 
@@ -315,6 +317,7 @@ REPEAT_N=3 CASE_TIMEOUT_SEC=900 \
 - `README.zh-CN.md`
 - `docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md`
 - `docs/ROCM_TUNING_HISTORY.zh-CN.md`
+- `docs/ROCM_PROFILING_NOTES.zh-CN.md`
 - `docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md`
 - `docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md`
 - `docs/VALIDATION.zh-CN.md`

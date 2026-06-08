@@ -1,8 +1,8 @@
 # cuPDLP-C-ROCm
 
-> **中文文档入口**: [README.zh-CN.md](README.zh-CN.md) · [CUDA 到 ROCm/HIP 迁移案例](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) · [ROCm 调优历史](docs/ROCM_TUNING_HISTORY.zh-CN.md) · [greenbea 数值行为](docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md) · [跨设备 benchmark](docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md) · [验证指南](docs/VALIDATION.zh-CN.md)
+> **中文文档入口**: [README.zh-CN.md](README.zh-CN.md) · [CUDA 到 ROCm/HIP 迁移案例](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) · [ROCm 调优历史](docs/ROCM_TUNING_HISTORY.zh-CN.md) · [ROCm profiling 分析](docs/ROCM_PROFILING_NOTES.zh-CN.md) · [greenbea 数值行为](docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md) · [跨设备 benchmark](docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md) · [验证指南](docs/VALIDATION.zh-CN.md)
 >
-> **English docs**: [README.md](README.md) · [CUDA to ROCm migration case study](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) · [ROCm tuning history](docs/ROCM_TUNING_HISTORY.md) · [greenbea numerical behavior](docs/NUMERICAL_BEHAVIOR_GREENBEA.md) · [Cross-device benchmarks](docs/CROSS_DEVICE_BENCHMARKS.md) · [Validation guide](docs/VALIDATION.md)
+> **English docs**: [README.md](README.md) · [CUDA to ROCm migration case study](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) · [ROCm tuning history](docs/ROCM_TUNING_HISTORY.md) · [ROCm profiling notes](docs/ROCM_PROFILING_NOTES.md) · [greenbea numerical behavior](docs/NUMERICAL_BEHAVIOR_GREENBEA.md) · [Cross-device benchmarks](docs/CROSS_DEVICE_BENCHMARKS.md) · [Validation guide](docs/VALIDATION.md)
 
 
 A ROCm/HIP port of **cuPDLP-C** for AMD GPUs/APUs.
