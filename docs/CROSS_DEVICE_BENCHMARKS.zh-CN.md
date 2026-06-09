@@ -1,411 +1,128 @@
-# 跨设备 benchmark 记录
+# 跨设备 benchmark 说明
 
-本文记录 `cuPDLP-C-ROCm` 项目当前阶段的跨设备 benchmark 设计、已完成结果和后续扩展计划。
+> English version: [`CROSS_DEVICE_BENCHMARKS.md`](CROSS_DEVICE_BENCHMARKS.md)
 
-本项目的跨设备 benchmark 不是单纯比较“哪张显卡更快”，而是为了回答以下问题：
+本文总结 cuPDLP-C ROCm/HIP port 的当前跨设备 benchmark workflow。
 
-1. ROCm/HIP 后端是否能在 AMD Radeon 平台上稳定求解代表性 LP/MPS case？
-2. CPU、CUDA、ROCm/HIP 三种后端的 termination status、iteration count 和 solve time 有何差异？
-3. 小规模、中规模、大规模 case 对 GPU 后端的表现有何影响？
-4. current 工程版本相对历史 tuning milestone 是否出现性能回退？
-5. 后续迁移到 Radeon PRO W7900 时应如何选择 benchmark 子集？
+## 目标
 
-## 项目背景
+目标是在相同 LP case list 和相同高层 solver 设置下，比较上游兼容 CUDA baseline 和 ROCm/HIP port。
 
-`cuPDLP-C-ROCm` 是基于上游 `cuPDLP-C` 的 ROCm/HIP 移植和工程化验证分支。
+当前 Netlib benchmark matrix 覆盖：
 
-当前项目保留三种后端：
+- RTX 3090，上游兼容 cuPDLP-C CUDA baseline。
+- RTX 4090D，上游兼容 cuPDLP-C CUDA baseline。
+- AMD Radeon 890M / `gfx1150`，cuPDLP-C-ROCm。
 
-| 后端 | 作用 |
+每台设备都记录本机 CPU 和 GPU/ROCm run。CPU 结果是本机 baseline，不是跨机器绝对性能声明。
+
+## Benchmark 设置
+
+通用设置：
+
+| 设置 | 值 |
 |---|---|
-| CPU | 正确性与可移植性 baseline |
-| CUDA | 上游兼容的 NVIDIA GPU baseline |
-| ROCm/HIP | AMD Radeon / ROCm 目标后端 |
+| Case 来源 | Netlib MPS cases 加 `afiro`、`sc50b` 和 `lotfi` |
+| 迭代限制 | `nIterLim = 200000000` |
+| 单次 wall-clock timeout | Netlib matrix 使用 `3600s` |
+| HiGHS 版本 | 1.6.0 |
+| 结果风格 | 每台设备本地 CPU + GPU/ROCm run |
 
-跨设备 benchmark 的目标是把这三种后端放在可比较的实验框架里，而不是只在单个 `afiro.mps` 上证明能运行。
+主要比较字段：
 
-## 当前已测试平台
-
-当前阶段已记录以下平台：
-
-| 平台 | 后端 | 作用 |
-|---|---|---|
-| RTX 3090 | CUDA | NVIDIA CUDA baseline |
-| RTX 4090D | CUDA | 更强 NVIDIA CUDA baseline |
-| Radeon 890M | ROCm/HIP | AMD Radeon / gfx1150 本地开发验证平台 |
-| 各机器 CPU | CPU | 每台机器本地 CPU baseline |
-
-后续计划加入：
-
-| 平台 | 后端 | 作用 |
-|---|---|---|
-| H100 | CUDA | 大规模 MPS / 高端 CUDA 对照 |
-| Radeon PRO W7900 | ROCm/HIP | 比赛主平台，gfx1100 目标后端 |
-
-Radeon PRO W7900 是 AMD Radeon PRO W 系列 RDNA3 设备，ROCm 支持矩阵中列为 `gfx1100`。后续迁移时需要将 ROCm build 的 `CMAKE_HIP_ARCHITECTURES` 从当前 890M 的 `gfx1150` 切换到 W7900 的 `gfx1100`。
-
-## Benchmark 设计原则
-
-### 统一 case list
-
-当前 full benchmark 使用统一的 MPS case list。典型 case 包括：
-
-```text
-25fv47
-80bau3b
-afiro
-degen2
-degen3
-fit1d
-fit2d
-greenbea
-greenbeb
-israel
-lotfi
-maros-r7
-pilot4
-pilot87
-recipe
-sc105
-sc205
-sc50b
-scagr25
-scagr7
-scfxm1
-scfxm2
-scfxm3
-sctap1
-sctap2
-ship04s
-ship08s
-stair
-```
-
-其中 `greenbea` 被单独视为 convergence-sensitive case，不作为普通 quick validation case 解读。
-
-### 统一 solver 参数
-
-主要 benchmark 使用：
-
-```text
-nIterLim = 200000000
-```
-
-对于长 case，使用 3600 秒作为实际 long-case wall-clock policy。达到 timeout 或 `TIMELIMIT_OR_ITERLIMIT` 的结果不删除，而是保留为数值行为证据。
-
-### 统一记录字段
-
-每个 case 尽量记录：
-
-- backend；
-- case name；
 - termination status；
-- shell exit code；
 - iteration count；
 - solve time；
-- DeviceMatVecProdTime；
-- primal feasibility；
-- dual feasibility；
-- duality gap；
-- JSON 输出；
-- stdout/stderr log；
-- GPU/CPU 型号；
-- CUDA 或 ROCm 版本；
-- commit SHA。
+- relative primal feasibility；
+- relative dual feasibility；
+- relative duality gap；
+- 可用时记录 GPU timing breakdown。
 
-## 为什么不能只看 solve time？
+大型原始结果目录、下载的 MPS 文件和 tar 包是本地 artifact，不应提交。
 
-LP 一阶方法的跨设备表现需要同时看：
+## 设备级状态
 
-1. termination status；
-2. iteration count；
-3. solve time；
-4. feasibility / gap；
-5. 是否达到 wall-clock limit；
-6. GPU kernel 时间；
-7. host-device copy 和 runtime overhead。
+| 设备 | CPU 结果 | GPU/ROCm 结果 | 例外 |
+|---|---:|---:|---|
+| RTX 3090 / CUDA | `greenbea` 200M 补跑后 28/28 OPTIMAL | 27/28 OPTIMAL | `greenbea` CUDA 达到 solver 内部 3600s 限制 |
+| RTX 4090D / CUDA | 28/28 OPTIMAL | 27/28 OPTIMAL | `greenbea` CUDA 命中外部 3600s timeout |
+| Radeon 890M / ROCm | 28/28 OPTIMAL | 27/28 OPTIMAL | `greenbea` ROCm 命中外部 3600s timeout |
 
-如果只看 solve time，容易误解两类情况：
+## 代表性性能 case
 
-- 小 case 上 GPU 慢，可能只是 launch overhead 主导；
-- 长 case timeout，可能是数值轨迹差异，而不是 runtime failure。
+| Case | RTX 3090 CPU / CUDA 时间 | RTX 4090D CPU / CUDA 时间 | Radeon 890M CPU / ROCm 时间 | 说明 |
+|---|---:|---:|---:|---|
+| `afiro` | 0.000581s / 0.035574s | 0.000228s / 0.033316s | 0.000223s / 0.055775s | 极小 case；GPU overhead 主导 |
+| `sc50b` | 0.002908s / 0.066647s | 0.000761s / 0.058011s | 0.000703s / 0.066212s | 极小 case；GPU overhead 主导 |
+| `lotfi` | 0.721584s / 7.221900s | 0.541828s / 6.371220s | 0.339811s / 3.587740s | 虽然收敛，但 GPU path 更慢 |
+| `80bau3b` | 1.941090s / 1.058330s | 1.675210s / 0.873151s | 0.908968s / 0.887086s | GPU/ROCm 开始具备竞争力 |
+| `fit2d` | 1.824550s / 0.430777s | 1.981560s / 0.376708s | 1.004250s / 1.187790s | CUDA 明显更快；890M ROCm 接近但更慢 |
+| `greenbeb` | 117.688s / 81.6909s | 103.155s / 72.3501s | 54.0035s / 152.025s | CUDA 更快；890M ROCm 更慢 |
+| `maros-r7` | 0.277859s / 0.074724s | 0.289098s / 0.061516s | 0.157686s / 0.116644s | GPU/ROCm 更快或接近 |
+| `pilot87` | 15.3384s / 7.98787s | 14.9857s / 8.00709s | 7.69941s / 7.91001s | CUDA 更快；ROCm 基本持平 |
 
-因此，本项目同时保留 JSON 字段和日志，而不是只保留 summary table。
+## GPU/ROCm 快于 CPU 的 case
 
-## Radeon 890M ROCm/HIP full run
-
-Radeon 890M 上的 ROCm/HIP full run 显示：除 `greenbea` 外，大多数 case 能在 ROCm/HIP 后端达到 `OPTIMAL`。
-
-代表性结果：
-
-| Case | CPU status | ROCm/HIP status | CPU iter | ROCm iter | CPU time | ROCm time | 说明 |
-|---|---|---|---:|---:|---:|---:|---|
-| `afiro` | OPTIMAL | OPTIMAL | 200 | 200 | 0.000223 | 0.055775 | 极小 case，GPU 固定开销主导 |
-| `80bau3b` | OPTIMAL | OPTIMAL | 10120 | 10280 | 0.908968 | 0.887086 | ROCm/HIP 接近或略快 |
-| `fit2d` | OPTIMAL | OPTIMAL | 5000 | 5040 | 1.00425 | 1.18779 | ROCm/HIP 略慢 |
-| `greenbeb` | OPTIMAL | OPTIMAL | 752560 | 1814520 | 54.0035 | 152.025 | GPU 迭代轨迹不同 |
-| `pilot4` | OPTIMAL | OPTIMAL | 2694640 | 2222240 | 32.7476 | 97.1357 | 长迭代 case |
-| `pilot87` | OPTIMAL | OPTIMAL | 71280 | 81960 | 7.69941 | 7.91001 | 接近持平 |
-| `greenbea` | OPTIMAL | shell timeout | 8538920 | — | 592.58 | — | convergence-sensitive case |
-
-解读：
-
-- Radeon 890M 是集成 GPU / 本地开发平台，不应期望在所有 case 上超过高端 CPU 或独立 GPU；
-- 它的价值在于验证 ROCm/HIP 移植路径、构建流程、正确性和初步性能；
-- 小 case 被固定开销主导；
-- 更大规模 MPS case 更适合展示 GPU 后端价值；
-- `greenbea` 不应作为普通失败样例删除，而应保留为数值行为 case。
-
-## RTX 4090D CUDA full run
-
-RTX 4090D CUDA full run 在排除早期 CUDA context 初始化问题后，完成了大部分 case 的 CUDA 数据记录。
-
-代表性结果：
-
-| Case | CPU status | CUDA status | CPU iter | CUDA iter | CPU time | CUDA time | 说明 |
-|---|---|---|---:|---:|---:|---:|---|
-| `afiro` | OPTIMAL | OPTIMAL | 200 | 200 | 0.000228 | 0.033316 | 极小 case，GPU 固定开销主导 |
-| `80bau3b` | OPTIMAL | OPTIMAL | 10120 | 11720 | 1.67521 | 0.873151 | CUDA 明显快于 CPU |
-| `fit2d` | OPTIMAL | OPTIMAL | 5000 | 4640 | 1.98156 | 0.376708 | CUDA 优势明显 |
-| `greenbeb` | OPTIMAL | OPTIMAL | 752560 | 965560 | 103.155 | 72.3501 | CUDA 快于 CPU |
-| `pilot87` | OPTIMAL | OPTIMAL | 71280 | 91880 | 14.9857 | 8.00709 | CUDA 快于 CPU |
-| `greenbea` | OPTIMAL | shell timeout | 8538920 | — | 1178.48 | — | convergence-sensitive case |
-
-解读：
-
-- RTX 4090D 在中大型 case 上能明显体现 CUDA GPU 优势；
-- `greenbea` 仍然表现为特殊长时间收敛敏感 case；
-- 早期 CUDA context 初始化失败是运行环境问题，与 solver correctness 需要分开记录。
-
-## RTX 3090 CUDA results
-
-RTX 3090 上记录了 full 5M run 和专门的 `greenbea` 200M run。
-
-`greenbea` 200M dedicated run：
-
-| Backend | Status | Iterations | Solve time | Relative primal feasibility | Relative dual feasibility | Relative duality gap |
-|---|---|---:|---:|---:|---:|---:|
-| CPU | OPTIMAL | 8,538,920 | 1286.92 s | — | — | — |
-| CUDA GPU | TIMELIMIT_OR_ITERLIMIT | 41,615,624 | 3600.000060 s | 0.21299620838891 | 0.00000067393008 | 0.00256258916268 |
-
-解读：
-
-- RTX 3090 CUDA 也没有在 3600 秒内让 `greenbea` GPU path 达到 `OPTIMAL`；
-- 这进一步说明 `greenbea` 是跨 GPU 后端的 convergence-sensitive case；
-- 不能把 `greenbea` timeout 简单归因到 ROCm/HIP。
-
-## current vs reduce_scalar_copies 27-case repeated comparison
-
-为了确认 current 三模态工程版本是否相对历史最快 ROCm tuning milestone 出现性能回退，项目比较了：
-
-```text
-base:    reduce_scalar_copies (`b44c7ab`)
-current: 当前 HEAD
-case:    full benchmark list 去掉 greenbea
-repeat:  3 次
-```
-
-结果：
-
-```text
-Geometric mean speedup of base over current: 0.9995092331107024
-```
-
-解读：
-
-- base 与 current 整体几何平均几乎持平；
-- current 没有出现系统性性能回退；
-- 少数小 case 上 current 略慢，多数差距在噪声范围；
-- 一些中大型 case 上 current 反而更快；
-- 当前三模态工程结构可以作为后续 W7900 迁移 baseline。
-
-慢超过 2% 的 case：
-
-```text
-afiro
-sc50b
-recipe
-scfxm1
-```
-
-其中 `afiro`、`sc50b`、`recipe` 都偏小，容易受固定开销和噪声影响。`scfxm1` 后续可以作为 focused profiling 候选。
-
-current 更快的代表 case：
-
-```text
-israel
-maros-r7
-ship08s
-degen2
-greenbeb
-pilot87
-```
-
-这说明 current 与 `reduce_scalar_copies` 的关系不能简单说成“变慢”或“变快”，更合理的表述是整体持平。
-
-## 为什么大规模 MPS 很重要？
-
-当前 Netlib case 对项目早期验证很有价值，但规模不一定足够展示高端 GPU 优势。
-
-小 case 中，以下开销可能占主导：
-
-- 程序启动；
-- MPS 读取；
-- backend 初始化；
-- device memory allocation；
-- kernel launch；
-- host-device scalar copy；
-- synchronization。
-
-随着问题规模增大，SpMV 和向量更新的计算量增加，GPU 并行能力更容易体现。因此，后续应引入 H100 机器上的大规模 MPS 数据集，筛选 medium-large / large / stress 三层 case。
-
-建议分层：
-
-| 层级 | 用途 |
+| 设备 | GPU/ROCm 更快的 case |
 |---|---|
-| smoke | 构建和基本 correctness |
-| quick tuning | 快速调优对比 |
-| full validation | 代表性跨设备验证 |
-| medium-large | 展示 GPU 优势 |
-| large | W7900 / H100 / 4090D 主对比 |
-| stress | 长时间数值行为分析 |
+| RTX 3090 / CUDA | `80bau3b`、`fit2d`、5M iteration-limited run 下的 `greenbea`、`greenbeb`、`maros-r7`、`pilot87` |
+| RTX 4090D / CUDA | `80bau3b`、`fit2d`、`greenbeb`、`maros-r7`、`pilot87` |
+| Radeon 890M / ROCm | `80bau3b`、`maros-r7` |
 
-## 后续 H100 / W7900 benchmark 计划
+## `greenbea` 收敛敏感行为
 
-### H100
+| 设备 | CPU 结果 | GPU/ROCm 结果 | 解释 |
+|---|---|---|---|
+| RTX 3090 / CUDA | 200M 补跑中 CPU 在 1286.92s 达到 OPTIMAL | CUDA 在 41.6M iterations 后达到 solver 内部 3600s time limit | 上游 CUDA 已经表现出 GPU convergence sensitivity |
+| RTX 4090D / CUDA | CPU 在 1178.48s 达到 OPTIMAL | CUDA 在写出 JSON 前命中外部 3600s timeout | 新一代 CUDA GPU 上同样困难 |
+| Radeon 890M / ROCm | CPU 在 592.58s 达到 OPTIMAL | ROCm 在写出 JSON 前命中外部 3600s timeout | 应作为收敛敏感 case 记录，不视为 ROCm 构建失败 |
 
-H100 主要用于：
+## 解释
 
-- 跑大规模 MPS inventory；
-- 建立 CUDA 高端 GPU 上限参考；
-- 对 cuPDLP-C 与 cuPDLPx 做 CUDA baseline 对比；
-- 筛选适合 W7900 的大规模 case 子集。
+Benchmark 表明 ROCm/HIP port 在 Radeon 890M 上具备求解共享 benchmark set 的功能能力。
 
-建议先做 inventory：
+除 `greenbea` 外，所有已测试 ROCm case 都达到 `OPTIMAL`。小 case 通常 GPU/ROCm 比 CPU 慢，这是预期现象，因为 GPU path 需要承担 device initialization、kernel launch、synchronization 和 vector update 等额外开销。
 
-```bash
-find /path/to/mps_root -type f \( -name "*.mps" -o -name "*.mps.gz" -o -name "*.MPS" -o -name "*.MPS.gz" \) \
-  -printf "%p,%s\n" | sort -t, -k2,2n > h100_large_mps_inventory.csv
-```
+这种行为在上游 CUDA baseline 中也存在，因此小 case 变慢不应被解读为 ROCm-specific failure。部分更大或更适合 GPU 的 case 显示出 GPU 优势。
 
-然后按文件大小、来源、预估运行时间分层，不要一开始全量跑。
-
-### Radeon PRO W7900
-
-W7900 是比赛主平台，后续应作为 ROCm/HIP 主要展示设备。
-
-迁移时先检查环境：
-
-```bash
-rocminfo | grep -E "Name:|gfx" | head -n 80
-rocm-smi
-hipcc --version
-```
-
-构建目标：
-
-```bash
-cmake -S . -B build-rocm-w7900 \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DBUILD_CUDA=OFF \
-  -DBUILD_ROCM=ON \
-  -DCMAKE_PREFIX_PATH=/opt/rocm \
-  -DCMAKE_HIP_ARCHITECTURES=gfx1100
-
-cmake --build build-rocm-w7900 --target plc -j"$(nproc)"
-```
-
-W7900 benchmark 顺序建议：
-
-1. smoke：`afiro`、`sc50b`；
-2. quick tuning set：6-case；
-3. full no-greenbea：27-case；
-4. greenbea：单独长 case；
-5. medium-large MPS subset；
-6. large MPS subset；
-7. rocprofv3 profiling set。
-
-## Profiling 与 benchmark 的关系
-
-Benchmark 回答“快不快”，profiling 回答“为什么快或慢”。
-
-后续 ROCm profiling 应关注：
-
-- HIP runtime API；
-- kernel dispatch；
-- memory copy；
-- memory allocation；
-- HSA trace；
-- SpMV kernel；
-- vector update kernel；
-- synchronization；
-- kernel launch overhead。
-
-建议先 profile：
-
-```text
-lotfi
-scfxm1
-pilot87
-```
-
-原因：
-
-| Case | 用途 |
-|---|---|
-| `lotfi` | tuning 收益明显，适合解释优化收益 |
-| `scfxm1` | current 相对 reduce 略慢，适合查疑点 |
-| `pilot87` | 较大 case，current 表现较好，适合作正向对照 |
-
-后续在 W7900 上还应加入一个大规模 MPS 代表 case。
+`greenbea` 应保留为 convergence-sensitive case。上游 CUDA 在该 case 上已经出现困难 GPU 收敛行为，因此 RTX 4090D 和 Radeon 890M 上的 timeout 应记录为 backend numerical trajectory / convergence sensitivity，而不是 ROCm porting failure。
 
 ## 当前结论
 
-当前跨设备 benchmark 支持以下阶段性结论：
+当前 ROCm/HIP port 已经在 Radeon 890M / `gfx1150` 上通过跨设备功能 benchmark 阶段。它仍不是完全调优的 ROCm 求解器。
 
-1. ROCm/HIP 后端已经能在 Radeon 890M 上完成 broad validation set 中的大多数 case；
-2. RTX 4090D / RTX 3090 CUDA 数据提供了 NVIDIA GPU baseline；
-3. 小 case 不适合直接判断 GPU 计算能力；
-4. 中大型 case 更能体现 GPU 后端优势；
-5. `greenbea` 是 convergence-sensitive case，应单独分析；
-6. current 三模态工程版本没有相对历史最快 ROCm tuning milestone 出现系统性性能回退；
-7. 后续需要引入更大规模 MPS 数据和 W7900 平台实测。
+下一阶段是：
 
-## 已固化结果文件
+1. 收集 large MPS benchmark 结果；
+2. 在 Radeon 890M 上记录 pre-tuning ROCm baseline；
+3. 使用最好的已验证 tuning 版本复测 Radeon 890M；
+4. 比较 RTX 3090、RTX 4090D 和 H100 上的 CUDA baseline；
+5. 用 profiling 解释性能差异。
 
-项目当前保留以下 benchmark 相关结果文件：
+## 文件
+
+Netlib benchmark workflow 使用：
 
 ```text
-validation/rocm_tuning_ablation_6cases_repeats_raw.csv
-validation/rocm_tuning_ablation_6cases_repeats_summary.csv
-validation/rocm_tuning_ablation_6cases_repeats_summary.md
-
-validation/rocm_current_vs_reduce_27cases_repeats_raw.csv
-validation/rocm_current_vs_reduce_27cases_repeats_aggregated.csv
-validation/rocm_current_vs_reduce_27cases_repeats_comparison.csv
-validation/rocm_current_vs_reduce_27cases_repeats_comparison.md
+validation/cases_benchmark_200m.txt
+scripts/run_benchmark_890m_full.sh
+scripts/summarize_benchmark.py
+validation/cross_device_summary.csv
 ```
 
-跨设备 full benchmark 的 summary 记录在对应 docs 和 validation 结果中。大型原始 logs 通常保留在本地 `validation/results/`，不作为主要 curated artifact 提交。
+Large MPS workflow 见：
 
-## 后续任务
+```text
+docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md
+```
 
-建议后续按以下顺序推进：
+不应提交到 Git 的生成 artifact：
 
-1. 补齐中英文文档；
-2. 增加 `rocprofv3` profiling 脚本；
-3. 引入 H100 大规模 MPS inventory；
-4. 选择 medium-large / large 子集；
-5. 在 3090、4090D、H100 上跑 CUDA baseline；
-6. 在 W7900 上跑 ROCm/HIP 主平台结果；
-7. 对 cuPDLP-C 与 cuPDLPx 做 CUDA 环境对比；
-8. 将 W7900 数据补入 cross-device benchmark；
-9. 根据 profiling 结果继续 ROCm/HIP 平台化调优。
-
-## 总结
-
-跨设备 benchmark 当前已经证明：本项目不再只是“ROCm/HIP 能跑 afiro”，而是已经具备 CPU / CUDA / ROCm 三模态对照、Netlib full validation、tuning ablation 和 convergence-sensitive case 记录。
-
-下一阶段的重点是：
-
-> 引入更大规模 MPS 数据、补充 ROCm profiling 证据，并将主平台迁移到 Radeon PRO W7900，用更具代表性的科学计算负载展示 ROCm/Radeon 平台能力。
+```text
+validation/netlib/
+validation/results/
+profiling/results/
+build-*/
+*.tar.gz
+large raw MPS files
+```
