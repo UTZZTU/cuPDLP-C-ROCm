@@ -24,7 +24,8 @@
 | [`docs/LARGE_MPS_BENCHMARK_PLAN.md`](docs/LARGE_MPS_BENCHMARK_PLAN.md) | [`docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md`](docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) | H100 来源 large MPS workflow 和跨设备计划 |
 | [`docs/ROCM_PORTING_GUIDE.md`](docs/ROCM_PORTING_GUIDE.md) | [`docs/ROCM_PORTING_GUIDE.zh-CN.md`](docs/ROCM_PORTING_GUIDE.zh-CN.md) | CUDA 到 ROCm/HIP 迁移记录 |
 | [`docs/TUNING_GUIDE_ROCM.md`](docs/TUNING_GUIDE_ROCM.md) | [`docs/TUNING_GUIDE_ROCM.zh-CN.md`](docs/TUNING_GUIDE_ROCM.zh-CN.md) | ROCm profiling、已完成调优和后续目标 |
-| [`docs/W7900_FIRST_PORT.md`](docs/W7900_FIRST_PORT.md) | [`docs/W7900_FIRST_PORT.zh-CN.md`](docs/W7900_FIRST_PORT.zh-CN.md) | W7900 / `gfx1100` first-port 构建和 smoke validation 记录 | | [`README_UPSTREAM.md`](README_UPSTREAM.md) | - | 上游原始 README 备份 |
+| [`docs/W7900_FIRST_PORT.md`](docs/W7900_FIRST_PORT.md) | [`docs/W7900_FIRST_PORT.zh-CN.md`](docs/W7900_FIRST_PORT.zh-CN.md) | W7900 / `gfx1100` first-port 构建和 smoke validation 记录 |
+| [`README_UPSTREAM.md`](README_UPSTREAM.md) | - | 上游原始 README 备份 |
 
 ## 本仓库提供什么
 
@@ -35,7 +36,8 @@
 - CPU-vs-ROCm smoke validation 脚本。
 - 扩展 Netlib validation case。
 - RTX 3090、RTX 4090D、Radeon 890M 的跨设备 benchmark workflow 和结果摘要。
-- W7900 / `gfx1100` first-port 构建脚本和 smoke validation 记录。 - 基于 H100 来源 case、inventory 和 SHA256 manifest 的 large MPS benchmark workflow。
+- W7900 / `gfx1100` first-port 构建脚本和 smoke validation 记录。
+- 基于 H100 来源 case、inventory 和 SHA256 manifest 的 large MPS benchmark workflow。
 - `rocprofv3` profiling workflow 和摘要脚本。
 
 ## 后端模式

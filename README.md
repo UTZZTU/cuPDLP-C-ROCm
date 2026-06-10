@@ -24,7 +24,8 @@
 | [`docs/LARGE_MPS_BENCHMARK_PLAN.md`](docs/LARGE_MPS_BENCHMARK_PLAN.md) | [`docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md`](docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) | H100-sourced large MPS workflow and cross-device plan |
 | [`docs/ROCM_PORTING_GUIDE.md`](docs/ROCM_PORTING_GUIDE.md) | [`docs/ROCM_PORTING_GUIDE.zh-CN.md`](docs/ROCM_PORTING_GUIDE.zh-CN.md) | CUDA-to-ROCm/HIP migration record |
 | [`docs/TUNING_GUIDE_ROCM.md`](docs/TUNING_GUIDE_ROCM.md) | [`docs/TUNING_GUIDE_ROCM.zh-CN.md`](docs/TUNING_GUIDE_ROCM.zh-CN.md) | ROCm profiling, completed tuning steps, and future targets |
-| [`docs/W7900_FIRST_PORT.md`](docs/W7900_FIRST_PORT.md) | [`docs/W7900_FIRST_PORT.zh-CN.md`](docs/W7900_FIRST_PORT.zh-CN.md) | W7900 / `gfx1100` first-port build and smoke validation record | | [`README_UPSTREAM.md`](README_UPSTREAM.md) | - | Original upstream README backup |
+| [`docs/W7900_FIRST_PORT.md`](docs/W7900_FIRST_PORT.md) | [`docs/W7900_FIRST_PORT.zh-CN.md`](docs/W7900_FIRST_PORT.zh-CN.md) | W7900 / `gfx1100` first-port build and smoke validation record |
+| [`README_UPSTREAM.md`](README_UPSTREAM.md) | - | Original upstream README backup |
 
 ## What this repository provides
 
@@ -35,7 +36,8 @@
 - CPU-vs-ROCm smoke validation scripts.
 - Extended Netlib validation cases.
 - Cross-device benchmark workflow and summaries for RTX 3090, RTX 4090D, and Radeon 890M.
-- W7900 / `gfx1100` first-port build scripts and smoke validation notes. - Large MPS benchmark workflow based on H100-hosted cases, inventory files, and SHA256 manifests.
+- W7900 / `gfx1100` first-port build scripts and smoke validation notes.
+- Large MPS benchmark workflow based on H100-hosted cases, inventory files, and SHA256 manifests.
 - `rocprofv3` profiling workflow and summary helpers.
 
 ## Backend modes
