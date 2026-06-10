@@ -1,14 +1,14 @@
-# Large MPS benchmark summary: CUDA baselines and ROCm baseline
+# large MPS 基准测试汇总：CUDA baseline 与 ROCm baseline
 
-Date: 2026-06-10  
-Dataset: 26 large `.mps` LP instances.  
-Purpose: record the current cuPDLP-C CUDA and ROCm/HIP baseline results for the cuPDLP-C to ROCm migration project.
+日期：2026-06-10  
+数据集：26 个 large `.mps` LP 实例。  
+目的：记录 cuPDLP-C 到 ROCm/HIP 迁移项目当前已经完成的 baseline 结果，为后续 W7900、进一步 ROCm 优化、以及 cuPDLPx 对比提供可复现基线。
 
-## Background
+## 背景
 
-cuPDLP-C is the upstream C implementation of cuPDLP for solving LPs on GPUs using first-order PDLP methods. This repository ports that CUDA-oriented implementation to ROCm/HIP. cuPDLPx is a newer GPU LP solver line and is being evaluated separately, so its results are not mixed into this cuPDLP-C baseline table.
+cuPDLP-C 是 upstream cuPDLP 的 C 语言实现，用于在 GPU 上用一阶 PDLP 方法求解线性规划（LP）。本项目基于该实现进行 CUDA 到 ROCm/HIP 的迁移。cuPDLPx 是另一条更新的 GPU LP solver 路线，目前只作为单独对比实验，不混入本 baseline 表。
 
-## Common configuration
+## 统一测试口径
 
 ```text
 nIterLim / iter_limit = 1000000000
@@ -16,14 +16,14 @@ dTimeLim / time_limit = 7200 seconds
 external timeout      = 7500 seconds per case
 ```
 
-Notes:
+说明：
 
-- RTX 4090D and H100 were run as full 26-case CUDA sweeps with `dTimeLim=7200`.
-- RTX 3090 uses the original full sweep for cases that solved before the default 3600-second limit, with `dlr1.mps` replaced by a 7200-second rerun.
-- Radeon 890M uses the original ROCm baseline sweep plus 7200-second reruns for `dlr1.mps`, `Dual2_5000.mps`, and `fhnw-binschedule1.mps`.
-- H100 raw `tier/size_bytes` columns are ignored because the input MPS directory used symlinks; canonical size/tier metadata is taken from the 4090D dataset summary.
+- RTX 4090D 和 H100 是完整 26 case、`dTimeLim=7200` 的 CUDA sweep。
+- RTX 3090 的原 full run 中，除了 `dlr1.mps` 以外的 case 都在默认 3600s 内完成；因此最终表中只用 `dlr1.mps` 的 7200s 补跑结果覆盖，其余保留原结果。
+- Radeon 890M ROCm baseline 中，`dlr1.mps`、`Dual2_5000.mps`、`fhnw-binschedule1.mps` 使用 7200s 补跑结果覆盖；其中 `fhnw-binschedule1.mps` 补跑后达到 OPTIMAL。
+- H100 原始 summary 里的 `tier/size_bytes` 不使用，因为 H100 的 MPS 输入目录是软链接，脚本统计到了软链接本身大小。本文档和 CSV 中的规模/tier 统一采用 4090D 数据集元信息。
 
-## Platform summary
+## 平台汇总
 
 | Device | Backend | Solver | Commit | OPTIMAL | TIMELIMIT | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -32,15 +32,15 @@ Notes:
 | RTX 4090D | CUDA | cuPDLP-C upstream | 7b94c41 | 26/26 | 0/26 | Full 26-case sweep with dTimeLim=7200. |
 | H100 PCIe | CUDA | cuPDLP-C upstream | 7b94c41 | 26/26 | 0/26 | Full 26-case sweep with dTimeLim=7200; raw H100 tier/size ignored because symlink size was measured. |
 
-## Key observations
+## 关键结论
 
-1. **RTX 4090D and H100 solved all 26 cases**.
-2. **RTX 3090 solved 25/26 cases**; only `dlr1.mps` remained time-limited after the 7200-second rerun.
-3. **Radeon 890M ROCm baseline solved 24/26 cases**, which is a useful portability and correctness signal for an integrated GPU platform.
-4. `dlr1.mps` and `Dual2_5000.mps` are the most discriminative hard cases in the current dataset.
-5. cuPDLPx is being benchmarked separately on RTX 4090D and should be documented separately.
+1. **RTX 4090D 和 H100 都完成了 26/26 OPTIMAL**，说明 CUDA baseline 在高端/较新 NVIDIA GPU 上完整稳定。
+2. **RTX 3090 完成 25/26 OPTIMAL**，唯一未完成的是 `dlr1.mps`，7200s 后仍为 `TIMELIMIT_OR_ITERLIMIT`。
+3. **Radeon 890M ROCm baseline 完成 24/26 OPTIMAL**。考虑到 890M 是核显平台，这个结果可以作为 ROCm port 可运行性和一定规模求解能力的证据。
+4. `dlr1.mps` 和 `Dual2_5000.mps` 是当前最能区分平台能力的困难 case：4090D/H100 能完成，而 890M 仍超时；3090 对 `dlr1.mps` 也超时。
+5. cuPDLPx 正在 4090D 上进行 short-case 对比，属于另一条 solver/算法路线，建议单独成文档，不直接合并进 cuPDLP-C baseline 表。
 
-## Hard-case snapshot
+## 困难 case 摘要
 
 | Case | Tier | RTX 3090 | Radeon 890M | RTX 4090D | H100 |
 | --- | --- | --- | --- | --- | --- |
@@ -50,7 +50,7 @@ Notes:
 | Primal2_1000.mps | L | OPTIMAL; solve=1084.517597s; wall=1098.8s | OPTIMAL; solve=301.318529s; wall=308.08s | OPTIMAL; solve=970.553189s; wall=993.75s | OPTIMAL; solve=949.049856s; wall=958.5s |
 | s100.mps | L | OPTIMAL; solve=134.999971s; wall=139.61s | OPTIMAL; solve=2004.671944s; wall=2006.64s | OPTIMAL; solve=111.008752s; wall=125.13s | OPTIMAL; solve=138.788371s; wall=141.9s |
 
-## Full per-case status and wall time
+## 全量 per-case 状态与 wall time
 
 | Case | Tier | RTX 3090 | Radeon 890M | RTX 4090D | H100 |
 | --- | --- | --- | --- | --- | --- |
@@ -81,7 +81,31 @@ Notes:
 | tpl-tub-ws1617.mps | XL | OPTIMAL / 69.62s | OPTIMAL / 480.0s | OPTIMAL / 237.89s | OPTIMAL / 27.9s |
 | woodlands09.mps | L | OPTIMAL / 4.74s | OPTIMAL / 3.54s | OPTIMAL / 17.38s | OPTIMAL / 3.24s |
 
-## CSV files
+## 附带 CSV
 
 - `results/benchmarks/large_mps_platform_summary_20260610.csv`
 - `results/benchmarks/large_mps_per_case_timing_summary_20260610.csv`
+
+## 源运行目录
+
+```text
+3090:
+  /home/psdz/cuPDLP-C/test_data_large_mps/large_mps_3090_upstream_26cases_niter1b_20260610_015140
+  /home/psdz/cuPDLP-C/test_data_large_mps/large_mps_3090_dlr1_niter1b_dtimelim7200_20260610_103452
+
+890M:
+  /home/bjut316/cuPDLP-C/test_data_large_mps/large_mps_890m_rocm_ae3b683_niter1b_20260610_022207
+  /home/bjut316/cuPDLP-C/test_data_large_mps/large_mps_890m_rocm_ae3b683_3cases_dtimelim7200_20260610_104927
+
+4090D:
+  /home/omnisky/cuPDLP-C/test_data_large_mps/large_mps_4090_upstream_26cases_niter1b_dtimelim7200_20260610_162424
+
+H100:
+  /home/wangwenbo/cuPDLP-C/test_data_large_mps/large_mps_h100_upstream_26cases_niter1b_dtimelim7200_20260610_185127
+```
+
+## 后续计划
+
+- W7900/gfx1100 分支 smoke 通过后，补 W7900 ROCm 结果。
+- ROCm 深度调优完成后，再做 890M/W7900 tuned benchmark。
+- cuPDLPx 对比结果单独放在 `docs/benchmarks/cupdlpx_vs_cupdlp_c_*.md`，避免和 cuPDLP-C baseline 混淆。
