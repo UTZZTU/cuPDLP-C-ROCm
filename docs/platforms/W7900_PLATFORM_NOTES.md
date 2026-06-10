@@ -153,4 +153,4 @@ Before building cuPDLP-C, install or repair the official ROCm userspace developm
 4. Build ROCm/HIP version with CMAKE_HIP_ARCHITECTURES=gfx1100.
 5. Run smoke validation on example/afiro.mps.
 6. Run repository validation scripts.
-7. Commit the W7900 platform notes, build commands, and validation results
+7. Commit the W7900 platform notes, build commands, and validation results.
