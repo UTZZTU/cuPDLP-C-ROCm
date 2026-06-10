@@ -18,14 +18,6 @@
 | CUDA 构建选项 | `BUILD_CUDA=OFF` |
 | HIP 架构选项 | `-DCMAKE_HIP_ARCHITECTURES=gfx1150` |
 
-检查设备可见性：
-
-```bash
-rocminfo | grep -E "Name:|Marketing Name|gfx"
-rocm_agent_enumerator
-hipcc --version
-```
-
 ## 构建
 
 ```bash
@@ -59,8 +51,6 @@ ctest --test-dir build-rocm-plc --output-on-failure
 ```
 
 ## 验证数据
-
-validation 目录下的 markdown 汇总和对应 CSV 统一从这里进入：
 
 - [validation/README.zh-CN.md](validation/README.zh-CN.md)
 - [validation/rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md](validation/rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md)

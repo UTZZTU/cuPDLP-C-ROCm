@@ -18,14 +18,6 @@ This page is a focused quick-start for the currently validated ROCm/HIP target: 
 | CUDA build option | `BUILD_CUDA=OFF` |
 | HIP arch option | `-DCMAKE_HIP_ARCHITECTURES=gfx1150` |
 
-Check device visibility:
-
-```bash
-rocminfo | grep -E "Name:|Marketing Name|gfx"
-rocm_agent_enumerator
-hipcc --version
-```
-
 ## Build
 
 ```bash
@@ -59,8 +51,6 @@ ctest --test-dir build-rocm-plc --output-on-failure
 ```
 
 ## Validation data
-
-Validation markdown summaries and their CSV files are indexed here:
 
 - [validation/README.md](validation/README.md)
 - [validation/rocm_current_vs_reduce_27cases_repeats_comparison.md](validation/rocm_current_vs_reduce_27cases_repeats_comparison.md)

@@ -1,7 +1,9 @@
 # cuPDLP-C-ROCm
 
 > English homepage: [README.md](README.md)  
+> ROCm/gfx1150 快速入口: [README_ROCM_gfx1150.zh-CN.md](README_ROCM_gfx1150.zh-CN.md)  
 > 文档地图: [docs/README.md](docs/README.md)  
+> 验证数据索引: [validation/README.zh-CN.md](validation/README.zh-CN.md)  
 > Benchmark 索引: [docs/benchmarks/README.md](docs/benchmarks/README.md)
 
 `cuPDLP-C-ROCm` 是基于上游 cuPDLP-C 的 ROCm/HIP 移植与验证分支。项目保留 CPU 路径和上游兼容 CUDA 路径，并新增面向 AMD Radeon 平台的 ROCm/HIP 后端。
@@ -20,7 +22,15 @@
 
 | 需求 | English | 中文 |
 |---|---|---|
+| ROCm/gfx1150 快速入口 | [README_ROCM_gfx1150.md](README_ROCM_gfx1150.md) | [README_ROCM_gfx1150.zh-CN.md](README_ROCM_gfx1150.zh-CN.md) |
 | 完整文档地图 | [docs/README.md](docs/README.md) | [docs/README.md](docs/README.md) |
+| 验证数据索引 | [validation/README.md](validation/README.md) | [validation/README.zh-CN.md](validation/README.zh-CN.md) |
+| Benchmark 索引 | [docs/benchmarks/README.md](docs/benchmarks/README.md) | [docs/benchmarks/README.md](docs/benchmarks/README.md) |
+
+## 文档
+
+| 需求 | English | 中文 |
+|---|---|---|
 | 构建、运行、验证日常流程 | [docs/ROCM_WORKFLOW.md](docs/ROCM_WORKFLOW.md) | [docs/ROCM_WORKFLOW.zh-CN.md](docs/ROCM_WORKFLOW.zh-CN.md) |
 | CPU vs ROCm 验证语义 | [docs/VALIDATION.md](docs/VALIDATION.md) | [docs/VALIDATION.zh-CN.md](docs/VALIDATION.zh-CN.md) |
 | 后端模式与命名策略 | [docs/BACKEND_MODES_AND_NAMING.md](docs/BACKEND_MODES_AND_NAMING.md) | [docs/BACKEND_MODES_AND_NAMING.zh-CN.md](docs/BACKEND_MODES_AND_NAMING.zh-CN.md) |
@@ -32,6 +42,7 @@
 | Netlib 跨设备 benchmark | [docs/CROSS_DEVICE_BENCHMARKS.md](docs/CROSS_DEVICE_BENCHMARKS.md) | [docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md](docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md) |
 | large MPS benchmark 计划 | [docs/LARGE_MPS_BENCHMARK_PLAN.md](docs/LARGE_MPS_BENCHMARK_PLAN.md) | [docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md](docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) |
 | greenbea 数值行为 | [docs/NUMERICAL_BEHAVIOR_GREENBEA.md](docs/NUMERICAL_BEHAVIOR_GREENBEA.md) | [docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md](docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md) |
+| 上游参考快照 | [README_UPSTREAM.md](README_UPSTREAM.md) | — |
 
 `README_UPSTREAM.md` 是上游 README 备份，故意作为原始参考快照保留，不翻译、不重写。
 
@@ -68,10 +79,6 @@
 `BUILD_CUDA` 和 `BUILD_ROCM` 不能同时开启。不同后端建议使用不同 build 目录，例如 `build-cpu`、`build-cuda`、`build-rocm-plc`。
 
 ## 当前验证与 benchmark 状态
-
-ROCm/HIP 路径已经在 `afiro`、`sc50b` 等代表 case 上通过 smoke validation。
-
-Netlib 跨设备 benchmark 见 [docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md](docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md)。
 
 Large MPS baseline 状态：
 
@@ -128,6 +135,8 @@ RESULT_ROOT=validation/results/extended_netlib \
   ./scripts/run_validation.sh validation/cases_extended_netlib.txt
 ```
 
+整理后的验证结果和 CSV 见 [validation/README.zh-CN.md](validation/README.zh-CN.md)。
+
 ## Profiling 与 tuning
 
 ```bash
@@ -156,10 +165,3 @@ rocm_agent_enumerator
 ```
 
 实际支持取决于 ROCm 版本、Linux 发行版、内核和 AMD GPU/APU 支持状态。
-
-## 文档维护约定
-
-- 项目维护的英文文档应尽量有对应中文文档。
-- Benchmark 解释文档必须链接到对应 CSV 结果。
-- 根 README 和 `docs/README.md` 是主导航入口，应覆盖重要文档。
-- `README_UPSTREAM.md` 是上游参考快照，不作为本项目文档重写。

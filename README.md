@@ -1,7 +1,9 @@
 # cuPDLP-C-ROCm
 
 > 中文主页: [README.zh-CN.md](README.zh-CN.md)  
+> ROCm/gfx1150 quick start: [README_ROCM_gfx1150.md](README_ROCM_gfx1150.md)  
 > Documentation map: [docs/README.md](docs/README.md)  
+> Validation index: [validation/README.md](validation/README.md)  
 > Benchmark index: [docs/benchmarks/README.md](docs/benchmarks/README.md)
 
 `cuPDLP-C-ROCm` is a ROCm/HIP port and validation fork of upstream cuPDLP-C for AMD GPUs/APUs. The project keeps the CPU path and upstream-compatible CUDA path, and adds a ROCm/HIP backend for AMD Radeon-class hardware.
@@ -20,7 +22,15 @@
 
 | Need | English | 中文 |
 |---|---|---|
+| ROCm/gfx1150 quick start | [README_ROCM_gfx1150.md](README_ROCM_gfx1150.md) | [README_ROCM_gfx1150.zh-CN.md](README_ROCM_gfx1150.zh-CN.md) |
 | Full documentation map | [docs/README.md](docs/README.md) | [docs/README.md](docs/README.md) |
+| Validation data index | [validation/README.md](validation/README.md) | [validation/README.zh-CN.md](validation/README.zh-CN.md) |
+| Benchmark index | [docs/benchmarks/README.md](docs/benchmarks/README.md) | [docs/benchmarks/README.md](docs/benchmarks/README.md) |
+
+## Documentation
+
+| Topic | English | 中文 |
+|---|---|---|
 | Build / run / validation workflow | [docs/ROCM_WORKFLOW.md](docs/ROCM_WORKFLOW.md) | [docs/ROCM_WORKFLOW.zh-CN.md](docs/ROCM_WORKFLOW.zh-CN.md) |
 | CPU vs ROCm validation semantics | [docs/VALIDATION.md](docs/VALIDATION.md) | [docs/VALIDATION.zh-CN.md](docs/VALIDATION.zh-CN.md) |
 | Backend modes and naming policy | [docs/BACKEND_MODES_AND_NAMING.md](docs/BACKEND_MODES_AND_NAMING.md) | [docs/BACKEND_MODES_AND_NAMING.zh-CN.md](docs/BACKEND_MODES_AND_NAMING.zh-CN.md) |
@@ -32,8 +42,9 @@
 | Cross-device Netlib benchmarks | [docs/CROSS_DEVICE_BENCHMARKS.md](docs/CROSS_DEVICE_BENCHMARKS.md) | [docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md](docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md) |
 | Large MPS benchmark plan | [docs/LARGE_MPS_BENCHMARK_PLAN.md](docs/LARGE_MPS_BENCHMARK_PLAN.md) | [docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md](docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) |
 | greenbea numerical behavior | [docs/NUMERICAL_BEHAVIOR_GREENBEA.md](docs/NUMERICAL_BEHAVIOR_GREENBEA.md) | [docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md](docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md) |
+| Upstream reference snapshot | [README_UPSTREAM.md](README_UPSTREAM.md) | — |
 
-`README_UPSTREAM.md` is intentionally kept as an upstream reference snapshot and is not translated or edited.
+`README_UPSTREAM.md` is intentionally kept as an upstream reference snapshot and is not translated or rewritten as project documentation.
 
 ## Benchmarks
 
@@ -68,10 +79,6 @@ The raw `.mps` benchmark files are not committed. Curated result CSVs and explan
 `BUILD_CUDA` and `BUILD_ROCM` must not be enabled at the same time. Use separate build directories such as `build-cpu`, `build-cuda`, and `build-rocm-plc`.
 
 ## Current validation and benchmark status
-
-Smoke validation currently passes on the ROCm/HIP path for representative cases such as `afiro` and `sc50b`.
-
-Cross-device Netlib benchmark records are documented in [docs/CROSS_DEVICE_BENCHMARKS.md](docs/CROSS_DEVICE_BENCHMARKS.md).
 
 Large MPS baseline status:
 
@@ -128,6 +135,8 @@ RESULT_ROOT=validation/results/extended_netlib \
   ./scripts/run_validation.sh validation/cases_extended_netlib.txt
 ```
 
+See [validation/README.md](validation/README.md) for curated validation summaries and CSV files.
+
 ## Profiling and tuning
 
 ```bash
@@ -156,10 +165,3 @@ Then set the matching architecture, for example:
 ```
 
 for AMD Radeon PRO W7900, depending on ROCm support.
-
-## Documentation maintenance policy
-
-- Every project-maintained English document should have a Chinese counterpart when practical.
-- Benchmark explanation documents should link to their CSV result files.
-- Root README and `docs/README.md` should remain the main navigation hubs.
-- `README_UPSTREAM.md` is an upstream reference snapshot and should not be rewritten as project documentation.
