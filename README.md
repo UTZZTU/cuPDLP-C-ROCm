@@ -9,10 +9,10 @@
 | Primary ROCm target | AMD Radeon 890M |
 | ROCm architecture | `gfx1150` |
 | ROCm version used in local validation | 7.2.1 |
-| Planned larger AMD target | AMD Radeon PRO W7900 / `gfx1100` |
+| Additional ROCm target under validation | AMD Radeon PRO W7900 / `gfx1100` |
 | CUDA baseline devices | RTX 3090, RTX 4090D, H100 |
 
-> Status: experimental but buildable. The ROCm/HIP backend has passed smoke validation and a cross-device Netlib benchmark matrix on AMD Radeon 890M / `gfx1150`. It is not yet a production-ready, broadly certified, or fully tuned ROCm solver release.
+> Status: experimental but buildable. The ROCm/HIP backend has passed smoke validation and a cross-device Netlib benchmark matrix on AMD Radeon 890M / `gfx1150`. The W7900 / `gfx1100` branch has passed first-port CPU-vs-ROCm `afiro` smoke validation and is now in extended validation and tuning. It is not yet a production-ready, broadly certified, or fully tuned ROCm solver release.
 
 ## Documentation
 
@@ -24,7 +24,7 @@
 | [`docs/LARGE_MPS_BENCHMARK_PLAN.md`](docs/LARGE_MPS_BENCHMARK_PLAN.md) | [`docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md`](docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) | H100-sourced large MPS workflow and cross-device plan |
 | [`docs/ROCM_PORTING_GUIDE.md`](docs/ROCM_PORTING_GUIDE.md) | [`docs/ROCM_PORTING_GUIDE.zh-CN.md`](docs/ROCM_PORTING_GUIDE.zh-CN.md) | CUDA-to-ROCm/HIP migration record |
 | [`docs/TUNING_GUIDE_ROCM.md`](docs/TUNING_GUIDE_ROCM.md) | [`docs/TUNING_GUIDE_ROCM.zh-CN.md`](docs/TUNING_GUIDE_ROCM.zh-CN.md) | ROCm profiling, completed tuning steps, and future targets |
-| [`README_UPSTREAM.md`](README_UPSTREAM.md) | - | Original upstream README backup |
+| [`docs/W7900_FIRST_PORT.md`](docs/W7900_FIRST_PORT.md) | [`docs/W7900_FIRST_PORT.zh-CN.md`](docs/W7900_FIRST_PORT.zh-CN.md) | W7900 / `gfx1100` first-port build and smoke validation record | | [`README_UPSTREAM.md`](README_UPSTREAM.md) | - | Original upstream README backup |
 
 ## What this repository provides
 
@@ -35,7 +35,7 @@
 - CPU-vs-ROCm smoke validation scripts.
 - Extended Netlib validation cases.
 - Cross-device benchmark workflow and summaries for RTX 3090, RTX 4090D, and Radeon 890M.
-- Large MPS benchmark workflow based on H100-hosted cases, inventory files, and SHA256 manifests.
+- W7900 / `gfx1100` first-port build scripts and smoke validation notes. - Large MPS benchmark workflow based on H100-hosted cases, inventory files, and SHA256 manifests.
 - `rocprofv3` profiling workflow and summary helpers.
 
 ## Backend modes

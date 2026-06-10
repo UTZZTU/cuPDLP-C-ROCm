@@ -9,10 +9,10 @@
 | 主要 ROCm 目标 | AMD Radeon 890M |
 | ROCm 架构 | `gfx1150` |
 | 本地验证使用的 ROCm 版本 | 7.2.1 |
-| 后续更大 AMD 目标 | AMD Radeon PRO W7900 / `gfx1100` |
+| 正在验证的额外 ROCm 目标 | AMD Radeon PRO W7900 / `gfx1100` |
 | CUDA baseline 设备 | RTX 3090、RTX 4090D、H100 |
 
-> 状态：实验性但可构建。ROCm/HIP backend 已经在 AMD Radeon 890M / `gfx1150` 上通过 smoke validation 和跨设备 Netlib benchmark matrix。它还不是生产级、广泛认证或完全调优的 ROCm 求解器版本。
+> 状态：实验性但可构建。ROCm/HIP backend 已经在 AMD Radeon 890M / `gfx1150` 上通过 smoke validation 和跨设备 Netlib benchmark matrix。W7900 / `gfx1100` 分支已通过 first-port CPU-vs-ROCm `afiro` smoke validation，正在进入 extended validation 和 tuning 阶段。它还不是生产级、广泛认证或完全调优的 ROCm 求解器版本。
 
 ## 文档
 
@@ -24,7 +24,7 @@
 | [`docs/LARGE_MPS_BENCHMARK_PLAN.md`](docs/LARGE_MPS_BENCHMARK_PLAN.md) | [`docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md`](docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) | H100 来源 large MPS workflow 和跨设备计划 |
 | [`docs/ROCM_PORTING_GUIDE.md`](docs/ROCM_PORTING_GUIDE.md) | [`docs/ROCM_PORTING_GUIDE.zh-CN.md`](docs/ROCM_PORTING_GUIDE.zh-CN.md) | CUDA 到 ROCm/HIP 迁移记录 |
 | [`docs/TUNING_GUIDE_ROCM.md`](docs/TUNING_GUIDE_ROCM.md) | [`docs/TUNING_GUIDE_ROCM.zh-CN.md`](docs/TUNING_GUIDE_ROCM.zh-CN.md) | ROCm profiling、已完成调优和后续目标 |
-| [`README_UPSTREAM.md`](README_UPSTREAM.md) | - | 上游原始 README 备份 |
+| [`docs/W7900_FIRST_PORT.md`](docs/W7900_FIRST_PORT.md) | [`docs/W7900_FIRST_PORT.zh-CN.md`](docs/W7900_FIRST_PORT.zh-CN.md) | W7900 / `gfx1100` first-port 构建和 smoke validation 记录 | | [`README_UPSTREAM.md`](README_UPSTREAM.md) | - | 上游原始 README 备份 |
 
 ## 本仓库提供什么
 
@@ -35,7 +35,7 @@
 - CPU-vs-ROCm smoke validation 脚本。
 - 扩展 Netlib validation case。
 - RTX 3090、RTX 4090D、Radeon 890M 的跨设备 benchmark workflow 和结果摘要。
-- 基于 H100 来源 case、inventory 和 SHA256 manifest 的 large MPS benchmark workflow。
+- W7900 / `gfx1100` first-port 构建脚本和 smoke validation 记录。 - 基于 H100 来源 case、inventory 和 SHA256 manifest 的 large MPS benchmark workflow。
 - `rocprofv3` profiling workflow 和摘要脚本。
 
 ## 后端模式
