@@ -1,0 +1,5 @@
+platform_id,device,backend,solver,commit,cases,optimal,timelimit,notes
+rtx3090_cuda_upstream,RTX 3090,CUDA,cuPDLP-C upstream,7b94c41,26,25,1,Full run plus dlr1 dTimeLim=7200 rerun
+radeon890m_rocm_ae3b683,Radeon 890M,ROCm/HIP,cuPDLP-C-ROCm baseline,ae3b683,26,24,2,Full run plus dlr1/Dual2_5000/fhnw dTimeLim=7200 reruns
+rtx4090d_cuda_upstream,RTX 4090D,CUDA,cuPDLP-C upstream,7b94c41,26,26,0,Full 26-case dTimeLim=7200 run
+h100_cuda_upstream,H100 PCIe,CUDA,cuPDLP-C upstream,7b94c41,26,26,0,Full 26-case dTimeLim=7200 run; H100 raw tier/size ignored due symlink sizes
