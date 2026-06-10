@@ -9,7 +9,8 @@ This page is the central index for project-maintained documentation.
 |---|---|---|---|
 | Repository homepage / 仓库主页 | [../README.md](../README.md) | [../README.zh-CN.md](../README.zh-CN.md) | Main project overview |
 | ROCm 890M quick README | [../README_ROCM_gfx1150.md](../README_ROCM_gfx1150.md) | [../README_ROCM_gfx1150.zh-CN.md](../README_ROCM_gfx1150.zh-CN.md) | Focused quick-start page for the gfx1150 milestone |
-| Benchmark index / Benchmark 索引 | [benchmarks/README.md](benchmarks/README.md) | [benchmarks/README.md](benchmarks/README.md) | Benchmark docs and CSV links |
+| Validation index / Validation 索引 | [../validation/README.md](../validation/README.md) | [../validation/README.zh-CN.md](../validation/README.zh-CN.md) | Validation Markdown summaries and CSV links |
+| Benchmark index / Benchmark 索引 | [benchmarks/README.md](benchmarks/README.md) | [benchmarks/README.md](benchmarks/README.md) | Benchmark documents and CSV links |
 | Upstream reference / 上游参考 | [../README_UPSTREAM.md](../README_UPSTREAM.md) | — | Intentionally preserved as upstream snapshot; not translated |
 
 ## Workflow, validation, and build semantics / 工作流、验证与构建语义
@@ -22,11 +23,21 @@ This page is the central index for project-maintained documentation.
 | ROCm porting guide / ROCm porting 指南 | [ROCM_PORTING_GUIDE.md](ROCM_PORTING_GUIDE.md) | [ROCM_PORTING_GUIDE.zh-CN.md](ROCM_PORTING_GUIDE.zh-CN.md) |
 | CUDA to ROCm case study / CUDA 到 ROCm 迁移案例 | [CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md](CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) | [CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md](CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) |
 
+## Validation data directory / Validation 数据目录
+
+| Topic / 主题 | English | 中文 | Raw CSV / 原始汇总 |
+|---|---|---|---|
+| Validation directory index / validation 目录索引 | [../validation/README.md](../validation/README.md) | [../validation/README.zh-CN.md](../validation/README.zh-CN.md) | See validation index |
+| Cross-device Netlib summary / 跨设备 Netlib 汇总 | [CROSS_DEVICE_BENCHMARKS.md](CROSS_DEVICE_BENCHMARKS.md) | [CROSS_DEVICE_BENCHMARKS.zh-CN.md](CROSS_DEVICE_BENCHMARKS.zh-CN.md) | [cross_device_full_summary.csv](../validation/cross_device_full_summary.csv) |
+| current vs reduce repeated comparison | [../validation/rocm_current_vs_reduce_27cases_repeats_comparison.md](../validation/rocm_current_vs_reduce_27cases_repeats_comparison.md) | [../validation/rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md](../validation/rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md) | [comparison](../validation/rocm_current_vs_reduce_27cases_repeats_comparison.csv), [aggregated](../validation/rocm_current_vs_reduce_27cases_repeats_aggregated.csv), [raw](../validation/rocm_current_vs_reduce_27cases_repeats_raw.csv) |
+| rocprof tuning milestones / rocprof tuning 里程碑 | [../validation/rocm_prof_tuning_milestones_summary.md](../validation/rocm_prof_tuning_milestones_summary.md) | [../validation/rocm_prof_tuning_milestones_summary.zh-CN.md](../validation/rocm_prof_tuning_milestones_summary.zh-CN.md) | [summary](../validation/rocm_prof_tuning_milestones_summary.csv), [deltas](../validation/rocm_prof_tuning_milestones_deltas.csv), [HIP API](../validation/rocm_prof_tuning_milestones_hip_api_top.csv), [kernel](../validation/rocm_prof_tuning_milestones_kernel_top.csv), [memory-copy](../validation/rocm_prof_tuning_milestones_memory_copy_top.csv) |
+| tuning ablation 6-case repeats / 6-case tuning ablation 重复测试 | [../validation/rocm_tuning_ablation_6cases_repeats_summary.md](../validation/rocm_tuning_ablation_6cases_repeats_summary.md) | [../validation/rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md](../validation/rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md) | [summary](../validation/rocm_tuning_ablation_6cases_repeats_summary.csv), [raw](../validation/rocm_tuning_ablation_6cases_repeats_raw.csv) |
+
 ## Benchmarks and numerical behavior / Benchmark 与数值行为
 
 | Topic / 主题 | English | 中文 | Raw data / 原始汇总数据 |
 |---|---|---|---|
-| Netlib cross-device benchmarks / Netlib 跨设备 benchmark | [CROSS_DEVICE_BENCHMARKS.md](CROSS_DEVICE_BENCHMARKS.md) | [CROSS_DEVICE_BENCHMARKS.zh-CN.md](CROSS_DEVICE_BENCHMARKS.zh-CN.md) | [validation/cross_device_summary.csv](../validation/cross_device_summary.csv) if present |
+| Netlib cross-device benchmarks / Netlib 跨设备 benchmark | [CROSS_DEVICE_BENCHMARKS.md](CROSS_DEVICE_BENCHMARKS.md) | [CROSS_DEVICE_BENCHMARKS.zh-CN.md](CROSS_DEVICE_BENCHMARKS.zh-CN.md) | [cross_device_full_summary.csv](../validation/cross_device_full_summary.csv) |
 | Large MPS benchmark plan / large MPS benchmark 计划 | [LARGE_MPS_BENCHMARK_PLAN.md](LARGE_MPS_BENCHMARK_PLAN.md) | [LARGE_MPS_BENCHMARK_PLAN.zh-CN.md](LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) | See benchmark docs below |
 | Large MPS CUDA/ROCm baseline / large MPS CUDA/ROCm baseline | [benchmarks/large_mps_cuda_rocm_baseline_20260610.md](benchmarks/large_mps_cuda_rocm_baseline_20260610.md) | [benchmarks/large_mps_cuda_rocm_baseline_20260610.zh-CN.md](benchmarks/large_mps_cuda_rocm_baseline_20260610.zh-CN.md) | [platform summary](../results/benchmarks/large_mps_platform_summary_20260610.csv), [per-case timing](../results/benchmarks/large_mps_per_case_timing_summary_20260610.csv) |
 | cuPDLPx vs cuPDLP-C short13 / cuPDLPx 对比 | [benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.md](benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.md) | [benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.zh-CN.md](benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.zh-CN.md) | [comparison CSV](../results/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.csv) |
@@ -43,7 +54,8 @@ This page is the central index for project-maintained documentation.
 ## Maintenance rules / 维护规则
 
 - Keep `README.md`, `README.zh-CN.md`, and this file as the main navigation hubs.
-- Benchmark documents should link to their CSV files.
+- Keep `validation/README.md` and `validation/README.zh-CN.md` as the validation data entry points.
+- Benchmark and validation Markdown summaries should link to their CSV source files.
 - If an English project document is updated, update the matching Chinese document.
 - If a Chinese project document is updated first, update the matching English document.
 - Keep `README_UPSTREAM.md` as an upstream reference snapshot.
