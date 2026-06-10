@@ -1,3 +1,5 @@
+<!-- Navigation: [Benchmark index](README.md) · [Documentation map](../README.md) · CSV: [platform summary](../../results/benchmarks/large_mps_platform_summary_20260610.csv), [per-case timing](../../results/benchmarks/large_mps_per_case_timing_summary_20260610.csv) -->
+
 # large MPS 基准测试汇总：CUDA baseline 与 ROCm baseline
 
 日期：2026-06-10  

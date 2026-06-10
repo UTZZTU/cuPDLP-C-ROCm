@@ -1,3 +1,5 @@
+<!-- Navigation: [Benchmark index](README.md) · [Documentation map](../README.md) · CSV: [platform summary](../../results/benchmarks/large_mps_platform_summary_20260610.csv), [per-case timing](../../results/benchmarks/large_mps_per_case_timing_summary_20260610.csv) -->
+
 # Large MPS benchmark summary: CUDA baselines and ROCm baseline
 
 Date: 2026-06-10  

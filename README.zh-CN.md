@@ -1,100 +1,95 @@
 # cuPDLP-C-ROCm
 
-> English version: [`README.md`](README.md)
+> English homepage: [README.md](README.md)  
+> 文档地图: [docs/README.md](docs/README.md)  
+> Benchmark 索引: [docs/benchmarks/README.md](docs/benchmarks/README.md)
 
-`cuPDLP-C-ROCm` 是基于上游 cuPDLP-C 的 ROCm/HIP 移植、验证和 benchmark 分支，目标是让 cuPDLP-C 在 AMD GPU/APU 上具备可构建、可验证、可分析的 ROCm/HIP 后端。项目保留 CPU 路径和上游兼容 CUDA 路径，同时新增 ROCm/HIP backend。
+`cuPDLP-C-ROCm` 是基于上游 cuPDLP-C 的 ROCm/HIP 移植与验证分支。项目保留 CPU 路径和上游兼容 CUDA 路径，并新增面向 AMD Radeon 平台的 ROCm/HIP 后端。
 
 | 项目 | 当前值 |
 |---|---|
 | 主要 ROCm 目标 | AMD Radeon 890M |
 | ROCm 架构 | `gfx1150` |
-| 本地验证使用的 ROCm 版本 | 7.2.1 |
-| 后续更大 AMD 目标 | AMD Radeon PRO W7900 / `gfx1100` |
-| CUDA baseline 设备 | RTX 3090、RTX 4090D、H100 |
+| 本地验证 ROCm 版本 | 7.2.1 |
+| 计划中的更大 AMD 目标 | AMD Radeon PRO W7900 / `gfx1100` |
+| CUDA baseline 设备 | RTX 3090, RTX 4090D, H100 |
 
-> 状态：实验性但可构建。ROCm/HIP backend 已经在 AMD Radeon 890M / `gfx1150` 上通过 smoke validation 和跨设备 Netlib benchmark matrix。它还不是生产级、广泛认证或完全调优的 ROCm 求解器版本。
+> 状态：实验性但可构建。当前 ROCm/HIP 后端已经通过 smoke validation、Netlib 验证、跨设备 benchmark，以及 Radeon 890M / `gfx1150` 上的大规模 MPS baseline 测试。它还不是生产级、完全调优、广泛认证的 ROCm solver release。
 
-## 文档
+## 从哪里开始
 
-| 英文 | 中文 | 用途 |
+| 需求 | English | 中文 |
 |---|---|---|
-| [`docs/ROCM_WORKFLOW.md`](docs/ROCM_WORKFLOW.md) | [`docs/ROCM_WORKFLOW.zh-CN.md`](docs/ROCM_WORKFLOW.zh-CN.md) | 日常构建、验证、profiling 和 benchmark 命令 |
-| [`docs/VALIDATION.md`](docs/VALIDATION.md) | [`docs/VALIDATION.zh-CN.md`](docs/VALIDATION.zh-CN.md) | CPU-vs-ROCm 验证语义 |
-| [`docs/CROSS_DEVICE_BENCHMARKS.md`](docs/CROSS_DEVICE_BENCHMARKS.md) | [`docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md`](docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md) | RTX 3090 / RTX 4090D / Radeon 890M benchmark matrix |
-| [`docs/LARGE_MPS_BENCHMARK_PLAN.md`](docs/LARGE_MPS_BENCHMARK_PLAN.md) | [`docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md`](docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) | H100 来源 large MPS workflow 和跨设备计划 |
-| [`docs/ROCM_PORTING_GUIDE.md`](docs/ROCM_PORTING_GUIDE.md) | [`docs/ROCM_PORTING_GUIDE.zh-CN.md`](docs/ROCM_PORTING_GUIDE.zh-CN.md) | CUDA 到 ROCm/HIP 迁移记录 |
-| [`docs/TUNING_GUIDE_ROCM.md`](docs/TUNING_GUIDE_ROCM.md) | [`docs/TUNING_GUIDE_ROCM.zh-CN.md`](docs/TUNING_GUIDE_ROCM.zh-CN.md) | ROCm profiling、已完成调优和后续目标 |
-| [`README_UPSTREAM.md`](README_UPSTREAM.md) | - | 上游原始 README 备份 |
+| 完整文档地图 | [docs/README.md](docs/README.md) | [docs/README.md](docs/README.md) |
+| 构建、运行、验证日常流程 | [docs/ROCM_WORKFLOW.md](docs/ROCM_WORKFLOW.md) | [docs/ROCM_WORKFLOW.zh-CN.md](docs/ROCM_WORKFLOW.zh-CN.md) |
+| CPU vs ROCm 验证语义 | [docs/VALIDATION.md](docs/VALIDATION.md) | [docs/VALIDATION.zh-CN.md](docs/VALIDATION.zh-CN.md) |
+| 后端模式与命名策略 | [docs/BACKEND_MODES_AND_NAMING.md](docs/BACKEND_MODES_AND_NAMING.md) | [docs/BACKEND_MODES_AND_NAMING.zh-CN.md](docs/BACKEND_MODES_AND_NAMING.zh-CN.md) |
+| CUDA 到 ROCm 迁移案例 | [docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) | [docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) |
+| ROCm porting 指南 | [docs/ROCM_PORTING_GUIDE.md](docs/ROCM_PORTING_GUIDE.md) | [docs/ROCM_PORTING_GUIDE.zh-CN.md](docs/ROCM_PORTING_GUIDE.zh-CN.md) |
+| ROCm profiling 记录 | [docs/ROCM_PROFILING_NOTES.md](docs/ROCM_PROFILING_NOTES.md) | [docs/ROCM_PROFILING_NOTES.zh-CN.md](docs/ROCM_PROFILING_NOTES.zh-CN.md) |
+| ROCm tuning 历史 | [docs/ROCM_TUNING_HISTORY.md](docs/ROCM_TUNING_HISTORY.md) | [docs/ROCM_TUNING_HISTORY.zh-CN.md](docs/ROCM_TUNING_HISTORY.zh-CN.md) |
+| ROCm tuning 指南 | [docs/TUNING_GUIDE_ROCM.md](docs/TUNING_GUIDE_ROCM.md) | [docs/TUNING_GUIDE_ROCM.zh-CN.md](docs/TUNING_GUIDE_ROCM.zh-CN.md) |
+| Netlib 跨设备 benchmark | [docs/CROSS_DEVICE_BENCHMARKS.md](docs/CROSS_DEVICE_BENCHMARKS.md) | [docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md](docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md) |
+| large MPS benchmark 计划 | [docs/LARGE_MPS_BENCHMARK_PLAN.md](docs/LARGE_MPS_BENCHMARK_PLAN.md) | [docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md](docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) |
+| greenbea 数值行为 | [docs/NUMERICAL_BEHAVIOR_GREENBEA.md](docs/NUMERICAL_BEHAVIOR_GREENBEA.md) | [docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md](docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md) |
+
+`README_UPSTREAM.md` 是上游 README 备份，故意作为原始参考快照保留，不翻译、不重写。
+
+## Benchmarks
+
+原始 `.mps` 大文件不提交到 Git。仓库只提交整理后的 CSV 结果和解释文档。
+
+| 主题 | English | 中文 | 原始结果 CSV |
+|---|---|---|---|
+| Large MPS CUDA/ROCm baseline | [summary](docs/benchmarks/large_mps_cuda_rocm_baseline_20260610.md) | [中文版](docs/benchmarks/large_mps_cuda_rocm_baseline_20260610.zh-CN.md) | [platform summary](results/benchmarks/large_mps_platform_summary_20260610.csv), [per-case timing](results/benchmarks/large_mps_per_case_timing_summary_20260610.csv) |
+| cuPDLPx vs cuPDLP-C short13 | [comparison](docs/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.md) | [中文版](docs/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.zh-CN.md) | [comparison CSV](results/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.csv) |
 
 ## 本仓库提供什么
 
 - CPU-only cuPDLP-C 构建路径。
 - 上游兼容 CUDA 构建路径，用于 NVIDIA baseline。
-- 从 CUDA backend 迁移而来的 ROCm/HIP backend。
+- 由 CUDA backend 迁移而来的 ROCm/HIP backend。
 - 链接 ROCm/HIP backend 的 `plc` 可执行文件。
 - CPU-vs-ROCm smoke validation 脚本。
-- 扩展 Netlib validation case。
-- RTX 3090、RTX 4090D、Radeon 890M 的跨设备 benchmark workflow 和结果摘要。
-- 基于 H100 来源 case、inventory 和 SHA256 manifest 的 large MPS benchmark workflow。
-- `rocprofv3` profiling workflow 和摘要脚本。
+- 扩展 Netlib 验证 case。
+- RTX 3090、RTX 4090D、H100、Radeon 890M 的跨设备 benchmark 工作流与结果文档。
+- large MPS benchmark 文档和整理后的 CSV 汇总。
+- `rocprofv3` profiling 工作流与 ROCm tuning 笔记。
+- 面向 CUDA 到 ROCm/HIP 科学计算项目迁移的案例文档。
 
 ## 后端模式
 
 | 模式 | CMake 选项 | 作用 |
 |---|---|---|
-| CPU | `BUILD_CUDA=OFF`, `BUILD_ROCM=OFF` | 正确性和可移植性 baseline |
-| CUDA | `BUILD_CUDA=ON`, `BUILD_ROCM=OFF` | 上游兼容 NVIDIA backend 和 benchmark baseline |
-| ROCm/HIP | `BUILD_CUDA=OFF`, `BUILD_ROCM=ON` | AMD Radeon ROCm/HIP 目标 backend |
+| CPU | `BUILD_CUDA=OFF`, `BUILD_ROCM=OFF` | 正确性与可移植性 baseline |
+| CUDA | `BUILD_CUDA=ON`, `BUILD_ROCM=OFF` | 上游兼容 NVIDIA 后端与 benchmark baseline |
+| ROCm/HIP | `BUILD_CUDA=OFF`, `BUILD_ROCM=ON` | AMD Radeon ROCm/HIP 目标后端 |
 
-`BUILD_CUDA` 和 `BUILD_ROCM` 不能同时启用。不同后端模式应使用独立构建目录，例如 `build-cpu`、`build-cuda` 和 `build-rocm-plc`。
+`BUILD_CUDA` 和 `BUILD_ROCM` 不能同时开启。不同后端建议使用不同 build 目录，例如 `build-cpu`、`build-cuda`、`build-rocm-plc`。
 
-`BUILD_HIP` 可能仍在旧笔记中作为兼容别名出现，但 ROCm 后端的公开选项是 `BUILD_ROCM=ON`。
+## 当前验证与 benchmark 状态
 
-## 当前验证和 benchmark 状态
+ROCm/HIP 路径已经在 `afiro`、`sc50b` 等代表 case 上通过 smoke validation。
 
-当前 smoke validation 通过：
+Netlib 跨设备 benchmark 见 [docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md](docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md)。
 
-| Case | 来源 | ROCm 结果 |
+Large MPS baseline 状态：
+
+| 平台 | 后端 | 结果 |
 |---|---|---|
-| `afiro` | `example/afiro.mps` | PASS |
-| `sc50b` | `validation/netlib/sc50b.mps` | PASS |
+| RTX 3090 | CUDA upstream | 25/26 OPTIMAL, 1/26 TIMELIMIT |
+| Radeon 890M | ROCm/HIP baseline | 24/26 OPTIMAL, 2/26 TIMELIMIT |
+| RTX 4090D | CUDA upstream | 26/26 OPTIMAL |
+| H100 | CUDA upstream | 26/26 OPTIMAL |
 
-当前扩展 Netlib validation 结果：
+cuPDLPx short13 对比状态：
 
-| Case | 结果 | 说明 |
+| Solver | 平台 | 结果 |
 |---|---|---|
-| `afiro` | PASS | 基线示例 |
-| `adlittle` | PASS | 相对验证指标通过 |
-| `blend` | PASS | 相对验证指标通过 |
-| `sc50a` | PASS | 相对验证指标通过 |
-| `sc50b` | PASS | Smoke + extended case |
-| `share2b` | INCOMPLETE | 达到当前迭代或时间限制，不视为 ROCm port failure |
+| cuPDLP-C upstream | RTX 4090D CUDA | 选定 13 个短/中等 case 上 13/13 OPTIMAL |
+| cuPDLPx v0.2.9 | RTX 4090D CUDA | 同一批 case 上 13/13 OPTIMAL |
 
-跨设备 Netlib benchmark 摘要：
-
-| 设备 | CPU 结果 | GPU/ROCm 结果 | 例外 |
-|---|---:|---:|---|
-| RTX 3090 / CUDA | `greenbea` 200M 补跑后 28/28 OPTIMAL | 27/28 OPTIMAL | `greenbea` CUDA 达到 solver 内部 3600s 限制 |
-| RTX 4090D / CUDA | 28/28 OPTIMAL | 27/28 OPTIMAL | `greenbea` CUDA 命中外部 3600s timeout |
-| Radeon 890M / ROCm | 28/28 OPTIMAL | 27/28 OPTIMAL | `greenbea` ROCm 命中外部 3600s timeout |
-
-Large MPS benchmark 是当前下一阶段。原始 `.mps` 文件不进入 Git，只提交 inventory、SHA256 manifest、整理后的 CSV/Markdown 摘要和文档。
-
-## 已测试环境
-
-| 组件 | 版本 / 值 |
-|---|---|
-| OS | Ubuntu 24.04.x |
-| ROCm | 7.2.1 |
-| HIP compiler | ROCm Clang 22.0.0 |
-| GPU/APU | AMD Radeon 890M |
-| GPU 架构 | `gfx1150` |
-| HiGHS | 1.6.0 |
-| 构建系统 | CMake + Ninja |
-
-CUDA baseline 在 RTX 3090、RTX 4090D、H100 等 NVIDIA 系统上使用上游兼容 cuPDLP-C CUDA 构建本地运行。
-
-## 快速开始：ROCm/HIP 构建
+## 快速开始：构建 ROCm/HIP 版本
 
 ```bash
 cmake -S . -B build-rocm-plc -G Ninja \
@@ -110,27 +105,13 @@ cmake -S . -B build-rocm-plc -G Ninja \
 cmake --build build-rocm-plc --target plc -j"$(nproc)"
 ```
 
-运行 smoke 示例：
+运行 smoke example：
 
 ```bash
 ./build-rocm-plc/bin/plc \
   -fname ./example/afiro.mps \
   -out /tmp/afiro_rocm_sum.json \
   -nIterLim 200
-```
-
-## CPU baseline 构建
-
-```bash
-cmake -S . -B build-cpu -G Ninja \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DBUILD_CUDA=OFF \
-  -DBUILD_ROCM=OFF \
-  -DBUILD_HIP=OFF \
-  -DBUILD_APPS=OFF \
-  -DBUILD_PYTHON=OFF
-
-cmake --build build-cpu --target plc -j"$(nproc)"
 ```
 
 ## 验证
@@ -147,53 +128,38 @@ RESULT_ROOT=validation/results/extended_netlib \
   ./scripts/run_validation.sh validation/cases_extended_netlib.txt
 ```
 
-## Benchmark
-
-Netlib 跨设备 benchmark 使用：
-
-```text
-validation/cases_benchmark_200m.txt
-nIterLim = 200000000
-per-run timeout = 3600s
-```
-
-Radeon 890M 运行：
-
-```bash
-CASE_TIMEOUT_SEC=3600 ./scripts/run_benchmark_890m_full.sh
-./scripts/summarize_benchmark.py
-```
-
-Large MPS workflow 见 [`docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md`](docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md)。
-
-## Profiling 和 tuning
+## Profiling 与 tuning
 
 ```bash
 RESULT_ROOT=profiling/results/current ./scripts/profile_rocm_smoke.sh
+
 python3 scripts/summarize_rocm_profile.py \
   --input profiling/results/current \
   --output profiling/results/current/profile_summary.md
 ```
 
-初始 gfx1150 profiling 显示，小 case runtime 由大量小操作主导：HIP launch overhead、memory copy、ROCclr copyBuffer dispatch、rocSPARSE SpMV、rocBLAS vector kernel 和 custom PDLP update kernel。
+详见 [docs/ROCM_PROFILING_NOTES.zh-CN.md](docs/ROCM_PROFILING_NOTES.zh-CN.md)、[docs/ROCM_TUNING_HISTORY.zh-CN.md](docs/ROCM_TUNING_HISTORY.zh-CN.md)、[docs/TUNING_GUIDE_ROCM.zh-CN.md](docs/TUNING_GUIDE_ROCM.zh-CN.md)。
 
 ## 适配其他 ROCm GPU
+
+先识别 GPU 架构：
 
 ```bash
 rocminfo | grep -E "Name:|Marketing Name|gfx"
 rocm_agent_enumerator
 ```
 
-然后设置对应架构，例如 AMD Radeon PRO W7900 可使用：
+然后设置对应架构，例如 W7900/gfx1100：
 
 ```bash
 -DCMAKE_HIP_ARCHITECTURES=gfx1100
 ```
 
-实际可用性取决于 ROCm 支持状态。
+实际支持取决于 ROCm 版本、Linux 发行版、内核和 AMD GPU/APU 支持状态。
 
-## 命名策略
+## 文档维护约定
 
-用户可见 ROCm 输出和文档应使用 ROCm/HIP 术语。历史迁移笔记和 `README_UPSTREAM.md` 可以保留 CUDA 术语。内部兼容符号可保留到 C/HIP 边界安全重构完成之后。
-
-不要在没有同步修改 C/HIP 调用边界和验证脚本的情况下删除 `cuda_csr_Ax`、`cuda_csc_ATy`、`cuda_alloc_MVbuffer` 等兼容符号。
+- 项目维护的英文文档应尽量有对应中文文档。
+- Benchmark 解释文档必须链接到对应 CSV 结果。
+- 根 README 和 `docs/README.md` 是主导航入口，应覆盖重要文档。
+- `README_UPSTREAM.md` 是上游参考快照，不作为本项目文档重写。

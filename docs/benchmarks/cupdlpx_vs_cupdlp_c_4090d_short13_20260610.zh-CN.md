@@ -1,3 +1,5 @@
+<!-- Navigation: [Benchmark index](README.md) · [Documentation map](../README.md) · CSV: [cuPDLPx comparison](../../results/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.csv) -->
+
 # cuPDLPx vs cuPDLP-C：RTX 4090D short13 对比
 
 日期：2026-06-10  
