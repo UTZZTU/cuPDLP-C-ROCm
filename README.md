@@ -197,7 +197,10 @@ for AMD Radeon PRO W7900, depending on ROCm support.
 User-visible ROCm output and documentation should use ROCm/HIP terminology. Historical migration notes and `README_UPSTREAM.md` may keep CUDA terminology. Internal compatibility symbols may remain until the C/HIP boundary is refactored safely.
 
 Do not remove compatibility symbols such as `cuda_csr_Ax`, `cuda_csc_ATy`, or `cuda_alloc_MVbuffer` without updating the C/HIP call boundary and validation scripts.
+
 ## Benchmarks
 
 - [Large MPS CUDA/ROCm baseline summary 中文版](docs/benchmarks/large_mps_cuda_rocm_baseline_20260610.zh-CN.md)
 - [Large MPS CUDA/ROCm baseline summary English](docs/benchmarks/large_mps_cuda_rocm_baseline_20260610.md)
+- [cuPDLPx vs cuPDLP-C short13 comparison 中文版](docs/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.zh-CN.md)
+- [cuPDLPx vs cuPDLP-C short13 comparison English](docs/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.md)
