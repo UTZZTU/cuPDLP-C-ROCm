@@ -2,7 +2,9 @@
 
 > 中文: [README_ROCM_gfx1150.zh-CN.md](README_ROCM_gfx1150.zh-CN.md)  
 > Main README: [README.md](README.md)  
-> Documentation map: [docs/README.md](docs/README.md)
+> Documentation map: [docs/README.md](docs/README.md)  
+> Validation index: [validation/README.md](validation/README.md)  
+> Benchmark index: [docs/benchmarks/README.md](docs/benchmarks/README.md)
 
 This page is a focused quick-start for the currently validated ROCm/HIP target: AMD Radeon 890M / `gfx1150`.
 
@@ -55,6 +57,15 @@ Recommended full local check:
 ./scripts/check_rocm_port.sh
 ctest --test-dir build-rocm-plc --output-on-failure
 ```
+
+## Validation data
+
+Validation markdown summaries and their CSV files are indexed here:
+
+- [validation/README.md](validation/README.md)
+- [validation/rocm_current_vs_reduce_27cases_repeats_comparison.md](validation/rocm_current_vs_reduce_27cases_repeats_comparison.md)
+- [validation/rocm_prof_tuning_milestones_summary.md](validation/rocm_prof_tuning_milestones_summary.md)
+- [validation/rocm_tuning_ablation_6cases_repeats_summary.md](validation/rocm_tuning_ablation_6cases_repeats_summary.md)
 
 ## Benchmarks
 

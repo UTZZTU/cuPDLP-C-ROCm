@@ -2,7 +2,9 @@
 
 > English: [README_ROCM_gfx1150.md](README_ROCM_gfx1150.md)  
 > 主 README: [README.zh-CN.md](README.zh-CN.md)  
-> 文档地图: [docs/README.md](docs/README.md)
+> 文档地图: [docs/README.md](docs/README.md)  
+> 验证数据索引: [validation/README.zh-CN.md](validation/README.zh-CN.md)  
+> Benchmark 索引: [docs/benchmarks/README.md](docs/benchmarks/README.md)
 
 本页是当前已经验证的 ROCm/HIP 目标平台 AMD Radeon 890M / `gfx1150` 的快速入口。
 
@@ -49,12 +51,21 @@ cmake --build build-rocm-plc --target plc -j"$(nproc)"
   -nIterLim 200
 ```
 
-推荐的完整本地检查：
+推荐完整本地检查：
 
 ```bash
 ./scripts/check_rocm_port.sh
 ctest --test-dir build-rocm-plc --output-on-failure
 ```
+
+## 验证数据
+
+validation 目录下的 markdown 汇总和对应 CSV 统一从这里进入：
+
+- [validation/README.zh-CN.md](validation/README.zh-CN.md)
+- [validation/rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md](validation/rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md)
+- [validation/rocm_prof_tuning_milestones_summary.zh-CN.md](validation/rocm_prof_tuning_milestones_summary.zh-CN.md)
+- [validation/rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md](validation/rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md)
 
 ## Benchmarks
 
