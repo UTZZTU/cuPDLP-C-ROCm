@@ -1,0 +1,5 @@
+device,backend,solver,commit,optimal,timelimit,notes
+RTX 3090,CUDA,cuPDLP-C upstream,7b94c41,25/26,1/26,dlr1 replaced by dTimeLim=7200 rerun; other solved rows from original sweep.
+Radeon 890M,ROCm/HIP,cuPDLP-C-ROCm baseline,ae3b683,24/26,2/26,"dlr1, Dual2_5000, fhnw-binschedule1 replaced by dTimeLim=7200 reruns."
+RTX 4090D,CUDA,cuPDLP-C upstream,7b94c41,26/26,0/26,Full 26-case sweep with dTimeLim=7200.
+H100 PCIe,CUDA,cuPDLP-C upstream,7b94c41,26/26,0/26,Full 26-case sweep with dTimeLim=7200; raw H100 tier/size ignored because symlink size was measured.

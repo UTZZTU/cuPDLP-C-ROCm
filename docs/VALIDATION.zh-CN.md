@@ -1,8 +1,26 @@
 # ROCm 验证
 
-> English version: [`VALIDATION.md`](VALIDATION.md)
+> English version: [VALIDATION.md](VALIDATION.md)  
+> 文档地图: [README.md](README.md)  
+> Validation 结果索引: [../validation/README.zh-CN.md](../validation/README.zh-CN.md)
 
 本文定义 `cuPDLP-C-ROCm` 如何用 CPU baseline 验证 ROCm/HIP backend。
+
+## 验证结果文件
+
+整理后的 validation Markdown 汇总和 CSV 文件统一索引在：
+
+- [../validation/README.zh-CN.md](../validation/README.zh-CN.md)
+- [../validation/README.md](../validation/README.md)
+
+常用 validation CSV：
+
+| 结果组 | Markdown 汇总 | CSV 文件 |
+|---|---|---|
+| 跨设备 Netlib 汇总 | [CROSS_DEVICE_BENCHMARKS.zh-CN.md](CROSS_DEVICE_BENCHMARKS.zh-CN.md) | [cross_device_full_summary.csv](../validation/cross_device_full_summary.csv) |
+| current vs reduce 重复测试对比 | [../validation/rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md](../validation/rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md) | [comparison](../validation/rocm_current_vs_reduce_27cases_repeats_comparison.csv), [aggregated](../validation/rocm_current_vs_reduce_27cases_repeats_aggregated.csv), [raw](../validation/rocm_current_vs_reduce_27cases_repeats_raw.csv) |
+| rocprof tuning milestones | [../validation/rocm_prof_tuning_milestones_summary.zh-CN.md](../validation/rocm_prof_tuning_milestones_summary.zh-CN.md) | [summary](../validation/rocm_prof_tuning_milestones_summary.csv), [deltas](../validation/rocm_prof_tuning_milestones_deltas.csv), [HIP API](../validation/rocm_prof_tuning_milestones_hip_api_top.csv), [kernel](../validation/rocm_prof_tuning_milestones_kernel_top.csv), [memory-copy](../validation/rocm_prof_tuning_milestones_memory_copy_top.csv) |
+| tuning ablation 6-case 重复测试 | [../validation/rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md](../validation/rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md) | [summary](../validation/rocm_tuning_ablation_6cases_repeats_summary.csv), [raw](../validation/rocm_tuning_ablation_6cases_repeats_raw.csv) |
 
 ## 已验证 ROCm 目标
 
@@ -17,9 +35,9 @@
 
 ## 验证目标
 
-验证 workflow 检查 ROCm/HIP backend 相比 CPU backend 是否产生数值上合理的结果。
+验证 workflow 检查 ROCm/HIP backend 相比 CPU backend 是否产生数值上合理的结果。CPU backend 被用作正确性 baseline，因为它不依赖 GPU runtime 行为，也更容易 debug。
 
-CPU backend 被用作正确性 baseline，因为它不依赖 GPU runtime 行为，也更容易 debug。验证目标不是 bitwise equality。CPU 和 ROCm/HIP run 可能因为以下原因走出不同浮点轨迹：
+验证目标不是 bitwise equality。CPU 和 ROCm/HIP run 可能因为以下原因走出不同浮点轨迹：
 
 - BLAS 和 sparse library 不同；
 - sparse matrix-vector multiplication 顺序不同；
@@ -113,8 +131,6 @@ Hygiene 检查脚本是：
 - 必需的 HIP 检查宏，例如 `CHECK_HIP_STRICT`，必须保留。
 - `cuda_csr_Ax`、`cuda_csc_ATy`、`cuda_alloc_MVbuffer` 等 legacy exported compatibility symbol 在 C/HIP 边界安全重构前必须保留。
 
-这些检查有意保守。部分 CUDA-style 名称仍然存在，因为它们是 C 与 HIP/C++ 边界使用的兼容符号。
-
 ## Extended Netlib validation
 
 准备 Netlib case：
@@ -168,7 +184,7 @@ FAIL: 0
 5. benchmark 前运行 `sha256sum -c`。
 6. 只提交 manifest、整理后的 summary 和文档。
 
-当前 large MPS workflow 见 [`LARGE_MPS_BENCHMARK_PLAN.zh-CN.md`](LARGE_MPS_BENCHMARK_PLAN.zh-CN.md)。
+当前 large MPS workflow 见 [LARGE_MPS_BENCHMARK_PLAN.zh-CN.md](LARGE_MPS_BENCHMARK_PLAN.zh-CN.md)。
 
 ## 比较脚本
 
@@ -287,13 +303,6 @@ ctest --test-dir build-rocm-plc -N
 ctest --test-dir build-rocm-plc --output-on-failure
 ```
 
-当前注册测试：
-
-| Test | 用途 | 期望结果 |
-|---|---|---|
-| `rocm_port_hygiene` | 检查 ROCm/HIP 命名和兼容性 guardrail | PASS |
-| `rocm_smoke_validation` | 运行 CPU-vs-ROCm smoke validation | PASS |
-
 ## 手动验证命令
 
 构建 CPU：
@@ -306,6 +315,7 @@ cmake -S . -B build-cpu -G Ninja \
   -DBUILD_HIP=OFF \
   -DBUILD_APPS=OFF \
   -DBUILD_PYTHON=OFF
+
 cmake --build build-cpu --target plc -j"$(nproc)"
 ```
 
@@ -321,6 +331,7 @@ cmake -S . -B build-rocm-plc -G Ninja \
   -DBUILD_TESTING=ON \
   -DCMAKE_PREFIX_PATH=/opt/rocm \
   -DCMAKE_HIP_ARCHITECTURES=gfx1150
+
 cmake --build build-rocm-plc --target plc -j"$(nproc)"
 ```
 

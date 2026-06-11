@@ -1,8 +1,26 @@
 # ROCm validation
 
-> 中文版: [`VALIDATION.zh-CN.md`](VALIDATION.zh-CN.md)
+> 中文版: [VALIDATION.zh-CN.md](VALIDATION.zh-CN.md)  
+> Documentation map: [README.md](README.md)  
+> Validation result index: [../validation/README.md](../validation/README.md)
 
 This document defines how `cuPDLP-C-ROCm` validates the ROCm/HIP backend against the CPU baseline.
+
+## Validation result files
+
+Curated validation Markdown summaries and CSV files are indexed in:
+
+- [../validation/README.md](../validation/README.md)
+- [../validation/README.zh-CN.md](../validation/README.zh-CN.md)
+
+Frequently used validation CSVs:
+
+| Result group | Markdown summary | CSV files |
+|---|---|---|
+| Cross-device Netlib summary | [CROSS_DEVICE_BENCHMARKS.md](CROSS_DEVICE_BENCHMARKS.md) | [cross_device_full_summary.csv](../validation/cross_device_full_summary.csv) |
+| current vs reduce repeated comparison | [../validation/rocm_current_vs_reduce_27cases_repeats_comparison.md](../validation/rocm_current_vs_reduce_27cases_repeats_comparison.md) | [comparison](../validation/rocm_current_vs_reduce_27cases_repeats_comparison.csv), [aggregated](../validation/rocm_current_vs_reduce_27cases_repeats_aggregated.csv), [raw](../validation/rocm_current_vs_reduce_27cases_repeats_raw.csv) |
+| rocprof tuning milestones | [../validation/rocm_prof_tuning_milestones_summary.md](../validation/rocm_prof_tuning_milestones_summary.md) | [summary](../validation/rocm_prof_tuning_milestones_summary.csv), [deltas](../validation/rocm_prof_tuning_milestones_deltas.csv), [HIP API](../validation/rocm_prof_tuning_milestones_hip_api_top.csv), [kernel](../validation/rocm_prof_tuning_milestones_kernel_top.csv), [memory-copy](../validation/rocm_prof_tuning_milestones_memory_copy_top.csv) |
+| tuning ablation 6-case repeats | [../validation/rocm_tuning_ablation_6cases_repeats_summary.md](../validation/rocm_tuning_ablation_6cases_repeats_summary.md) | [summary](../validation/rocm_tuning_ablation_6cases_repeats_summary.csv), [raw](../validation/rocm_tuning_ablation_6cases_repeats_raw.csv) |
 
 ## Verified ROCm target
 
@@ -17,9 +35,9 @@ This document defines how `cuPDLP-C-ROCm` validates the ROCm/HIP backend against
 
 ## Validation goals
 
-The validation workflow checks whether the ROCm/HIP backend produces numerically reasonable results compared with the CPU backend.
+The validation workflow checks whether the ROCm/HIP backend produces numerically reasonable results compared with the CPU backend. The CPU backend is used as the correctness baseline because it does not depend on GPU runtime behavior and is easier to debug.
 
-The CPU backend is used as the correctness baseline because it does not depend on GPU runtime behavior and is easier to debug. The goal is not bitwise equality. CPU and ROCm/HIP runs may follow different floating-point trajectories because of:
+The goal is not bitwise equality. CPU and ROCm/HIP runs may follow different floating-point trajectories because of:
 
 - different BLAS and sparse libraries,
 - different sparse matrix-vector multiplication order,
@@ -113,8 +131,6 @@ It checks guardrails such as:
 - Required HIP check macros such as `CHECK_HIP_STRICT` must remain present.
 - Legacy exported compatibility symbols such as `cuda_csr_Ax`, `cuda_csc_ATy`, and `cuda_alloc_MVbuffer` must remain present until the C/HIP boundary is refactored safely.
 
-These checks are intentionally conservative. Some CUDA-style names remain because they are compatibility symbols used across C and HIP/C++ boundaries.
-
 ## Extended Netlib validation
 
 Prepare Netlib cases:
@@ -168,7 +184,7 @@ The project is expanding beyond small Netlib cases. Larger validation work shoul
 5. Run `sha256sum -c` before benchmarking.
 6. Commit only manifests, curated summaries, and documentation.
 
-For the current large MPS workflow, see [`LARGE_MPS_BENCHMARK_PLAN.md`](LARGE_MPS_BENCHMARK_PLAN.md).
+For the current large MPS workflow, see [LARGE_MPS_BENCHMARK_PLAN.md](LARGE_MPS_BENCHMARK_PLAN.md).
 
 ## Comparison script
 
@@ -287,13 +303,6 @@ Run tests:
 ctest --test-dir build-rocm-plc --output-on-failure
 ```
 
-Current registered tests:
-
-| Test | Purpose | Expected result |
-|---|---|---|
-| `rocm_port_hygiene` | Checks ROCm/HIP naming and compatibility guardrails | PASS |
-| `rocm_smoke_validation` | Runs CPU-vs-ROCm smoke validation | PASS |
-
 ## Manual validation commands
 
 Build CPU:
@@ -306,6 +315,7 @@ cmake -S . -B build-cpu -G Ninja \
   -DBUILD_HIP=OFF \
   -DBUILD_APPS=OFF \
   -DBUILD_PYTHON=OFF
+
 cmake --build build-cpu --target plc -j"$(nproc)"
 ```
 
@@ -321,6 +331,7 @@ cmake -S . -B build-rocm-plc -G Ninja \
   -DBUILD_TESTING=ON \
   -DCMAKE_PREFIX_PATH=/opt/rocm \
   -DCMAKE_HIP_ARCHITECTURES=gfx1150
+
 cmake --build build-rocm-plc --target plc -j"$(nproc)"
 ```
 

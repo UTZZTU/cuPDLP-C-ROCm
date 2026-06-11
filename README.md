@@ -1,6 +1,10 @@
 # cuPDLP-C-ROCm
 
-> 中文版: [`README.zh-CN.md`](README.zh-CN.md)
+> 中文主页: [README.zh-CN.md](README.zh-CN.md)  
+> ROCm/gfx1150 quick start: [README_ROCM_gfx1150.md](README_ROCM_gfx1150.md)  
+> Documentation map: [docs/README.md](docs/README.md)  
+> Validation index: [validation/README.md](validation/README.md)  
+> Benchmark index: [docs/benchmarks/README.md](docs/benchmarks/README.md)
 
 `cuPDLP-C-ROCm` is a ROCm/HIP port and validation fork of upstream cuPDLP-C for AMD GPUs/APUs. The project keeps the CPU path and upstream-compatible CUDA path, and adds a ROCm/HIP backend for AMD Radeon-class hardware.
 
@@ -12,20 +16,45 @@
 | Additional ROCm target under validation | AMD Radeon PRO W7900 / `gfx1100` |
 | CUDA baseline devices | RTX 3090, RTX 4090D, H100 |
 
-> Status: experimental but buildable. The ROCm/HIP backend has passed smoke validation and a cross-device Netlib benchmark matrix on AMD Radeon 890M / `gfx1150`. The W7900 / `gfx1100` branch has passed first-port CPU-vs-ROCm `afiro` smoke validation and is now in extended validation and tuning. It is not yet a production-ready, broadly certified, or fully tuned ROCm solver release.
+> Status: experimental but buildable. The ROCm/HIP backend has passed smoke validation, Netlib validation, cross-device benchmark checks, and large-MPS baseline testing on AMD Radeon 890M / `gfx1150`. The W7900 / `gfx1100` branch has passed first-port CPU-vs-ROCm `afiro` smoke validation and is now in extended validation and tuning. It is not yet a production-ready or fully tuned ROCm solver release.
+
+## Start here
+
+| Need | English | 中文 |
+|---|---|---|
+| ROCm/gfx1150 quick start | [README_ROCM_gfx1150.md](README_ROCM_gfx1150.md) | [README_ROCM_gfx1150.zh-CN.md](README_ROCM_gfx1150.zh-CN.md) |
+| Full documentation map | [docs/README.md](docs/README.md) | [docs/README.md](docs/README.md) |
+| Validation data index | [validation/README.md](validation/README.md) | [validation/README.zh-CN.md](validation/README.zh-CN.md) |
+| Benchmark index | [docs/benchmarks/README.md](docs/benchmarks/README.md) | [docs/benchmarks/README.md](docs/benchmarks/README.md) |
 
 ## Documentation
 
-| English | Chinese | Purpose |
+| Topic | English | 中文 |
 |---|---|---|
-| [`docs/ROCM_WORKFLOW.md`](docs/ROCM_WORKFLOW.md) | [`docs/ROCM_WORKFLOW.zh-CN.md`](docs/ROCM_WORKFLOW.zh-CN.md) | Daily build, validation, profiling, and benchmark commands |
-| [`docs/VALIDATION.md`](docs/VALIDATION.md) | [`docs/VALIDATION.zh-CN.md`](docs/VALIDATION.zh-CN.md) | CPU-vs-ROCm validation semantics |
-| [`docs/CROSS_DEVICE_BENCHMARKS.md`](docs/CROSS_DEVICE_BENCHMARKS.md) | [`docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md`](docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md) | RTX 3090 / RTX 4090D / Radeon 890M benchmark matrix |
-| [`docs/LARGE_MPS_BENCHMARK_PLAN.md`](docs/LARGE_MPS_BENCHMARK_PLAN.md) | [`docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md`](docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) | H100-sourced large MPS workflow and cross-device plan |
-| [`docs/ROCM_PORTING_GUIDE.md`](docs/ROCM_PORTING_GUIDE.md) | [`docs/ROCM_PORTING_GUIDE.zh-CN.md`](docs/ROCM_PORTING_GUIDE.zh-CN.md) | CUDA-to-ROCm/HIP migration record |
-| [`docs/TUNING_GUIDE_ROCM.md`](docs/TUNING_GUIDE_ROCM.md) | [`docs/TUNING_GUIDE_ROCM.zh-CN.md`](docs/TUNING_GUIDE_ROCM.zh-CN.md) | ROCm profiling, completed tuning steps, and future targets |
-| [`docs/W7900_FIRST_PORT.md`](docs/W7900_FIRST_PORT.md) | [`docs/W7900_FIRST_PORT.zh-CN.md`](docs/W7900_FIRST_PORT.zh-CN.md) | W7900 / `gfx1100` first-port build and smoke validation record |
-| [`README_UPSTREAM.md`](README_UPSTREAM.md) | - | Original upstream README backup |
+| Build / run / validation workflow | [docs/ROCM_WORKFLOW.md](docs/ROCM_WORKFLOW.md) | [docs/ROCM_WORKFLOW.zh-CN.md](docs/ROCM_WORKFLOW.zh-CN.md) |
+| CPU vs ROCm validation semantics | [docs/VALIDATION.md](docs/VALIDATION.md) | [docs/VALIDATION.zh-CN.md](docs/VALIDATION.zh-CN.md) |
+| Backend modes and naming policy | [docs/BACKEND_MODES_AND_NAMING.md](docs/BACKEND_MODES_AND_NAMING.md) | [docs/BACKEND_MODES_AND_NAMING.zh-CN.md](docs/BACKEND_MODES_AND_NAMING.zh-CN.md) |
+| CUDA to ROCm migration case study | [docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) | [docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) |
+| ROCm porting guide | [docs/ROCM_PORTING_GUIDE.md](docs/ROCM_PORTING_GUIDE.md) | [docs/ROCM_PORTING_GUIDE.zh-CN.md](docs/ROCM_PORTING_GUIDE.zh-CN.md) |
+| ROCm profiling notes | [docs/ROCM_PROFILING_NOTES.md](docs/ROCM_PROFILING_NOTES.md) | [docs/ROCM_PROFILING_NOTES.zh-CN.md](docs/ROCM_PROFILING_NOTES.zh-CN.md) |
+| ROCm tuning history | [docs/ROCM_TUNING_HISTORY.md](docs/ROCM_TUNING_HISTORY.md) | [docs/ROCM_TUNING_HISTORY.zh-CN.md](docs/ROCM_TUNING_HISTORY.zh-CN.md) |
+| ROCm tuning guide | [docs/TUNING_GUIDE_ROCM.md](docs/TUNING_GUIDE_ROCM.md) | [docs/TUNING_GUIDE_ROCM.zh-CN.md](docs/TUNING_GUIDE_ROCM.zh-CN.md) |
+| Cross-device Netlib benchmarks | [docs/CROSS_DEVICE_BENCHMARKS.md](docs/CROSS_DEVICE_BENCHMARKS.md) | [docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md](docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md) |
+| Large MPS benchmark plan | [docs/LARGE_MPS_BENCHMARK_PLAN.md](docs/LARGE_MPS_BENCHMARK_PLAN.md) | [docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md](docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) |
+| greenbea numerical behavior | [docs/NUMERICAL_BEHAVIOR_GREENBEA.md](docs/NUMERICAL_BEHAVIOR_GREENBEA.md) | [docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md](docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md) |
+| W7900 / `gfx1100` first-port record | [docs/W7900_FIRST_PORT.md](docs/W7900_FIRST_PORT.md) | [docs/W7900_FIRST_PORT.zh-CN.md](docs/W7900_FIRST_PORT.zh-CN.md) |
+| Upstream reference snapshot | [README_UPSTREAM.md](README_UPSTREAM.md) | — |
+
+`README_UPSTREAM.md` is intentionally kept as an upstream reference snapshot and is not translated or rewritten as project documentation.
+
+## Benchmarks
+
+The raw `.mps` benchmark files are not committed. Curated result CSVs and explanation documents are committed instead.
+
+| Topic | English | 中文 | Raw CSV |
+|---|---|---|---|
+| Large MPS CUDA/ROCm baseline | [summary](docs/benchmarks/large_mps_cuda_rocm_baseline_20260610.md) | [中文版](docs/benchmarks/large_mps_cuda_rocm_baseline_20260610.zh-CN.md) | [platform summary](results/benchmarks/large_mps_platform_summary_20260610.csv), [per-case timing](results/benchmarks/large_mps_per_case_timing_summary_20260610.csv) |
+| cuPDLPx vs cuPDLP-C short13 | [comparison](docs/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.md) | [中文版](docs/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.zh-CN.md) | [comparison CSV](results/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.csv) |
 
 ## What this repository provides
 
@@ -34,11 +63,11 @@
 - ROCm/HIP backend built from migrated CUDA backend code.
 - `plc` executable linked against the ROCm/HIP backend.
 - CPU-vs-ROCm smoke validation scripts.
-- Extended Netlib validation cases.
-- Cross-device benchmark workflow and summaries for RTX 3090, RTX 4090D, and Radeon 890M.
-- W7900 / `gfx1100` first-port build scripts and smoke validation notes.
-- Large MPS benchmark workflow based on H100-hosted cases, inventory files, and SHA256 manifests.
-- `rocprofv3` profiling workflow and summary helpers.
+- W7900 / `gfx1100` first-port build scripts and smoke validation notes. - Extended Netlib validation cases.
+- Cross-device benchmark workflows and summaries for RTX 3090, RTX 4090D, H100, and Radeon 890M.
+- Large MPS benchmark documents and curated CSV summaries.
+- `rocprofv3` profiling workflow and ROCm tuning notes.
+- Migration documentation for CUDA-to-ROCm/HIP scientific-computing projects.
 
 ## Backend modes
 
@@ -50,51 +79,23 @@
 
 `BUILD_CUDA` and `BUILD_ROCM` must not be enabled at the same time. Use separate build directories such as `build-cpu`, `build-cuda`, and `build-rocm-plc`.
 
-`BUILD_HIP` may still appear as a legacy compatibility alias in older notes, but the public ROCm option is `BUILD_ROCM=ON`.
-
 ## Current validation and benchmark status
 
-Smoke validation currently passes:
+Large MPS baseline status:
 
-| Case | Source | ROCm result |
+| Platform | Backend | Result |
 |---|---|---|
-| `afiro` | `example/afiro.mps` | PASS |
-| `sc50b` | `validation/netlib/sc50b.mps` | PASS |
+| RTX 3090 | CUDA upstream | 25/26 OPTIMAL, 1/26 TIMELIMIT |
+| Radeon 890M | ROCm/HIP baseline | 24/26 OPTIMAL, 2/26 TIMELIMIT |
+| RTX 4090D | CUDA upstream | 26/26 OPTIMAL |
+| H100 | CUDA upstream | 26/26 OPTIMAL |
 
-Extended Netlib validation currently reports:
+cuPDLPx short13 comparison status:
 
-| Case | Result | Notes |
+| Solver | Platform | Result |
 |---|---|---|
-| `afiro` | PASS | Baseline example |
-| `adlittle` | PASS | Relative validation metrics pass |
-| `blend` | PASS | Relative validation metrics pass |
-| `sc50a` | PASS | Relative validation metrics pass |
-| `sc50b` | PASS | Smoke + extended case |
-| `share2b` | INCOMPLETE | Hits current iteration/time limit; not treated as a ROCm port failure |
-
-Cross-device Netlib benchmark summary:
-
-| Device | CPU result | GPU/ROCm result | Exception |
-|---|---:|---:|---|
-| RTX 3090 / CUDA | 28/28 OPTIMAL after `greenbea` 200M supplement | 27/28 OPTIMAL | `greenbea` CUDA reached solver internal 3600s limit |
-| RTX 4090D / CUDA | 28/28 OPTIMAL | 27/28 OPTIMAL | `greenbea` CUDA hit external 3600s timeout |
-| Radeon 890M / ROCm | 28/28 OPTIMAL | 27/28 OPTIMAL | `greenbea` ROCm hit external 3600s timeout |
-
-Large MPS benchmarking is the current next stage. Raw `.mps` files stay outside Git. Only inventory files, SHA256 manifests, curated CSV/Markdown summaries, and documentation should be committed.
-
-## Tested environment
-
-| Component | Version / value |
-|---|---|
-| OS | Ubuntu 24.04.x |
-| ROCm | 7.2.1 |
-| HIP compiler | ROCm Clang 22.0.0 |
-| GPU/APU | AMD Radeon 890M |
-| GPU architecture | `gfx1150` |
-| HiGHS | 1.6.0 |
-| Build system | CMake + Ninja |
-
-CUDA baselines are run locally on NVIDIA systems such as RTX 3090, RTX 4090D, and H100 using upstream-compatible cuPDLP-C CUDA builds.
+| cuPDLP-C upstream | RTX 4090D CUDA | 13/13 OPTIMAL on selected short/medium cases |
+| cuPDLPx v0.2.9 | RTX 4090D CUDA | 13/13 OPTIMAL on the same selected cases |
 
 ## Quick start: ROCm/HIP build
 
@@ -121,20 +122,6 @@ Run a smoke example:
   -nIterLim 200
 ```
 
-## CPU baseline build
-
-```bash
-cmake -S . -B build-cpu -G Ninja \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DBUILD_CUDA=OFF \
-  -DBUILD_ROCM=OFF \
-  -DBUILD_HIP=OFF \
-  -DBUILD_APPS=OFF \
-  -DBUILD_PYTHON=OFF
-
-cmake --build build-cpu --target plc -j"$(nproc)"
-```
-
 ## Validation
 
 ```bash
@@ -149,53 +136,33 @@ RESULT_ROOT=validation/results/extended_netlib \
   ./scripts/run_validation.sh validation/cases_extended_netlib.txt
 ```
 
-## Benchmarking
-
-Netlib cross-device benchmark uses:
-
-```text
-validation/cases_benchmark_200m.txt
-nIterLim = 200000000
-per-run timeout = 3600s
-```
-
-Radeon 890M run:
-
-```bash
-CASE_TIMEOUT_SEC=3600 ./scripts/run_benchmark_890m_full.sh
-./scripts/summarize_benchmark.py
-```
-
-Large MPS workflow is documented in [`docs/LARGE_MPS_BENCHMARK_PLAN.md`](docs/LARGE_MPS_BENCHMARK_PLAN.md).
+See [validation/README.md](validation/README.md) for curated validation summaries and CSV files.
 
 ## Profiling and tuning
 
 ```bash
 RESULT_ROOT=profiling/results/current ./scripts/profile_rocm_smoke.sh
+
 python3 scripts/summarize_rocm_profile.py \
   --input profiling/results/current \
   --output profiling/results/current/profile_summary.md
 ```
 
-Initial gfx1150 profiling shows that small-case runtime is dominated by many small operations: HIP launch overhead, memory copies, ROCclr copyBuffer dispatches, rocSPARSE SpMV, rocBLAS vector kernels, and custom PDLP update kernels.
+See [docs/ROCM_PROFILING_NOTES.md](docs/ROCM_PROFILING_NOTES.md), [docs/ROCM_TUNING_HISTORY.md](docs/ROCM_TUNING_HISTORY.md), and [docs/TUNING_GUIDE_ROCM.md](docs/TUNING_GUIDE_ROCM.md).
 
 ## Adapting to another ROCm GPU
+
+Identify the GPU architecture:
 
 ```bash
 rocminfo | grep -E "Name:|Marketing Name|gfx"
 rocm_agent_enumerator
 ```
 
-Then set the proper architecture, for example:
+Then set the matching architecture, for example:
 
 ```bash
 -DCMAKE_HIP_ARCHITECTURES=gfx1100
 ```
 
 for AMD Radeon PRO W7900, depending on ROCm support.
-
-## Naming policy
-
-User-visible ROCm output and documentation should use ROCm/HIP terminology. Historical migration notes and `README_UPSTREAM.md` may keep CUDA terminology. Internal compatibility symbols may remain until the C/HIP boundary is refactored safely.
-
-Do not remove compatibility symbols such as `cuda_csr_Ax`, `cuda_csc_ATy`, or `cuda_alloc_MVbuffer` without updating the C/HIP call boundary and validation scripts.
