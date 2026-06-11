@@ -63,13 +63,13 @@ Without these paths, the C compilation stage may fall back to `/opt/rocm/include
 HiGHS version 1.6.0 is used and installed at:
 
 ```bash
-/root/cupdlp_w7900/deps/install/highs-1.6.0
+/app/cupdlp_w7900/deps/install/highs-1.6.0
 ```
 
 Environment variable:
 
 ```bash
-export HIGHS_HOME=/root/cupdlp_w7900/deps/install/highs-1.6.0
+export HIGHS_HOME=/app/cupdlp_w7900/deps/install/highs-1.6.0
 ```
 
 ## 5. Build Scripts
@@ -105,7 +105,7 @@ Command:
 ```bash
 ./build-cpu/bin/plc \
   -fname ./example/afiro.mps \
-  -out /root/cupdlp_w7900/results/afiro_cpu.json \
+  -out /app/cupdlp_w7900/results/afiro_cpu.json \
   -nIterLim 200
 ```
 
@@ -132,7 +132,7 @@ Command:
 ```bash
 HIP_VISIBLE_DEVICES=0 ./build-rocm-w7900/bin/plc \
   -fname ./example/afiro.mps \
-  -out /root/cupdlp_w7900/results/afiro_rocm_w7900.json \
+  -out /app/cupdlp_w7900/results/afiro_rocm_w7900.json \
   -nIterLim 200
 ```
 

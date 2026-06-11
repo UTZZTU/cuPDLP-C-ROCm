@@ -15,15 +15,15 @@ This first stage focuses only on buildability and correctness smoke validation. 
 
 Project root on this machine:
 
-/root/cupdlp_w7900
+/app/cupdlp_w7900
 
 Repository path:
 
-/root/cupdlp_w7900/src/cuPDLP-C-ROCm
+/app/cupdlp_w7900/src/cuPDLP-C-ROCm
 
 Suggested local layout:
 
-/root/cupdlp_w7900/
+/app/cupdlp_w7900/
 - src/
 - build/
 - datasets/

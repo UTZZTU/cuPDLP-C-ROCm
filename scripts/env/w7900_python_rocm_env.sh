@@ -5,7 +5,7 @@ export ROCM_PY_HOME=/opt/python
 export ROCM_PY_CORE=/opt/python/lib/python3.12/site-packages/_rocm_sdk_core
 export ROCM_PY_DEVEL=/opt/python/lib/python3.12/site-packages/_rocm_sdk_devel
 
-export HIGHS_HOME=/root/cupdlp_w7900/deps/install/highs-1.6.0
+export HIGHS_HOME=${HIGHS_HOME:-/app/cupdlp_w7900/deps/install/highs-1.6.0}
 
 export PATH=/opt/python/bin:${PATH}
 export LD_LIBRARY_PATH=${ROCM_PY_DEVEL}/lib:${ROCM_PY_CORE}/lib:${HIGHS_HOME}/lib:${LD_LIBRARY_PATH:-}

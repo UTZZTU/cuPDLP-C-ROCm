@@ -63,13 +63,13 @@ GPU 识别结果：
 HiGHS 使用 1.6.0 版本，并安装到：
 
 ```bash
-/root/cupdlp_w7900/deps/install/highs-1.6.0
+/app/cupdlp_w7900/deps/install/highs-1.6.0
 ```
 
 环境变量：
 
 ```bash
-export HIGHS_HOME=/root/cupdlp_w7900/deps/install/highs-1.6.0
+export HIGHS_HOME=/app/cupdlp_w7900/deps/install/highs-1.6.0
 ```
 
 ## 5. 构建脚本
@@ -105,7 +105,7 @@ build-cpu
 ```bash
 ./build-cpu/bin/plc \
   -fname ./example/afiro.mps \
-  -out /root/cupdlp_w7900/results/afiro_cpu.json \
+  -out /app/cupdlp_w7900/results/afiro_cpu.json \
   -nIterLim 200
 ```
 
@@ -132,7 +132,7 @@ build-cpu
 ```bash
 HIP_VISIBLE_DEVICES=0 ./build-rocm-w7900/bin/plc \
   -fname ./example/afiro.mps \
-  -out /root/cupdlp_w7900/results/afiro_rocm_w7900.json \
+  -out /app/cupdlp_w7900/results/afiro_rocm_w7900.json \
   -nIterLim 200
 ```
 
