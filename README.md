@@ -63,7 +63,8 @@ The raw `.mps` benchmark files are not committed. Curated result CSVs and explan
 - ROCm/HIP backend built from migrated CUDA backend code.
 - `plc` executable linked against the ROCm/HIP backend.
 - CPU-vs-ROCm smoke validation scripts.
-- W7900 / `gfx1100` first-port build scripts and smoke validation notes. - Extended Netlib validation cases.
+- W7900 / `gfx1100` first-port build scripts and smoke validation notes.
+- Extended Netlib validation cases.
 - Cross-device benchmark workflows and summaries for RTX 3090, RTX 4090D, H100, and Radeon 890M.
 - Large MPS benchmark documents and curated CSV summaries.
 - `rocprofv3` profiling workflow and ROCm tuning notes.

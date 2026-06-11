@@ -63,7 +63,8 @@
 - 由 CUDA backend 迁移而来的 ROCm/HIP backend。
 - 链接 ROCm/HIP backend 的 `plc` 可执行文件。
 - CPU-vs-ROCm smoke validation 脚本。
-- W7900 / `gfx1100` first-port 构建脚本和 smoke validation 记录。 - 扩展 Netlib 验证 case。
+- W7900 / `gfx1100` first-port 构建脚本和 smoke validation 记录。
+- 扩展 Netlib 验证 case。
 - RTX 3090、RTX 4090D、H100、Radeon 890M 的跨设备 benchmark 工作流与结果文档。
 - large MPS benchmark 文档和整理后的 CSV 汇总。
 - `rocprofv3` profiling 工作流与 ROCm tuning 笔记。
