@@ -66,6 +66,17 @@
 | [w7900_extended_netlib_summary_20260611.zh-CN.md](w7900_extended_netlib_summary_20260611.zh-CN.md) | W7900 / `gfx1100` extended Netlib validation 中文汇总 |
 | [w7900_extended_netlib_summary_20260611.csv](w7900_extended_netlib_summary_20260611.csv) | W7900 extended Netlib validation CSV |
 
+<!-- W7900_27CASE_BASELINE_20260611_BEGIN -->
+## W7900 / gfx1100 27-case baseline
+
+| 文件 | 说明 |
+|---|---|
+| [w7900_27cases_baseline_20260611.md](w7900_27cases_baseline_20260611.md) | W7900 / `gfx1100` 27-case repeated ROCm baseline 英文汇总 |
+| [w7900_27cases_baseline_20260611.zh-CN.md](w7900_27cases_baseline_20260611.zh-CN.md) | W7900 / `gfx1100` 27-case repeated ROCm baseline 中文汇总 |
+| [w7900_27cases_baseline_20260611_aggregated.csv](w7900_27cases_baseline_20260611_aggregated.csv) | 聚合 median/mean/CV baseline CSV |
+| [w7900_27cases_baseline_20260611_raw.csv](w7900_27cases_baseline_20260611_raw.csv) | repeated-run raw baseline CSV |
+<!-- W7900_27CASE_BASELINE_20260611_END -->
+
 ## 相关项目文档
 
 - [../docs/VALIDATION.zh-CN.md](../docs/VALIDATION.zh-CN.md) / [English](../docs/VALIDATION.md)

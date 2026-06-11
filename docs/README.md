@@ -27,6 +27,8 @@ This page is the central index for project-maintained documentation.
 
 | Topic / 主题 | English | 中文 | Raw CSV / 原始汇总 |
 |---|---|---|---|
+| W7900 27-case ROCm baseline / W7900 27-case ROCm baseline | [../validation/w7900_27cases_baseline_20260611.md](../validation/w7900_27cases_baseline_20260611.md) | [../validation/w7900_27cases_baseline_20260611.zh-CN.md](../validation/w7900_27cases_baseline_20260611.zh-CN.md) | [aggregated CSV](../validation/w7900_27cases_baseline_20260611_aggregated.csv), [raw CSV](../validation/w7900_27cases_baseline_20260611_raw.csv) |
+
 | Validation directory index / validation 目录索引 | [../validation/README.md](../validation/README.md) | [../validation/README.zh-CN.md](../validation/README.zh-CN.md) | See validation index |
 | W7900 smoke validation / W7900 smoke 验证 | [../validation/w7900_smoke_summary_20260611.md](../validation/w7900_smoke_summary_20260611.md) | [../validation/w7900_smoke_summary_20260611.zh-CN.md](../validation/w7900_smoke_summary_20260611.zh-CN.md) | [CSV](../validation/w7900_smoke_summary_20260611.csv) |
 | W7900 extended Netlib validation / W7900 扩展 Netlib 验证 | [../validation/w7900_extended_netlib_summary_20260611.md](../validation/w7900_extended_netlib_summary_20260611.md) | [../validation/w7900_extended_netlib_summary_20260611.zh-CN.md](../validation/w7900_extended_netlib_summary_20260611.zh-CN.md) | [CSV](../validation/w7900_extended_netlib_summary_20260611.csv) |

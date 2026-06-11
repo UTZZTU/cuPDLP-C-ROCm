@@ -66,6 +66,17 @@ The interpretation of these results is documented in [../docs/CROSS_DEVICE_BENCH
 | [w7900_extended_netlib_summary_20260611.zh-CN.md](w7900_extended_netlib_summary_20260611.zh-CN.md) | Chinese W7900 / `gfx1100` extended Netlib validation summary |
 | [w7900_extended_netlib_summary_20260611.csv](w7900_extended_netlib_summary_20260611.csv) | W7900 extended Netlib validation CSV |
 
+<!-- W7900_27CASE_BASELINE_20260611_BEGIN -->
+## W7900 / gfx1100 27-case baseline
+
+| File | Description |
+|---|---|
+| [w7900_27cases_baseline_20260611.md](w7900_27cases_baseline_20260611.md) | W7900 / `gfx1100` 27-case repeated ROCm baseline |
+| [w7900_27cases_baseline_20260611.zh-CN.md](w7900_27cases_baseline_20260611.zh-CN.md) | Chinese W7900 / `gfx1100` 27-case repeated ROCm baseline |
+| [w7900_27cases_baseline_20260611_aggregated.csv](w7900_27cases_baseline_20260611_aggregated.csv) | Aggregated median/mean/CV baseline CSV |
+| [w7900_27cases_baseline_20260611_raw.csv](w7900_27cases_baseline_20260611_raw.csv) | Raw repeated-run baseline CSV |
+<!-- W7900_27CASE_BASELINE_20260611_END -->
+
 ## Related project docs
 
 - [../docs/VALIDATION.md](../docs/VALIDATION.md) / [中文](../docs/VALIDATION.zh-CN.md)
