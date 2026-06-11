@@ -77,6 +77,16 @@ The interpretation of these results is documented in [../docs/CROSS_DEVICE_BENCH
 | [w7900_27cases_baseline_20260611_raw.csv](w7900_27cases_baseline_20260611_raw.csv) | Raw repeated-run baseline CSV |
 <!-- W7900_27CASE_BASELINE_20260611_END -->
 
+<!-- W7900_CROSS_DEVICE_20260611_BEGIN -->
+## W7900 vs existing cross-device reference
+
+| File | Description |
+|---|---|
+| [w7900_vs_cross_device_27cases_20260611.md](w7900_vs_cross_device_27cases_20260611.md) | W7900 / `gfx1100` vs existing RTX 3090, RTX 4090D, and Radeon 890M cross-device Netlib reference |
+| [w7900_vs_cross_device_27cases_20260611.zh-CN.md](w7900_vs_cross_device_27cases_20260611.zh-CN.md) | Chinese W7900 cross-device reference comparison |
+| [w7900_vs_cross_device_27cases_20260611.csv](w7900_vs_cross_device_27cases_20260611.csv) | Per-case cross-device comparison CSV |
+<!-- W7900_CROSS_DEVICE_20260611_END -->
+
 ## Related project docs
 
 - [../docs/VALIDATION.md](../docs/VALIDATION.md) / [中文](../docs/VALIDATION.zh-CN.md)

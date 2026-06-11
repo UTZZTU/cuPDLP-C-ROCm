@@ -77,6 +77,16 @@
 | [w7900_27cases_baseline_20260611_raw.csv](w7900_27cases_baseline_20260611_raw.csv) | repeated-run raw baseline CSV |
 <!-- W7900_27CASE_BASELINE_20260611_END -->
 
+<!-- W7900_CROSS_DEVICE_20260611_BEGIN -->
+## W7900 vs 既有跨设备 reference
+
+| 文件 | 说明 |
+|---|---|
+| [w7900_vs_cross_device_27cases_20260611.md](w7900_vs_cross_device_27cases_20260611.md) | W7900 / `gfx1100` 与既有 RTX 3090、RTX 4090D、Radeon 890M Netlib 跨设备 reference 的英文对比 |
+| [w7900_vs_cross_device_27cases_20260611.zh-CN.md](w7900_vs_cross_device_27cases_20260611.zh-CN.md) | W7900 跨设备 reference 中文对比 |
+| [w7900_vs_cross_device_27cases_20260611.csv](w7900_vs_cross_device_27cases_20260611.csv) | per-case 跨设备对比 CSV |
+<!-- W7900_CROSS_DEVICE_20260611_END -->
+
 ## 相关项目文档
 
 - [../docs/VALIDATION.zh-CN.md](../docs/VALIDATION.zh-CN.md) / [English](../docs/VALIDATION.md)
