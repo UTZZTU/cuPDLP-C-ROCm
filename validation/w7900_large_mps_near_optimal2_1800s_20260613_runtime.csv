@@ -1,0 +1,3 @@
+case,status,exit_code,wall_seconds,json,log
+Primal2_1000.mps,DONE,0,1046.038359,/app/cupdlp_w7900/results/w7900_large_mps_near_optimal2_1800s_20260613_191628/json/Primal2_1000.json,/app/cupdlp_w7900/results/w7900_large_mps_near_optimal2_1800s_20260613_191628/logs/Primal2_1000.log
+s100.mps,DONE,0,1100.649906,/app/cupdlp_w7900/results/w7900_large_mps_near_optimal2_1800s_20260613_191628/json/s100.json,/app/cupdlp_w7900/results/w7900_large_mps_near_optimal2_1800s_20260613_191628/logs/s100.log
