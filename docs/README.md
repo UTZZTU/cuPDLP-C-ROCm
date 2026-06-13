@@ -45,6 +45,10 @@ This page is the central index for project-maintained documentation.
 | Large MPS benchmark plan / large MPS benchmark 计划 | [LARGE_MPS_BENCHMARK_PLAN.md](LARGE_MPS_BENCHMARK_PLAN.md) | [LARGE_MPS_BENCHMARK_PLAN.zh-CN.md](LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) | See benchmark docs below |
 <!-- W7900_LARGE_MPS_INITIAL17_20260613_BEGIN -->
 <!-- W7900_LARGE_MPS_NONHARD23_20260613_BEGIN -->
+<!-- W7900_CURRENT_STATUS_20260614_BEGIN -->
+| W7900 current status / W7900 当前状态 | [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md) | [W7900_CURRENT_STATUS.zh-CN.md](W7900_CURRENT_STATUS.zh-CN.md) | Current W7900 baseline, charts, non-hard23 status, and hard3 split |
+<!-- W7900_CURRENT_STATUS_20260614_END -->
+
 | W7900 large-MPS non-hard23 baseline / W7900 large-MPS non-hard23 baseline | [../validation/w7900_large_mps_nonhard23_20260613.md](../validation/w7900_large_mps_nonhard23_20260613.md) | [../validation/w7900_large_mps_nonhard23_20260613.zh-CN.md](../validation/w7900_large_mps_nonhard23_20260613.zh-CN.md) | [solver CSV](../validation/w7900_large_mps_nonhard23_20260613.csv), [runtime CSV](../validation/w7900_large_mps_nonhard23_20260613_runtime.csv) |
 <!-- W7900_LARGE_MPS_NONHARD23_20260613_END -->
 

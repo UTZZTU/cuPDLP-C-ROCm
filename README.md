@@ -13,10 +13,10 @@
 | Primary ROCm target | AMD Radeon 890M |
 | ROCm architecture | `gfx1150` |
 | ROCm version used in local validation | 7.2.1 |
-| Additional ROCm target under validation | AMD Radeon PRO W7900 / `gfx1100` |
+| Additional validated ROCm target | AMD Radeon PRO W7900 / `gfx1100` |
 | CUDA baseline devices | RTX 3090, RTX 4090D, H100 |
 
-> Status: experimental but buildable. The ROCm/HIP backend has passed smoke validation, Netlib validation, cross-device benchmark checks, and large-MPS baseline testing on AMD Radeon 890M / `gfx1150`. The W7900 / `gfx1100` branch has passed first-port CPU-vs-ROCm `afiro` smoke validation and is now in extended validation and tuning. It is not yet a production-ready or fully tuned ROCm solver release.
+> Status: experimental but buildable. The ROCm/HIP backend has passed smoke validation, Netlib validation, cross-device benchmark checks, and large-MPS baseline testing on AMD Radeon 890M / `gfx1150`. The W7900 / `gfx1100` branch has completed smoke validation, Netlib 27-case validation, and a 23-case non-hard large-MPS baseline; the remaining large-MPS hard3 cases are tracked separately before full tuning. It is not yet a production-ready or fully tuned ROCm solver release.
 
 ## Start here
 
@@ -63,7 +63,7 @@ The raw `.mps` benchmark files are not committed. Curated result CSVs and explan
 - ROCm/HIP backend built from migrated CUDA backend code.
 - `plc` executable linked against the ROCm/HIP backend.
 - CPU-vs-ROCm smoke validation scripts.
-- W7900 / `gfx1100` first-port build scripts and smoke validation notes.
+- W7900 / `gfx1100` build, smoke validation, Netlib 27-case validation, and large-MPS non-hard23 baseline notes.
 - Extended Netlib validation cases.
 - Cross-device benchmark workflows and summaries for RTX 3090, RTX 4090D, H100, and Radeon 890M.
 - Large MPS benchmark documents and curated CSV summaries.

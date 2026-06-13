@@ -13,10 +13,10 @@
 | 主要 ROCm 目标 | AMD Radeon 890M |
 | ROCm 架构 | `gfx1150` |
 | 本地验证 ROCm 版本 | 7.2.1 |
-| 正在验证的额外 ROCm 目标 | AMD Radeon PRO W7900 / `gfx1100` |
+| 已建立 baseline 的额外 ROCm 目标 | AMD Radeon PRO W7900 / `gfx1100` |
 | CUDA baseline 设备 | RTX 3090, RTX 4090D, H100 |
 
-> 状态：实验性但可构建。当前 ROCm/HIP 后端已经通过 smoke validation、Netlib 验证、跨设备 benchmark，以及 Radeon 890M / `gfx1150` 上的大规模 MPS baseline 测试。W7900 / `gfx1100` 分支已通过 first-port CPU-vs-ROCm `afiro` smoke validation，正在进入 extended validation 和 tuning 阶段。它还不是生产级、完全调优、广泛认证的 ROCm solver release。
+> 状态：实验性但可构建。当前 ROCm/HIP 后端已经通过 smoke validation、Netlib 验证、跨设备 benchmark，以及 Radeon 890M / `gfx1150` 上的大规模 MPS baseline 测试。W7900 / `gfx1100` 分支已经完成 smoke validation、Netlib 27-case validation，以及 23-case non-hard large-MPS baseline；剩余 large-MPS hard3 case 会在完整调优前单独跟踪。它还不是生产级、完全调优、广泛认证的 ROCm solver release。
 
 ## 从哪里开始
 
@@ -63,7 +63,7 @@
 - 由 CUDA backend 迁移而来的 ROCm/HIP backend。
 - 链接 ROCm/HIP backend 的 `plc` 可执行文件。
 - CPU-vs-ROCm smoke validation 脚本。
-- W7900 / `gfx1100` first-port 构建脚本和 smoke validation 记录。
+- W7900 / `gfx1100` build、smoke validation、Netlib 27-case validation 和 large-MPS non-hard23 baseline 记录。
 - 扩展 Netlib 验证 case。
 - RTX 3090、RTX 4090D、H100、Radeon 890M 的跨设备 benchmark 工作流与结果文档。
 - large MPS benchmark 文档和整理后的 CSV 汇总。

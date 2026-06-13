@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="514" viewBox="0 0 900 514">
+<rect width="100%" height="100%" fill="white"/>
+<text x="450.0" y="30" text-anchor="middle" font-size="20" font-family="Arial, sans-serif" font-weight="700">W7900 slowest non-hard23 cases</text>
+<text x="208" y="85" text-anchor="end" font-size="14" font-family="Arial, sans-serif">s100</text>
+<rect x="220" y="67" width="560.00" height="24" rx="3" fill="#6b7280"/>
+<text x="788.0" y="85" font-size="14" font-family="Arial, sans-serif">1098.05s</text>
+<text x="208" y="127" text-anchor="end" font-size="14" font-family="Arial, sans-serif">Primal2_1000</text>
+<rect x="220" y="109" width="529.32" height="24" rx="3" fill="#6b7280"/>
+<text x="757.3176435339354" y="127" font-size="14" font-family="Arial, sans-serif">1037.89s</text>
+<text x="208" y="169" text-anchor="end" font-size="14" font-family="Arial, sans-serif">thk_63</text>
+<rect x="220" y="151" width="128.60" height="24" rx="3" fill="#6b7280"/>
+<text x="356.6030406169615" y="169" font-size="14" font-family="Arial, sans-serif">252.16s</text>
+<text x="208" y="211" text-anchor="end" font-size="14" font-family="Arial, sans-serif">square41</text>
+<rect x="220" y="193" width="54.27" height="24" rx="3" fill="#6b7280"/>
+<text x="282.26589243691006" y="211" font-size="14" font-family="Arial, sans-serif">106.40s</text>
+<text x="208" y="253" text-anchor="end" font-size="14" font-family="Arial, sans-serif">tpl-tub-ws1617</text>
+<rect x="220" y="235" width="50.04" height="24" rx="3" fill="#6b7280"/>
+<text x="278.0422699895025" y="253" font-size="14" font-family="Arial, sans-serif">98.12s</text>
+<text x="208" y="295" text-anchor="end" font-size="14" font-family="Arial, sans-serif">thk_48</text>
+<rect x="220" y="277" width="34.85" height="24" rx="3" fill="#6b7280"/>
+<text x="262.8509595011081" y="295" font-size="14" font-family="Arial, sans-serif">68.34s</text>
+<text x="208" y="337" text-anchor="end" font-size="14" font-family="Arial, sans-serif">rmine15</text>
+<rect x="220" y="319" width="13.91" height="24" rx="3" fill="#6b7280"/>
+<text x="241.90794477678222" y="337" font-size="14" font-family="Arial, sans-serif">27.27s</text>
+<text x="208" y="379" text-anchor="end" font-size="14" font-family="Arial, sans-serif">neos-3025225</text>
+<rect x="220" y="361" width="8.94" height="24" rx="3" fill="#6b7280"/>
+<text x="236.94413829335855" y="379" font-size="14" font-family="Arial, sans-serif">17.54s</text>
+<text x="208" y="421" text-anchor="end" font-size="14" font-family="Arial, sans-serif">set-cover-model</text>
+<rect x="220" y="403" width="5.85" height="24" rx="3" fill="#6b7280"/>
+<text x="233.84669511214912" y="421" font-size="14" font-family="Arial, sans-serif">11.46s</text>
+<text x="208" y="463" text-anchor="end" font-size="14" font-family="Arial, sans-serif">irish-electricity</text>
+<rect x="220" y="445" width="4.20" height="24" rx="3" fill="#6b7280"/>
+<text x="232.196818575996" y="463" font-size="14" font-family="Arial, sans-serif">8.23s</text>
+<text x="220" y="504" font-size="12" font-family="Arial, sans-serif" fill="#555">Lower is better. Generated from repository CSV summaries.</text>
+</svg>
