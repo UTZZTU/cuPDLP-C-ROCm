@@ -51,6 +51,10 @@ This page is the central index for project-maintained documentation.
 <!-- W7900_DOC_SWEEP_20260614_END -->
 
 <!-- W7900_PERFORMANCE_BEHAVIOR_20260614_BEGIN -->
+<!-- W7900_ROCM_PROFILING_PLAN_20260614_BEGIN -->
+| W7900 ROCm profiling plan / W7900 ROCm profiling 计划 | [W7900_ROCM_PROFILING_PLAN.md](W7900_ROCM_PROFILING_PLAN.md) | [W7900_ROCM_PROFILING_PLAN.zh-CN.md](W7900_ROCM_PROFILING_PLAN.zh-CN.md) | Profiling case matrix, metrics, tools, and output policy before ROCm/gfx1100 tuning |
+<!-- W7900_ROCM_PROFILING_PLAN_20260614_END -->
+
 | W7900 performance behavior / W7900 性能行为分析 | [W7900_PERFORMANCE_BEHAVIOR.md](W7900_PERFORMANCE_BEHAVIOR.md) | [W7900_PERFORMANCE_BEHAVIOR.zh-CN.md](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md) | Theory/application value, speedup charts, case classes, and tuning implications |
 <!-- W7900_PERFORMANCE_BEHAVIOR_20260614_END -->
 

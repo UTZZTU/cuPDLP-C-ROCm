@@ -95,6 +95,14 @@ For an explanation of why W7900 is fast on some large-MPS cases but slow on othe
 - [W7900 性能行为分析](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md)
 <!-- W7900_PERFORMANCE_BEHAVIOR_20260614_END -->
 
+<!-- W7900_ROCM_PROFILING_PLAN_20260614_BEGIN -->
+## ROCm profiling and tuning plan
+
+The next stage is not blind kernel editing. It starts with a fixed profiling case matrix and records wall time, solver time, `DeviceMatVecProdTime`, `nIter`, HIP/kernel trace, and GPU telemetry.
+
+See [W7900 ROCm profiling plan](W7900_ROCM_PROFILING_PLAN.md).
+<!-- W7900_ROCM_PROFILING_PLAN_20260614_END -->
+
 ## Next documentation tasks
 
 1. Update `README.md` and `README.zh-CN.md` so W7900 is described as a validated baseline target, not merely a planned target.

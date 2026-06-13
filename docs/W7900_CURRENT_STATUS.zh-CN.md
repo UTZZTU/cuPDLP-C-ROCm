@@ -95,6 +95,14 @@ total time ≈ per-iteration cost × number of iterations
 - [W7900 性能行为分析](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md)
 <!-- W7900_PERFORMANCE_BEHAVIOR_20260614_END -->
 
+<!-- W7900_ROCM_PROFILING_PLAN_20260614_BEGIN -->
+## ROCm profiling 与调优计划
+
+下一阶段不是盲目改 kernel，而是先固定 profiling case matrix，并记录 wall time、solver time、`DeviceMatVecProdTime`、`nIter`、HIP/kernel trace 和 GPU telemetry。
+
+详见 [W7900 ROCm profiling 计划](W7900_ROCM_PROFILING_PLAN.zh-CN.md)。
+<!-- W7900_ROCM_PROFILING_PLAN_20260614_END -->
+
 ## 下一步文档任务
 
 1. 更新 `README.md` 和 `README.zh-CN.md`，把 W7900 描述为已经具备 baseline 的验证目标，而不是 planned/first-port-only 状态。
