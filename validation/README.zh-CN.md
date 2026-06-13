@@ -87,6 +87,20 @@
 | [w7900_vs_cross_device_27cases_20260611.csv](w7900_vs_cross_device_27cases_20260611.csv) | per-case 跨设备对比 CSV |
 <!-- W7900_CROSS_DEVICE_20260611_END -->
 
+<!-- W7900_LARGE_MPS_INITIAL17_20260613_BEGIN -->
+## W7900 / gfx1100 large-MPS initial17 safe baseline
+
+| 文件 | 说明 |
+|---|---|
+| [w7900_large_mps_initial17_safe_20260613.md](w7900_large_mps_initial17_safe_20260613.md) | W7900 / `gfx1100` large-MPS initial17 safe baseline 英文汇总 |
+| [w7900_large_mps_initial17_safe_20260613.zh-CN.md](w7900_large_mps_initial17_safe_20260613.zh-CN.md) | W7900 large-MPS initial17 safe baseline 中文汇总 |
+| [w7900_large_mps_initial17_safe_20260613.csv](w7900_large_mps_initial17_safe_20260613.csv) | parsed solver summary CSV |
+| [w7900_large_mps_initial17_safe_20260613_runtime.csv](w7900_large_mps_initial17_safe_20260613_runtime.csv) | runtime wall-time summary CSV |
+| [cases_w7900_large_mps_initial17_safe.txt](cases_w7900_large_mps_initial17_safe.txt) | 已完成的 safe 第一批 large-MPS case list |
+| [cases_w7900_large_mps_watchlist6.txt](cases_w7900_large_mps_watchlist6.txt) | 后续中等风险 large-MPS case list |
+| [cases_w7900_large_mps_hard3.txt](cases_w7900_large_mps_hard3.txt) | hard-case 后续列表 |
+<!-- W7900_LARGE_MPS_INITIAL17_20260613_END -->
+
 ## 相关项目文档
 
 - [../docs/VALIDATION.zh-CN.md](../docs/VALIDATION.zh-CN.md) / [English](../docs/VALIDATION.md)

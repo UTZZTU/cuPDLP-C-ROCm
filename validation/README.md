@@ -87,6 +87,20 @@ The interpretation of these results is documented in [../docs/CROSS_DEVICE_BENCH
 | [w7900_vs_cross_device_27cases_20260611.csv](w7900_vs_cross_device_27cases_20260611.csv) | Per-case cross-device comparison CSV |
 <!-- W7900_CROSS_DEVICE_20260611_END -->
 
+<!-- W7900_LARGE_MPS_INITIAL17_20260613_BEGIN -->
+## W7900 / gfx1100 large-MPS initial17 safe baseline
+
+| File | Description |
+|---|---|
+| [w7900_large_mps_initial17_safe_20260613.md](w7900_large_mps_initial17_safe_20260613.md) | W7900 / `gfx1100` large-MPS initial17 safe baseline summary |
+| [w7900_large_mps_initial17_safe_20260613.zh-CN.md](w7900_large_mps_initial17_safe_20260613.zh-CN.md) | Chinese W7900 large-MPS initial17 safe baseline summary |
+| [w7900_large_mps_initial17_safe_20260613.csv](w7900_large_mps_initial17_safe_20260613.csv) | Parsed solver summary CSV |
+| [w7900_large_mps_initial17_safe_20260613_runtime.csv](w7900_large_mps_initial17_safe_20260613_runtime.csv) | Runtime wall-time summary CSV |
+| [cases_w7900_large_mps_initial17_safe.txt](cases_w7900_large_mps_initial17_safe.txt) | Completed safe first-batch large-MPS case list |
+| [cases_w7900_large_mps_watchlist6.txt](cases_w7900_large_mps_watchlist6.txt) | Medium-risk large-MPS follow-up case list |
+| [cases_w7900_large_mps_hard3.txt](cases_w7900_large_mps_hard3.txt) | Hard-case follow-up list |
+<!-- W7900_LARGE_MPS_INITIAL17_20260613_END -->
+
 ## Related project docs
 
 - [../docs/VALIDATION.md](../docs/VALIDATION.md) / [中文](../docs/VALIDATION.zh-CN.md)
