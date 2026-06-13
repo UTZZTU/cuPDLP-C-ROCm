@@ -36,6 +36,52 @@ The per-iteration cost is related to sparse matrix-vector products, vector opera
 | Total solve time | 2742.940 s |
 | Total DeviceMatVecProdTime | 10.176 s |
 
+<!-- W7900_COMPETITIVE_CHARTS_20260614_BEGIN -->
+## W7900 competitiveness against H100 and CUDA references
+
+The earlier aggregate solve-time chart is useful for bottleneck analysis, but it can hide the fact that W7900 is already competitive on many individual large-MPS cases. The charts below therefore use per-case wall time to show where W7900 matches or exceeds high-end references.
+
+### W7900 vs H100 per-case wall-time ratio
+
+Values above 1.0 mean W7900 is faster than H100 on that case.
+
+| Case | W7900 wall | H100 wall | H100/W7900 |
+|---|---|---|---|
+| supportcase10 | 5.47 | 13.26 | 2.42x |
+| square41 | 115.16 | 245.92 | 2.14x |
+| datt256_lp | 2.49 | 4.02 | 1.61x |
+| a2864 | 14.31 | 20.20 | 1.41x |
+| set-cover-model | 26.93 | 34.74 | 1.29x |
+| scpm1 | 5.67 | 7.07 | 1.25x |
+| L2CTA3D | 44.85 | 55.57 | 1.24x |
+| ex10 | 1.34 | 1.63 | 1.22x |
+| savsched1 | 2.51 | 2.96 | 1.18x |
+| woodlands09 | 2.97 | 3.24 | 1.09x |
+| neos-5251015 | 2.67 | 2.81 | 1.05x |
+| graph40-40 | 2.27 | 2.35 | 1.04x |
+
+![W7900 wall ratio vs H100](assets/w7900/w7900_nonhard23_wall_ratio_vs_h100.svg)
+
+### Competitiveness bands
+
+| Reference | W7900 faster | Near within 1.5x | Slower above 1.5x |
+|---|---|---|---|
+| H100 | 12 | 6 | 5 |
+| RTX 4090D | 19 | 2 | 2 |
+| RTX 3090 | 13 | 5 | 5 |
+| Radeon 890M | 17 | 4 | 2 |
+
+![W7900 competitiveness bands](assets/w7900/w7900_nonhard23_competitiveness_bands.svg)
+
+### Representative case comparison
+
+This chart deliberately mixes cases where W7900 is strong and cases where it is slow-but-solvable. This is a better competition narrative than only showing aggregate totals, because it separates hardware competitiveness from convergence-sensitive cases.
+
+![Representative wall comparison](assets/w7900/w7900_nonhard23_representative_wall_compare.svg)
+
+![Representative solve comparison](assets/w7900/w7900_nonhard23_representative_solve_compare.svg)
+<!-- W7900_COMPETITIVE_CHARTS_20260614_END -->
+
 ## W7900 vs 890M speedup
 
 The following table and chart focus on solve time, which is closer to solver computation than end-to-end wall time.

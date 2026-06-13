@@ -24,6 +24,16 @@ The W7900 branch is no longer only an `afiro` smoke experiment. It now has:
 | W7900 total wall time | 2960.171 s |
 | W7900 total solve time | 2742.940 s |
 
+<!-- W7900_COMPETITIVE_CHARTS_20260614_BEGIN -->
+## Per-case competitiveness highlight
+
+The non-hard23 aggregate totals are useful, but the strongest W7900 story is per-case: W7900 can match or exceed H100 wall time on selected large-MPS cases, while the slow cases are better interpreted through convergence behavior.
+
+![W7900 wall ratio vs H100](assets/w7900/w7900_nonhard23_wall_ratio_vs_h100.svg)
+
+See [W7900 performance behavior analysis](W7900_PERFORMANCE_BEHAVIOR.md) for the full competitiveness and case-class discussion.
+<!-- W7900_COMPETITIVE_CHARTS_20260614_END -->
+
 ## Cross-device reference on matching 23 cases
 
 | Device | Wall time sum | Solve time sum | Wall vs W7900 | Solve vs W7900 |

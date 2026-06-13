@@ -24,6 +24,16 @@ W7900 分支已经不再只是 `afiro` smoke 实验。目前已经具备：
 | W7900 total wall time | 2960.171 s |
 | W7900 total solve time | 2742.940 s |
 
+<!-- W7900_COMPETITIVE_CHARTS_20260614_BEGIN -->
+## Per-case 竞争力亮点
+
+non-hard23 aggregate totals 有分析价值，但 W7900 最有说服力的故事是 per-case：W7900 在部分 large-MPS case 上可以接近甚至超过 H100 的 wall time，而慢 case 更适合从收敛行为解释。
+
+![W7900 wall ratio vs H100](assets/w7900/w7900_nonhard23_wall_ratio_vs_h100.svg)
+
+完整竞争力和 case 分类讨论见 [W7900 性能行为分析](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md)。
+<!-- W7900_COMPETITIVE_CHARTS_20260614_END -->
+
 ## 同 23 个 case 的跨设备参考
 
 | Device | Wall time sum | Solve time sum | Wall vs W7900 | Solve vs W7900 |

@@ -36,6 +36,52 @@ total time ≈ per-iteration cost × number of iterations
 | Total solve time | 2742.940 s |
 | Total DeviceMatVecProdTime | 10.176 s |
 
+<!-- W7900_COMPETITIVE_CHARTS_20260614_BEGIN -->
+## W7900 与 H100 / CUDA 参考的竞争力
+
+之前的 aggregate solve-time 图适合分析瓶颈，但容易掩盖 W7900 在许多单个 large-MPS case 上已经具备竞争力这一点。因此下面改用 per-case wall time 展示 W7900 在哪些 case 上接近或超过高端参考设备。
+
+### W7900 vs H100 per-case wall-time ratio
+
+数值大于 1.0 表示 W7900 在该 case 上比 H100 更快。
+
+| Case | W7900 wall | H100 wall | H100/W7900 |
+|---|---|---|---|
+| supportcase10 | 5.47 | 13.26 | 2.42x |
+| square41 | 115.16 | 245.92 | 2.14x |
+| datt256_lp | 2.49 | 4.02 | 1.61x |
+| a2864 | 14.31 | 20.20 | 1.41x |
+| set-cover-model | 26.93 | 34.74 | 1.29x |
+| scpm1 | 5.67 | 7.07 | 1.25x |
+| L2CTA3D | 44.85 | 55.57 | 1.24x |
+| ex10 | 1.34 | 1.63 | 1.22x |
+| savsched1 | 2.51 | 2.96 | 1.18x |
+| woodlands09 | 2.97 | 3.24 | 1.09x |
+| neos-5251015 | 2.67 | 2.81 | 1.05x |
+| graph40-40 | 2.27 | 2.35 | 1.04x |
+
+![W7900 wall ratio vs H100](assets/w7900/w7900_nonhard23_wall_ratio_vs_h100.svg)
+
+### 竞争力分段
+
+| 参考设备 | W7900 更快 | 1.5x 内接近 | 超过 1.5x 较慢 |
+|---|---|---|---|
+| H100 | 12 | 6 | 5 |
+| RTX 4090D | 19 | 2 | 2 |
+| RTX 3090 | 13 | 5 | 5 |
+| Radeon 890M | 17 | 4 | 2 |
+
+![W7900 competitiveness bands](assets/w7900/w7900_nonhard23_competitiveness_bands.svg)
+
+### 代表 case 对比
+
+这张图刻意同时包含 W7900 表现强的 case 和 slow-but-solvable case。相比只看 aggregate totals，这种叙事更适合比赛展示，因为它把硬件竞争力和收敛敏感 case 区分开。
+
+![Representative wall comparison](assets/w7900/w7900_nonhard23_representative_wall_compare.svg)
+
+![Representative solve comparison](assets/w7900/w7900_nonhard23_representative_solve_compare.svg)
+<!-- W7900_COMPETITIVE_CHARTS_20260614_END -->
+
 ## W7900 相对 890M 的加速
 
 下表和图使用 solve time，更接近 solver 计算本身，而不是端到端 wall time。

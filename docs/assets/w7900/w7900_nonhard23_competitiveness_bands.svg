@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="330" viewBox="0 0 900 330">
+<rect width="100%" height="100%" fill="white"/>
+<text x="450.0" y="30" text-anchor="middle" font-size="21" font-family="Arial, sans-serif" font-weight="700">W7900 wall-time competitiveness bands</text>
+<text x="450.0" y="53" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" fill="#555">Faster: W7900 wall ≤ reference. Near: W7900 wall ≤ 1.5× reference. Slower: above 1.5× reference.</text>
+<rect x="160" y="289" width="18" height="12" fill="#374151"/>
+<text x="184" y="299" font-size="12" font-family="Arial, sans-serif">Faster</text>
+<rect x="280" y="289" width="18" height="12" fill="#9ca3af"/>
+<text x="304" y="299" font-size="12" font-family="Arial, sans-serif">Near</text>
+<rect x="400" y="289" width="18" height="12" fill="#d1d5db"/>
+<text x="424" y="299" font-size="12" font-family="Arial, sans-serif">Slower</text>
+<text x="146" y="98" text-anchor="end" font-size="14" font-family="Arial, sans-serif">H100</text>
+<rect x="160" y="80" width="292.17" height="24" fill="#374151"/>
+<rect x="452.17" y="80" width="146.09" height="24" fill="#9ca3af"/>
+<rect x="598.26" y="80" width="121.74" height="24" fill="#d1d5db"/>
+<text x="732" y="98" font-size="13" font-family="Arial, sans-serif">12 faster, 6 near, 5 slower</text>
+<text x="146" y="150" text-anchor="end" font-size="14" font-family="Arial, sans-serif">RTX 4090D</text>
+<rect x="160" y="132" width="462.61" height="24" fill="#374151"/>
+<rect x="622.61" y="132" width="48.70" height="24" fill="#9ca3af"/>
+<rect x="671.30" y="132" width="48.70" height="24" fill="#d1d5db"/>
+<text x="732" y="150" font-size="13" font-family="Arial, sans-serif">19 faster, 2 near, 2 slower</text>
+<text x="146" y="202" text-anchor="end" font-size="14" font-family="Arial, sans-serif">RTX 3090</text>
+<rect x="160" y="184" width="316.52" height="24" fill="#374151"/>
+<rect x="476.52" y="184" width="121.74" height="24" fill="#9ca3af"/>
+<rect x="598.26" y="184" width="121.74" height="24" fill="#d1d5db"/>
+<text x="732" y="202" font-size="13" font-family="Arial, sans-serif">13 faster, 5 near, 5 slower</text>
+<text x="146" y="254" text-anchor="end" font-size="14" font-family="Arial, sans-serif">Radeon 890M</text>
+<rect x="160" y="236" width="413.91" height="24" fill="#374151"/>
+<rect x="573.91" y="236" width="97.39" height="24" fill="#9ca3af"/>
+<rect x="671.30" y="236" width="48.70" height="24" fill="#d1d5db"/>
+<text x="732" y="254" font-size="13" font-family="Arial, sans-serif">17 faster, 4 near, 2 slower</text>
+</svg>
