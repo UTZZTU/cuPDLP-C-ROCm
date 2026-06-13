@@ -2,19 +2,16 @@
 import csv
 from pathlib import Path
 
-
 W7900_CSV = Path("validation/w7900_large_mps_initial17_safe_20260613.csv")
 RUNTIME_CSV = Path("validation/w7900_large_mps_initial17_safe_20260613_runtime.csv")
 HIST_CSV = Path("results/benchmarks/large_mps_per_case_timing_summary_20260610.csv")
-
 MD_EN = Path("validation/w7900_large_mps_initial17_safe_20260613.md")
 MD_ZH = Path("validation/w7900_large_mps_initial17_safe_20260613.zh-CN.md")
+BLOCK_BEGIN = "<" + "!-- W7900_LARGE_MPS_INITIAL17_20260613_BEGIN -->"
+BLOCK_END = "<" + "!-- W7900_LARGE_MPS_INITIAL17_20260613_END -->"
 
-BLOCK_BEGIN = "<!-- W7900_LARGE_MPS_INITIAL17_20260613_BEGIN -->"
-BLOCK_END = "<!-- W7900_LARGE_MPS_INITIAL17_20260613_END -->"
 
-
-def read_csv(path):
+def read_csv(path: Path):
     with path.open(newline="") as f:
         return list(csv.DictReader(f))
 
@@ -39,8 +36,7 @@ def fmt_short(value):
 
 
 def markdown_table(headers, rows):
-    out = []
-    out.append("| " + " | ".join(headers) + " |")
+    out = ["| " + " | ".join(headers) + " |"]
     out.append("|" + "|".join(["---"] * len(headers)) + "|")
     for row in rows:
         out.append("| " + " | ".join(str(x) for x in row) + " |")
@@ -63,9 +59,13 @@ def load_historical_for_cases(cases):
     if not HIST_CSV.exists():
         return {}
 
-    rows = read_csv(HIST_CSV)
-    by_case = {r["case"]: r for r in rows}
-    selected = [by_case[c + ".mps"] for c in cases if c + ".mps" in by_case]
+    hist_rows = read_csv(HIST_CSV)
+    by_case = {r["case"]: r for r in hist_rows}
+    selected = []
+    for case in cases:
+        key = case + ".mps"
+        if key in by_case:
+            selected.append(by_case[key])
 
     devices = [
         ("RTX 3090", "rtx3090_wall", "rtx3090_solve"),
@@ -81,6 +81,16 @@ def load_historical_for_cases(cases):
             "solve": sum(fnum(r.get(solve_key, "")) for r in selected),
         }
     return totals
+
+
+def normalize_csv(path: Path):
+    rows = []
+    with path.open(newline="") as f:
+        rows = list(csv.reader(f))
+    with path.open("w", newline="") as f:
+        writer = csv.writer(f, lineterminator="\n")
+        writer.writerows(rows)
+    print(f"[ok] normalized CSV: {path} rows={len(rows)}")
 
 
 def insert_or_replace(path, block, anchor_candidates):
@@ -105,24 +115,20 @@ def insert_or_replace(path, block, anchor_candidates):
 
 
 def build_docs():
-    rows = read_csv(W7900_CSV)
-    runtime_rows = read_csv(RUNTIME_CSV) if RUNTIME_CSV.exists() else []
+    normalize_csv(W7900_CSV)
+    normalize_csv(RUNTIME_CSV)
 
+    rows = read_csv(W7900_CSV)
     cases = [r["case"] for r in rows]
     case_count = len(rows)
-
     total_wall = sum_field(rows, "wall_seconds")
     total_solve = sum_field(rows, "dSolvingTime")
     total_matvec = sum_field(rows, "DeviceMatVecProdTime")
-
     termination_counts = status_counts(rows, "terminationCode")
     runtime_counts = status_counts(rows, "runtime_status")
-
     historical = load_historical_for_cases(cases)
 
-    device_rows = [
-        ["W7900 / ROCm", fmt(total_wall), fmt(total_solve), "1.00x", "1.00x"],
-    ]
+    device_rows = [["W7900 / ROCm", fmt(total_wall), fmt(total_solve), "1.00x", "1.00x"]]
     for device in ["H100", "RTX 3090", "Radeon 890M", "RTX 4090D"]:
         if device not in historical:
             continue
@@ -130,17 +136,10 @@ def build_docs():
         solve = historical[device]["solve"]
         wall_rel = wall / total_wall if total_wall else 0.0
         solve_rel = solve / total_solve if total_solve else 0.0
-        device_rows.append([
-            device,
-            fmt(wall),
-            fmt(solve),
-            f"{wall_rel:.2f}x",
-            f"{solve_rel:.2f}x",
-        ])
+        device_rows.append([device, fmt(wall), fmt(solve), f"{wall_rel:.2f}x", f"{solve_rel:.2f}x"])
 
-    slowest = sorted(rows, key=lambda r: fnum(r["dSolvingTime"]), reverse=True)[:8]
     slowest_rows = []
-    for r in slowest:
+    for r in sorted(rows, key=lambda x: fnum(x["dSolvingTime"]), reverse=True)[:8]:
         slowest_rows.append([
             r["case"],
             r["terminationCode"],
@@ -168,6 +167,24 @@ def build_docs():
             r["dRelDualityGap"],
         ])
 
+    summary_en = markdown_table(["Metric", "Value"], [
+        ["Cases", case_count],
+        ["Runtime status", ", ".join(f"{k}: {v}" for k, v in sorted(runtime_counts.items()))],
+        ["Termination status", ", ".join(f"{k}: {v}" for k, v in sorted(termination_counts.items()))],
+        ["Total wall time", fmt(total_wall) + " s"],
+        ["Total solve time", fmt(total_solve) + " s"],
+        ["Total DeviceMatVecProdTime", fmt(total_matvec) + " s"],
+    ])
+
+    summary_zh = markdown_table(["指标", "数值"], [
+        ["Case 数量", case_count],
+        ["Runtime status", ", ".join(f"{k}: {v}" for k, v in sorted(runtime_counts.items()))],
+        ["Termination status", ", ".join(f"{k}: {v}" for k, v in sorted(termination_counts.items()))],
+        ["Total wall time", fmt(total_wall) + " s"],
+        ["Total solve time", fmt(total_solve) + " s"],
+        ["Total DeviceMatVecProdTime", fmt(total_matvec) + " s"],
+    ])
+
     en = f"""# W7900 large-MPS initial17 safe baseline 20260613
 
 > 中文: [w7900_large_mps_initial17_safe_20260613.zh-CN.md](w7900_large_mps_initial17_safe_20260613.zh-CN.md)
@@ -180,7 +197,7 @@ CSV sources: [solver summary](w7900_large_mps_initial17_safe_20260613.csv), [run
 
 This document records the first W7900 / `gfx1100` large-MPS initial baseline on the conservative `initial17_safe` subset.
 
-The full downloaded large-MPS dataset contains 26 cases. For this first W7900 baseline, the run intentionally excludes the known or suspected long-running cases and records only the safer first batch:
+The full downloaded large-MPS dataset contains 26 cases. For this first W7900 baseline, the run intentionally excludes known or suspected long-running cases and records only the safer first batch:
 
 - `initial17_safe`: completed in this document.
 - `watchlist6`: to be tested later with short 600/900-second diagnostics before full runs.
@@ -201,14 +218,7 @@ Primary metrics: external wall time and solver JSON dSolvingTime
 
 ## Summary
 
-{markdown_table(["Metric", "Value"], [
-    ["Cases", case_count],
-    ["Runtime status", ", ".join(f"{k}: {v}" for k, v in sorted(runtime_counts.items()))],
-    ["Termination status", ", ".join(f"{k}: {v}" for k, v in sorted(termination_counts.items()))],
-    ["Total wall time", fmt(total_wall) + " s"],
-    ["Total solve time", fmt(total_solve) + " s"],
-    ["Total DeviceMatVecProdTime", fmt(total_matvec) + " s"],
-])}
+{summary_en}
 
 ## Cross-device reference on the same 17 cases
 
@@ -222,11 +232,7 @@ The existing cross-device large-MPS baseline is used only as a reference. It was
 
 ## Full W7900 per-case results
 
-{markdown_table([
-    "Case", "Runtime", "Termination", "Primal", "Dual", "nIter",
-    "Wall time", "Solve time", "Matvec time",
-    "Rel primal", "Rel dual", "Rel gap",
-], full_rows)}
+{markdown_table(["Case", "Runtime", "Termination", "Primal", "Dual", "nIter", "Wall time", "Solve time", "Matvec time", "Rel primal", "Rel dual", "Rel gap"], full_rows)}
 
 ## Follow-up plan
 
@@ -277,14 +283,7 @@ dTimeLim: 7200 seconds
 
 ## 汇总
 
-{markdown_table(["指标", "数值"], [
-    ["Case 数量", case_count],
-    ["Runtime status", ", ".join(f"{k}: {v}" for k, v in sorted(runtime_counts.items()))],
-    ["Termination status", ", ".join(f"{k}: {v}" for k, v in sorted(termination_counts.items()))],
-    ["Total wall time", fmt(total_wall) + " s"],
-    ["Total solve time", fmt(total_solve) + " s"],
-    ["Total DeviceMatVecProdTime", fmt(total_matvec) + " s"],
-])}
+{summary_zh}
 
 ## 同 17 个 case 的跨设备参考
 
@@ -298,11 +297,7 @@ dTimeLim: 7200 seconds
 
 ## W7900 全量 per-case 结果
 
-{markdown_table([
-    "Case", "Runtime", "Termination", "Primal", "Dual", "nIter",
-    "Wall time", "Solve time", "Matvec time",
-    "Rel primal", "Rel dual", "Rel gap",
-], full_rows)}
+{markdown_table(["Case", "Runtime", "Termination", "Primal", "Dual", "nIter", "Wall time", "Solve time", "Matvec time", "Rel primal", "Rel dual", "Rel gap"], full_rows)}
 
 ## 后续计划
 
@@ -359,21 +354,9 @@ def update_indexes():
 | W7900 large-MPS initial17 safe baseline / W7900 large-MPS initial17 safe baseline | [../validation/w7900_large_mps_initial17_safe_20260613.md](../validation/w7900_large_mps_initial17_safe_20260613.md) | [../validation/w7900_large_mps_initial17_safe_20260613.zh-CN.md](../validation/w7900_large_mps_initial17_safe_20260613.zh-CN.md) | [solver CSV](../validation/w7900_large_mps_initial17_safe_20260613.csv), [runtime CSV](../validation/w7900_large_mps_initial17_safe_20260613_runtime.csv) |
 {BLOCK_END}"""
 
-    insert_or_replace(
-        "validation/README.md",
-        validation_block_en,
-        ["## Related project docs", "## W7900 / gfx1100 validation summaries"],
-    )
-    insert_or_replace(
-        "validation/README.zh-CN.md",
-        validation_block_zh,
-        ["## 相关项目文档", "## W7900 / gfx1100 validation 汇总"],
-    )
-    insert_or_replace(
-        "docs/README.md",
-        docs_block,
-        ["| Large MPS CUDA/ROCm baseline / large MPS CUDA/ROCm baseline", "## Benchmarks and numerical behavior / Benchmark 与数值行为"],
-    )
+    insert_or_replace("validation/README.md", validation_block_en, ["## Related project docs", "## W7900 / gfx1100 validation summaries"])
+    insert_or_replace("validation/README.zh-CN.md", validation_block_zh, ["## 相关项目文档", "## W7900 / gfx1100 validation 汇总"])
+    insert_or_replace("docs/README.md", docs_block, ["| Large MPS CUDA/ROCm baseline / large MPS CUDA/ROCm baseline", "## Benchmarks and numerical behavior / Benchmark 与数值行为"])
 
 
 def main():

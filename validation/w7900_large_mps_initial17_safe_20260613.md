@@ -10,7 +10,7 @@ CSV sources: [solver summary](w7900_large_mps_initial17_safe_20260613.csv), [run
 
 This document records the first W7900 / `gfx1100` large-MPS initial baseline on the conservative `initial17_safe` subset.
 
-The full downloaded large-MPS dataset contains 26 cases. For this first W7900 baseline, the run intentionally excludes the known or suspected long-running cases and records only the safer first batch:
+The full downloaded large-MPS dataset contains 26 cases. For this first W7900 baseline, the run intentionally excludes known or suspected long-running cases and records only the safer first batch:
 
 - `initial17_safe`: completed in this document.
 - `watchlist6`: to be tested later with short 600/900-second diagnostics before full runs.
