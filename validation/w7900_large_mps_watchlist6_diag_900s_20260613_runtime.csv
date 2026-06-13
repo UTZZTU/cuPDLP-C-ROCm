@@ -1,0 +1,7 @@
+case,status,exit_code,wall_seconds,json,log
+Primal2_1000.mps,DONE,0,908.793989,/app/cupdlp_w7900/results/w7900_large_mps_watchlist6_diag_900s_20260613_183122/json/Primal2_1000.json,/app/cupdlp_w7900/results/w7900_large_mps_watchlist6_diag_900s_20260613_183122/logs/Primal2_1000.log
+s100.mps,DONE,0,902.950096,/app/cupdlp_w7900/results/w7900_large_mps_watchlist6_diag_900s_20260613_183122/json/s100.json,/app/cupdlp_w7900/results/w7900_large_mps_watchlist6_diag_900s_20260613_183122/logs/s100.log
+square41.mps,DONE,0,115.159163,/app/cupdlp_w7900/results/w7900_large_mps_watchlist6_diag_900s_20260613_183122/json/square41.json,/app/cupdlp_w7900/results/w7900_large_mps_watchlist6_diag_900s_20260613_183122/logs/square41.log
+thk_48.mps,DONE,0,110.058170,/app/cupdlp_w7900/results/w7900_large_mps_watchlist6_diag_900s_20260613_183122/json/thk_48.json,/app/cupdlp_w7900/results/w7900_large_mps_watchlist6_diag_900s_20260613_183122/logs/thk_48.log
+thk_63.mps,DONE,0,288.563863,/app/cupdlp_w7900/results/w7900_large_mps_watchlist6_diag_900s_20260613_183122/json/thk_63.json,/app/cupdlp_w7900/results/w7900_large_mps_watchlist6_diag_900s_20260613_183122/logs/thk_63.log
+tpl-tub-ws1617.mps,DONE,0,112.519400,/app/cupdlp_w7900/results/w7900_large_mps_watchlist6_diag_900s_20260613_183122/json/tpl-tub-ws1617.json,/app/cupdlp_w7900/results/w7900_large_mps_watchlist6_diag_900s_20260613_183122/logs/tpl-tub-ws1617.log
