@@ -101,6 +101,19 @@ The interpretation of these results is documented in [../docs/CROSS_DEVICE_BENCH
 | [cases_w7900_large_mps_hard3.txt](cases_w7900_large_mps_hard3.txt) | Hard-case follow-up list |
 <!-- W7900_LARGE_MPS_INITIAL17_20260613_END -->
 
+<!-- W7900_LARGE_MPS_NONHARD23_20260613_BEGIN -->
+## W7900 / gfx1100 large-MPS non-hard23 baseline
+
+| File | Description |
+|---|---|
+| [w7900_large_mps_nonhard23_20260613.md](w7900_large_mps_nonhard23_20260613.md) | W7900 / `gfx1100` 23-case non-hard large-MPS baseline |
+| [w7900_large_mps_nonhard23_20260613.zh-CN.md](w7900_large_mps_nonhard23_20260613.zh-CN.md) | Chinese W7900 23-case non-hard large-MPS baseline |
+| [w7900_large_mps_nonhard23_20260613.csv](w7900_large_mps_nonhard23_20260613.csv) | Combined parsed solver summary CSV |
+| [w7900_large_mps_nonhard23_20260613_runtime.csv](w7900_large_mps_nonhard23_20260613_runtime.csv) | Combined runtime wall-time CSV |
+| [w7900_large_mps_watchlist6_diag_900s_20260613.csv](w7900_large_mps_watchlist6_diag_900s_20260613.csv) | 900-second watchlist diagnostic CSV |
+| [w7900_large_mps_near_optimal2_1800s_20260613.csv](w7900_large_mps_near_optimal2_1800s_20260613.csv) | 1800-second near-optimal follow-up CSV |
+<!-- W7900_LARGE_MPS_NONHARD23_20260613_END -->
+
 ## Related project docs
 
 - [../docs/VALIDATION.md](../docs/VALIDATION.md) / [中文](../docs/VALIDATION.zh-CN.md)
