@@ -76,6 +76,15 @@ total time ≈ per-iteration cost × number of iterations
 
 对于 hard LP instance，稀疏归约、浮点顺序、adaptive restart 时机、step-size 演化、residual/gap 轨迹上的微小差异，都可能改变迭代路径。这可以解释为什么 W7900 在部分 large case 上表现较好，但在 `s100`、`Primal2_1000` 或 hard3 上表现不一定理想。
 
+<!-- W7900_PERFORMANCE_BEHAVIOR_20260614_BEGIN -->
+## 相关性能行为分析
+
+关于为什么 W7900 在部分 large-MPS case 上快、在另一些 case 上慢，详见：
+
+- [W7900 performance behavior analysis](W7900_PERFORMANCE_BEHAVIOR.md)
+- [W7900 性能行为分析](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md)
+<!-- W7900_PERFORMANCE_BEHAVIOR_20260614_END -->
+
 ## 下一步文档任务
 
 1. 更新 `README.md` 和 `README.zh-CN.md`，把 W7900 描述为已经具备 baseline 的验证目标，而不是 planned/first-port-only 状态。

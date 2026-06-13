@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="330" viewBox="0 0 760 330">
+<rect width="100%" height="100%" fill="white"/>
+<text x="380.0" y="30" text-anchor="middle" font-size="20" font-family="Arial, sans-serif" font-weight="700">W7900 non-hard23 case classes</text>
+<text x="198" y="88" text-anchor="end" font-size="14" font-family="Arial, sans-serif">fast (&lt;10s)</text>
+<rect x="210" y="70" width="430.00" height="24" rx="3" fill="#6b7280"/>
+<text x="648.0" y="88" font-size="14" font-family="Arial, sans-serif">14 (53.8%)</text>
+<text x="198" y="136" text-anchor="end" font-size="14" font-family="Arial, sans-serif">medium (10-120s)</text>
+<rect x="210" y="118" width="184.29" height="24" rx="3" fill="#6b7280"/>
+<text x="402.2857142857143" y="136" font-size="14" font-family="Arial, sans-serif">6 (23.1%)</text>
+<text x="198" y="184" text-anchor="end" font-size="14" font-family="Arial, sans-serif">slow-but-solvable (&gt;120s)</text>
+<rect x="210" y="166" width="92.14" height="24" rx="3" fill="#6b7280"/>
+<text x="310.1428571428571" y="184" font-size="14" font-family="Arial, sans-serif">3 (11.5%)</text>
+<text x="198" y="232" text-anchor="end" font-size="14" font-family="Arial, sans-serif">hard3 (separate)</text>
+<rect x="210" y="214" width="92.14" height="24" rx="3" fill="#6b7280"/>
+<text x="310.1428571428571" y="232" font-size="14" font-family="Arial, sans-serif">3 (11.5%)</text>
+<text x="20" y="305" font-size="12" font-family="Arial, sans-serif" fill="#555">Fast: solve &lt; 10s; medium: 10–120s; slow-but-solvable: &gt; 120s and OPTIMAL; hard3 is tracked separately.</text>
+</svg>

@@ -76,6 +76,15 @@ total time ≈ per-iteration cost × number of iterations
 
 For hard LP instances, small differences in sparse reductions, floating-point ordering, adaptive restart timing, step-size evolution, or residual/gap behavior can change the iteration path. That explains why W7900 can be strong on some large cases but unexpectedly slow on cases such as `s100`, `Primal2_1000`, or the excluded hard3.
 
+<!-- W7900_PERFORMANCE_BEHAVIOR_20260614_BEGIN -->
+## Related performance behavior analysis
+
+For an explanation of why W7900 is fast on some large-MPS cases but slow on others, see:
+
+- [W7900 performance behavior analysis](W7900_PERFORMANCE_BEHAVIOR.md)
+- [W7900 性能行为分析](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md)
+<!-- W7900_PERFORMANCE_BEHAVIOR_20260614_END -->
+
 ## Next documentation tasks
 
 1. Update `README.md` and `README.zh-CN.md` so W7900 is described as a validated baseline target, not merely a planned target.

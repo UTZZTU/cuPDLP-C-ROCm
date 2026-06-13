@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="636" viewBox="0 0 960 636">
+<rect width="100%" height="100%" fill="white"/>
+<text x="480.0" y="30" text-anchor="middle" font-size="20" font-family="Arial, sans-serif" font-weight="700">W7900 solve-time speedup vs Radeon 890M</text>
+<text x="218" y="85" text-anchor="end" font-size="13" font-family="Arial, sans-serif">set-cover-model</text>
+<rect x="230" y="69" width="590.00" height="22" rx="3" fill="#6b7280"/>
+<text x="828.0" y="85" font-size="13" font-family="Arial, sans-serif">12.91x</text>
+<text x="218" y="121" text-anchor="end" font-size="13" font-family="Arial, sans-serif">thk_48</text>
+<rect x="230" y="105" width="465.07" height="22" rx="3" fill="#6b7280"/>
+<text x="703.0676174310952" y="121" font-size="13" font-family="Arial, sans-serif">10.18x</text>
+<text x="218" y="157" text-anchor="end" font-size="13" font-family="Arial, sans-serif">a2864</text>
+<rect x="230" y="141" width="336.40" height="22" rx="3" fill="#6b7280"/>
+<text x="574.4020949731109" y="157" font-size="13" font-family="Arial, sans-serif">7.363x</text>
+<text x="218" y="193" text-anchor="end" font-size="13" font-family="Arial, sans-serif">scpm1</text>
+<rect x="230" y="177" width="319.54" height="22" rx="3" fill="#6b7280"/>
+<text x="557.5379125160052" y="193" font-size="13" font-family="Arial, sans-serif">6.994x</text>
+<text x="218" y="229" text-anchor="end" font-size="13" font-family="Arial, sans-serif">neos-5052403-cygnet</text>
+<rect x="230" y="213" width="249.18" height="22" rx="3" fill="#6b7280"/>
+<text x="487.18069688940545" y="229" font-size="13" font-family="Arial, sans-serif">5.454x</text>
+<text x="218" y="265" text-anchor="end" font-size="13" font-family="Arial, sans-serif">square41</text>
+<rect x="230" y="249" width="241.64" height="22" rx="3" fill="#6b7280"/>
+<text x="479.63606755192603" y="265" font-size="13" font-family="Arial, sans-serif">5.289x</text>
+<text x="218" y="301" text-anchor="end" font-size="13" font-family="Arial, sans-serif">woodlands09</text>
+<rect x="230" y="285" width="237.14" height="22" rx="3" fill="#6b7280"/>
+<text x="475.14144736586445" y="301" font-size="13" font-family="Arial, sans-serif">5.190x</text>
+<text x="218" y="337" text-anchor="end" font-size="13" font-family="Arial, sans-serif">tpl-tub-ws1617</text>
+<rect x="230" y="321" width="217.51" height="22" rx="3" fill="#6b7280"/>
+<text x="455.51245734198005" y="337" font-size="13" font-family="Arial, sans-serif">4.761x</text>
+<text x="218" y="373" text-anchor="end" font-size="13" font-family="Arial, sans-serif">L2CTA3D</text>
+<rect x="230" y="357" width="214.89" height="22" rx="3" fill="#6b7280"/>
+<text x="452.88795341074376" y="373" font-size="13" font-family="Arial, sans-serif">4.703x</text>
+<text x="218" y="409" text-anchor="end" font-size="13" font-family="Arial, sans-serif">savsched1</text>
+<rect x="230" y="393" width="186.36" height="22" rx="3" fill="#6b7280"/>
+<text x="424.35655499111965" y="409" font-size="13" font-family="Arial, sans-serif">4.079x</text>
+<text x="218" y="445" text-anchor="end" font-size="13" font-family="Arial, sans-serif">neos-5251015</text>
+<rect x="230" y="429" width="177.23" height="22" rx="3" fill="#6b7280"/>
+<text x="415.23173475815986" y="445" font-size="13" font-family="Arial, sans-serif">3.879x</text>
+<text x="218" y="481" text-anchor="end" font-size="13" font-family="Arial, sans-serif">irish-electricity</text>
+<rect x="230" y="465" width="149.27" height="22" rx="3" fill="#6b7280"/>
+<text x="387.2653936167044" y="481" font-size="13" font-family="Arial, sans-serif">3.267x</text>
+<text x="218" y="517" text-anchor="end" font-size="13" font-family="Arial, sans-serif">supportcase10</text>
+<rect x="230" y="501" width="127.28" height="22" rx="3" fill="#6b7280"/>
+<text x="365.28088461752793" y="517" font-size="13" font-family="Arial, sans-serif">2.786x</text>
+<text x="218" y="553" text-anchor="end" font-size="13" font-family="Arial, sans-serif">thk_63</text>
+<rect x="230" y="537" width="92.83" height="22" rx="3" fill="#6b7280"/>
+<text x="330.83171536552885" y="553" font-size="13" font-family="Arial, sans-serif">2.032x</text>
+<text x="218" y="589" text-anchor="end" font-size="13" font-family="Arial, sans-serif">s100</text>
+<rect x="230" y="573" width="83.42" height="22" rx="3" fill="#6b7280"/>
+<text x="321.41545520749423" y="589" font-size="13" font-family="Arial, sans-serif">1.826x</text>
+<text x="230" y="626" font-size="12" font-family="Arial, sans-serif" fill="#555">Generated from repository CSV summaries. Higher is better for speedup charts; lower is better for time charts.</text>
+</svg>
