@@ -114,6 +114,14 @@ The interpretation of these results is documented in [../docs/CROSS_DEVICE_BENCH
 | [w7900_large_mps_near_optimal2_1800s_20260613.csv](w7900_large_mps_near_optimal2_1800s_20260613.csv) | 1800-second near-optimal follow-up CSV |
 <!-- W7900_LARGE_MPS_NONHARD23_20260613_END -->
 
+<!-- W7900_DOC_SWEEP_20260614_BEGIN -->
+## W7900 hard3 follow-up
+
+| File | Description |
+|---|---|
+| [../docs/W7900_LARGE_MPS_HARD3_NOTES.md](../docs/W7900_LARGE_MPS_HARD3_NOTES.md) | Hard3 policy and convergence-behavior notes for `dlr1`, `Dual2_5000`, and `fhnw-binschedule1` |
+<!-- W7900_DOC_SWEEP_20260614_END -->
+
 ## Related project docs
 
 - [../docs/VALIDATION.md](../docs/VALIDATION.md) / [中文](../docs/VALIDATION.zh-CN.md)

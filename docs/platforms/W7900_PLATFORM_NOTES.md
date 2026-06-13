@@ -145,6 +145,37 @@ Before building cuPDLP-C, install or repair the official ROCm userspace developm
 - example/afiro.mps runs successfully on ROCm.
 - Repository smoke validation passes.
 
+<!-- W7900_DOC_SWEEP_20260614_BEGIN -->
+## Updated reproducibility notes after W7900 baseline
+
+The W7900 environment is volatile: `/app` may be reset between sessions. The repository therefore keeps bootstrap and SSH helper scripts in git, while raw `.mps` benchmark files stay outside git.
+
+Recommended recovery flow on a fresh machine:
+
+```bash
+mkdir -p /app/cupdlp_w7900/src
+cd /app/cupdlp_w7900/src
+
+GIT_TERMINAL_PROMPT=0 git clone \
+  --depth 1 \
+  --single-branch \
+  --branch rocm-w7900-gfx1100 \
+  --filter=blob:none \
+  https://github.com/UTZZTU/cuPDLP-C-ROCm.git
+
+cd /app/cupdlp_w7900/src/cuPDLP-C-ROCm
+INSTALL_APT_PACKAGES=0 RUN_BUILD=0 RUN_SMOKE=0 bash scripts/bootstrap_w7900_workspace.sh
+```
+
+Large-MPS benchmark policy:
+
+- raw MPS files are downloaded to `/app/cupdlp_w7900/datasets/large_mps_baidu`
+- raw MPS files are not committed
+- curated CSV, Markdown summaries, scripts, and SVG charts are committed
+- current stable W7900 large-MPS baseline is `non-hard23`
+- hard3 is tracked separately before full tuning
+<!-- W7900_DOC_SWEEP_20260614_END -->
+
 ## Next steps
 
 1. Install or repair the official ROCm userspace development stack under /opt/rocm.

@@ -46,6 +46,10 @@ This page is the central index for project-maintained documentation.
 <!-- W7900_LARGE_MPS_INITIAL17_20260613_BEGIN -->
 <!-- W7900_LARGE_MPS_NONHARD23_20260613_BEGIN -->
 <!-- W7900_CURRENT_STATUS_20260614_BEGIN -->
+<!-- W7900_DOC_SWEEP_20260614_BEGIN -->
+| W7900 hard3 notes / W7900 hard3 说明 | [W7900_LARGE_MPS_HARD3_NOTES.md](W7900_LARGE_MPS_HARD3_NOTES.md) | [W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md](W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md) | hard3 split for `dlr1`, `Dual2_5000`, and `fhnw-binschedule1` |
+<!-- W7900_DOC_SWEEP_20260614_END -->
+
 | W7900 current status / W7900 当前状态 | [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md) | [W7900_CURRENT_STATUS.zh-CN.md](W7900_CURRENT_STATUS.zh-CN.md) | Current W7900 baseline, charts, non-hard23 status, and hard3 split |
 <!-- W7900_CURRENT_STATUS_20260614_END -->
 

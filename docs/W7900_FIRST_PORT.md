@@ -187,6 +187,25 @@ GPU timing summary:
 
 The W7900 / `gfx1100` ROCm backend matches the CPU baseline termination state on the `afiro` smoke case, and the numerical differences are within a reasonable range for this first-port validation stage.
 
+<!-- W7900_DOC_SWEEP_20260614_BEGIN -->
+## Updated status after large-MPS baseline
+
+This first-port note is preserved as the historical record of the first W7900 / `gfx1100` smoke milestone.
+
+The current branch status has moved beyond first-port smoke validation:
+
+- smoke validation: completed
+- Netlib 27-case W7900 validation: completed
+- large-MPS `initial17_safe`: completed
+- large-MPS `watchlist6` diagnostic and near-optimal follow-up: completed
+- combined large-MPS `non-hard23`: 23/23 `OPTIMAL`
+- remaining hard3: `dlr1.mps`, `Dual2_5000.mps`, `fhnw-binschedule1.mps`, tracked separately
+
+Current status page: [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md)
+
+Hard3 note: [W7900_LARGE_MPS_HARD3_NOTES.md](W7900_LARGE_MPS_HARD3_NOTES.md)
+<!-- W7900_DOC_SWEEP_20260614_END -->
+
 ## 9. Known Limitations
 
 This stage only completes first-port smoke validation. The following items are not completed yet:

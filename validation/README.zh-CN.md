@@ -114,6 +114,14 @@
 | [w7900_large_mps_near_optimal2_1800s_20260613.csv](w7900_large_mps_near_optimal2_1800s_20260613.csv) | 1800 秒 near-optimal follow-up CSV |
 <!-- W7900_LARGE_MPS_NONHARD23_20260613_END -->
 
+<!-- W7900_DOC_SWEEP_20260614_BEGIN -->
+## W7900 hard3 后续说明
+
+| 文件 | 说明 |
+|---|---|
+| [../docs/W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md](../docs/W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md) | `dlr1`、`Dual2_5000`、`fhnw-binschedule1` 的 hard3 策略与收敛行为说明 |
+<!-- W7900_DOC_SWEEP_20260614_END -->
+
 ## 相关项目文档
 
 - [../docs/VALIDATION.zh-CN.md](../docs/VALIDATION.zh-CN.md) / [English](../docs/VALIDATION.md)

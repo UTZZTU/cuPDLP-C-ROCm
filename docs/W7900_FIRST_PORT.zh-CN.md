@@ -187,6 +187,25 @@ GPU timing 摘要：
 
 该结果说明 W7900 / `gfx1100` ROCm backend 在 `afiro` smoke case 上与 CPU baseline 的终止状态一致，数值误差处于合理范围内。
 
+<!-- W7900_DOC_SWEEP_20260614_BEGIN -->
+## large-MPS baseline 之后的状态更新
+
+本文保留为 W7900 / `gfx1100` first-port smoke milestone 的历史记录。
+
+当前分支状态已经超过 first-port smoke validation：
+
+- smoke validation：已完成
+- Netlib 27-case W7900 validation：已完成
+- large-MPS `initial17_safe`：已完成
+- large-MPS `watchlist6` diagnostic 与 near-optimal follow-up：已完成
+- 合并后的 large-MPS `non-hard23`：23/23 `OPTIMAL`
+- 剩余 hard3：`dlr1.mps`、`Dual2_5000.mps`、`fhnw-binschedule1.mps`，单独跟踪
+
+当前状态页：[W7900_CURRENT_STATUS.zh-CN.md](W7900_CURRENT_STATUS.zh-CN.md)
+
+Hard3 说明：[W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md](W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md)
+<!-- W7900_DOC_SWEEP_20260614_END -->
+
 ## 9. 已知限制
 
 当前阶段仅完成 first-port smoke validation，尚未完成：
