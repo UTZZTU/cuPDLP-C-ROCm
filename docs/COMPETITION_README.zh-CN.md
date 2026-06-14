@@ -80,6 +80,21 @@ W7900 更适合规模足够大、带宽敏感、SpMV/向量操作占比较高且
 4. 使用 `ae3b683` vs current 跑 core6 true before/current comparison。
 5. profiling 结果定位瓶颈后再做 W7900-specific tuning。
 
+<!-- REPRODUCIBILITY_20260614_BEGIN -->
+## 可复现性
+
+评委导向的复现步骤见 [REPRODUCIBILITY.zh-CN.md](REPRODUCIBILITY.zh-CN.md)。
+
+它覆盖：
+
+- 没有 W7900 机器时检查已提交 W7900 non-hard23 summaries；
+- fresh W7900 机器恢复；
+- large-MPS 数据放置与 SHA256 校验；
+- smoke validation；
+- starter `rocprofv3` profiling workflow；
+- 文件提交策略。
+<!-- REPRODUCIBILITY_20260614_END -->
+
 ## 提交材料映射
 
 | 竞赛材料 | 仓库当前状态 |

@@ -80,6 +80,21 @@ W7900 can be strong on large, bandwidth-sensitive, SpMV/vector-operation-heavy c
 4. Run true before/current comparison on the core6 list using `ae3b683` vs current.
 5. Perform W7900-specific tuning only after profiling results identify bottlenecks.
 
+<!-- REPRODUCIBILITY_20260614_BEGIN -->
+## Reproducibility
+
+For reviewer-oriented reproduction steps, see [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
+
+It covers:
+
+- checking committed W7900 non-hard23 summaries without W7900 access;
+- recovering a fresh W7900 machine;
+- large-MPS data placement and SHA256 verification;
+- smoke validation;
+- starter `rocprofv3` profiling workflow;
+- file commit policy.
+<!-- REPRODUCIBILITY_20260614_END -->
+
 ## Submission-material mapping
 
 | Competition material | Repository status |

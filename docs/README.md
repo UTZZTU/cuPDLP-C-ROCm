@@ -4,6 +4,10 @@ This page is the central index for project-maintained documentation.
 本页是项目维护文档的总索引，目的是避免文档存在但没有入口的问题。
 
 <!-- COMPETITION_README_20260614_BEGIN -->
+<!-- REPRODUCIBILITY_20260614_BEGIN -->
+| Reproducibility / 可复现性 | [REPRODUCIBILITY.md](REPRODUCIBILITY.md) | [REPRODUCIBILITY.zh-CN.md](REPRODUCIBILITY.zh-CN.md) | How to reproduce committed summaries, recover W7900 machines, check data, and run starter profiling |
+<!-- REPRODUCIBILITY_20260614_END -->
+
 | Competition README / 竞赛入口 | [COMPETITION_README.md](COMPETITION_README.md) | [COMPETITION_README.zh-CN.md](COMPETITION_README.zh-CN.md) | Reviewer-facing entry point aligned with the AMD ROCm/Radeon contest track |
 <!-- COMPETITION_README_20260614_END -->
 
