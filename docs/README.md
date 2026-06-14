@@ -3,6 +3,10 @@
 This page is the central index for project-maintained documentation.  
 本页是项目维护文档的总索引，目的是避免文档存在但没有入口的问题。
 
+<!-- COMPETITION_README_20260614_BEGIN -->
+| Competition README / 竞赛入口 | [COMPETITION_README.md](COMPETITION_README.md) | [COMPETITION_README.zh-CN.md](COMPETITION_README.zh-CN.md) | Reviewer-facing entry point aligned with the AMD ROCm/Radeon contest track |
+<!-- COMPETITION_README_20260614_END -->
+
 ## Main entry points / 主入口
 
 | Topic / 主题 | English | 中文 | Notes / 说明 |
