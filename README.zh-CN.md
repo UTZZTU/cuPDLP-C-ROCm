@@ -95,6 +95,7 @@ Large MPS baseline 状态：
 | Radeon 890M | ROCm/HIP baseline | 24/26 OPTIMAL, 2/26 TIMELIMIT |
 | RTX 4090D | CUDA upstream | 26/26 OPTIMAL |
 | H100 | CUDA upstream | 26/26 OPTIMAL |
+| Radeon PRO W7900 | ROCm/HIP 当前继承 890M 调优后的工程基线 | non-hard large-MPS 23/23 OPTIMAL；hard3 单独跟踪 |
 
 cuPDLPx short13 对比状态：
 

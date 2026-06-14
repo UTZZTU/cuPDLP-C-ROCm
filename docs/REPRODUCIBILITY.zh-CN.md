@@ -233,6 +233,12 @@ Core6 case list：
 validation/cases_w7900_large_mps_before_after_core6.txt
 ```
 
+完整 non-hard23 before/after case list：
+
+```text
+validation/cases_w7900_large_mps_before_after_nonhard23.txt
+```
+
 在尝试完整 non-hard23 before/after 之前，先使用该 core6 子集。
 
 ## 10. 不应提交的文件

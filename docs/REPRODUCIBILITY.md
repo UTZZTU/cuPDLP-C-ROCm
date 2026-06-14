@@ -233,7 +233,13 @@ Core6 case list:
 validation/cases_w7900_large_mps_before_after_core6.txt
 ```
 
-Use this before attempting a full non-hard23 before/after rerun.
+Full non-hard23 before/after case list:
+
+```text
+validation/cases_w7900_large_mps_before_after_nonhard23.txt
+```
+
+Use the core6 list before attempting a full non-hard23 before/after rerun.
 
 ## 10. Files that should not be committed
 
