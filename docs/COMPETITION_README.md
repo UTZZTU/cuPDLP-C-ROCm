@@ -103,4 +103,4 @@ It covers:
 | Demo PPT | to be created after first profiling results |
 | Demo video | should show build, validation, charts, and profiling workflow |
 | Engineering repository | current repository with scripts, validation CSVs, Markdown summaries, SVG charts |
-| Reproducibility | bootstrap scripts exist; dedicated reproducibility document is next |
+| Reproducibility | documented in [REPRODUCIBILITY.md](REPRODUCIBILITY.md); covers environment recovery, data checks, expected outputs, and starter profiling |

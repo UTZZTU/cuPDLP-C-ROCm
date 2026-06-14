@@ -103,4 +103,4 @@ W7900 更适合规模足够大、带宽敏感、SpMV/向量操作占比较高且
 | 演示说明 PPT | 第一轮 profiling 结果完成后制作 |
 | 演示视频 | 展示 build、validation、charts 和 profiling workflow |
 | 工程代码仓库 | 当前仓库已有 scripts、validation CSV、Markdown summaries、SVG charts |
-| 可复现性 | 已有 bootstrap scripts；下一步补 dedicated reproducibility document |
+| 可复现性 | 已在 [REPRODUCIBILITY.zh-CN.md](REPRODUCIBILITY.zh-CN.md) 中说明；覆盖环境恢复、数据校验、期望输出和 starter profiling |
