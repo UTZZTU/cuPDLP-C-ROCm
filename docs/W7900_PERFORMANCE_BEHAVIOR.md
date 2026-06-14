@@ -158,6 +158,14 @@ A slow W7900 result does not always imply a slow GPU. It can happen when:
 - reductions or sparse operations expose ROCm/gfx1100 kernel inefficiencies;
 - fixed overhead dominates tiny or very short cases.
 
+<!-- W7900_OPTIMIZATION_BASELINES_20260614_BEGIN -->
+## Baseline wording correction
+
+The W7900 non-hard23 result should be read as a post-890M-tuning engineering baseline. It should not be used as the "before tuning" baseline in future before/after analysis. The true pre-tuning anchor is `ae3b683`.
+
+See [W7900 optimization baselines](W7900_OPTIMIZATION_BASELINES.md).
+<!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->
+
 ## Tuning implication
 
 The next ROCm tuning stage should not only optimize kernels. It should also record numerical trajectory evidence:

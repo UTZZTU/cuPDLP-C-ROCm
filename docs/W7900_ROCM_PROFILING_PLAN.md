@@ -4,6 +4,14 @@
 
 This document defines the profiling plan before W7900 / `gfx1100` tuning. It should be used after the baseline documentation is stable and before making kernel-level changes.
 
+<!-- W7900_OPTIMIZATION_BASELINES_20260614_BEGIN -->
+## Baseline correction for future profiling
+
+The current W7900 branch has already inherited earlier 890M/gfx1150 ROCm tuning. Future profiling should therefore distinguish `ae3b683` as the true pre-tuning anchor, current W7900 as the post-890M-tuning engineering baseline, and a future W7900-specific tuning branch as the final after-tuning result.
+
+See [W7900 optimization baselines](W7900_OPTIMIZATION_BASELINES.md).
+<!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->
+
 ## Current baseline state
 
 The profiling stage starts from a documented baseline:

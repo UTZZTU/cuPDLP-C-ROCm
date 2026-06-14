@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="340" viewBox="0 0 1160 340">
+<rect width="100%" height="100%" fill="white"/>
+<text x="580.0" y="34" text-anchor="middle" font-size="22" font-family="Arial, sans-serif" font-weight="700">ROCm/HIP tuning milestones and W7900 baseline wording</text>
+<text x="580.0" y="60" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" fill="#555">Current W7900 results are post-890M-tuning engineering baseline, not the original first-runnable ROCm baseline.</text>
+<line x1="80" y1="150" x2="1080" y2="150" stroke="#9ca3af" stroke-width="3"/>
+<circle cx="80.0" cy="150" r="10" fill="#991b1b"/>
+<text x="80.0" y="124" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" font-weight="700">pre_tuning</text>
+<text x="80.0" y="184" text-anchor="middle" font-size="12" font-family="Arial, sans-serif">ae3b683</text>
+<text x="80.0" y="204" text-anchor="middle" font-size="11" font-family="Arial, sans-serif" fill="#555">Add ROCm profiling summary script</text>
+<circle cx="280.0" cy="150" r="10" fill="#4b5563"/>
+<text x="280.0" y="124" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" font-weight="700">remove_sync</text>
+<text x="280.0" y="184" text-anchor="middle" font-size="12" font-family="Arial, sans-serif">f9d7f0d</text>
+<text x="280.0" y="204" text-anchor="middle" font-size="11" font-family="Arial, sans-serif" fill="#555">remove redundant HIP synchronize</text>
+<circle cx="480.0" cy="150" r="10" fill="#4b5563"/>
+<text x="480.0" y="124" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" font-weight="700">cache_attrs</text>
+<text x="480.0" y="184" text-anchor="middle" font-size="12" font-family="Arial, sans-serif">8fed073</text>
+<text x="480.0" y="204" text-anchor="middle" font-size="11" font-family="Arial, sans-serif" fill="#555">cache HIP device attributes</text>
+<circle cx="680.0" cy="150" r="10" fill="#4b5563"/>
+<text x="680.0" y="124" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" font-weight="700">fused_average</text>
+<text x="680.0" y="184" text-anchor="middle" font-size="12" font-family="Arial, sans-serif">fa7e860</text>
+<text x="680.0" y="204" text-anchor="middle" font-size="11" font-family="Arial, sans-serif" fill="#555">Fuse ROCm average iterate axpy updates</text>
+<circle cx="880.0" cy="150" r="10" fill="#1f4b99"/>
+<text x="880.0" y="124" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" font-weight="700">reduce_scalar_copies</text>
+<text x="880.0" y="184" text-anchor="middle" font-size="12" font-family="Arial, sans-serif">b44c7ab</text>
+<text x="880.0" y="204" text-anchor="middle" font-size="11" font-family="Arial, sans-serif" fill="#555">Reduce movement interaction scalar copies</text>
+<circle cx="1080.0" cy="150" r="10" fill="#166534"/>
+<text x="1080.0" y="124" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" font-weight="700">current_engineering</text>
+<text x="1080.0" y="184" text-anchor="middle" font-size="12" font-family="Arial, sans-serif">35a7a7b</text>
+<text x="1080.0" y="204" text-anchor="middle" font-size="11" font-family="Arial, sans-serif" fill="#555">add W7900 ROCm profiling plan</text>
+<text x="80" y="300" font-size="12" font-family="Arial, sans-serif" fill="#555">Red = true before anchor; blue = fast historical tuning milestone; green = current W7900 engineering branch.</text>
+</svg>

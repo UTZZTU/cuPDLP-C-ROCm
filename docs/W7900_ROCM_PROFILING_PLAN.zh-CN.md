@@ -4,6 +4,14 @@
 
 本文定义 W7900 / `gfx1100` 调优前的 profiling 计划。它应在 baseline 文档稳定之后、kernel 级修改之前使用。
 
+<!-- W7900_OPTIMIZATION_BASELINES_20260614_BEGIN -->
+## 后续 profiling 的 baseline 口径修正
+
+当前 W7900 分支已经继承此前 890M/gfx1150 ROCm tuning。后续 profiling 应区分：`ae3b683` 作为真正 pre-tuning anchor，current W7900 作为 post-890M-tuning engineering baseline，future W7900-specific tuning branch 作为最终 after-tuning 结果。
+
+详见 [W7900 优化基线说明](W7900_OPTIMIZATION_BASELINES.zh-CN.md)。
+<!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->
+
 ## 当前 baseline 状态
 
 profiling 阶段基于以下已记录 baseline：

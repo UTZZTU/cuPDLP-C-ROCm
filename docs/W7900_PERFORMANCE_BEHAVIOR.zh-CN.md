@@ -158,6 +158,14 @@ W7900 上某个 case 慢，不一定说明 GPU 算得慢，可能是：
 - reduction 或 sparse operation 暴露出 ROCm/gfx1100 kernel 效率问题；
 - tiny case 中固定开销占主导。
 
+<!-- W7900_OPTIMIZATION_BASELINES_20260614_BEGIN -->
+## Baseline 口径修正
+
+W7900 non-hard23 结果应理解为 post-890M-tuning engineering baseline，不应作为未来 before/after 分析里的“调优前 baseline”。真正的 pre-tuning anchor 是 `ae3b683`。
+
+详见 [W7900 优化基线说明](W7900_OPTIMIZATION_BASELINES.zh-CN.md)。
+<!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->
+
 ## 对调优的启示
 
 下一阶段 ROCm tuning 不能只盯 kernel 时间，还要记录数值轨迹：

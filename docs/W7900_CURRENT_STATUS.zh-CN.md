@@ -96,6 +96,14 @@ total time ≈ per-iteration cost × number of iterations
 <!-- W7900_PERFORMANCE_BEHAVIOR_20260614_END -->
 
 <!-- W7900_ROCM_PROFILING_PLAN_20260614_BEGIN -->
+<!-- W7900_OPTIMIZATION_BASELINES_20260614_BEGIN -->
+## 优化基线口径说明
+
+当前 W7900 non-hard23 结果不是未优化 first-port baseline，而是继承 890M/gfx1150 调优成果后的 current ROCm/HIP 工程分支在 W7900 / `gfx1100` 上的验证。
+
+详见 [W7900 优化基线说明](W7900_OPTIMIZATION_BASELINES.zh-CN.md)。
+<!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->
+
 ## ROCm profiling 与调优计划
 
 下一阶段不是盲目改 kernel，而是先固定 profiling case matrix，并记录 wall time、solver time、`DeviceMatVecProdTime`、`nIter`、HIP/kernel trace 和 GPU telemetry。

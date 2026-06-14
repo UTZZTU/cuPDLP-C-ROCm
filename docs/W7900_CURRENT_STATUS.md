@@ -96,6 +96,14 @@ For an explanation of why W7900 is fast on some large-MPS cases but slow on othe
 <!-- W7900_PERFORMANCE_BEHAVIOR_20260614_END -->
 
 <!-- W7900_ROCM_PROFILING_PLAN_20260614_BEGIN -->
+<!-- W7900_OPTIMIZATION_BASELINES_20260614_BEGIN -->
+## Optimization baseline interpretation
+
+The current W7900 non-hard23 result is not an unoptimized first-port baseline. It is a validation of the current post-890M-tuning ROCm/HIP engineering branch on W7900 / `gfx1100`.
+
+See [W7900 optimization baselines](W7900_OPTIMIZATION_BASELINES.md).
+<!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->
+
 ## ROCm profiling and tuning plan
 
 The next stage is not blind kernel editing. It starts with a fixed profiling case matrix and records wall time, solver time, `DeviceMatVecProdTime`, `nIter`, HIP/kernel trace, and GPU telemetry.

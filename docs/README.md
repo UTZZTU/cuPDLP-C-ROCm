@@ -52,6 +52,10 @@ This page is the central index for project-maintained documentation.
 
 <!-- W7900_PERFORMANCE_BEHAVIOR_20260614_BEGIN -->
 <!-- W7900_ROCM_PROFILING_PLAN_20260614_BEGIN -->
+<!-- W7900_OPTIMIZATION_BASELINES_20260614_BEGIN -->
+| W7900 optimization baselines / W7900 优化基线 | [W7900_OPTIMIZATION_BASELINES.md](W7900_OPTIMIZATION_BASELINES.md) | [W7900_OPTIMIZATION_BASELINES.zh-CN.md](W7900_OPTIMIZATION_BASELINES.zh-CN.md) | Clarifies `ae3b683` pre-tuning, `b44c7ab` reduce-scalar-copies, current engineering baseline, and future before/after policy |
+<!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->
+
 | W7900 ROCm profiling plan / W7900 ROCm profiling 计划 | [W7900_ROCM_PROFILING_PLAN.md](W7900_ROCM_PROFILING_PLAN.md) | [W7900_ROCM_PROFILING_PLAN.zh-CN.md](W7900_ROCM_PROFILING_PLAN.zh-CN.md) | Profiling case matrix, metrics, tools, and output policy before ROCm/gfx1100 tuning |
 <!-- W7900_ROCM_PROFILING_PLAN_20260614_END -->
 
