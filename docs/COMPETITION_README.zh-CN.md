@@ -2,7 +2,7 @@
 
 > English: [COMPETITION_README.md](COMPETITION_README.md)
 
-本文是 AMD ROCm / Radeon 赛题方向的评委入口文档。
+本文是通用 ROCm/HIP 迁移与验证开源仓库中的评审阅读路径，不替代通用 README；它只负责把项目证据映射到 AMD ROCm / Radeon 赛题要求。
 
 ## 项目题目
 
@@ -31,6 +31,7 @@
 | 性能分析 | [W7900 性能行为分析](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md) |
 | 优化基线 | [W7900 优化基线说明](W7900_OPTIMIZATION_BASELINES.zh-CN.md) |
 | Profiling 计划 | [W7900 ROCm profiling 计划](W7900_ROCM_PROFILING_PLAN.zh-CN.md) |
+| 评分项对照 | [竞赛评分项对照](COMPETITION_SCORECARD.zh-CN.md) |
 | Validation 索引 | [validation README](../validation/README.zh-CN.md) |
 
 ## 当前 W7900 成果

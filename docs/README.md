@@ -3,6 +3,16 @@
 This page is the central index for project-maintained documentation.  
 本页是项目维护文档的总索引，目的是避免文档存在但没有入口的问题。
 
+## Reader paths / 读者路径
+
+| Reader / 读者 | Start from / 建议入口 | Purpose / 用途 |
+|---|---|---|
+| General GitHub users / 普通 GitHub 读者 | [Repository README](../README.md) / [中文主页](../README.zh-CN.md) | Understand the project scope, backend modes, validation status, and quick-start workflow |
+| ROCm migration developers / ROCm 迁移开发者 | [ROCm porting guide](ROCM_PORTING_GUIDE.md), [CUDA-to-ROCm case study](CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md), [ROCM_WORKFLOW.md](ROCM_WORKFLOW.md) | Reuse the migration process, build workflow, and backend design notes |
+| Validation and benchmark readers / 验证与 benchmark 读者 | [validation index](../validation/README.md), [benchmark index](benchmarks/README.md), [REPRODUCIBILITY.md](REPRODUCIBILITY.md) | Check committed summaries, case lists, CSV files, and expected outputs |
+| W7900 / gfx1100 readers | [W7900 current status](W7900_CURRENT_STATUS.md), [W7900 profiling plan](W7900_ROCM_PROFILING_PLAN.md), [W7900 optimization baselines](W7900_OPTIMIZATION_BASELINES.md) | Follow the W7900 validation, profiling, and before/current/after plan |
+| AMD ROCm/Radeon contest reviewers / 赛题评委 | [COMPETITION_README.md](COMPETITION_README.md), [COMPETITION_SCORECARD.md](COMPETITION_SCORECARD.md) | Read the same project evidence through the contest scoring requirements |
+
 <!-- COMPETITION_README_20260614_BEGIN -->
 <!-- REPRODUCIBILITY_20260614_BEGIN -->
 | Reproducibility / 可复现性 | [REPRODUCIBILITY.md](REPRODUCIBILITY.md) | [REPRODUCIBILITY.zh-CN.md](REPRODUCIBILITY.zh-CN.md) | How to reproduce committed summaries, recover W7900 machines, check data, and run starter profiling |

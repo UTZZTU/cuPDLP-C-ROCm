@@ -2,7 +2,7 @@
 
 > 中文: [COMPETITION_README.zh-CN.md](COMPETITION_README.zh-CN.md)
 
-This is the reviewer-facing entry point for the AMD ROCm / Radeon contest track.
+This is a reviewer-oriented path through a general-purpose open-source ROCm/HIP migration and validation repository. It does not replace the general README; it only maps the project evidence to the AMD ROCm / Radeon contest track.
 
 ## Project title
 
@@ -31,6 +31,7 @@ Large-scale linear programming is a scientific-computing and operations-research
 | Performance analysis | [W7900 performance behavior](W7900_PERFORMANCE_BEHAVIOR.md) |
 | Optimization baseline | [W7900 optimization baselines](W7900_OPTIMIZATION_BASELINES.md) |
 | Profiling plan | [W7900 ROCm profiling plan](W7900_ROCM_PROFILING_PLAN.md) |
+| Contest scorecard | [Competition scorecard alignment](COMPETITION_SCORECARD.md) |
 | Validation index | [validation README](../validation/README.md) |
 
 ## Current W7900 results

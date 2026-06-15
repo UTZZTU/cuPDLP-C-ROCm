@@ -1,5 +1,6 @@
 <!-- COMPETITION_README_20260614_BEGIN -->
-> AMD ROCm/Radeon contest reviewers: start from [docs/COMPETITION_README.md](docs/COMPETITION_README.md) / [docs/COMPETITION_README.zh-CN.md](docs/COMPETITION_README.zh-CN.md).
+> General users: start from this README and the [documentation map](docs/README.md).
+> AMD ROCm/Radeon contest reviewers: see [docs/COMPETITION_README.md](docs/COMPETITION_README.md) / [docs/COMPETITION_README.zh-CN.md](docs/COMPETITION_README.zh-CN.md).
 <!-- COMPETITION_README_20260614_END -->
 
 # cuPDLP-C-ROCm
