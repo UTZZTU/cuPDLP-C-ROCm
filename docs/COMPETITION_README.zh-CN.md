@@ -33,6 +33,7 @@
 | Profiling 计划 | [W7900 ROCm profiling 计划](W7900_ROCM_PROFILING_PLAN.zh-CN.md) |
 | 评分项对照 | [竞赛评分项对照](COMPETITION_SCORECARD.zh-CN.md) |
 | 提交清单 | [提交清单](SUBMISSION_CHECKLIST.zh-CN.md) |
+| 架构与证据图 | [项目架构图](assets/competition/project_architecture.svg), [证据地图](assets/competition/evidence_map.svg) |
 | Validation 索引 | [validation README](../validation/README.zh-CN.md) |
 
 ## 当前 W7900 成果

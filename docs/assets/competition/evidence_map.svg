@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="620" viewBox="0 0 1180 620">
+  <title>cuPDLP-C-ROCm evidence map</title>
+  <desc>Repository evidence map linking contest requirements to source, validation, benchmark, reproducibility, and future profiling artifacts.</desc>
+  <style>
+    .hub { fill: #e8f0fe; stroke: #1a73e8; stroke-width: 2.5; rx: 16; }
+    .node { fill: #ffffff; stroke: #5f6368; stroke-width: 2; rx: 12; }
+    .future { fill: #fff8e1; stroke: #ef8f00; stroke-width: 2; rx: 12; }
+    .text { font-family: Arial, Helvetica, sans-serif; font-size: 17px; fill: #202124; }
+    .small { font-family: Arial, Helvetica, sans-serif; font-size: 13px; fill: #5f6368; }
+    .title { font-family: Arial, Helvetica, sans-serif; font-size: 24px; font-weight: 700; fill: #111827; }
+    .edge { stroke: #6b7280; stroke-width: 2; fill: none; }
+  </style>
+
+  <text class="title" x="40" y="42">Repository evidence map for ROCm/Radeon contest review</text>
+
+  <rect class="hub" x="430" y="250" width="320" height="115"/>
+  <text class="text" x="475" y="285">General ROCm/HIP project</text>
+  <text class="small" x="475" y="314">cuPDLP-C migration, validation,</text>
+  <text class="small" x="475" y="334">benchmarking, reproducibility</text>
+
+  <rect class="node" x="60" y="90" width="275" height="100"/>
+  <text class="text" x="95" y="122">Implementation evidence</text>
+  <text class="small" x="95" y="150">source tree, HIP backend,</text>
+  <text class="small" x="95" y="170">ROCm workflow, porting guide</text>
+
+  <rect class="node" x="455" y="90" width="275" height="100"/>
+  <text class="text" x="490" y="122">Validation evidence</text>
+  <text class="small" x="490" y="150">smoke, Netlib 27, non-hard23,</text>
+  <text class="small" x="490" y="170">curated CSV / Markdown</text>
+
+  <rect class="node" x="845" y="90" width="275" height="100"/>
+  <text class="text" x="880" y="122">Performance evidence</text>
+  <text class="small" x="880" y="150">cross-device references,</text>
+  <text class="small" x="880" y="170">W7900 behavior, tuning history</text>
+
+  <rect class="node" x="60" y="430" width="275" height="105"/>
+  <text class="text" x="95" y="462">Reproducibility evidence</text>
+  <text class="small" x="95" y="490">bootstrap workflow, data policy,</text>
+  <text class="small" x="95" y="510">Docker skeleton, case lists</text>
+
+  <rect class="future" x="455" y="430" width="275" height="105"/>
+  <text class="text" x="490" y="462">Pending W7900 evidence</text>
+  <text class="small" x="490" y="490">rocprof starter3, hard3 probe2,</text>
+  <text class="small" x="490" y="510">ae3b683/current core6</text>
+
+  <rect class="node" x="845" y="430" width="275" height="105"/>
+  <text class="text" x="880" y="462">Submission evidence</text>
+  <text class="small" x="880" y="490">competition README, scorecard,</text>
+  <text class="small" x="880" y="510">submission checklist, final report</text>
+
+  <path class="edge" d="M 335 140 C 405 150, 410 260, 430 280"/>
+  <path class="edge" d="M 592 190 L 592 250"/>
+  <path class="edge" d="M 845 140 C 775 150, 770 260, 750 280"/>
+  <path class="edge" d="M 335 485 C 405 470, 410 360, 430 335"/>
+  <path class="edge" d="M 592 430 L 592 365"/>
+  <path class="edge" d="M 845 485 C 775 470, 770 360, 750 335"/>
+</svg>

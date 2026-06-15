@@ -16,6 +16,7 @@ This checklist tracks contest-facing deliverables without turning the repository
 | W7900 performance interpretation | Done | [W7900_PERFORMANCE_BEHAVIOR.md](W7900_PERFORMANCE_BEHAVIOR.md) |
 | W7900 optimization-baseline policy | Done | [W7900_OPTIMIZATION_BASELINES.md](W7900_OPTIMIZATION_BASELINES.md) |
 | Docker/container skeleton | Done as skeleton | [../docker/Dockerfile.w7900](../docker/Dockerfile.w7900), [../docker/README_DOCKER_W7900.md](../docker/README_DOCKER_W7900.md). This is an environment declaration skeleton, not the source of current W7900 performance numbers. |
+| Project architecture and evidence map | Done | [project architecture](assets/competition/project_architecture.svg), [evidence map](assets/competition/evidence_map.svg) |
 | Curated validation summaries | Done for current milestone | See [../validation/README.md](../validation/README.md) |
 | Raw MPS data policy | Done | Raw `.mps` files stay outside Git. |
 

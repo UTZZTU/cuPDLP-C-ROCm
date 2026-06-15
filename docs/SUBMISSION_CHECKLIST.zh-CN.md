@@ -16,6 +16,7 @@
 | W7900 性能解释 | 已完成 | [W7900_PERFORMANCE_BEHAVIOR.zh-CN.md](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md) |
 | W7900 优化基线口径 | 已完成 | [W7900_OPTIMIZATION_BASELINES.zh-CN.md](W7900_OPTIMIZATION_BASELINES.zh-CN.md) |
 | Docker/container 骨架 | 已提供骨架 | [../docker/Dockerfile.w7900](../docker/Dockerfile.w7900), [../docker/README_DOCKER_W7900.zh-CN.md](../docker/README_DOCKER_W7900.zh-CN.md)。这是环境声明骨架，不是当前 W7900 性能数字来源。 |
+| 项目架构图与证据地图 | 已完成 | [项目架构图](assets/competition/project_architecture.svg), [证据地图](assets/competition/evidence_map.svg) |
 | 整理后的 validation summary | 当前里程碑已完成 | 见 [../validation/README.zh-CN.md](../validation/README.zh-CN.md) |
 | raw MPS 数据策略 | 已完成 | 原始 `.mps` 文件保存在 Git 外部。 |
 
