@@ -2,7 +2,7 @@
 
 > English: [COMPETITION_SCORECARD.md](COMPETITION_SCORECARD.md)
 
-本文把 AMD ROCm/Radeon 赛题要求映射到仓库证据。它是评审视角的检查表，不是项目唯一入口。普通读者应先阅读 [../README.zh-CN.md](../README.zh-CN.md) 和 [README.md](README.md)。
+本文把 AMD ROCm/Radeon 赛题要求映射到仓库证据。它是评审视角的检查表，不是项目唯一入口。普通读者应先阅读 [中文主页](../README.md)、[English README](../README.en.md) 和 [文档地图](README.md)。
 
 ## 范围
 

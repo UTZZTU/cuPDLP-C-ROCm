@@ -1,111 +1,111 @@
 <!-- COMPETITION_README_20260614_BEGIN -->
-> General users: start from this README and the [documentation map](docs/README.md).
-> AMD ROCm/Radeon contest reviewers: see [docs/COMPETITION_README.md](docs/COMPETITION_README.md) / [docs/COMPETITION_README.zh-CN.md](docs/COMPETITION_README.zh-CN.md).
+> 普通 GitHub 读者：请从本 README 和 [文档地图](docs/README.md) 开始。
+> AMD ROCm/Radeon 赛题评委：请查看 [docs/COMPETITION_README.md](docs/COMPETITION_README.md) / [docs/COMPETITION_README.zh-CN.md](docs/COMPETITION_README.zh-CN.md)。
 <!-- COMPETITION_README_20260614_END -->
 
 # cuPDLP-C-ROCm
 
-> 中文主页: [README.zh-CN.md](README.zh-CN.md)  
-> ROCm/gfx1150 quick start: [README_ROCM_gfx1150.md](README_ROCM_gfx1150.md)  
-> Documentation map: [docs/README.md](docs/README.md)  
-> Validation index: [validation/README.md](validation/README.md)  
-> Benchmark index: [docs/benchmarks/README.md](docs/benchmarks/README.md)
+> English homepage: [README.en.md](README.en.md)
+> ROCm/gfx1150 快速入口: [README_ROCM_gfx1150.zh-CN.md](README_ROCM_gfx1150.zh-CN.md)
+> 文档地图: [docs/README.md](docs/README.md)
+> 验证数据索引: [validation/README.zh-CN.md](validation/README.zh-CN.md)
+> Benchmark 索引: [docs/benchmarks/README.md](docs/benchmarks/README.md)
 
-`cuPDLP-C-ROCm` is a ROCm/HIP port and validation fork of upstream cuPDLP-C for AMD GPUs/APUs. The project keeps the CPU path and upstream-compatible CUDA path, and adds a ROCm/HIP backend for AMD Radeon-class hardware.
+`cuPDLP-C-ROCm` 是基于上游 cuPDLP-C 的 ROCm/HIP 移植与验证分支。项目保留 CPU 路径和上游兼容 CUDA 路径，并新增面向 AMD Radeon 平台的 ROCm/HIP 后端。
 
-| Item | Current value |
+| 项目 | 当前值 |
 |---|---|
-| Primary ROCm target | AMD Radeon 890M |
-| ROCm architecture | `gfx1150` |
-| ROCm version used in local validation | 7.2.1 |
-| Additional validated ROCm target | AMD Radeon PRO W7900 / `gfx1100` |
-| CUDA baseline devices | RTX 3090, RTX 4090D, H100 |
+| 主要 ROCm 目标 | AMD Radeon 890M |
+| ROCm 架构 | `gfx1150` |
+| 本地验证 ROCm 版本 | 7.2.1 |
+| 已建立 baseline 的额外 ROCm 目标 | AMD Radeon PRO W7900 / `gfx1100` |
+| CUDA baseline 设备 | RTX 3090, RTX 4090D, H100 |
 
-> Status: experimental but buildable. The ROCm/HIP backend has passed smoke validation, Netlib validation, cross-device benchmark checks, and large-MPS baseline testing on AMD Radeon 890M / `gfx1150`. The W7900 / `gfx1100` branch has completed smoke validation, Netlib 27-case validation, and a 23-case non-hard large-MPS baseline; the remaining large-MPS hard3 cases are tracked separately before full tuning. It is not yet a production-ready or fully tuned ROCm solver release.
+> 状态：实验性但可构建。当前 ROCm/HIP 后端已经通过 smoke validation、Netlib 验证、跨设备 benchmark，以及 Radeon 890M / `gfx1150` 上的大规模 MPS baseline 测试。W7900 / `gfx1100` 分支已经完成 smoke validation、Netlib 27-case validation，以及 23-case non-hard large-MPS baseline；剩余 large-MPS hard3 case 会在完整调优前单独跟踪。它还不是生产级、完全调优、广泛认证的 ROCm solver release。
 
-## Start here
+## 从哪里开始
 
-| Need | English | 中文 |
+| 需求 | English | 中文 |
 |---|---|---|
-| ROCm/gfx1150 quick start | [README_ROCM_gfx1150.md](README_ROCM_gfx1150.md) | [README_ROCM_gfx1150.zh-CN.md](README_ROCM_gfx1150.zh-CN.md) |
-| Full documentation map | [docs/README.md](docs/README.md) | [docs/README.md](docs/README.md) |
-| Validation data index | [validation/README.md](validation/README.md) | [validation/README.zh-CN.md](validation/README.zh-CN.md) |
-| Benchmark index | [docs/benchmarks/README.md](docs/benchmarks/README.md) | [docs/benchmarks/README.md](docs/benchmarks/README.md) |
+| ROCm/gfx1150 快速入口 | [README_ROCM_gfx1150.md](README_ROCM_gfx1150.md) | [README_ROCM_gfx1150.zh-CN.md](README_ROCM_gfx1150.zh-CN.md) |
+| 完整文档地图 | [docs/README.md](docs/README.md) | [docs/README.md](docs/README.md) |
+| 验证数据索引 | [validation/README.md](validation/README.md) | [validation/README.zh-CN.md](validation/README.zh-CN.md) |
+| Benchmark 索引 | [docs/benchmarks/README.md](docs/benchmarks/README.md) | [docs/benchmarks/README.md](docs/benchmarks/README.md) |
 
-## Documentation
+## 文档
 
-| Topic | English | 中文 |
+| 需求 | English | 中文 |
 |---|---|---|
-| Build / run / validation workflow | [docs/ROCM_WORKFLOW.md](docs/ROCM_WORKFLOW.md) | [docs/ROCM_WORKFLOW.zh-CN.md](docs/ROCM_WORKFLOW.zh-CN.md) |
-| CPU vs ROCm validation semantics | [docs/VALIDATION.md](docs/VALIDATION.md) | [docs/VALIDATION.zh-CN.md](docs/VALIDATION.zh-CN.md) |
-| Backend modes and naming policy | [docs/BACKEND_MODES_AND_NAMING.md](docs/BACKEND_MODES_AND_NAMING.md) | [docs/BACKEND_MODES_AND_NAMING.zh-CN.md](docs/BACKEND_MODES_AND_NAMING.zh-CN.md) |
-| CUDA to ROCm migration case study | [docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) | [docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) |
-| ROCm porting guide | [docs/ROCM_PORTING_GUIDE.md](docs/ROCM_PORTING_GUIDE.md) | [docs/ROCM_PORTING_GUIDE.zh-CN.md](docs/ROCM_PORTING_GUIDE.zh-CN.md) |
-| ROCm profiling notes | [docs/ROCM_PROFILING_NOTES.md](docs/ROCM_PROFILING_NOTES.md) | [docs/ROCM_PROFILING_NOTES.zh-CN.md](docs/ROCM_PROFILING_NOTES.zh-CN.md) |
-| ROCm tuning history | [docs/ROCM_TUNING_HISTORY.md](docs/ROCM_TUNING_HISTORY.md) | [docs/ROCM_TUNING_HISTORY.zh-CN.md](docs/ROCM_TUNING_HISTORY.zh-CN.md) |
-| ROCm tuning guide | [docs/TUNING_GUIDE_ROCM.md](docs/TUNING_GUIDE_ROCM.md) | [docs/TUNING_GUIDE_ROCM.zh-CN.md](docs/TUNING_GUIDE_ROCM.zh-CN.md) |
-| Cross-device Netlib benchmarks | [docs/CROSS_DEVICE_BENCHMARKS.md](docs/CROSS_DEVICE_BENCHMARKS.md) | [docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md](docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md) |
-| Large MPS benchmark plan | [docs/LARGE_MPS_BENCHMARK_PLAN.md](docs/LARGE_MPS_BENCHMARK_PLAN.md) | [docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md](docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) |
-| greenbea numerical behavior | [docs/NUMERICAL_BEHAVIOR_GREENBEA.md](docs/NUMERICAL_BEHAVIOR_GREENBEA.md) | [docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md](docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md) |
+| 构建、运行、验证日常流程 | [docs/ROCM_WORKFLOW.md](docs/ROCM_WORKFLOW.md) | [docs/ROCM_WORKFLOW.zh-CN.md](docs/ROCM_WORKFLOW.zh-CN.md) |
+| CPU vs ROCm 验证语义 | [docs/VALIDATION.md](docs/VALIDATION.md) | [docs/VALIDATION.zh-CN.md](docs/VALIDATION.zh-CN.md) |
+| 后端模式与命名策略 | [docs/BACKEND_MODES_AND_NAMING.md](docs/BACKEND_MODES_AND_NAMING.md) | [docs/BACKEND_MODES_AND_NAMING.zh-CN.md](docs/BACKEND_MODES_AND_NAMING.zh-CN.md) |
+| CUDA 到 ROCm 迁移案例 | [docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) | [docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) |
+| ROCm porting 指南 | [docs/ROCM_PORTING_GUIDE.md](docs/ROCM_PORTING_GUIDE.md) | [docs/ROCM_PORTING_GUIDE.zh-CN.md](docs/ROCM_PORTING_GUIDE.zh-CN.md) |
+| ROCm profiling 记录 | [docs/ROCM_PROFILING_NOTES.md](docs/ROCM_PROFILING_NOTES.md) | [docs/ROCM_PROFILING_NOTES.zh-CN.md](docs/ROCM_PROFILING_NOTES.zh-CN.md) |
+| ROCm tuning 历史 | [docs/ROCM_TUNING_HISTORY.md](docs/ROCM_TUNING_HISTORY.md) | [docs/ROCM_TUNING_HISTORY.zh-CN.md](docs/ROCM_TUNING_HISTORY.zh-CN.md) |
+| ROCm tuning 指南 | [docs/TUNING_GUIDE_ROCM.md](docs/TUNING_GUIDE_ROCM.md) | [docs/TUNING_GUIDE_ROCM.zh-CN.md](docs/TUNING_GUIDE_ROCM.zh-CN.md) |
+| Netlib 跨设备 benchmark | [docs/CROSS_DEVICE_BENCHMARKS.md](docs/CROSS_DEVICE_BENCHMARKS.md) | [docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md](docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md) |
+| large MPS benchmark 计划 | [docs/LARGE_MPS_BENCHMARK_PLAN.md](docs/LARGE_MPS_BENCHMARK_PLAN.md) | [docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md](docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) |
+| greenbea 数值行为 | [docs/NUMERICAL_BEHAVIOR_GREENBEA.md](docs/NUMERICAL_BEHAVIOR_GREENBEA.md) | [docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md](docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md) |
 | W7900 / `gfx1100` current status | [docs/W7900_CURRENT_STATUS.md](docs/W7900_CURRENT_STATUS.md) | [docs/W7900_CURRENT_STATUS.zh-CN.md](docs/W7900_CURRENT_STATUS.zh-CN.md) |
-| W7900 / `gfx1100` first-port record | [docs/W7900_FIRST_PORT.md](docs/W7900_FIRST_PORT.md) | [docs/W7900_FIRST_PORT.zh-CN.md](docs/W7900_FIRST_PORT.zh-CN.md) |
-| Upstream reference snapshot | [README_UPSTREAM.md](README_UPSTREAM.md) | — |
+| W7900 / `gfx1100` first-port 记录 | [docs/W7900_FIRST_PORT.md](docs/W7900_FIRST_PORT.md) | [docs/W7900_FIRST_PORT.zh-CN.md](docs/W7900_FIRST_PORT.zh-CN.md) |
+| 上游参考快照 | [README_UPSTREAM.md](README_UPSTREAM.md) | — |
 
-`README_UPSTREAM.md` is intentionally kept as an upstream reference snapshot and is not translated or rewritten as project documentation.
+`README_UPSTREAM.md` 是上游 README 备份，故意作为原始参考快照保留，不翻译、不重写。
 
 ## Benchmarks
 
-The raw `.mps` benchmark files are not committed. Curated result CSVs and explanation documents are committed instead.
+原始 `.mps` 大文件不提交到 Git。仓库只提交整理后的 CSV 结果和解释文档。
 
-| Topic | English | 中文 | Raw CSV |
+| 主题 | English | 中文 | 原始结果 CSV |
 |---|---|---|---|
 | Large MPS CUDA/ROCm baseline | [summary](docs/benchmarks/large_mps_cuda_rocm_baseline_20260610.md) | [中文版](docs/benchmarks/large_mps_cuda_rocm_baseline_20260610.zh-CN.md) | [platform summary](results/benchmarks/large_mps_platform_summary_20260610.csv), [per-case timing](results/benchmarks/large_mps_per_case_timing_summary_20260610.csv) |
 | cuPDLPx vs cuPDLP-C short13 | [comparison](docs/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.md) | [中文版](docs/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.zh-CN.md) | [comparison CSV](results/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.csv) |
 
-## What this repository provides
+## 本仓库提供什么
 
-- CPU-only cuPDLP-C build path.
-- Upstream-compatible CUDA build path for NVIDIA baselines.
-- ROCm/HIP backend built from migrated CUDA backend code.
-- `plc` executable linked against the ROCm/HIP backend.
-- CPU-vs-ROCm smoke validation scripts.
-- W7900 / `gfx1100` build, smoke validation, Netlib 27-case validation, and large-MPS non-hard23 baseline notes.
-- Extended Netlib validation cases.
-- Cross-device benchmark workflows and summaries for RTX 3090, RTX 4090D, H100, and Radeon 890M.
-- Large MPS benchmark documents and curated CSV summaries.
-- `rocprofv3` profiling workflow and ROCm tuning notes.
-- Migration documentation for CUDA-to-ROCm/HIP scientific-computing projects.
+- CPU-only cuPDLP-C 构建路径。
+- 上游兼容 CUDA 构建路径，用于 NVIDIA baseline。
+- 由 CUDA backend 迁移而来的 ROCm/HIP backend。
+- 链接 ROCm/HIP backend 的 `plc` 可执行文件。
+- CPU-vs-ROCm smoke validation 脚本。
+- W7900 / `gfx1100` build、smoke validation、Netlib 27-case validation 和 large-MPS non-hard23 baseline 记录。
+- 扩展 Netlib 验证 case。
+- RTX 3090、RTX 4090D、H100、Radeon 890M 的跨设备 benchmark 工作流与结果文档。
+- large MPS benchmark 文档和整理后的 CSV 汇总。
+- `rocprofv3` profiling 工作流与 ROCm tuning 笔记。
+- 面向 CUDA 到 ROCm/HIP 科学计算项目迁移的案例文档。
 
-## Backend modes
+## 后端模式
 
-| Mode | CMake options | Role |
+| 模式 | CMake 选项 | 作用 |
 |---|---|---|
-| CPU | `BUILD_CUDA=OFF`, `BUILD_ROCM=OFF` | Correctness and portability baseline |
-| CUDA | `BUILD_CUDA=ON`, `BUILD_ROCM=OFF` | Upstream-compatible NVIDIA backend and benchmark baseline |
-| ROCm/HIP | `BUILD_CUDA=OFF`, `BUILD_ROCM=ON` | AMD Radeon ROCm/HIP target backend |
+| CPU | `BUILD_CUDA=OFF`, `BUILD_ROCM=OFF` | 正确性与可移植性 baseline |
+| CUDA | `BUILD_CUDA=ON`, `BUILD_ROCM=OFF` | 上游兼容 NVIDIA 后端与 benchmark baseline |
+| ROCm/HIP | `BUILD_CUDA=OFF`, `BUILD_ROCM=ON` | AMD Radeon ROCm/HIP 目标后端 |
 
-`BUILD_CUDA` and `BUILD_ROCM` must not be enabled at the same time. Use separate build directories such as `build-cpu`, `build-cuda`, and `build-rocm-plc`.
+`BUILD_CUDA` 和 `BUILD_ROCM` 不能同时开启。不同后端建议使用不同 build 目录，例如 `build-cpu`、`build-cuda`、`build-rocm-plc`。
 
-## Current validation and benchmark status
+## 当前验证与 benchmark 状态
 
-Large MPS baseline status:
+Large MPS baseline 状态：
 
-| Platform | Backend | Result |
+| 平台 | 后端 | 结果 |
 |---|---|---|
 | RTX 3090 | CUDA upstream | 25/26 OPTIMAL, 1/26 TIMELIMIT |
 | Radeon 890M | ROCm/HIP baseline | 24/26 OPTIMAL, 2/26 TIMELIMIT |
 | RTX 4090D | CUDA upstream | 26/26 OPTIMAL |
 | H100 | CUDA upstream | 26/26 OPTIMAL |
-| Radeon PRO W7900 | ROCm/HIP current post-890M-tuning engineering baseline | 23/23 non-hard large-MPS OPTIMAL; hard3 tracked separately |
+| Radeon PRO W7900 | ROCm/HIP 当前继承 890M 调优后的工程基线 | non-hard large-MPS 23/23 OPTIMAL；hard3 单独跟踪 |
 
-cuPDLPx short13 comparison status:
+cuPDLPx short13 对比状态：
 
-| Solver | Platform | Result |
+| Solver | 平台 | 结果 |
 |---|---|---|
-| cuPDLP-C upstream | RTX 4090D CUDA | 13/13 OPTIMAL on selected short/medium cases |
-| cuPDLPx v0.2.9 | RTX 4090D CUDA | 13/13 OPTIMAL on the same selected cases |
+| cuPDLP-C upstream | RTX 4090D CUDA | 选定 13 个短/中等 case 上 13/13 OPTIMAL |
+| cuPDLPx v0.2.9 | RTX 4090D CUDA | 同一批 case 上 13/13 OPTIMAL |
 
-## Quick start: ROCm/HIP build
+## 快速开始：构建 ROCm/HIP 版本
 
 ```bash
 cmake -S . -B build-rocm-plc -G Ninja \
@@ -121,7 +121,7 @@ cmake -S . -B build-rocm-plc -G Ninja \
 cmake --build build-rocm-plc --target plc -j"$(nproc)"
 ```
 
-Run a smoke example:
+运行 smoke example：
 
 ```bash
 ./build-rocm-plc/bin/plc \
@@ -130,23 +130,23 @@ Run a smoke example:
   -nIterLim 200
 ```
 
-## Validation
+## 验证
 
 ```bash
 ./scripts/check_rocm_port.sh
 ctest --test-dir build-rocm-plc --output-on-failure
 ```
 
-Extended validation:
+扩展验证：
 
 ```bash
 RESULT_ROOT=validation/results/extended_netlib \
   ./scripts/run_validation.sh validation/cases_extended_netlib.txt
 ```
 
-See [validation/README.md](validation/README.md) for curated validation summaries and CSV files.
+整理后的验证结果和 CSV 见 [validation/README.zh-CN.md](validation/README.zh-CN.md)。
 
-## Profiling and tuning
+## Profiling 与 tuning
 
 ```bash
 RESULT_ROOT=profiling/results/current ./scripts/profile_rocm_smoke.sh
@@ -156,21 +156,21 @@ python3 scripts/summarize_rocm_profile.py \
   --output profiling/results/current/profile_summary.md
 ```
 
-See [docs/ROCM_PROFILING_NOTES.md](docs/ROCM_PROFILING_NOTES.md), [docs/ROCM_TUNING_HISTORY.md](docs/ROCM_TUNING_HISTORY.md), and [docs/TUNING_GUIDE_ROCM.md](docs/TUNING_GUIDE_ROCM.md).
+详见 [docs/ROCM_PROFILING_NOTES.zh-CN.md](docs/ROCM_PROFILING_NOTES.zh-CN.md)、[docs/ROCM_TUNING_HISTORY.zh-CN.md](docs/ROCM_TUNING_HISTORY.zh-CN.md)、[docs/TUNING_GUIDE_ROCM.zh-CN.md](docs/TUNING_GUIDE_ROCM.zh-CN.md)。
 
-## Adapting to another ROCm GPU
+## 适配其他 ROCm GPU
 
-Identify the GPU architecture:
+先识别 GPU 架构：
 
 ```bash
 rocminfo | grep -E "Name:|Marketing Name|gfx"
 rocm_agent_enumerator
 ```
 
-Then set the matching architecture, for example:
+然后设置对应架构，例如 W7900/gfx1100：
 
 ```bash
 -DCMAKE_HIP_ARCHITECTURES=gfx1100
 ```
 
-for AMD Radeon PRO W7900, depending on ROCm support.
+实际支持取决于 ROCm 版本、Linux 发行版、内核和 AMD GPU/APU 支持状态。

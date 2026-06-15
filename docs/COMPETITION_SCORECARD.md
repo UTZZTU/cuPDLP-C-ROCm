@@ -2,7 +2,7 @@
 
 > 中文: [COMPETITION_SCORECARD.zh-CN.md](COMPETITION_SCORECARD.zh-CN.md)
 
-This page maps the AMD ROCm/Radeon contest requirements to repository evidence. It is a reviewer-oriented checklist, not the main project entry point. General users should start from [../README.md](../README.md) and [README.md](README.md).
+This page maps the AMD ROCm/Radeon contest requirements to repository evidence. It is a reviewer-oriented checklist, not the main project entry point. General users should start from the [Chinese homepage](../README.md), [English README](../README.en.md), and [documentation map](README.md).
 
 ## Scope
 

@@ -5,10 +5,10 @@
 
 # cuPDLP-C-ROCm
 
-> English homepage: [README.md](README.md)  
-> ROCm/gfx1150 快速入口: [README_ROCM_gfx1150.zh-CN.md](README_ROCM_gfx1150.zh-CN.md)  
-> 文档地图: [docs/README.md](docs/README.md)  
-> 验证数据索引: [validation/README.zh-CN.md](validation/README.zh-CN.md)  
+> English homepage: [README.en.md](README.en.md)
+> ROCm/gfx1150 快速入口: [README_ROCM_gfx1150.zh-CN.md](README_ROCM_gfx1150.zh-CN.md)
+> 文档地图: [docs/README.md](docs/README.md)
+> 验证数据索引: [validation/README.zh-CN.md](validation/README.zh-CN.md)
 > Benchmark 索引: [docs/benchmarks/README.md](docs/benchmarks/README.md)
 
 `cuPDLP-C-ROCm` 是基于上游 cuPDLP-C 的 ROCm/HIP 移植与验证分支。项目保留 CPU 路径和上游兼容 CUDA 路径，并新增面向 AMD Radeon 平台的 ROCm/HIP 后端。
