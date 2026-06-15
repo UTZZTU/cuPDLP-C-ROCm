@@ -111,10 +111,10 @@ total time ≈ per-iteration cost × number of iterations
 详见 [W7900 ROCm profiling 计划](W7900_ROCM_PROFILING_PLAN.zh-CN.md)。
 <!-- W7900_ROCM_PROFILING_PLAN_20260614_END -->
 
-## 下一步文档任务
+## 后续动作
 
-1. 更新 `README.md` 和 `README.zh-CN.md`，把 W7900 描述为已经具备 baseline 的验证目标，而不是 planned/first-port-only 状态。
-2. 更新 `docs/README.md` 和 validation index，让当前状态页、non-hard23、initial17、watchlist6、near2、hard3 都有清晰入口。
-3. 更新 `docs/W7900_FIRST_PORT.md` 和平台记录，补充 bootstrap 与临时机器易丢失的恢复流程。
-4. 在正式调优前先补 hard3 note，不把 hard3 混入第一轮主 baseline。
-5. 等 W7900 文档状态统一后，再开始 ROCm profiling/tuning。
+1. 在 `set-cover-model.mps`、`square41.mps`、`s100.mps` 上运行 W7900 `rocprof` starter3。
+2. 对 `dlr1.mps` 和 `fhnw-binschedule1.mps` 运行 hard3 probe2；`Dual2_5000.mps` 先作为已有强 hard 行为记录保留，除非后续出现新证据。
+3. 运行 true before/current core6 对比：`ae3b683 / pre_tuning` 对比当前 `rocm-w7900-gfx1100`。
+4. 生成整理后的 profiling 结果摘要，只提交 compact CSV/Markdown，不提交 raw profiler traces。
+5. 只有在 profiling 数据明确瓶颈后，再决定第一轮 W7900-specific tuning 目标。

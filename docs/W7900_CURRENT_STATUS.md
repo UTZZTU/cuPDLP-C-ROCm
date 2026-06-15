@@ -111,10 +111,10 @@ The next stage is not blind kernel editing. It starts with a fixed profiling cas
 See [W7900 ROCm profiling plan](W7900_ROCM_PROFILING_PLAN.md).
 <!-- W7900_ROCM_PROFILING_PLAN_20260614_END -->
 
-## Next documentation tasks
+## Next actions
 
-1. Update `README.md` and `README.zh-CN.md` so W7900 is described as a validated baseline target, not merely a planned target.
-2. Update `docs/README.md` and validation indexes so this page, non-hard23, initial17, watchlist6, near2, and hard3 are linked clearly.
-3. Update `docs/W7900_FIRST_PORT.md` and platform notes to describe the bootstrap and volatile-machine workflow.
-4. Add a hard3 note before full tuning: do not mix hard3 into the first primary baseline.
-5. Start ROCm profiling/tuning only after the W7900 documentation state is consistent.
+1. Run W7900 `rocprof` starter3 on `set-cover-model.mps`, `square41.mps`, and `s100.mps`.
+2. Run hard3 probe2 for `dlr1.mps` and `fhnw-binschedule1.mps`; keep `Dual2_5000.mps` as already-known hard behavior unless new evidence suggests otherwise.
+3. Run the true before/current core6 comparison: `ae3b683 / pre_tuning` versus current `rocm-w7900-gfx1100`.
+4. Generate curated profiling result summaries and commit only compact CSV/Markdown outputs, not raw profiler traces.
+5. Decide the first W7900-specific tuning target only after the profiling data identifies a bottleneck.
