@@ -27,6 +27,7 @@ This page is the central index for project-maintained documentation.
 <!-- COMPETITION_README_20260614_BEGIN -->
 | Competition README / 竞赛入口 | [COMPETITION_README.md](COMPETITION_README.md) | [COMPETITION_README.zh-CN.md](COMPETITION_README.zh-CN.md) | Reviewer-oriented path through the general project evidence |
 | Competition scorecard / 竞赛评分项对照 | [COMPETITION_SCORECARD.md](COMPETITION_SCORECARD.md) | [COMPETITION_SCORECARD.zh-CN.md](COMPETITION_SCORECARD.zh-CN.md) | Contest scoring requirements mapped to repository evidence |
+| Submission checklist / 提交清单 | [SUBMISSION_CHECKLIST.md](SUBMISSION_CHECKLIST.md) | [SUBMISSION_CHECKLIST.zh-CN.md](SUBMISSION_CHECKLIST.zh-CN.md) | Final paper, PPT, video, repository, Docker, and experiment readiness checklist |
 <!-- COMPETITION_README_20260614_END -->
 | Upstream reference / 上游参考 | [../README_UPSTREAM.md](../README_UPSTREAM.md) | — | Intentionally preserved as upstream snapshot; not translated |
 

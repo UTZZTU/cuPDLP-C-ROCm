@@ -1,0 +1,52 @@
+# 提交清单
+
+> English: [SUBMISSION_CHECKLIST.md](SUBMISSION_CHECKLIST.md)
+
+本文用于跟踪竞赛提交材料，但不把仓库改造成只为竞赛服务的项目。仓库主体仍然是通用 ROCm/HIP 迁移、验证与 benchmark 工程。
+
+## 仓库交付
+
+| 条目 | 状态 | 证据 / 下一步 |
+|---|---|---|
+| 通用项目 README | 已完成 | [../README.md](../README.md), [../README.zh-CN.md](../README.zh-CN.md) |
+| 文档地图 | 已完成 | [README.md](README.md) |
+| 竞赛评审阅读路径 | 已完成 | [COMPETITION_README.zh-CN.md](COMPETITION_README.zh-CN.md), [COMPETITION_SCORECARD.zh-CN.md](COMPETITION_SCORECARD.zh-CN.md) |
+| 复现文档 | 已完成 | [REPRODUCIBILITY.zh-CN.md](REPRODUCIBILITY.zh-CN.md) |
+| W7900 当前状态 | 已完成 | [W7900_CURRENT_STATUS.zh-CN.md](W7900_CURRENT_STATUS.zh-CN.md) |
+| W7900 性能解释 | 已完成 | [W7900_PERFORMANCE_BEHAVIOR.zh-CN.md](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md) |
+| W7900 优化基线口径 | 已完成 | [W7900_OPTIMIZATION_BASELINES.zh-CN.md](W7900_OPTIMIZATION_BASELINES.zh-CN.md) |
+| Docker/container 骨架 | 已提供骨架 | [../docker/Dockerfile.w7900](../docker/Dockerfile.w7900), [../docker/README_DOCKER_W7900.zh-CN.md](../docker/README_DOCKER_W7900.zh-CN.md)。这是环境声明骨架，不是当前 W7900 性能数字来源。 |
+| 整理后的 validation summary | 当前里程碑已完成 | 见 [../validation/README.zh-CN.md](../validation/README.zh-CN.md) |
+| raw MPS 数据策略 | 已完成 | 原始 `.mps` 文件保存在 Git 外部。 |
+
+## W7900 实验条目
+
+| 条目 | 状态 | 说明 |
+|---|---|---|
+| W7900 smoke validation | 已完成 | 仓库已记录 completed smoke validation。 |
+| W7900 Netlib 27-case validation | 已完成 | 仓库已记录 completed Netlib validation。 |
+| W7900 non-hard large-MPS baseline | 已完成 | `non-hard23`: 23/23 `OPTIMAL`；hard3 单独跟踪。 |
+| W7900 `rocprof` starter3 | 等 W7900 机器 | case: `set-cover-model.mps`, `square41.mps`, `s100.mps`。 |
+| hard3 probe2 | 等 W7900 机器 | case: `dlr1.mps`, `fhnw-binschedule1.mps`。 |
+| true before/current core6 | 等 W7900 机器 | `ae3b683 / pre_tuning` 对比当前 `rocm-w7900-gfx1100`。 |
+| W7900-specific tuning | 等 profiling 证据 | 不盲目调代码；等 profiler 结果后决定第一刀优化目标。 |
+| W7900 profiling 结果摘要 | 等 W7900 机器 | 只提交 compact CSV/Markdown，不提交 raw profiler traces。 |
+
+## 竞赛提交材料
+
+| 材料 | 状态 | 仓库支撑 |
+|---|---|---|
+| 技术论文 | 未开始 | 使用 `COMPETITION_README`、`COMPETITION_SCORECARD`、`REPRODUCIBILITY`、W7900 状态/性能文档，以及后续 profiling 结果。 |
+| 演示 PPT | 未开始 | 等论文大纲和 W7900 profiling 结果后制作。 |
+| 演示视频 | 未开始 | 应展示仓库结构、复现流程、W7900 运行/profiling 证据和结果摘要。 |
+| 工程代码仓库 | 进行中，主体基本完成 | 当前分支：`rocm-w7900-gfx1100`。 |
+| Docker image / container package | 已有骨架 | 严格 final image 仍属于后续打包工作。 |
+| 示例输入与期望输出 | 基本具备 | 已有 validation case list 和提交后的 CSV/Markdown summary。 |
+
+## 最终注意事项
+
+- 不要把当前 W7900 non-hard23 称为未优化 baseline。
+- 不要把 hard3 混入 primary non-hard23 baseline。
+- 不要提交 raw `.mps` 数据或 raw profiler trace directory。
+- 在 `rocprof` 结果出来前，不要声称已经优化了 W7900-specific bottleneck。
+- 英文和中文文档保持同步。

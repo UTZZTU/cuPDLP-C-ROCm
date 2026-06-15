@@ -32,6 +32,7 @@
 | 优化基线 | [W7900 优化基线说明](W7900_OPTIMIZATION_BASELINES.zh-CN.md) |
 | Profiling 计划 | [W7900 ROCm profiling 计划](W7900_ROCM_PROFILING_PLAN.zh-CN.md) |
 | 评分项对照 | [竞赛评分项对照](COMPETITION_SCORECARD.zh-CN.md) |
+| 提交清单 | [提交清单](SUBMISSION_CHECKLIST.zh-CN.md) |
 | Validation 索引 | [validation README](../validation/README.zh-CN.md) |
 
 ## 当前 W7900 成果

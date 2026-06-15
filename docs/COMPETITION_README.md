@@ -32,6 +32,7 @@ Large-scale linear programming is a scientific-computing and operations-research
 | Optimization baseline | [W7900 optimization baselines](W7900_OPTIMIZATION_BASELINES.md) |
 | Profiling plan | [W7900 ROCm profiling plan](W7900_ROCM_PROFILING_PLAN.md) |
 | Contest scorecard | [Competition scorecard alignment](COMPETITION_SCORECARD.md) |
+| Submission checklist | [Submission checklist](SUBMISSION_CHECKLIST.md) |
 | Validation index | [validation README](../validation/README.md) |
 
 ## Current W7900 results
