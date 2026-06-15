@@ -13,14 +13,6 @@ This page is the central index for project-maintained documentation.
 | W7900 / gfx1100 readers | [W7900 current status](W7900_CURRENT_STATUS.md), [W7900 profiling plan](W7900_ROCM_PROFILING_PLAN.md), [W7900 optimization baselines](W7900_OPTIMIZATION_BASELINES.md) | Follow the W7900 validation, profiling, and before/current/after plan |
 | AMD ROCm/Radeon contest reviewers / 赛题评委 | [COMPETITION_README.md](COMPETITION_README.md), [COMPETITION_SCORECARD.md](COMPETITION_SCORECARD.md) | Read the same project evidence through the contest scoring requirements |
 
-<!-- COMPETITION_README_20260614_BEGIN -->
-<!-- REPRODUCIBILITY_20260614_BEGIN -->
-| Reproducibility / 可复现性 | [REPRODUCIBILITY.md](REPRODUCIBILITY.md) | [REPRODUCIBILITY.zh-CN.md](REPRODUCIBILITY.zh-CN.md) | How to reproduce committed summaries, recover W7900 machines, check data, and run starter profiling |
-<!-- REPRODUCIBILITY_20260614_END -->
-
-| Competition README / 竞赛入口 | [COMPETITION_README.md](COMPETITION_README.md) | [COMPETITION_README.zh-CN.md](COMPETITION_README.zh-CN.md) | Reviewer-facing entry point aligned with the AMD ROCm/Radeon contest track |
-<!-- COMPETITION_README_20260614_END -->
-
 ## Main entry points / 主入口
 
 | Topic / 主题 | English | 中文 | Notes / 说明 |
@@ -29,6 +21,13 @@ This page is the central index for project-maintained documentation.
 | ROCm 890M quick README | [../README_ROCM_gfx1150.md](../README_ROCM_gfx1150.md) | [../README_ROCM_gfx1150.zh-CN.md](../README_ROCM_gfx1150.zh-CN.md) | Focused quick-start page for the gfx1150 milestone |
 | Validation index / Validation 索引 | [../validation/README.md](../validation/README.md) | [../validation/README.zh-CN.md](../validation/README.zh-CN.md) | Validation Markdown summaries and CSV links |
 | Benchmark index / Benchmark 索引 | [benchmarks/README.md](benchmarks/README.md) | [benchmarks/README.md](benchmarks/README.md) | Benchmark documents and CSV links |
+<!-- REPRODUCIBILITY_20260614_BEGIN -->
+| Reproducibility / 可复现性 | [REPRODUCIBILITY.md](REPRODUCIBILITY.md) | [REPRODUCIBILITY.zh-CN.md](REPRODUCIBILITY.zh-CN.md) | Reproduce committed summaries, recover W7900 machines, check data, and run starter profiling |
+<!-- REPRODUCIBILITY_20260614_END -->
+<!-- COMPETITION_README_20260614_BEGIN -->
+| Competition README / 竞赛入口 | [COMPETITION_README.md](COMPETITION_README.md) | [COMPETITION_README.zh-CN.md](COMPETITION_README.zh-CN.md) | Reviewer-oriented path through the general project evidence |
+| Competition scorecard / 竞赛评分项对照 | [COMPETITION_SCORECARD.md](COMPETITION_SCORECARD.md) | [COMPETITION_SCORECARD.zh-CN.md](COMPETITION_SCORECARD.zh-CN.md) | Contest scoring requirements mapped to repository evidence |
+<!-- COMPETITION_README_20260614_END -->
 | Upstream reference / 上游参考 | [../README_UPSTREAM.md](../README_UPSTREAM.md) | — | Intentionally preserved as upstream snapshot; not translated |
 
 ## Workflow, validation, and build semantics / 工作流、验证与构建语义
