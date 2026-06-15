@@ -29,7 +29,7 @@ Important caveat: the existing cross-device CSV records single-run `gpu_time_sec
 
 ## Interpretation
 
-- W7900 is not yet faster overall in this current first-port baseline.
+- W7900 is not yet faster overall in this current W7900 Netlib engineering baseline. This baseline is before W7900-specific tuning and should not be interpreted as the final optimized ROCm/gfx1100 result.
 - The result should be used to identify tuning targets, not to judge final hardware capability.
 - Future W7900 tuning should compare against the W7900 baseline on the same platform, using the same 27-case list and repeated median metric.
 

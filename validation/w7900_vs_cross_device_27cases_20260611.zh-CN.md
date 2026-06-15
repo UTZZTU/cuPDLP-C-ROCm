@@ -29,7 +29,7 @@ old_over_w7900_speed_ratio = old_platform_gpu_time_sec / W7900_median_solve_time
 
 ## 解释
 
-- 当前 first-port baseline 下，W7900 整体还没有快过已有 reference 平台。
+- W7900 在当前 W7900 Netlib 工程基线下整体尚未快过已有 reference 平台。该基线位于 W7900-specific tuning 之前，不应解释为最终优化后的 ROCm/gfx1100 结果。
 - 这个结果更适合用来定位 W7900 后续 tuning 目标，而不是评价 W7900 的最终硬件能力。
 - 后续 W7900 tuning 应在同一平台上，与本 W7900 baseline 使用同一 27-case list 和 repeated median 指标比较。
 
