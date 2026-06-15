@@ -263,16 +263,17 @@ Commit only:
 
 ## 11. Docker / container status
 
-A dedicated Docker/Containerfile is not yet the primary reproduction path because the available W7900 environment uses a pre-installed ROCm/Python SDK layout. The current reproducible path is the documented bootstrap workflow.
+A dedicated Docker/Containerfile is not the primary reproduction path because the available W7900 environment uses a pre-installed ROCm/Python SDK layout. The current reproducible path is the documented bootstrap workflow.
 
-Future work should add:
+This repository now provides a lightweight Docker/container skeleton:
 
 ```text
 docker/Dockerfile.w7900
 docker/README_DOCKER_W7900.md
+docker/README_DOCKER_W7900.zh-CN.md
 ```
 
-This should describe the build environment while keeping raw MPS data outside the image.
+The skeleton documents the expected build-environment shape and final-submission packaging direction. It is not claimed as the source of the committed W7900 performance numbers. Raw MPS data and raw profiler traces stay outside the image.
 
 ## 12. Quick reviewer checklist
 

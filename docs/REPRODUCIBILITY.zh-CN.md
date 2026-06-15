@@ -263,35 +263,14 @@ validation/cases_w7900_large_mps_before_after_nonhard23.txt
 
 ## 11. Docker / container 状态
 
-目前 dedicated Docker/Containerfile 还不是主复现路径，因为 W7900 环境使用预安装 ROCm/Python SDK 布局。当前可复现路径是 bootstrap workflow。
+dedicated Docker/Containerfile 不是当前主复现路径，因为 W7900 环境使用预安装 ROCm/Python SDK 布局。当前可复现路径是 bootstrap workflow。
 
-后续应补：
+本仓库现在提供轻量 Docker/container skeleton：
 
 ```text
 docker/Dockerfile.w7900
 docker/README_DOCKER_W7900.md
+docker/README_DOCKER_W7900.zh-CN.md
 ```
 
-Docker/Containerfile 应描述 build environment，但 raw MPS 数据不应进入镜像。
-
-## 12. 评委快速检查
-
-```bash
-git status
-git log --oneline --decorate -8
-
-python3 -m py_compile \
-  scripts/document_competition_readme_20260614.py \
-  scripts/document_reproducibility_20260614.py \
-  scripts/document_w7900_optimization_baselines_20260614.py
-
-python3 - <<'PY'
-import csv
-from pathlib import Path
-p = Path("validation/w7900_large_mps_nonhard23_20260613.csv")
-rows = list(csv.DictReader(p.open()))
-assert len(rows) == 23
-assert set(r["terminationCode"] for r in rows) == {"OPTIMAL"}
-print("W7900 non-hard23 summary check: OK")
-PY
-```
+该骨架用于说明预期 build environment 形态和 final-submission 打包方向。它不声称是当前已提交 W7900 性能数字的来源。raw MPS 数据和 raw profiler traces 不进入镜像。

@@ -1,0 +1,34 @@
+# W7900 ROCm/HIP environment skeleton
+#
+# This Dockerfile is a final-submission environment declaration skeleton.
+# It is not the source of the committed W7900 performance numbers.
+# Current W7900 results were produced on the contest-provided environment
+# with a pre-installed ROCm/Python SDK layout.
+#
+# Raw MPS data and raw profiler traces must stay outside the image.
+
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    git \
+    cmake \
+    ninja-build \
+    build-essential \
+    python3 \
+    python3-pip \
+    pkg-config \
+    curl \
+    time \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace/cuPDLP-C-ROCm
+
+# Copying the repository is intended for source-level reproducibility.
+# ROCm installation is environment-specific and should follow the
+# contest-provided W7900 documentation or AMD ROCm installation guide.
+COPY . /workspace/cuPDLP-C-ROCm
+
+CMD ["bash"]
