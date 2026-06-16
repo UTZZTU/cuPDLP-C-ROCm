@@ -131,3 +131,13 @@ The W7900 / `gfx1100` experiment set has been updated with four committed compac
 
 The 8-card fast8 experiment solved all 8 cases to `OPTIMAL` in both concurrent and single-GPU sequential modes, with 146s concurrent makespan versus 558s single-GPU sequential makespan.
 <!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
+
+<!-- W7900_LATEST_FIGURES_20260616_BEGIN -->
+## Latest W7900 figures / 2026-06-16
+
+The latest W7900 figure index is available here:
+
+- [W7900 latest experiment figures](../validation/w7900_latest_experiment_figures_20260616.md)
+
+The strongest visual result is the 8-card fast8 batch throughput figure: 8 independent MPS tasks completed in 146s concurrently on 8 W7900 GPUs versus 558s sequentially on one W7900 GPU.
+<!-- W7900_LATEST_FIGURES_20260616_END -->

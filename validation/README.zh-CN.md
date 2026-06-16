@@ -148,3 +148,11 @@
 - P4 显示 `ae3b683 / pre_tuning` 与当前 `rocm-w7900-gfx1100` 在 fast-core6 上均达到 6/6 `OPTIMAL`，但性能结果是混合的，不能写成笼统加速结论。
 - P5 显示 8 个独立 MPS 任务在 8 张 W7900 上并发完成时间为 146s，而单张 W7900 顺序运行需要 558s，实测 batch makespan speedup 约为 3.82x。
 <!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
+
+<!-- W7900_LATEST_FIGURES_20260616_BEGIN -->
+## W7900 最新实验图表 / 2026-06-16
+
+| 图表索引 | 说明 |
+|---|---|
+| [W7900 最新实验图表](w7900_latest_experiment_figures_20260616.zh-CN.md) | 包含 8-card fast8 吞吐、before/current fast-core6、hard3 probe2、rocprof kernel 占比等 SVG 图 |
+<!-- W7900_LATEST_FIGURES_20260616_END -->

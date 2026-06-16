@@ -131,3 +131,13 @@ W7900 / `gfx1100` 实验集已更新四组 compact summary：
 
 8-card fast8 实验在 8 卡并发和单 GPU 顺序两种模式下均达到 8/8 `OPTIMAL`，其中 8 卡并发 makespan 为 146s，单 GPU 顺序 makespan 为 558s。
 <!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
+
+<!-- W7900_LATEST_FIGURES_20260616_BEGIN -->
+## 最新 W7900 图表 / 2026-06-16
+
+最新 W7900 图表索引如下：
+
+- [W7900 最新实验图表](../validation/w7900_latest_experiment_figures_20260616.zh-CN.md)
+
+最适合作为材料亮点的是 8-card fast8 批处理吞吐图：8 个独立 MPS 任务在 8 张 W7900 上并发完成时间为 146s，而单张 W7900 顺序运行需要 558s。
+<!-- W7900_LATEST_FIGURES_20260616_END -->

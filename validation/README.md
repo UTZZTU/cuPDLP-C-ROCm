@@ -148,3 +148,11 @@ Key result highlights:
 - P4 shows both `ae3b683 / pre_tuning` and current `rocm-w7900-gfx1100` reach 6/6 `OPTIMAL` on fast-core6, with mixed performance rather than a blanket speedup claim.
 - P5 shows 8 independent MPS tasks complete in 146s on 8 W7900 GPUs versus 558s sequentially on one W7900 GPU, giving about 3.82x measured batch makespan speedup.
 <!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
+
+<!-- W7900_LATEST_FIGURES_20260616_BEGIN -->
+## W7900 latest experiment figures / 2026-06-16
+
+| Figure index | Description |
+|---|---|
+| [W7900 latest experiment figures](w7900_latest_experiment_figures_20260616.md) | SVG figures for 8-card fast8 throughput, before/current fast-core6, hard3 probe2, and rocprof kernel share |
+<!-- W7900_LATEST_FIGURES_20260616_END -->
