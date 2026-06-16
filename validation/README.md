@@ -217,3 +217,16 @@ Key interpretation: copy reduction is attractive because P10 shows
 `hipMemcpy` as the rank-1 HIP API cost, but it is also numerically risky
 if the copies are tied to residual, restart, or termination logic. The
 first code patch should therefore be opt-in and validation-driven.
+
+## W7900 P11 SpMV algorithm switch smoke / 2026-06-17
+
+This smoke validation checks the first real P11 tuning patch:
+an opt-in HIP SpMV algorithm switch.
+
+- Summary: [w7900_p11_spmv_alg_switch_smoke_20260617_summary.md](w7900_p11_spmv_alg_switch_smoke_20260617_summary.md)
+- Chinese summary: [w7900_p11_spmv_alg_switch_smoke_20260617_summary.zh-CN.md](w7900_p11_spmv_alg_switch_smoke_20260617_summary.zh-CN.md)
+- CSV: [w7900_p11_spmv_alg_switch_smoke_20260617.csv](w7900_p11_spmv_alg_switch_smoke_20260617.csv)
+
+Key interpretation: `set-cover-model` succeeds in all three modes:
+default `csr_alg2`, opt-in `default`, and opt-in `csr_alg1`. The patch
+preserves solver status and iteration count in the initial smoke test.

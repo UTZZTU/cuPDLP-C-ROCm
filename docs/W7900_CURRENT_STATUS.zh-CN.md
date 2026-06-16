@@ -217,3 +217,18 @@ P11 first-patch candidate analysis 在 P10 profiling 和 P11 调用点清单
 当前建议是不要盲目删除 `hipMemcpy`。第一个真正代码改动应是 opt-in
 实验，优先考虑 SpMV algorithm-selection/profiling 开关，或一个窄范围、
 有保护的 scalar-copy experiment，并用 fast-core6 和 P10 targeted cases 明确验证。
+
+## P11 SpMV algorithm switch smoke / 2026-06-17
+
+第一个真正的 P11 tuning patch 增加了 opt-in HIP SpMV algorithm switch。
+默认行为仍然保持 `HIPSPARSE_SPMV_CSR_ALG2`。
+
+链接：
+
+- [P11 SpMV algorithm switch smoke 中文汇总](../validation/w7900_p11_spmv_alg_switch_smoke_20260617_summary.zh-CN.md)
+- [P11 SpMV algorithm switch smoke CSV](../validation/w7900_p11_spmv_alg_switch_smoke_20260617.csv)
+- [P11 英文 smoke 汇总](../validation/w7900_p11_spmv_alg_switch_smoke_20260617_summary.md)
+
+初始 `set-cover-model` smoke 在默认 `csr_alg2`、opt-in `default` 和
+opt-in `csr_alg1` 三种模式下均通过。下一步是在 P10 五个 targeted case
+上做三模式 sweep。

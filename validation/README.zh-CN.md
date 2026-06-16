@@ -213,3 +213,16 @@ P11 runtime 调用点清单结合起来，在真正改 solver 代码前，对下
 关键结论：copy reduction 很诱人，因为 P10 显示 `hipMemcpy` 是 rank-1
 HIP API 成本；但如果这些 copy 绑定 residual、restart 或 termination 逻辑，
 就具有数值风险。因此第一个代码 patch 应该是 opt-in 且必须经过验证。
+
+## W7900 P11 SpMV algorithm switch smoke / 2026-06-17
+
+本次 smoke validation 检查第一个真正的 P11 tuning patch：
+opt-in HIP SpMV algorithm switch。
+
+- 汇总：[w7900_p11_spmv_alg_switch_smoke_20260617_summary.zh-CN.md](w7900_p11_spmv_alg_switch_smoke_20260617_summary.zh-CN.md)
+- 英文汇总：[w7900_p11_spmv_alg_switch_smoke_20260617_summary.md](w7900_p11_spmv_alg_switch_smoke_20260617_summary.md)
+- CSV：[w7900_p11_spmv_alg_switch_smoke_20260617.csv](w7900_p11_spmv_alg_switch_smoke_20260617.csv)
+
+关键结论：`set-cover-model` 在三种模式下均成功完成：默认 `csr_alg2`、
+opt-in `default` 和 opt-in `csr_alg1`。初始 smoke 中该 patch 保持了
+solver status 和迭代数一致。

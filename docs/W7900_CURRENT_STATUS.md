@@ -230,3 +230,18 @@ The current recommendation is to avoid blind `hipMemcpy` removal. The
 first real code change should be an opt-in experiment, preferably either
 an SpMV algorithm-selection/profiling switch or a narrowly guarded
 scalar-copy experiment with explicit fast-core6 and P10 validation.
+
+## P11 SpMV algorithm switch smoke / 2026-06-17
+
+The first real P11 tuning patch adds an opt-in HIP SpMV algorithm switch.
+Default behavior remains `HIPSPARSE_SPMV_CSR_ALG2`.
+
+Links:
+
+- [P11 SpMV algorithm switch smoke summary](../validation/w7900_p11_spmv_alg_switch_smoke_20260617_summary.md)
+- [P11 SpMV algorithm switch smoke CSV](../validation/w7900_p11_spmv_alg_switch_smoke_20260617.csv)
+- [P11 Chinese smoke summary](../validation/w7900_p11_spmv_alg_switch_smoke_20260617_summary.zh-CN.md)
+
+The initial `set-cover-model` smoke passes for default `csr_alg2`,
+opt-in `default`, and opt-in `csr_alg1`. The next step is a targeted
+five-case sweep across the same three modes.
