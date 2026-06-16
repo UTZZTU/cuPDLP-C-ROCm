@@ -264,3 +264,15 @@ solver status 和迭代数一致。`csr_alg1` 在多数长 case 上略快，但�
 关键结论：P11 基于五 case sweep，将当前 W7900 默认 SpMV algorithm 改为
 `csr_alg1`，同时保留 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 显式回退路径。这是
 W7900-specific tuning 策略，不是最终跨平台性能结论。
+
+## W7900 P12 negative finding：SpMV buffer algorithm consistency / 2026-06-17
+
+本条记录 P11 之后一次被拒绝的低风险执行层调优尝试：让
+`hipsparseSpMV_bufferSize()` 使用与实际 runtime SpMV 一致的 algorithm。
+
+- 汇总：[w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md](w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md)
+- 英文汇总：[w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md](w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md)
+
+关键结论：该 patch 作为实现一致性实验是合理的，但它使
+`set-cover-model` 的迭代数从此前稳定的 `7480` 变为 `7600`。因此该 patch
+已被拒绝，未合入源码。

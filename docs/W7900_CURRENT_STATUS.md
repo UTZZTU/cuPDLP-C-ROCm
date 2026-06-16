@@ -304,3 +304,19 @@ Links:
 This closes P11 as a conservative policy update. The result should be
 described as a W7900 current-default tuning choice, not as a final global
 performance conclusion.
+
+## P12 negative finding: rejected SpMV buffer algorithm consistency patch / 2026-06-17
+
+After P11, one additional low-risk execution-layer candidate was tested:
+making `hipsparseSpMV_bufferSize()` use the same algorithm selected by
+`cupdlp_hip_spmv_alg()`.
+
+The experiment was rejected because `set-cover-model` still solved
+successfully but changed iteration count from `7480` to `7600`. This
+indicates that even SpMV buffer/algorithm consistency changes can affect the
+solver trajectory. The source patch was reverted and not committed.
+
+Links:
+
+- [P12 negative finding summary](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md)
+- [P12 Chinese negative finding summary](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md)

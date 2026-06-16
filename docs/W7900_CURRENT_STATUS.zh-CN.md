@@ -286,3 +286,18 @@ P11 完成第一条 W7900-specific tuning 闭环：
 
 这使 P11 成为一个保守的策略更新闭环。该结果应表述为 W7900 当前默认调优
 选择，不应表述为最终全局性能结论。
+
+## P12 negative finding：拒绝 SpMV buffer algorithm consistency patch / 2026-06-17
+
+P11 之后额外测试了一个低风险执行层候选：让
+`hipsparseSpMV_bufferSize()` 使用与 `cupdlp_hip_spmv_alg()` 选择结果一致的
+algorithm。
+
+该实验被拒绝，因为 `set-cover-model` 虽然仍能成功求解，但迭代数从 `7480`
+变为 `7600`。这说明即使是 SpMV buffer/algorithm 一致性改动，也可能影响
+solver 轨迹。源码 patch 已撤回，未提交。
+
+链接：
+
+- [P12 negative finding 中文汇总](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md)
+- [P12 英文 negative finding summary](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md)

@@ -272,3 +272,17 @@ Key interpretation: P11 changes the current W7900 default SpMV algorithm to
 `csr_alg1` based on the five-case sweep, while preserving explicit rollback
 with `CUPDLP_HIP_SPMV_ALG=csr_alg2`. This is a W7900-specific tuning policy,
 not a final cross-platform performance claim.
+
+## W7900 P12 negative finding: SpMV buffer algorithm consistency / 2026-06-17
+
+This note records a rejected low-risk execution-layer tuning attempt after
+P11: aligning `hipsparseSpMV_bufferSize()` with the selected runtime SpMV
+algorithm.
+
+- Summary: [w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md](w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md)
+- Chinese summary: [w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md](w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md)
+
+Key interpretation: although the patch was reasonable as an implementation
+consistency experiment, it changed the `set-cover-model` iteration count
+from the previously stable `7480` to `7600`. The patch was therefore
+rejected and not committed.
