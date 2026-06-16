@@ -252,3 +252,15 @@ solver status 和迭代数一致。`csr_alg1` 在多数长 case 上略快，但�
 关键结论：无环境变量默认路径现在使用 `HIPSPARSE_SPMV_CSR_ALG1`，
 旧默认仍可通过 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 恢复。smoke 确认两个路径
 都能成功求解 `set-cover-model`，且迭代数一致。
+
+## W7900 P11 SpMV tuning 总结 / 2026-06-17
+
+本 P11 final note 总结 W7900 SpMV 调优路径：从 P10 profiling 到默认
+`HIPSPARSE_SPMV_CSR_ALG1` 策略。
+
+- 汇总：[w7900_p11_spmv_tuning_summary_20260617.zh-CN.md](w7900_p11_spmv_tuning_summary_20260617.zh-CN.md)
+- 英文汇总：[w7900_p11_spmv_tuning_summary_20260617.md](w7900_p11_spmv_tuning_summary_20260617.md)
+
+关键结论：P11 基于五 case sweep，将当前 W7900 默认 SpMV algorithm 改为
+`csr_alg1`，同时保留 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 显式回退路径。这是
+W7900-specific tuning 策略，不是最终跨平台性能结论。

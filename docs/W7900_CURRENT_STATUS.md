@@ -281,3 +281,26 @@ Links:
 This is a policy update based on the P11 five-case sweep. It should be
 described as the current W7900 default tuning choice, not as a final
 cross-platform performance conclusion.
+
+## P11 SpMV tuning final note / 2026-06-17
+
+P11 closes the first W7900-specific tuning loop:
+
+- P10 targeted profiling identified rocSPARSE CSR SpMV as the dominant GPU
+  kernel hotspot on the selected cases.
+- P11 added an opt-in HIP SpMV algorithm switch.
+- P11 smoke validation confirmed that `csr_alg2`, `default`, and `csr_alg1`
+  modes are runnable on `set-cover-model`.
+- P11 five-case sweep confirmed that all three modes preserve solver status
+  and iteration count on the targeted cases.
+- The current W7900 default is now `HIPSPARSE_SPMV_CSR_ALG1`.
+- The old default remains available with `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
+
+Links:
+
+- [P11 SpMV tuning summary](../validation/w7900_p11_spmv_tuning_summary_20260617.md)
+- [P11 Chinese tuning summary](../validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md)
+
+This closes P11 as a conservative policy update. The result should be
+described as a W7900 current-default tuning choice, not as a final global
+performance conclusion.

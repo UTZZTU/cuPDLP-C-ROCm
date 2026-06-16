@@ -259,3 +259,16 @@ Key interpretation: the no-env default path now uses
 `HIPSPARSE_SPMV_CSR_ALG1`, while the previous default can still be
 restored with `CUPDLP_HIP_SPMV_ALG=csr_alg2`. The smoke confirms both
 paths solve `set-cover-model` successfully with the same iteration count.
+
+## W7900 P11 SpMV tuning summary / 2026-06-17
+
+This final P11 note summarizes the W7900 SpMV tuning path from P10 profiling
+to the default `HIPSPARSE_SPMV_CSR_ALG1` policy.
+
+- Summary: [w7900_p11_spmv_tuning_summary_20260617.md](w7900_p11_spmv_tuning_summary_20260617.md)
+- Chinese summary: [w7900_p11_spmv_tuning_summary_20260617.zh-CN.md](w7900_p11_spmv_tuning_summary_20260617.zh-CN.md)
+
+Key interpretation: P11 changes the current W7900 default SpMV algorithm to
+`csr_alg1` based on the five-case sweep, while preserving explicit rollback
+with `CUPDLP_HIP_SPMV_ALG=csr_alg2`. This is a W7900-specific tuning policy,
+not a final cross-platform performance claim.

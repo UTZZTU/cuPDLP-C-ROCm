@@ -264,3 +264,25 @@ P11 现在将 W7900 当前调优默认 HIP SpMV algorithm 设为
 
 这是基于 P11 五 case sweep 的策略更新。应描述为当前 W7900 默认调优选择，
 不应写成最终跨平台性能结论。
+
+## P11 SpMV tuning final note / 2026-06-17
+
+P11 完成第一条 W7900-specific tuning 闭环：
+
+- P10 targeted profiling 发现 rocSPARSE CSR SpMV 是所选 case 上的主要
+  GPU kernel 热点。
+- P11 增加了 opt-in HIP SpMV algorithm switch。
+- P11 smoke validation 确认 `csr_alg2`、`default` 和 `csr_alg1` 三种模式
+  在 `set-cover-model` 上均可运行。
+- P11 五 case sweep 确认三种模式在 targeted cases 上保持 solver status 和
+  迭代数一致。
+- 当前 W7900 默认策略已切换为 `HIPSPARSE_SPMV_CSR_ALG1`。
+- 旧默认仍可通过 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 恢复。
+
+链接：
+
+- [P11 SpMV tuning 中文总结](../validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md)
+- [P11 英文 tuning summary](../validation/w7900_p11_spmv_tuning_summary_20260617.md)
+
+这使 P11 成为一个保守的策略更新闭环。该结果应表述为 W7900 当前默认调优
+选择，不应表述为最终全局性能结论。
