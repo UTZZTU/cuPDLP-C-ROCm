@@ -40,7 +40,7 @@ external timeout      = 7500 seconds per case
 2. **RTX 3090 完成 25/26 OPTIMAL**，唯一未完成的是 `dlr1.mps`，7200s 后仍为 `TIMELIMIT_OR_ITERLIMIT`。
 3. **Radeon 890M ROCm baseline 完成 24/26 OPTIMAL**。考虑到 890M 是核显平台，这个结果可以作为 ROCm port 可运行性和一定规模求解能力的证据。
 4. `dlr1.mps` 和 `Dual2_5000.mps` 是当前最能区分平台能力的困难 case：4090D/H100 能完成，而 890M 仍超时；3090 对 `dlr1.mps` 也超时。
-5. cuPDLPx 正在 4090D 上进行 short-case 对比，属于另一条 solver/算法路线，建议单独成文档，不直接合并进 cuPDLP-C baseline 表。
+5. cuPDLPx short13 已经在 4090D 上单独完成并成文档，属于另一条 solver/算法路线，不直接合并进 cuPDLP-C ROCm baseline 表。
 
 ## 困难 case 摘要
 

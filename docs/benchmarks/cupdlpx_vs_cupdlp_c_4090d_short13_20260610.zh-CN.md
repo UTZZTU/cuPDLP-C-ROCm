@@ -113,3 +113,20 @@ dlr1.mps
 ```
 
 如果这些 case 上 cuPDLPx 仍稳定且明显更快，再考虑写“cuPDLPx ROCm 移植可行性”技术评估。
+
+## W7900 项目收尾后的最终定位
+
+在 W7900 ROCm/HIP 迁移和 P11 SpMV tuning 完成后，本 short13 对比应解释为
+CUDA 侧算法路线参考，而不是 cuPDLP-C ROCm 迁移 baseline 的替代品。
+
+最终解释：
+
+- cuPDLPx v0.2.9 在 RTX 4090D 上成功求解全部 13 个 short/medium case。
+- cuPDLPx 在 short13 多数 case 上快于 upstream cuPDLP-C，median solve-time
+  speedup 约 1.55x，geomean solve-time speedup 约 1.60x。
+- 该结果支持 cuPDLPx 作为未来算法路线。
+- 这不否定 cuPDLP-C-ROCm 工作，因为 cuPDLPx 改变了 solver algorithm 和
+  implementation stack，而本仓库聚焦 cuPDLP-C 代码路径的 CUDA 到 ROCm/HIP
+  迁移。
+- 公平的 cuPDLPx-ROCm 对比需要单独 porting，并对齐硬件、tolerance、case set
+  和输出解析。

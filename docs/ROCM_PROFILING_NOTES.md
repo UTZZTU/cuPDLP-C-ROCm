@@ -298,3 +298,15 @@ The current conclusion is that SpMV is the first completed
 W7900-specific tuning path. Copy-reduction and reduction-kernel work
 remain possible future directions but are not part of the current
 project endpoint.
+
+## cuPDLPx final positioning after W7900 closure
+
+The repository already contains a separate RTX 4090D short13 comparison
+between cuPDLP-C and cuPDLPx. That comparison showed cuPDLPx v0.2.9 was
+stable on the selected short/medium cases and faster on most of them.
+It should be used as an algorithmic reference only.
+
+It should not be merged into W7900 ROCm profiling conclusions because it
+differs in solver algorithm, implementation stack, hardware backend, and
+output conventions. A future cuPDLPx-ROCm study would need a separate
+benchmark protocol.

@@ -502,3 +502,10 @@ cmake --build build-cuda --target plc -j"$(nproc)"
 6. 用 repeated benchmark 证明调优效果；
 7. 用数值行为文档解释 convergence-sensitive case；
 8. 后续再迁移到 W7900 并做平台化优化。
+
+## cuPDLPx 对比收尾说明 / 2026-06-17
+
+本项目已经包含 RTX 4090D short13 上的 cuPDLP-C vs cuPDLPx 对比。该结果表明
+cuPDLPx 作为更新算法路线值得后续关注，但它不替代 cuPDLP-C-ROCm 主线。本文的
+ROCm migration case study 仍以 cuPDLP-C CUDA→ROCm/HIP 迁移、W7900 验证和
+P11 SpMV tuning 为主线。

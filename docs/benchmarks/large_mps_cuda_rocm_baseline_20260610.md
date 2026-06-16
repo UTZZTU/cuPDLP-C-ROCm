@@ -40,7 +40,7 @@ Notes:
 2. **RTX 3090 solved 25/26 cases**; only `dlr1.mps` remained time-limited after the 7200-second rerun.
 3. **Radeon 890M ROCm baseline solved 24/26 cases**, which is a useful portability and correctness signal for an integrated GPU platform.
 4. `dlr1.mps` and `Dual2_5000.mps` are the most discriminative hard cases in the current dataset.
-5. cuPDLPx is being benchmarked separately on RTX 4090D and should be documented separately.
+5. cuPDLPx short13 has been benchmarked separately on RTX 4090D and documented separately. It remains a separate solver/algorithm comparison and should not be mixed into the cuPDLP-C ROCm baseline table.
 
 ## Hard-case snapshot
 

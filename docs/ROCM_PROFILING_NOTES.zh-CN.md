@@ -314,3 +314,13 @@ tuning endpoint。
 
 当前结论是：SpMV 是第一条已经完成的 W7900-specific tuning path。copy
 reduction 和 reduction-kernel 仍可作为未来方向，但不属于当前项目终点。
+
+## W7900 收尾后的 cuPDLPx 最终定位
+
+本仓库已经包含 RTX 4090D short13 的 cuPDLP-C 与 cuPDLPx 单独对比。该对比
+显示 cuPDLPx v0.2.9 在所选 short/medium cases 上稳定，并在多数 case 上更快。
+该结果应作为算法路线参考。
+
+它不应混入 W7900 ROCm profiling 结论，因为两者在 solver algorithm、
+implementation stack、hardware backend 和输出约定上都不同。未来若做
+cuPDLPx-ROCm 研究，需要单独 benchmark protocol。

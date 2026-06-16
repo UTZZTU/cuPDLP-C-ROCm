@@ -95,3 +95,22 @@ The original cuPDLPx script's `status_guess/time_guess/gap_guess` fields were br
 cuPDLPx solved all 13 short/medium cases. It is faster than cuPDLP-C on 10/13 cases by solver time, with a median solve-time speedup of about 1.55x and a geometric mean solve-time speedup of about 1.60x. It is also faster on 10/13 cases by wall time, although small-case wall time is affected by presolve, I/O, and startup overhead.
 
 These results justify further evaluation of cuPDLPx as a future algorithmic direction, but they do not replace the cuPDLP-C ROCm migration baseline. cuPDLPx should next be tested on the larger cases before any porting decision is made.
+
+## Final positioning after W7900 project closure
+
+After the W7900 ROCm/HIP migration and P11 SpMV tuning work, this
+short13 comparison should be interpreted as a CUDA-side algorithmic
+reference, not as a replacement for the cuPDLP-C ROCm migration baseline.
+
+Final interpretation:
+
+- cuPDLPx v0.2.9 solved all 13 selected short/medium cases on RTX 4090D.
+- cuPDLPx was faster than upstream cuPDLP-C on most short13 cases, with
+  about 1.55x median solve-time speedup and 1.60x geometric-mean
+  solve-time speedup.
+- The result supports cuPDLPx as a future algorithmic direction.
+- It does not invalidate the cuPDLP-C-ROCm work, because cuPDLPx changes
+  the solver algorithm and implementation stack, while this repository
+  focuses on CUDA-to-ROCm/HIP migration of the cuPDLP-C code path.
+- A fair cuPDLPx-ROCm comparison would require a separate porting effort
+  and aligned hardware, tolerances, case set, and output parsing.

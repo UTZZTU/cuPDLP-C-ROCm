@@ -351,3 +351,10 @@ W7900 终点：
 - 回退旧默认：`CUPDLP_HIP_SPMV_ALG=csr_alg2`。
 
 详见 `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`。
+
+## cuPDLPx 对比收尾说明 / 2026-06-17
+
+已有 RTX 4090D short13 对比显示 cuPDLPx 在多数 short/medium case 上快于
+upstream cuPDLP-C。该结果应作为未来算法路线参考，而不是 W7900 ROCm/HIP
+tuning 历史的一部分。W7900 当前终点仍是 cuPDLP-C-ROCm 分支中的
+`HIPSPARSE_SPMV_CSR_ALG1` 默认策略与可回退 P11 tuning 闭环。
