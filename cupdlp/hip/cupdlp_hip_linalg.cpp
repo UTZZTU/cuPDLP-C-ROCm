@@ -38,8 +38,18 @@ extern "C" {
 static hipsparseSpMVAlg_t cupdlp_hip_spmv_alg(void) {
   const char *env = std::getenv("CUPDLP_HIP_SPMV_ALG");
 
+  // W7900 P11 sweep showed csr_alg1 was slightly faster than csr_alg2
+  // on most long targeted cases while preserving solver status and iteration
+  // count. Keep csr_alg2 available as an explicit rollback mode.
   if (env == nullptr || env[0] == '\0' ||
-      std::strcmp(env, "csr_alg2") == 0 ||
+      std::strcmp(env, "csr_alg1") == 0 ||
+      std::strcmp(env, "CSR_ALG1") == 0 ||
+      std::strcmp(env, "alg1") == 0 ||
+      std::strcmp(env, "ALG1") == 0) {
+    return HIPSPARSE_SPMV_CSR_ALG1;
+  }
+
+  if (std::strcmp(env, "csr_alg2") == 0 ||
       std::strcmp(env, "CSR_ALG2") == 0 ||
       std::strcmp(env, "alg2") == 0 ||
       std::strcmp(env, "ALG2") == 0) {
@@ -51,23 +61,16 @@ static hipsparseSpMVAlg_t cupdlp_hip_spmv_alg(void) {
     return HIPSPARSE_SPMV_ALG_DEFAULT;
   }
 
-  if (std::strcmp(env, "csr_alg1") == 0 ||
-      std::strcmp(env, "CSR_ALG1") == 0 ||
-      std::strcmp(env, "alg1") == 0 ||
-      std::strcmp(env, "ALG1") == 0) {
-    return HIPSPARSE_SPMV_CSR_ALG1;
-  }
-
   static bool warned = false;
   if (!warned) {
     warned = true;
     fprintf(stderr,
             "[cuPDLP][HIP] unknown CUPDLP_HIP_SPMV_ALG=%s; "
-            "falling back to cupdlp_hip_spmv_alg()\n",
+            "falling back to HIPSPARSE_SPMV_CSR_ALG1\n",
             env);
   }
 
-  return HIPSPARSE_SPMV_CSR_ALG2;
+  return HIPSPARSE_SPMV_CSR_ALG1;
 }
 
 cupdlp_int cuda_alloc_MVbuffer(
