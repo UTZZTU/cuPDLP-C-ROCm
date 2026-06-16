@@ -118,3 +118,16 @@ See [W7900 ROCm profiling plan](W7900_ROCM_PROFILING_PLAN.md).
 3. Run the true before/current core6 comparison: `ae3b683 / pre_tuning` versus current `rocm-w7900-gfx1100`.
 4. Generate curated profiling result summaries and commit only compact CSV/Markdown outputs, not raw profiler traces.
 5. Decide the first W7900-specific tuning target only after the profiling data identifies a bottleneck.
+
+<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
+## Latest W7900 experiment status / 2026-06-16
+
+The W7900 / `gfx1100` experiment set has been updated with four committed compact summaries:
+
+- [rocprof starter3](../validation/w7900_rocprof_starter3_summary_20260616.md)
+- [hard3 probe2 600s](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.md)
+- [before/current fast-core6](../validation/w7900_before_current_core6_fast_summary_20260616.md)
+- [8-card fast8 batch throughput](../validation/w7900_8card_batch_fast8_summary_20260616.md)
+
+The 8-card fast8 experiment solved all 8 cases to `OPTIMAL` in both concurrent and single-GPU sequential modes, with 146s concurrent makespan versus 558s single-GPU sequential makespan.
+<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->

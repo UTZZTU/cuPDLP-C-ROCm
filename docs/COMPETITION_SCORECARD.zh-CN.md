@@ -31,3 +31,16 @@
 ## 当前注意事项
 
 当前 W7900 non-hard23 结果是继承 890M tuning 的工程基线，不是真正未优化 first-runnable ROCm baseline。正式 before/current 对比应使用 `ae3b683 / pre_tuning` 与当前 `rocm-w7900-gfx1100`。
+
+<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
+## 2026-06-16 W7900 证据更新
+
+W7900 证据集现在包括：
+
+| 评分/证据方向 | 最新证据 |
+|---|---|
+| Profiling 与瓶颈证据 | [W7900 rocprof starter3 摘要](../validation/w7900_rocprof_starter3_summary_20260616.zh-CN.md) |
+| Hard-case 处理 | [W7900 hard3 probe2 600s 摘要](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.zh-CN.md) |
+| Before/current 对比 | [W7900 before/current fast-core6 摘要](../validation/w7900_before_current_core6_fast_summary_20260616.zh-CN.md) |
+| 多 GPU 批处理吞吐 | [W7900 8-card fast8 batch 摘要](../validation/w7900_8card_batch_fast8_summary_20260616.zh-CN.md) |
+<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->

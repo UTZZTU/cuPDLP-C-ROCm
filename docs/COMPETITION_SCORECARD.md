@@ -31,3 +31,16 @@ Current status:
 ## Current caution
 
 The current W7900 non-hard23 result is a post-890M-tuning engineering baseline, not the true unoptimized first-runnable ROCm baseline. The true before/current comparison should use `ae3b683 / pre_tuning` versus current `rocm-w7900-gfx1100`.
+
+<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
+## 2026-06-16 W7900 evidence update
+
+The W7900 evidence set now includes:
+
+| Requirement area | Latest evidence |
+|---|---|
+| Profiling and bottleneck evidence | [W7900 rocprof starter3 summary](../validation/w7900_rocprof_starter3_summary_20260616.md) |
+| Hard-case handling | [W7900 hard3 probe2 600s summary](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.md) |
+| Before/current comparison | [W7900 before/current fast-core6 summary](../validation/w7900_before_current_core6_fast_summary_20260616.md) |
+| Multi-GPU throughput | [W7900 8-card fast8 batch summary](../validation/w7900_8card_batch_fast8_summary_20260616.md) |
+<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->

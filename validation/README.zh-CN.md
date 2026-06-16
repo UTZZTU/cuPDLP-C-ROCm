@@ -128,3 +128,23 @@
 - [../docs/ROCM_WORKFLOW.zh-CN.md](../docs/ROCM_WORKFLOW.zh-CN.md) / [English](../docs/ROCM_WORKFLOW.md)
 - [../docs/ROCM_TUNING_HISTORY.zh-CN.md](../docs/ROCM_TUNING_HISTORY.zh-CN.md) / [English](../docs/ROCM_TUNING_HISTORY.md)
 - [../docs/TUNING_GUIDE_ROCM.zh-CN.md](../docs/TUNING_GUIDE_ROCM.zh-CN.md) / [English](../docs/TUNING_GUIDE_ROCM.md)
+
+<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
+## W7900 最新实验摘要 / 2026-06-16
+
+这些 compact summary 记录最新的 W7900 / `gfx1100` 实验里程碑。raw MPS 文件、raw profiler traces 和大型运行目录均保存在 Git 外部。
+
+| 里程碑 | 摘要 | Compact CSV 输出 |
+|---|---|---|
+| P2: rocprof starter3 | [W7900 rocprof starter3 摘要](w7900_rocprof_starter3_summary_20260616.zh-CN.md) | [runtime](w7900_rocprof_starter3_runtime_20260616.csv), [solver](w7900_rocprof_starter3_solver_20260616.csv), [HIP API top](w7900_rocprof_starter3_hip_api_top_20260616.csv), [kernel top](w7900_rocprof_starter3_kernel_top_20260616.csv) |
+| P3: hard3 probe2 600s | [W7900 hard3 probe2 600s 摘要](w7900_large_mps_hard3_probe2_600s_summary_20260616.zh-CN.md) | [runtime](w7900_large_mps_hard3_probe2_600s_runtime_20260616.csv), [solver](w7900_large_mps_hard3_probe2_600s_solver_20260616.csv), [case list](cases_w7900_large_mps_hard3_probe2.txt) |
+| P4: before/current fast-core6 | [W7900 before/current fast-core6 摘要](w7900_before_current_core6_fast_summary_20260616.zh-CN.md) | [comparison](w7900_before_current_core6_fast_comparison_20260616.csv), [current solver](w7900_before_current_core6_fast_current_solver_20260616.csv), [pre-tuning solver](w7900_before_current_core6_fast_pre_tuning_solver_20260616.csv), [case list](cases_w7900_large_mps_before_after_core6_fast.txt) |
+| P5: 8-card fast8 batch throughput | [W7900 8-card fast8 batch 摘要](w7900_8card_batch_fast8_summary_20260616.zh-CN.md) | [comparison](w7900_8card_batch_fast8_comparison_20260616.csv), [concurrent solver](w7900_8card_batch_fast8_concurrent_solver_20260616.csv), [single-GPU sequential solver](w7900_8card_batch_fast8_single_gpu_seq_solver_20260616.csv), [case list](cases_w7900_8card_batch_fast8.txt) |
+
+关键结果：
+
+- P2 记录 W7900 `rocprof` starter3 的 compact profiling 证据；raw trace 文件不进入 Git。
+- P3 确认 `dlr1` 和 `fhnw-binschedule1` 在 600 秒诊断预算下仍属于 hard case。
+- P4 显示 `ae3b683 / pre_tuning` 与当前 `rocm-w7900-gfx1100` 在 fast-core6 上均达到 6/6 `OPTIMAL`，但性能结果是混合的，不能写成笼统加速结论。
+- P5 显示 8 个独立 MPS 任务在 8 张 W7900 上并发完成时间为 146s，而单张 W7900 顺序运行需要 558s，实测 batch makespan speedup 约为 3.82x。
+<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->

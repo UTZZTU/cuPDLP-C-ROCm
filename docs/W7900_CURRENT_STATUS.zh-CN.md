@@ -118,3 +118,16 @@ total time ≈ per-iteration cost × number of iterations
 3. 运行 true before/current core6 对比：`ae3b683 / pre_tuning` 对比当前 `rocm-w7900-gfx1100`。
 4. 生成整理后的 profiling 结果摘要，只提交 compact CSV/Markdown，不提交 raw profiler traces。
 5. 只有在 profiling 数据明确瓶颈后，再决定第一轮 W7900-specific tuning 目标。
+
+<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
+## 最新 W7900 实验状态 / 2026-06-16
+
+W7900 / `gfx1100` 实验集已更新四组 compact summary：
+
+- [rocprof starter3](../validation/w7900_rocprof_starter3_summary_20260616.zh-CN.md)
+- [hard3 probe2 600s](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.zh-CN.md)
+- [before/current fast-core6](../validation/w7900_before_current_core6_fast_summary_20260616.zh-CN.md)
+- [8-card fast8 batch throughput](../validation/w7900_8card_batch_fast8_summary_20260616.zh-CN.md)
+
+8-card fast8 实验在 8 卡并发和单 GPU 顺序两种模式下均达到 8/8 `OPTIMAL`，其中 8 卡并发 makespan 为 146s，单 GPU 顺序 makespan 为 558s。
+<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->

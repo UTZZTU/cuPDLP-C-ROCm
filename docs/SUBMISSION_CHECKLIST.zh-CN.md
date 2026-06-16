@@ -51,3 +51,14 @@
 - 不要提交 raw `.mps` 数据或 raw profiler trace directory。
 - 在 `rocprof` 结果出来前，不要声称已经优化了 W7900-specific bottleneck。
 - 英文和中文文档保持同步。
+
+<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
+## W7900 实验完成情况 / 2026-06-16
+
+| 项目 | 状态 | 证据 |
+|---|---|---|
+| rocprof starter3 | 已完成 | [W7900 rocprof starter3 摘要](../validation/w7900_rocprof_starter3_summary_20260616.zh-CN.md) |
+| hard3 probe2 | 已完成 | [W7900 hard3 probe2 600s 摘要](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.zh-CN.md) |
+| true before/current fast-core6 | 已完成 | [W7900 before/current fast-core6 摘要](../validation/w7900_before_current_core6_fast_summary_20260616.zh-CN.md) |
+| 8-card independent-MPS batch throughput | 已完成 | [W7900 8-card fast8 batch 摘要](../validation/w7900_8card_batch_fast8_summary_20260616.zh-CN.md) |
+<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->

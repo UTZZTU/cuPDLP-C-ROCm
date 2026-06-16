@@ -107,3 +107,14 @@ It covers:
 | Demo video | should show build, validation, charts, and profiling workflow |
 | Engineering repository | current repository with scripts, validation CSVs, Markdown summaries, SVG charts |
 | Reproducibility | documented in [REPRODUCIBILITY.md](REPRODUCIBILITY.md); covers environment recovery, data checks, expected outputs, and starter profiling |
+
+<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
+## Latest W7900 evidence / 2026-06-16
+
+The latest committed W7900 evidence is available from the validation index:
+
+- [rocprof starter3](../validation/w7900_rocprof_starter3_summary_20260616.md): compact profiling summary for three starter cases.
+- [hard3 probe2 600s](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.md): diagnostic results for hard cases.
+- [before/current fast-core6](../validation/w7900_before_current_core6_fast_summary_20260616.md): `ae3b683 / pre_tuning` versus current branch.
+- [8-card fast8 batch throughput](../validation/w7900_8card_batch_fast8_summary_20260616.md): 8 independent MPS tasks, 146s concurrent versus 558s single-GPU sequential.
+<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->

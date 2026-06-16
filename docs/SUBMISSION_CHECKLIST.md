@@ -51,3 +51,14 @@ This checklist tracks contest-facing deliverables without turning the repository
 - Do not commit raw `.mps` data or raw profiler trace directories.
 - Do not claim W7900-specific bottlenecks have been optimized before `rocprof` results exist.
 - Keep English and Chinese documents synchronized.
+
+<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
+## W7900 experiment completion / 2026-06-16
+
+| Item | Status | Evidence |
+|---|---|---|
+| rocprof starter3 | Done | [W7900 rocprof starter3 summary](../validation/w7900_rocprof_starter3_summary_20260616.md) |
+| hard3 probe2 | Done | [W7900 hard3 probe2 600s summary](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.md) |
+| true before/current fast-core6 | Done | [W7900 before/current fast-core6 summary](../validation/w7900_before_current_core6_fast_summary_20260616.md) |
+| 8-card independent-MPS batch throughput | Done | [W7900 8-card fast8 batch summary](../validation/w7900_8card_batch_fast8_summary_20260616.md) |
+<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->

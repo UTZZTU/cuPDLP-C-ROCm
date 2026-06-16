@@ -107,3 +107,14 @@ W7900 更适合规模足够大、带宽敏感、SpMV/向量操作占比较高且
 | 演示视频 | 展示 build、validation、charts 和 profiling workflow |
 | 工程代码仓库 | 当前仓库已有 scripts、validation CSV、Markdown summaries、SVG charts |
 | 可复现性 | 已在 [REPRODUCIBILITY.zh-CN.md](REPRODUCIBILITY.zh-CN.md) 中说明；覆盖环境恢复、数据校验、期望输出和 starter profiling |
+
+<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
+## 最新 W7900 证据 / 2026-06-16
+
+最新提交的 W7900 证据可从 validation 索引进入：
+
+- [rocprof starter3](../validation/w7900_rocprof_starter3_summary_20260616.zh-CN.md)：三个 starter case 的 compact profiling 摘要。
+- [hard3 probe2 600s](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.zh-CN.md)：hard case 诊断结果。
+- [before/current fast-core6](../validation/w7900_before_current_core6_fast_summary_20260616.zh-CN.md)：`ae3b683 / pre_tuning` 与当前分支对比。
+- [8-card fast8 batch throughput](../validation/w7900_8card_batch_fast8_summary_20260616.zh-CN.md)：8 个独立 MPS 任务，8 卡并发 146s，对比单 GPU 顺序 558s。
+<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->

@@ -109,3 +109,14 @@ This page is the central index for project-maintained documentation.
 - If an English project document is updated, update the matching Chinese document.
 - If a Chinese project document is updated first, update the matching English document.
 - Keep `README_UPSTREAM.md` as an upstream reference snapshot.
+
+<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
+## Latest W7900 experiment summaries / 最新 W7900 实验摘要
+
+| Topic / 主题 | English | 中文 | Notes / 说明 |
+|---|---|---|---|
+| W7900 rocprof starter3 | [summary](../validation/w7900_rocprof_starter3_summary_20260616.md) | [摘要](../validation/w7900_rocprof_starter3_summary_20260616.zh-CN.md) | Compact profiling evidence; raw traces stay outside Git |
+| W7900 hard3 probe2 600s | [summary](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.md) | [摘要](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.zh-CN.md) | 600s diagnostic for hard cases |
+| W7900 before/current fast-core6 | [summary](../validation/w7900_before_current_core6_fast_summary_20260616.md) | [摘要](../validation/w7900_before_current_core6_fast_summary_20260616.zh-CN.md) | `ae3b683 / pre_tuning` versus current branch |
+| W7900 8-card fast8 throughput | [summary](../validation/w7900_8card_batch_fast8_summary_20260616.md) | [摘要](../validation/w7900_8card_batch_fast8_summary_20260616.zh-CN.md) | 8 independent MPS tasks: 146s concurrent versus 558s single-GPU sequential |
+<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
