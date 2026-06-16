@@ -5,6 +5,9 @@
 #include <stdlib.h>  // EXIT_FAILURE
 
 #include "cupdlp_hip_linalg.h"
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
 
 inline int cupdlp_get_hip_device_attribute_cached(hipDeviceAttribute_t attr,
                                                  int fallback) {
@@ -31,6 +34,41 @@ inline int nBlocks256(int n) {
 }
 
 extern "C" {
+
+static hipsparseSpMVAlg_t cupdlp_hip_spmv_alg(void) {
+  const char *env = std::getenv("CUPDLP_HIP_SPMV_ALG");
+
+  if (env == nullptr || env[0] == '\0' ||
+      std::strcmp(env, "csr_alg2") == 0 ||
+      std::strcmp(env, "CSR_ALG2") == 0 ||
+      std::strcmp(env, "alg2") == 0 ||
+      std::strcmp(env, "ALG2") == 0) {
+    return HIPSPARSE_SPMV_CSR_ALG2;
+  }
+
+  if (std::strcmp(env, "default") == 0 ||
+      std::strcmp(env, "DEFAULT") == 0) {
+    return HIPSPARSE_SPMV_ALG_DEFAULT;
+  }
+
+  if (std::strcmp(env, "csr_alg1") == 0 ||
+      std::strcmp(env, "CSR_ALG1") == 0 ||
+      std::strcmp(env, "alg1") == 0 ||
+      std::strcmp(env, "ALG1") == 0) {
+    return HIPSPARSE_SPMV_CSR_ALG1;
+  }
+
+  static bool warned = false;
+  if (!warned) {
+    warned = true;
+    fprintf(stderr,
+            "[cuPDLP][HIP] unknown CUPDLP_HIP_SPMV_ALG=%s; "
+            "falling back to cupdlp_hip_spmv_alg()\n",
+            env);
+  }
+
+  return HIPSPARSE_SPMV_CSR_ALG2;
+}
 
 cupdlp_int cuda_alloc_MVbuffer(
     hipsparseHandle_t handle, hipsparseSpMatDescr_t hip_csc,
@@ -76,7 +114,7 @@ cupdlp_int cuda_csc_Ax(hipsparseHandle_t handle,
 
   CHECK_HIPSPARSE(hipsparseSpMV(handle, op, &alpha, hip_csc, vecX, &beta, vecAx,
                               // HipComputeType, HIPSPARSE_SPMV_ALG_DEFAULT, dBuffer))
-                              HipComputeType, HIPSPARSE_SPMV_CSR_ALG2, dBuffer))
+                              HipComputeType, cupdlp_hip_spmv_alg(), dBuffer))
 
   return EXIT_SUCCESS;
 }
@@ -93,7 +131,7 @@ cupdlp_int cuda_csr_Ax(hipsparseHandle_t handle,
 
   CHECK_HIPSPARSE(hipsparseSpMV(handle, op, &alpha, hip_csr, vecX, &beta, vecAx,
                               // HipComputeType, HIPSPARSE_SPMV_ALG_DEFAULT, dBuffer))
-                              HipComputeType, HIPSPARSE_SPMV_CSR_ALG2, dBuffer))
+                              HipComputeType, cupdlp_hip_spmv_alg(), dBuffer))
 
   return EXIT_SUCCESS;
 }
@@ -108,7 +146,7 @@ cupdlp_int cuda_csc_ATy(hipsparseHandle_t handle,
 
   CHECK_HIPSPARSE(hipsparseSpMV(handle, op, &alpha, hip_csc, vecY, &beta, vecATy,
                               // HipComputeType, HIPSPARSE_SPMV_ALG_DEFAULT, dBuffer))
-                              HipComputeType, HIPSPARSE_SPMV_CSR_ALG2, dBuffer))
+                              HipComputeType, cupdlp_hip_spmv_alg(), dBuffer))
 
   return EXIT_SUCCESS;
 }
@@ -124,7 +162,7 @@ cupdlp_int cuda_csr_ATy(hipsparseHandle_t handle,
 
   CHECK_HIPSPARSE(hipsparseSpMV(handle, op, &alpha, hip_csr, vecY, &beta, vecATy,
                               // HipComputeType, HIPSPARSE_SPMV_ALG_DEFAULT, dBuffer))
-                              HipComputeType, HIPSPARSE_SPMV_CSR_ALG2, dBuffer))
+                              HipComputeType, cupdlp_hip_spmv_alg(), dBuffer))
 
   return EXIT_SUCCESS;
 }
