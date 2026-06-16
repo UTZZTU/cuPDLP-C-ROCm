@@ -44,3 +44,28 @@ The W7900 evidence set now includes:
 | Before/current comparison | [W7900 before/current fast-core6 summary](../validation/w7900_before_current_core6_fast_summary_20260616.md) |
 | Multi-GPU throughput | [W7900 8-card fast8 batch summary](../validation/w7900_8card_batch_fast8_summary_20260616.md) |
 <!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
+
+## Final W7900 competition status / 2026-06-17
+
+The W7900 competition-facing workflow is now complete for the current
+repository scope. Earlier “next planned work” items such as W7900 profiling,
+before/current analysis, and W7900-specific tuning have been closed by the
+P10/P11/P12 evidence chain.
+
+Final competition-facing conclusion:
+
+- W7900 / `gfx1100` ROCm build and validation are complete.
+- P10 targeted rocprof profiling has been archived.
+- P11 SpMV tuning is the accepted W7900-specific tuning endpoint.
+- The current W7900 default SpMV algorithm is
+  `HIPSPARSE_SPMV_CSR_ALG1`.
+- The old default can be restored with
+  `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
+- P12 records a rejected buffer-algorithm consistency patch to show that
+  additional execution-layer changes were tested conservatively.
+
+Recommended final evidence links:
+
+- `docs/W7900_CURRENT_STATUS.md`
+- `validation/w7900_p11_spmv_tuning_summary_20260617.md`
+- `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md`

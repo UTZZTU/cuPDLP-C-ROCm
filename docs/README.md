@@ -94,3 +94,22 @@ This page is the central index for project-maintained documentation.
 | W7900 before/current fast-core6 | [summary](../validation/w7900_before_current_core6_fast_summary_20260616.md) | [摘要](../validation/w7900_before_current_core6_fast_summary_20260616.zh-CN.md) | `ae3b683 / pre_tuning` versus current branch |
 | W7900 8-card fast8 throughput | [summary](../validation/w7900_8card_batch_fast8_summary_20260616.md) | [摘要](../validation/w7900_8card_batch_fast8_summary_20260616.zh-CN.md) | 8 independent MPS tasks: 146s concurrent versus 558s single-GPU sequential |
 <!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
+
+## Final W7900 endpoint documents / 2026-06-17
+
+The W7900 / `gfx1100` project stage is complete for the current repository
+scope. Use the following documents as the final W7900 entry points:
+
+| Topic | English | 中文 |
+|---|---|---|
+| W7900 current status | [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md) | [W7900_CURRENT_STATUS.zh-CN.md](W7900_CURRENT_STATUS.zh-CN.md) |
+| P11 SpMV tuning summary | [../validation/w7900_p11_spmv_tuning_summary_20260617.md](../validation/w7900_p11_spmv_tuning_summary_20260617.md) | [../validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md](../validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md) |
+| P12 rejected experiment note | [../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md) | [../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md) |
+| P10 targeted rocprof summary | [../validation/w7900_p10_current_targeted_rocprof_20260617_summary.md](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.md) | [../validation/w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md) |
+
+Current W7900 tuning policy:
+
+- default SpMV algorithm: `HIPSPARSE_SPMV_CSR_ALG1`;
+- rollback: `CUPDLP_HIP_SPMV_ALG=csr_alg2`;
+- P12 buffer algorithm consistency patch: tested and rejected because
+  iteration count changed.

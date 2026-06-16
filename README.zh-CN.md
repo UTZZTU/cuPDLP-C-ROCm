@@ -20,7 +20,7 @@
 | 主要 ROCm 目标 | AMD Radeon 890M |
 | ROCm 架构 | `gfx1150` |
 | 本地验证 ROCm 版本 | 7.2.1 |
-| 已建立 baseline 的额外 ROCm 目标 | AMD Radeon PRO W7900 / `gfx1100` |
+| 已完成验证与调优的额外 ROCm 目标 | AMD Radeon PRO W7900 / `gfx1100` |
 | CUDA baseline 设备 | RTX 3090, RTX 4090D, H100 |
 
 > 状态：实验性但可构建。当前 ROCm/HIP 后端已经通过 smoke validation、Netlib 验证、跨设备 benchmark、large-MPS baseline，以及 Radeon 890M / `gfx1150` 与 Radeon PRO W7900 / `gfx1100` 上的验证与调优记录。W7900 阶段已经完成 P10 targeted profiling 和 P11 SpMV tuning；当前默认 SpMV algorithm 为 `HIPSPARSE_SPMV_CSR_ALG1`，旧默认可用 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 回退。它仍不是生产级、广泛认证的 ROCm solver release，但当前项目阶段已经完成。
@@ -71,7 +71,7 @@
 - 由 CUDA backend 迁移而来的 ROCm/HIP backend。
 - 链接 ROCm/HIP backend 的 `plc` 可执行文件。
 - CPU-vs-ROCm smoke validation 脚本。
-- W7900 / `gfx1100` build、smoke validation、Netlib 27-case validation 和 large-MPS non-hard23 baseline 记录。
+- W7900 / `gfx1100` build、smoke validation、Netlib validation、large-MPS baseline、P10 profiling、P11 SpMV tuning 和 P12 rejected experiment 记录。
 - 扩展 Netlib 验证 case。
 - RTX 3090、RTX 4090D、H100、Radeon 890M 的跨设备 benchmark 工作流与结果文档。
 - large MPS benchmark 文档和整理后的 CSV 汇总。
@@ -98,7 +98,7 @@ Large MPS baseline 状态：
 | Radeon 890M | ROCm/HIP baseline | 24/26 OPTIMAL, 2/26 TIMELIMIT |
 | RTX 4090D | CUDA upstream | 26/26 OPTIMAL |
 | H100 | CUDA upstream | 26/26 OPTIMAL |
-| Radeon PRO W7900 | ROCm/HIP 当前继承 890M 调优后的工程基线 | non-hard large-MPS 23/23 OPTIMAL；hard3 单独跟踪 |
+| Radeon PRO W7900 | ROCm/HIP W7900 当前调优终点 | non-hard large-MPS 23/23 OPTIMAL；P10 profiling、P11 SpMV tuning、P12 rejected experiment 已归档 |
 
 cuPDLPx short13 对比状态：
 
@@ -197,3 +197,27 @@ W7900 当前权威入口见：
 
 - `docs/W7900_CURRENT_STATUS.zh-CN.md`
 - `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`
+
+## W7900 最终终点 / 2026-06-17
+
+当前仓库范围内，W7900 / `gfx1100` 阶段已经完成。它不应再被描述为未来目标、
+baseline-only 目标或 pre-tuning 目标。
+
+当前已接受终点：
+
+- W7900 build、smoke validation、Netlib validation 和 large-MPS baseline
+  文档已完成。
+- P10 targeted rocprof profiling 已完成。
+- P11 SpMV tuning 已完成。
+- 当前 W7900 默认 SpMV algorithm：
+  `HIPSPARSE_SPMV_CSR_ALG1`。
+- 回退旧默认：
+  `CUPDLP_HIP_SPMV_ALG=csr_alg2`。
+- P12 记录了一次被拒绝的 SpMV buffer-algorithm consistency 实验；该实验导致
+  迭代数变化，因此未接受该 patch。
+
+权威入口：
+
+- `docs/W7900_CURRENT_STATUS.zh-CN.md`
+- `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`
+- `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md`

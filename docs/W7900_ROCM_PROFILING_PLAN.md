@@ -162,3 +162,25 @@ Start with three cases:
 3. `s100` — slow-but-solvable, useful for separating iteration count from per-iteration cost.
 
 Do not start with hard3. Hard3 should be used only after the profiling workflow is stable.
+
+## Completion update / 2026-06-17
+
+This document is the original W7900 profiling plan. The plan has now been
+executed and superseded by committed P10/P11/P12 artifacts.
+
+Current status:
+
+- P10 targeted rocprof profiling completed.
+- P11 SpMV algorithm switch, smoke, and five-case sweep completed.
+- Current W7900 default SpMV algorithm:
+  `HIPSPARSE_SPMV_CSR_ALG1`.
+- Rollback path:
+  `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
+- P12 SpMV buffer algorithm consistency experiment tested and rejected
+  because it changed iteration count.
+
+Superseding documents:
+
+- `validation/w7900_p10_current_targeted_rocprof_20260617_summary.md`
+- `validation/w7900_p11_spmv_tuning_summary_20260617.md`
+- `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md`

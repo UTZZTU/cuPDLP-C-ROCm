@@ -62,3 +62,24 @@ Run this core6 subset before attempting a full non-hard23 rerun. The full large-
 - Use `current` as the engineering baseline.
 - Use `reduce_scalar_copies` as a historical fast reference.
 - Keep hard3 separate until convergence trajectory evidence is documented.
+
+## Completion update / 2026-06-17
+
+This document originally defined the before/after policy for W7900
+optimization. The accepted W7900-specific tuning endpoint is now available.
+
+Accepted endpoint:
+
+- P11 changed the current W7900 default SpMV algorithm to
+  `HIPSPARSE_SPMV_CSR_ALG1`.
+- The old default remains available with
+  `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
+- P11 five-case sweep preserved solver status and iteration count across
+  the evaluated SpMV modes.
+- P12 tested one additional SpMV buffer algorithm consistency patch and
+  rejected it because the iteration count changed.
+
+Final references:
+
+- `validation/w7900_p11_spmv_tuning_summary_20260617.md`
+- `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md`

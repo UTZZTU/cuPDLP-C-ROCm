@@ -162,3 +162,24 @@ docs/W7900_ROCM_PROFILING_PLAN.md
 3. `s100`：slow-but-solvable，用于区分迭代次数和单次迭代成本。
 
 不要从 hard3 开始。hard3 应等 profiling workflow 稳定后再用。
+
+## 完成状态更新 / 2026-06-17
+
+本文档是原始 W7900 profiling plan。该计划现在已经执行完毕，并由已提交的
+P10/P11/P12 artifacts 取代。
+
+当前状态：
+
+- P10 targeted rocprof profiling 已完成。
+- P11 SpMV algorithm switch、smoke 和五 case sweep 已完成。
+- 当前 W7900 默认 SpMV algorithm：
+  `HIPSPARSE_SPMV_CSR_ALG1`。
+- 回退路径：
+  `CUPDLP_HIP_SPMV_ALG=csr_alg2`。
+- P12 SpMV buffer algorithm consistency 实验已测试并拒绝，因为它改变了迭代数。
+
+取代本文档的最终材料：
+
+- `validation/w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md`
+- `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`
+- `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md`

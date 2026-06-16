@@ -62,3 +62,26 @@
 | true before/current fast-core6 | 已完成 | [W7900 before/current fast-core6 摘要](../validation/w7900_before_current_core6_fast_summary_20260616.zh-CN.md) |
 | 8-card independent-MPS batch throughput | 已完成 | [W7900 8-card fast8 batch 摘要](../validation/w7900_8card_batch_fast8_summary_20260616.zh-CN.md) |
 <!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
+
+## W7900 竞赛口径最终状态 / 2026-06-17
+
+当前仓库范围内，面向竞赛展示的 W7900 工作流已经完成。此前写作“next planned
+work”的 W7900 profiling、before/current analysis 和 W7900-specific tuning
+已由 P10/P11/P12 证据链闭环。
+
+最终竞赛口径结论：
+
+- W7900 / `gfx1100` ROCm build 和 validation 已完成。
+- P10 targeted rocprof profiling 已归档。
+- P11 SpMV tuning 是已接受的 W7900-specific tuning endpoint。
+- 当前 W7900 默认 SpMV algorithm 为
+  `HIPSPARSE_SPMV_CSR_ALG1`。
+- 旧默认可通过 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 恢复。
+- P12 记录了一次被拒绝的 buffer-algorithm consistency patch，说明额外
+  execution-layer 改动也经过了保守验证。
+
+推荐最终证据入口：
+
+- `docs/W7900_CURRENT_STATUS.zh-CN.md`
+- `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`
+- `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md`

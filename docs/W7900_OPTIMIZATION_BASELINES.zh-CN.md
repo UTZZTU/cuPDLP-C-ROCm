@@ -69,3 +69,22 @@ It is not the original first-runnable ROCm baseline.
 - 使用 current 作为 engineering baseline。
 - 使用 `reduce_scalar_copies` 作为历史最快参考点。
 - hard3 在收敛轨迹证据完成前继续单独分组。
+
+## 完成状态更新 / 2026-06-17
+
+本文档最初定义 W7900 optimization 的 before/after policy。当前已存在被接受的
+W7900-specific tuning endpoint。
+
+已接受终点：
+
+- P11 将当前 W7900 默认 SpMV algorithm 改为
+  `HIPSPARSE_SPMV_CSR_ALG1`。
+- 旧默认仍可通过 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 恢复。
+- P11 五 case sweep 在评估的 SpMV modes 上保持 solver status 和迭代数稳定。
+- P12 额外测试了一个 SpMV buffer algorithm consistency patch，并因迭代数变化
+  将其拒绝。
+
+最终参考：
+
+- `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`
+- `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md`

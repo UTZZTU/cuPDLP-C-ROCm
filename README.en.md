@@ -200,3 +200,28 @@ For the authoritative W7900 endpoint, see:
 
 - `docs/W7900_CURRENT_STATUS.md`
 - `validation/w7900_p11_spmv_tuning_summary_20260617.md`
+
+## Final W7900 endpoint / 2026-06-17
+
+The W7900 / `gfx1100` project stage is complete for the current repository
+scope. It should no longer be described as only a future, baseline-only, or
+pre-tuning target.
+
+Current accepted endpoint:
+
+- W7900 build, smoke validation, Netlib validation, and large-MPS baseline
+  documentation are complete.
+- P10 targeted rocprof profiling is complete.
+- P11 SpMV tuning is complete.
+- Current W7900 default SpMV algorithm:
+  `HIPSPARSE_SPMV_CSR_ALG1`.
+- Rollback to the previous default:
+  `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
+- P12 records a rejected SpMV buffer-algorithm consistency experiment where
+  iteration count changed, so that patch was not accepted.
+
+Authoritative endpoints:
+
+- `docs/W7900_CURRENT_STATUS.md`
+- `validation/w7900_p11_spmv_tuning_summary_20260617.md`
+- `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md`
