@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="582">
+<rect width="100%" height="100%" fill="white"/>
+<text x="600.0" y="32" text-anchor="middle" font-family="Arial" font-size="24" font-weight="700">W7900 before/current fast-core6 solve time</text>
+<rect x="230" y="55" width="18" height="12" fill="#999"/><text x="255" y="66" font-family="Arial" font-size="14">pre_tuning</text>
+<rect x="375" y="55" width="18" height="12" fill="#4e79a7"/><text x="400" y="66" font-family="Arial" font-size="14">current</text>
+<text x="218" y="115" text-anchor="end" font-family="Arial" font-size="15">square41</text>
+<rect x="230" y="90" width="860.0" height="18" fill="#999"/>
+<text x="1098.0" y="105" font-family="Arial" font-size="13">111s</text>
+<rect x="230" y="118" width="830.1" height="18" fill="#4e79a7"/>
+<text x="1068.0733110715164" y="133" font-family="Arial" font-size="13">107s</text>
+<text x="218" y="187" text-anchor="end" font-family="Arial" font-size="15">tpl-tub-ws1617</text>
+<rect x="230" y="162" width="432.3" height="18" fill="#999"/>
+<text x="670.2723667513624" y="177" font-family="Arial" font-size="13">55.6s</text>
+<rect x="230" y="190" width="764.2" height="18" fill="#4e79a7"/>
+<text x="1002.1871740440882" y="205" font-family="Arial" font-size="13">98.2s</text>
+<text x="218" y="259" text-anchor="end" font-family="Arial" font-size="15">thk_48</text>
+<rect x="230" y="234" width="593.5" height="18" fill="#999"/>
+<text x="831.4517033291684" y="249" font-family="Arial" font-size="13">76.3s</text>
+<rect x="230" y="262" width="532.5" height="18" fill="#4e79a7"/>
+<text x="770.5098711850128" y="277" font-family="Arial" font-size="13">68.4s</text>
+<text x="218" y="331" text-anchor="end" font-family="Arial" font-size="15">rmine15</text>
+<rect x="230" y="306" width="217.0" height="18" fill="#999"/>
+<text x="454.986904439424" y="321" font-family="Arial" font-size="13">27.9s</text>
+<rect x="230" y="334" width="213.1" height="18" fill="#4e79a7"/>
+<text x="451.0579907405179" y="349" font-family="Arial" font-size="13">27.4s</text>
+<text x="218" y="403" text-anchor="end" font-family="Arial" font-size="15">set-cover-model</text>
+<rect x="230" y="378" width="58.0" height="18" fill="#999"/>
+<text x="295.9596422943475" y="393" font-family="Arial" font-size="13">7.45s</text>
+<rect x="230" y="406" width="90.7" height="18" fill="#4e79a7"/>
+<text x="328.6552679954007" y="421" font-family="Arial" font-size="13">11.7s</text>
+<text x="218" y="475" text-anchor="end" font-family="Arial" font-size="15">L2CTA3D</text>
+<rect x="230" y="450" width="3.0" height="18" fill="#999"/>
+<text x="240.99930611284807" y="465" font-family="Arial" font-size="13">0.386s</text>
+<rect x="230" y="478" width="3.9" height="18" fill="#4e79a7"/>
+<text x="241.92190381117933" y="493" font-family="Arial" font-size="13">0.504s</text>
+</svg>

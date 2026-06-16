@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="232">
+<rect width="100%" height="100%" fill="white"/>
+<text x="550.0" y="32" text-anchor="middle" font-family="Arial" font-size="24" font-weight="700">W7900 fast8 batch makespan: 3.82x speedup</text>
+<text x="288" y="95" text-anchor="end" font-family="Arial" font-size="15">single GPU sequential</text>
+<rect x="300" y="75" width="710.0" height="26" fill="#4e79a7"/>
+<text x="1018.0" y="95" font-family="Arial" font-size="15">558s</text>
+<text x="288" y="141" text-anchor="end" font-family="Arial" font-size="15">8-card concurrent</text>
+<rect x="300" y="121" width="185.8" height="26" fill="#4e79a7"/>
+<text x="493.77060931899643" y="141" font-family="Arial" font-size="15">146s</text>
+</svg>

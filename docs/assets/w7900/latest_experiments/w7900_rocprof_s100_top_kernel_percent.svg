@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="370">
+<rect width="100%" height="100%" fill="white"/>
+<text x="650.0" y="32" text-anchor="middle" font-family="Arial" font-size="24" font-weight="700">W7900 rocprof starter3: s100 top kernel share</text>
+<text x="548" y="95" text-anchor="end" font-family="Arial" font-size="15">rocsparse::csrmvn_general_kernel&lt;256u, 32u, int, int...</text>
+<rect x="560" y="75" width="650.0" height="26" fill="#4e79a7"/>
+<text x="1218.0" y="95" font-family="Arial" font-size="15">93.2%</text>
+<text x="548" y="141" text-anchor="end" font-family="Arial" font-size="15">rocsparse::csrmvn_general_kernel&lt;256u, 4u, int, int,...</text>
+<rect x="560" y="121" width="17.6" height="26" fill="#4e79a7"/>
+<text x="585.6372801372802" y="141" font-family="Arial" font-size="15">2.53%</text>
+<text x="548" y="187" text-anchor="end" font-family="Arial" font-size="15">primal_grad_step_kernel(double*, double const*, doub...</text>
+<rect x="560" y="167" width="6.1" height="26" fill="#4e79a7"/>
+<text x="574.0747533247534" y="187" font-family="Arial" font-size="15">0.871%</text>
+<text x="548" y="233" text-anchor="end" font-family="Arial" font-size="15">movement_1_kernel(double*, double*, double const*, d...</text>
+<rect x="560" y="213" width="5.6" height="26" fill="#4e79a7"/>
+<text x="573.5770055770056" y="233" font-family="Arial" font-size="15">0.8%</text>
+<text x="548" y="279" text-anchor="end" font-family="Arial" font-size="15">sum_kernel(double*, double const*, int)...</text>
+<rect x="560" y="259" width="3.4" height="26" fill="#4e79a7"/>
+<text x="571.3531746031746" y="279" font-family="Arial" font-size="15">0.481%</text>
+</svg>

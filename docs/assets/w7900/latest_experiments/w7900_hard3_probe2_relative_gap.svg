@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="232">
+<rect width="100%" height="100%" fill="white"/>
+<text x="550.0" y="32" text-anchor="middle" font-family="Arial" font-size="24" font-weight="700">W7900 hard3 probe2: relative gap after 600s</text>
+<text x="288" y="95" text-anchor="end" font-family="Arial" font-size="15">dlr1</text>
+<rect x="300" y="75" width="201.7" height="26" fill="#4e79a7"/>
+<text x="509.6887409477549" y="95" font-family="Arial" font-size="15">0.284</text>
+<text x="288" y="141" text-anchor="end" font-family="Arial" font-size="15">fhnw-binschedule1</text>
+<rect x="300" y="121" width="278.0" height="26" fill="#4e79a7"/>
+<text x="586.0348590801899" y="141" font-family="Arial" font-size="15">0.392</text>
+</svg>
