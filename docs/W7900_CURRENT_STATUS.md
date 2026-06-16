@@ -174,3 +174,28 @@ improves per-iteration execution time on all six fast-core6 cases, but
 total solve time remains mixed because several cases require more
 iterations. Future W7900-specific tuning should therefore optimize
 execution efficiency and convergence behavior together.
+
+## P10 targeted rocprof summary / 2026-06-17
+
+P10 adds targeted rocprofv3 profiling for five representative cases from
+the P9 derived-metric analysis:
+
+- positive execution-efficiency sample: `thk_48`
+- stable iteration-count sample: `square41`
+- convergence-regression samples: `L2CTA3D`, `set-cover-model`,
+  `tpl-tub-ws1617`
+
+Links:
+
+- [P10 summary](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.md)
+- [P10 runtime CSV](../validation/w7900_p10_current_targeted_rocprof_20260617_runtime.csv)
+- [P10 kernel top CSV](../validation/w7900_p10_current_targeted_rocprof_20260617_kernel_top.csv)
+- [P10 HIP API top CSV](../validation/w7900_p10_current_targeted_rocprof_20260617_hip_api_top.csv)
+- [P10 memory copy top CSV](../validation/w7900_p10_current_targeted_rocprof_20260617_memory_copy_top.csv)
+
+All five targeted cases finish successfully under current. The compact
+traces show that rocSPARSE CSR SpMV kernels dominate several GPU kernel
+profiles, while `hipMemcpy`, `hipMemcpyAsync`, and `hipLaunchKernel`
+remain important HIP API costs. This supports the next tuning direction:
+focus on SpMV behavior, kernel-launch volume, and host-device copy
+reduction without changing solver numerical logic blindly.

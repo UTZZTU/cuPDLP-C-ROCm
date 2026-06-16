@@ -170,3 +170,19 @@ fast-core6 派生分析把总求解时间拆分为迭代次数和单迭代执行
 
 关键结论：current 在 6 个 fast-core6 case 上均降低了单迭代执行耗时，
 但由于部分 case 迭代次数增加，总 solve time 仍呈 mixed pattern。
+
+## W7900 P10 targeted rocprof / 2026-06-17
+
+P10 基于 P9 派生指标选择 5 个代表 case，对 current W7900/gfx1100
+分支做 targeted profiling。
+
+- 汇总：[w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md](w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md)
+- 英文汇总：[w7900_p10_current_targeted_rocprof_20260617_summary.md](w7900_p10_current_targeted_rocprof_20260617_summary.md)
+- 运行 CSV：[w7900_p10_current_targeted_rocprof_20260617_runtime.csv](w7900_p10_current_targeted_rocprof_20260617_runtime.csv)
+- Kernel top CSV：[w7900_p10_current_targeted_rocprof_20260617_kernel_top.csv](w7900_p10_current_targeted_rocprof_20260617_kernel_top.csv)
+- HIP API top CSV：[w7900_p10_current_targeted_rocprof_20260617_hip_api_top.csv](w7900_p10_current_targeted_rocprof_20260617_hip_api_top.csv)
+- Memory copy top CSV：[w7900_p10_current_targeted_rocprof_20260617_memory_copy_top.csv](w7900_p10_current_targeted_rocprof_20260617_memory_copy_top.csv)
+
+关键结论：5 个 targeted case 在 current 下均成功完成。trace 结果确认
+rocSPARSE CSR SpMV kernel 是主要 GPU 热点之一；较长 case 中
+`hipMemcpy`、`hipMemcpyAsync` 和 `hipLaunchKernel` 也是突出的 HIP API 成本。

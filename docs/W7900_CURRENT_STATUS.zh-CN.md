@@ -165,3 +165,26 @@ W7900 / `gfx1100` 实验集已更新四组 compact summary：
 均降低了单迭代执行耗时，但由于部分 case 迭代次数增加，总 solve time
 仍呈 mixed pattern。因此后续 W7900-specific tuning 应同时优化执行效率
 与收敛行为。
+
+## P10 targeted rocprof 汇总 / 2026-06-17
+
+P10 基于 P9 派生指标选择 5 个代表 case 做 targeted rocprofv3 profiling：
+
+- 正向执行效率样本：`thk_48`
+- 迭代数稳定样本：`square41`
+- 收敛迭代数回退样本：`L2CTA3D`、`set-cover-model`、
+  `tpl-tub-ws1617`
+
+链接：
+
+- [P10 中文汇总](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md)
+- [P10 runtime CSV](../validation/w7900_p10_current_targeted_rocprof_20260617_runtime.csv)
+- [P10 kernel top CSV](../validation/w7900_p10_current_targeted_rocprof_20260617_kernel_top.csv)
+- [P10 HIP API top CSV](../validation/w7900_p10_current_targeted_rocprof_20260617_hip_api_top.csv)
+- [P10 memory copy top CSV](../validation/w7900_p10_current_targeted_rocprof_20260617_memory_copy_top.csv)
+
+5 个 targeted case 在 current 下均成功完成。compact trace 显示，
+rocSPARSE CSR SpMV kernel 在多个 case 中是主要 GPU kernel 热点；
+`hipMemcpy`、`hipMemcpyAsync` 和 `hipLaunchKernel` 也是较长 case 上突出的
+HIP API 成本。这说明后续调优应重点关注 SpMV 行为、kernel launch 数量
+和 host-device copy reduction，同时不要盲目改动 solver 数值逻辑。

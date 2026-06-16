@@ -171,3 +171,20 @@ count and per-iteration execution time.
 Key interpretation: current improves per-iteration execution time on all
 six fast-core6 cases, but total solve time remains mixed because several
 cases require more iterations.
+
+## W7900 P10 targeted rocprof / 2026-06-17
+
+P10 profiles the current W7900/gfx1100 branch on five representative
+cases selected from the P9 derived metrics.
+
+- Summary: [w7900_p10_current_targeted_rocprof_20260617_summary.md](w7900_p10_current_targeted_rocprof_20260617_summary.md)
+- Chinese summary: [w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md](w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md)
+- Runtime CSV: [w7900_p10_current_targeted_rocprof_20260617_runtime.csv](w7900_p10_current_targeted_rocprof_20260617_runtime.csv)
+- Kernel top CSV: [w7900_p10_current_targeted_rocprof_20260617_kernel_top.csv](w7900_p10_current_targeted_rocprof_20260617_kernel_top.csv)
+- HIP API top CSV: [w7900_p10_current_targeted_rocprof_20260617_hip_api_top.csv](w7900_p10_current_targeted_rocprof_20260617_hip_api_top.csv)
+- Memory copy top CSV: [w7900_p10_current_targeted_rocprof_20260617_memory_copy_top.csv](w7900_p10_current_targeted_rocprof_20260617_memory_copy_top.csv)
+
+Key interpretation: all five targeted cases complete successfully under
+current. The traces confirm that rocSPARSE CSR SpMV kernels are major GPU
+hotspots, while `hipMemcpy`, `hipMemcpyAsync`, and `hipLaunchKernel` are
+prominent HIP API costs on the longer cases.
