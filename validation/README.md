@@ -188,3 +188,17 @@ Key interpretation: all five targeted cases complete successfully under
 current. The traces confirm that rocSPARSE CSR SpMV kernels are major GPU
 hotspots, while `hipMemcpy`, `hipMemcpyAsync`, and `hipLaunchKernel` are
 prominent HIP API costs on the longer cases.
+
+## W7900 P11 runtime callsite inventory / 2026-06-17
+
+P11 starts from a source-level runtime callsite inventory before applying
+optimization patches. This is intentionally a pre-patch triage step.
+
+- Summary: [w7900_p11_runtime_callsite_inventory_20260617.md](w7900_p11_runtime_callsite_inventory_20260617.md)
+- Chinese summary: [w7900_p11_runtime_callsite_inventory_20260617.zh-CN.md](w7900_p11_runtime_callsite_inventory_20260617.zh-CN.md)
+- CSV: [w7900_p11_runtime_callsite_inventory_20260617.csv](w7900_p11_runtime_callsite_inventory_20260617.csv)
+
+Key interpretation: P10 showed `hipMemcpy` as the rank-1 HIP API cost
+and `rocsparse::csrmvn_general_kernel` as the rank-1 GPU kernel across
+the targeted cases. P11 therefore first maps copy, synchronization,
+sparse-BLAS, BLAS, and kernel-launch callsites before changing code.

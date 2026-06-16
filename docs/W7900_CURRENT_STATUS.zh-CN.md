@@ -188,3 +188,17 @@ rocSPARSE CSR SpMV kernel 在多个 case 中是主要 GPU kernel 热点；
 `hipMemcpy`、`hipMemcpyAsync` 和 `hipLaunchKernel` 也是较长 case 上突出的
 HIP API 成本。这说明后续调优应重点关注 SpMV 行为、kernel launch 数量
 和 host-device copy reduction，同时不要盲目改动 solver 数值逻辑。
+
+## P11 runtime 调用点清单 / 2026-06-17
+
+P11 在正式调优 patch 前，先补充源码级调用点清单。
+
+链接：
+
+- [P11 runtime 调用点清单](../validation/w7900_p11_runtime_callsite_inventory_20260617.zh-CN.md)
+- [P11 inventory CSV](../validation/w7900_p11_runtime_callsite_inventory_20260617.csv)
+- [P11 英文汇总](../validation/w7900_p11_runtime_callsite_inventory_20260617.md)
+
+该清单把 P10 trace 热点和源码位置联系起来。下一步优化 patch 应只属于
+execution-layer，不应盲目改动 residual、restart、termination、scaling 或
+浮点更新顺序。

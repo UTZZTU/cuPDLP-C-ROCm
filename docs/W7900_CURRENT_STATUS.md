@@ -199,3 +199,18 @@ profiles, while `hipMemcpy`, `hipMemcpyAsync`, and `hipLaunchKernel`
 remain important HIP API costs. This supports the next tuning direction:
 focus on SpMV behavior, kernel-launch volume, and host-device copy
 reduction without changing solver numerical logic blindly.
+
+## P11 runtime callsite inventory / 2026-06-17
+
+P11 adds a source-level callsite inventory before making tuning patches.
+
+Links:
+
+- [P11 runtime callsite inventory](../validation/w7900_p11_runtime_callsite_inventory_20260617.md)
+- [P11 inventory CSV](../validation/w7900_p11_runtime_callsite_inventory_20260617.csv)
+- [P11 Chinese summary](../validation/w7900_p11_runtime_callsite_inventory_20260617.zh-CN.md)
+
+This inventory connects the P10 trace findings to source code locations.
+The next optimization patch should be execution-layer only and must not
+blindly change residual, restart, termination, scaling, or floating-point
+update order.

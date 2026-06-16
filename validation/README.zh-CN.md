@@ -186,3 +186,16 @@ P10 基于 P9 派生指标选择 5 个代表 case，对 current W7900/gfx1100
 关键结论：5 个 targeted case 在 current 下均成功完成。trace 结果确认
 rocSPARSE CSR SpMV kernel 是主要 GPU 热点之一；较长 case 中
 `hipMemcpy`、`hipMemcpyAsync` 和 `hipLaunchKernel` 也是突出的 HIP API 成本。
+
+## W7900 P11 runtime 调用点清单 / 2026-06-17
+
+P11 先从源码级 runtime callsite inventory 开始，再决定是否做优化 patch。
+这是有意设计的 pre-patch triage 步骤。
+
+- 汇总：[w7900_p11_runtime_callsite_inventory_20260617.zh-CN.md](w7900_p11_runtime_callsite_inventory_20260617.zh-CN.md)
+- 英文汇总：[w7900_p11_runtime_callsite_inventory_20260617.md](w7900_p11_runtime_callsite_inventory_20260617.md)
+- CSV：[w7900_p11_runtime_callsite_inventory_20260617.csv](w7900_p11_runtime_callsite_inventory_20260617.csv)
+
+关键结论：P10 显示 targeted cases 中 rank-1 HIP API 成本是 `hipMemcpy`，
+rank-1 GPU kernel 是 `rocsparse::csrmvn_general_kernel`。因此 P11 先定位
+copy、synchronization、sparse-BLAS、BLAS 和 kernel-launch 调用点，再决定是否改代码。
