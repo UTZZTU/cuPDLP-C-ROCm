@@ -21,14 +21,10 @@ This page is the central index for project-maintained documentation.
 | ROCm 890M quick README | [../README_ROCM_gfx1150.md](../README_ROCM_gfx1150.md) | [../README_ROCM_gfx1150.zh-CN.md](../README_ROCM_gfx1150.zh-CN.md) | Focused quick-start page for the gfx1150 milestone |
 | Validation index / Validation 索引 | [../validation/README.md](../validation/README.md) | [../validation/README.zh-CN.md](../validation/README.zh-CN.md) | Validation Markdown summaries and CSV links |
 | Benchmark index / Benchmark 索引 | [benchmarks/README.md](benchmarks/README.md) | [benchmarks/README.md](benchmarks/README.md) | Benchmark documents and CSV links |
-<!-- REPRODUCIBILITY_20260614_BEGIN -->
 | Reproducibility / 可复现性 | [REPRODUCIBILITY.md](REPRODUCIBILITY.md) | [REPRODUCIBILITY.zh-CN.md](REPRODUCIBILITY.zh-CN.md) | Reproduce committed summaries, recover W7900 machines, check data, and run starter profiling |
-<!-- REPRODUCIBILITY_20260614_END -->
-<!-- COMPETITION_README_20260614_BEGIN -->
 | Competition README / 竞赛入口 | [COMPETITION_README.md](COMPETITION_README.md) | [COMPETITION_README.zh-CN.md](COMPETITION_README.zh-CN.md) | Reviewer-oriented path through the general project evidence |
 | Competition scorecard / 竞赛评分项对照 | [COMPETITION_SCORECARD.md](COMPETITION_SCORECARD.md) | [COMPETITION_SCORECARD.zh-CN.md](COMPETITION_SCORECARD.zh-CN.md) | Contest scoring requirements mapped to repository evidence |
 | Submission checklist / 提交清单 | [SUBMISSION_CHECKLIST.md](SUBMISSION_CHECKLIST.md) | [SUBMISSION_CHECKLIST.zh-CN.md](SUBMISSION_CHECKLIST.zh-CN.md) | Final paper, PPT, video, repository, Docker, and experiment readiness checklist |
-<!-- COMPETITION_README_20260614_END -->
 | Upstream reference / 上游参考 | [../README_UPSTREAM.md](../README_UPSTREAM.md) | — | Intentionally preserved as upstream snapshot; not translated |
 
 ## Workflow, validation, and build semantics / 工作流、验证与构建语义
@@ -56,39 +52,17 @@ This page is the central index for project-maintained documentation.
 | tuning ablation 6-case repeats / 6-case tuning ablation 重复测试 | [../validation/rocm_tuning_ablation_6cases_repeats_summary.md](../validation/rocm_tuning_ablation_6cases_repeats_summary.md) | [../validation/rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md](../validation/rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md) | [summary](../validation/rocm_tuning_ablation_6cases_repeats_summary.csv), [raw](../validation/rocm_tuning_ablation_6cases_repeats_raw.csv) |
 
 ## Benchmarks and numerical behavior / Benchmark 与数值行为
-
 | Topic / 主题 | English | 中文 | Raw data / 原始汇总数据 |
 |---|---|---|---|
 | Netlib cross-device benchmarks / Netlib 跨设备 benchmark | [CROSS_DEVICE_BENCHMARKS.md](CROSS_DEVICE_BENCHMARKS.md) | [CROSS_DEVICE_BENCHMARKS.zh-CN.md](CROSS_DEVICE_BENCHMARKS.zh-CN.md) | [cross_device_full_summary.csv](../validation/cross_device_full_summary.csv) |
 | Large MPS benchmark plan / large MPS benchmark 计划 | [LARGE_MPS_BENCHMARK_PLAN.md](LARGE_MPS_BENCHMARK_PLAN.md) | [LARGE_MPS_BENCHMARK_PLAN.zh-CN.md](LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) | See benchmark docs below |
-<!-- W7900_LARGE_MPS_INITIAL17_20260613_BEGIN -->
-<!-- W7900_LARGE_MPS_NONHARD23_20260613_BEGIN -->
-<!-- W7900_CURRENT_STATUS_20260614_BEGIN -->
-<!-- W7900_DOC_SWEEP_20260614_BEGIN -->
 | W7900 hard3 notes / W7900 hard3 说明 | [W7900_LARGE_MPS_HARD3_NOTES.md](W7900_LARGE_MPS_HARD3_NOTES.md) | [W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md](W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md) | hard3 split for `dlr1`, `Dual2_5000`, and `fhnw-binschedule1` |
-<!-- W7900_DOC_SWEEP_20260614_END -->
-
-<!-- W7900_PERFORMANCE_BEHAVIOR_20260614_BEGIN -->
-<!-- W7900_ROCM_PROFILING_PLAN_20260614_BEGIN -->
-<!-- W7900_OPTIMIZATION_BASELINES_20260614_BEGIN -->
 | W7900 optimization baselines / W7900 优化基线 | [W7900_OPTIMIZATION_BASELINES.md](W7900_OPTIMIZATION_BASELINES.md) | [W7900_OPTIMIZATION_BASELINES.zh-CN.md](W7900_OPTIMIZATION_BASELINES.zh-CN.md) | Clarifies `ae3b683` pre-tuning, `b44c7ab` reduce-scalar-copies, current engineering baseline, and future before/after policy |
-<!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->
-
 | W7900 ROCm profiling plan / W7900 ROCm profiling 计划 | [W7900_ROCM_PROFILING_PLAN.md](W7900_ROCM_PROFILING_PLAN.md) | [W7900_ROCM_PROFILING_PLAN.zh-CN.md](W7900_ROCM_PROFILING_PLAN.zh-CN.md) | Profiling case matrix, metrics, tools, and output policy before ROCm/gfx1100 tuning |
-<!-- W7900_ROCM_PROFILING_PLAN_20260614_END -->
-
 | W7900 performance behavior / W7900 性能行为分析 | [W7900_PERFORMANCE_BEHAVIOR.md](W7900_PERFORMANCE_BEHAVIOR.md) | [W7900_PERFORMANCE_BEHAVIOR.zh-CN.md](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md) | Theory/application value, speedup charts, case classes, and tuning implications |
-<!-- W7900_PERFORMANCE_BEHAVIOR_20260614_END -->
-
 | W7900 current status / W7900 当前状态 | [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md) | [W7900_CURRENT_STATUS.zh-CN.md](W7900_CURRENT_STATUS.zh-CN.md) | Current W7900 baseline, charts, non-hard23 status, and hard3 split |
-<!-- W7900_CURRENT_STATUS_20260614_END -->
-
 | W7900 large-MPS non-hard23 baseline / W7900 large-MPS non-hard23 baseline | [../validation/w7900_large_mps_nonhard23_20260613.md](../validation/w7900_large_mps_nonhard23_20260613.md) | [../validation/w7900_large_mps_nonhard23_20260613.zh-CN.md](../validation/w7900_large_mps_nonhard23_20260613.zh-CN.md) | [solver CSV](../validation/w7900_large_mps_nonhard23_20260613.csv), [runtime CSV](../validation/w7900_large_mps_nonhard23_20260613_runtime.csv) |
-<!-- W7900_LARGE_MPS_NONHARD23_20260613_END -->
-
 | W7900 large-MPS initial17 safe baseline / W7900 large-MPS initial17 safe baseline | [../validation/w7900_large_mps_initial17_safe_20260613.md](../validation/w7900_large_mps_initial17_safe_20260613.md) | [../validation/w7900_large_mps_initial17_safe_20260613.zh-CN.md](../validation/w7900_large_mps_initial17_safe_20260613.zh-CN.md) | [solver CSV](../validation/w7900_large_mps_initial17_safe_20260613.csv), [runtime CSV](../validation/w7900_large_mps_initial17_safe_20260613_runtime.csv) |
-<!-- W7900_LARGE_MPS_INITIAL17_20260613_END -->
-
 | Large MPS CUDA/ROCm baseline / large MPS CUDA/ROCm baseline | [benchmarks/large_mps_cuda_rocm_baseline_20260610.md](benchmarks/large_mps_cuda_rocm_baseline_20260610.md) | [benchmarks/large_mps_cuda_rocm_baseline_20260610.zh-CN.md](benchmarks/large_mps_cuda_rocm_baseline_20260610.zh-CN.md) | [platform summary](../results/benchmarks/large_mps_platform_summary_20260610.csv), [per-case timing](../results/benchmarks/large_mps_per_case_timing_summary_20260610.csv) |
 | cuPDLPx vs cuPDLP-C short13 / cuPDLPx 对比 | [benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.md](benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.md) | [benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.zh-CN.md](benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.zh-CN.md) | [comparison CSV](../results/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.csv) |
 | greenbea numerical behavior / greenbea 数值行为 | [NUMERICAL_BEHAVIOR_GREENBEA.md](NUMERICAL_BEHAVIOR_GREENBEA.md) | [NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md](NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md) | Case-specific notes |
