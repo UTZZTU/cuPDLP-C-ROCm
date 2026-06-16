@@ -1,0 +1,3 @@
+case,status,exit_code,wall_seconds,json,log
+dlr1.mps,DONE,0,645.180829,/app/cupdlp_w7900/results/w7900_large_mps_hard3_probe2_600s_20260616_180208/json/dlr1.json,/app/cupdlp_w7900/results/w7900_large_mps_hard3_probe2_600s_20260616_180208/logs/dlr1.log
+fhnw-binschedule1.mps,DONE,0,614.012251,/app/cupdlp_w7900/results/w7900_large_mps_hard3_probe2_600s_20260616_180208/json/fhnw-binschedule1.json,/app/cupdlp_w7900/results/w7900_large_mps_hard3_probe2_600s_20260616_180208/logs/fhnw-binschedule1.log
