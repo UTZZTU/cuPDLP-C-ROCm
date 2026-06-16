@@ -126,3 +126,20 @@ build-*/
 *.tar.gz
 large raw MPS files
 ```
+
+## W7900 完成状态更新 / 2026-06-17
+
+cross-device 叙事已经从最初的 Netlib 和 890M-only benchmark 阶段扩展到
+W7900 / `gfx1100`。当前分支已经包含 W7900 validation、large-MPS summaries、
+targeted profiling 和 P11 SpMV tuning 文档。
+
+之前写作“下一阶段”的事项，在当前项目范围内已经部分或全部完成。当前终点是：
+
+- W7900 first-port 和 baseline 文档已完成。
+- P10 targeted rocprof 证据已收集。
+- P11 opt-in SpMV algorithm switch 已实现。
+- W7900 默认 SpMV algorithm 已设为 `HIPSPARSE_SPMV_CSR_ALG1`。
+- 旧默认可通过 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 回退。
+
+详见 `docs/W7900_CURRENT_STATUS.zh-CN.md` 和
+`validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`。

@@ -209,3 +209,16 @@ Large MPS benchmarking should answer three questions:
 3. Which ROCm costs dominate on Radeon 890M before and after tuning?
 
 Results should be interpreted together with profiling. A single timeout or convergence-sensitive case should be documented rather than hidden.
+
+## Completion update / 2026-06-17
+
+The original benchmark plan has now been executed beyond the planning
+stage. CUDA baselines, Radeon 890M ROCm baselines, W7900 / `gfx1100`
+baselines, targeted profiling, and P11 SpMV tuning summaries have been
+committed as curated validation artifacts.
+
+The W7900 target should no longer be described as a future platform in
+this branch. It is the completed second ROCm target for the current
+project stage. Raw `.mps` files and raw solver logs remain outside Git;
+curated summaries and links live under `validation/` and
+`docs/W7900_CURRENT_STATUS.md`.

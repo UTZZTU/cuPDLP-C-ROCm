@@ -402,3 +402,19 @@ tools/emps.c
 - 有合适 runner 后添加 ROCm CI。
 - 验证 `gfx1100` 等其他 ROCm 架构。
 - profiling 和 tuning 更成熟后添加性能回归检查。
+
+## W7900 validation 终点 / 2026-06-17
+
+除了原始 Radeon 890M / `gfx1150` validation target 之外，当前分支已经包含
+完整的 W7900 / `gfx1100` validation 和 tuning endpoint。
+
+W7900 validation artifacts 包括：
+
+- smoke/build validation 和 platform notes；
+- Netlib validation 和 large-MPS baseline summaries；
+- P10 targeted rocprof summaries；
+- P11 SpMV algorithm switch smoke 和五 case sweep；
+- final P11 SpMV tuning summary。
+
+当前 W7900 默认 SpMV algorithm 为 `HIPSPARSE_SPMV_CSR_ALG1`，
+可通过 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 回退旧默认。

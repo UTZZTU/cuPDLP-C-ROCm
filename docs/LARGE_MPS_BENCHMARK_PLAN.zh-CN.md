@@ -209,3 +209,13 @@ Large MPS benchmark 应回答三个问题：
 3. Radeon 890M 在 tuning 前后主要 ROCm 开销在哪里？
 
 结果应结合 profiling 解释。单个 timeout 或 convergence-sensitive case 应记录，而不是隐藏。
+
+## 完成状态更新 / 2026-06-17
+
+原始 benchmark plan 已经不再只是计划阶段。CUDA baselines、Radeon 890M
+ROCm baselines、W7900 / `gfx1100` baselines、targeted profiling 和 P11
+SpMV tuning summaries 都已经作为整理后的 validation artifacts 提交。
+
+在当前分支中，W7900 不应再写成未来平台。它已经是当前项目阶段完成的第二个
+ROCm 目标。原始 `.mps` 文件和 raw solver logs 仍不提交到 Git；整理后的
+summaries 和入口位于 `validation/` 与 `docs/W7900_CURRENT_STATUS.zh-CN.md`。

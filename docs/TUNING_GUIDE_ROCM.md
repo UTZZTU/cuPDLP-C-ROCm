@@ -231,3 +231,19 @@ launch count + synchronization + memory copies + SpMV + BLAS level-1 reductions
 ```
 
 Every tuning change must be paired with validation and before/after profiling or benchmark evidence.
+
+## W7900 tuning endpoint / 2026-06-17
+
+This guide was originally written around the Radeon 890M / `gfx1150`
+tuning sequence. The W7900 / `gfx1100` follow-up is now complete for the
+current project scope.
+
+Current W7900 policy:
+
+- default HIP SpMV algorithm: `HIPSPARSE_SPMV_CSR_ALG1`
+- rollback to old default: `CUPDLP_HIP_SPMV_ALG=csr_alg2`
+- experimental hipSPARSE default: `CUPDLP_HIP_SPMV_ALG=default`
+
+No additional long profiling run is required for the current project
+endpoint. Further tuning should be treated as future work and should
+focus on carefully validated scalar-copy or reduction-path changes.

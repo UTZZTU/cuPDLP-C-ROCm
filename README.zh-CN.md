@@ -23,7 +23,7 @@
 | 已建立 baseline 的额外 ROCm 目标 | AMD Radeon PRO W7900 / `gfx1100` |
 | CUDA baseline 设备 | RTX 3090, RTX 4090D, H100 |
 
-> 状态：实验性但可构建。当前 ROCm/HIP 后端已经通过 smoke validation、Netlib 验证、跨设备 benchmark，以及 Radeon 890M / `gfx1150` 上的大规模 MPS baseline 测试。W7900 / `gfx1100` 分支已经完成 smoke validation、Netlib 27-case validation，以及 23-case non-hard large-MPS baseline；剩余 large-MPS hard3 case 会在完整调优前单独跟踪。它还不是生产级、完全调优、广泛认证的 ROCm solver release。
+> 状态：实验性但可构建。当前 ROCm/HIP 后端已经通过 smoke validation、Netlib 验证、跨设备 benchmark、large-MPS baseline，以及 Radeon 890M / `gfx1150` 与 Radeon PRO W7900 / `gfx1100` 上的验证与调优记录。W7900 阶段已经完成 P10 targeted profiling 和 P11 SpMV tuning；当前默认 SpMV algorithm 为 `HIPSPARSE_SPMV_CSR_ALG1`，旧默认可用 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 回退。它仍不是生产级、广泛认证的 ROCm solver release，但当前项目阶段已经完成。
 
 ## 从哪里开始
 
@@ -176,3 +176,24 @@ rocm_agent_enumerator
 ```
 
 实际支持取决于 ROCm 版本、Linux 发行版、内核和 AMD GPU/APU 支持状态。
+
+## W7900 项目最终状态 / 2026-06-17
+
+当前仓库范围内，W7900 / `gfx1100` 阶段已经完成。该分支已经不再停留在
+first-port 或 baseline 文档阶段：
+
+- W7900 ROCm build、smoke validation、Netlib validation、large-MPS baseline、
+  targeted profiling 和 P11 SpMV tuning 均已完成。
+- P10 targeted profiling 确认 rocSPARSE/hipSPARSE CSR SpMV 是所选 W7900
+  case 上的主要 GPU kernel 热点。
+- P11 增加 opt-in HIP SpMV algorithm switch，并验证了 `csr_alg2`、
+  `default`、`csr_alg1` 三种模式。
+- 当前 W7900 默认 SpMV algorithm 已设为
+  `HIPSPARSE_SPMV_CSR_ALG1`。
+- 旧默认仍可通过 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 显式恢复。
+- 这是 W7900-specific 当前默认调优策略，不是最终跨平台峰值性能结论。
+
+W7900 当前权威入口见：
+
+- `docs/W7900_CURRENT_STATUS.zh-CN.md`
+- `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`

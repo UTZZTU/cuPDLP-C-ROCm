@@ -336,3 +336,18 @@ validation/rocm_current_vs_reduce_27cases_repeats_comparison.md
 > ROCm/HIP 后端从 pre-tuning 到 current 有可测性能提升；current 三模态工程版本与历史最快 tuning milestone 在 27-case repeated comparison 中整体持平，没有出现系统性性能回退。
 
 这意味着当前分支既保留了工程完整性，又基本维持了 ROCm tuning 后的性能水平。后续优化应以 `rocprofv3` profiling 和大规模 MPS 数据为依据继续推进。
+
+## W7900 follow-up tuning / 2026-06-17
+
+本文原始 tuning history 记录的是 Radeon 890M / `gfx1150` 调优序列。
+W7900 / `gfx1100` follow-up 已经作为独立 P10/P11 证据链完成。
+
+W7900 终点：
+
+- P10 targeted profiling 确认 SpMV 是主要 kernel 热点。
+- P11 增加 opt-in HIP SpMV algorithm switch。
+- P11 五 case sweep 验证 `csr_alg2`、`default`、`csr_alg1` 三种模式。
+- 当前 W7900 默认：`HIPSPARSE_SPMV_CSR_ALG1`。
+- 回退旧默认：`CUPDLP_HIP_SPMV_ALG=csr_alg2`。
+
+详见 `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`。

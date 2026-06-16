@@ -280,3 +280,21 @@ scripts/summarize_rocprofv3_milestones.py
 The rocprofv3 milestone trace confirms that the ROCm tuning sequence reduces solve time mainly by reducing HIP runtime API overhead and kernel dispatch count. It also confirms that the current CPU/CUDA/ROCm engineering branch preserves the optimized trace structure established by the tuning milestones.
 
 This gives the project a stronger performance story than solve-time tables alone: the optimization effects are visible in runtime traces, not just in end-to-end benchmark summaries.
+
+## W7900 profiling completion update / 2026-06-17
+
+The W7900 migration mentioned earlier in this document has now been
+completed for the current project stage. Instead of remaining a future
+profiling target, W7900 now has committed P10 targeted rocprof summaries
+and a P11 SpMV tuning endpoint.
+
+Current W7900 profiling/tuning links:
+
+- `validation/w7900_p10_current_targeted_rocprof_20260617_summary.md`
+- `validation/w7900_p11_spmv_alg_sweep_20260617_summary.md`
+- `validation/w7900_p11_spmv_tuning_summary_20260617.md`
+
+The current conclusion is that SpMV is the first completed
+W7900-specific tuning path. Copy-reduction and reduction-kernel work
+remain possible future directions but are not part of the current
+project endpoint.

@@ -154,3 +154,19 @@ Known limitations:
 3. Use the current branch as the engineering baseline because it restores CPU/CUDA/ROCm three-mode compatibility.
 4. Add a separate numerical-behavior note for `greenbea`.
 5. If future tuning changes are made, compare against both `current` and `reduce_scalar_copies` on the same 6-case repeated benchmark.
+
+## W7900 follow-up tuning / 2026-06-17
+
+The original tuning history in this document records the Radeon 890M /
+`gfx1150` tuning sequence. The W7900 / `gfx1100` follow-up has now been
+completed as a separate P10/P11 evidence chain.
+
+W7900 endpoint:
+
+- P10 targeted profiling identified SpMV as the primary kernel hotspot.
+- P11 added an opt-in HIP SpMV algorithm switch.
+- P11 five-case sweep validated `csr_alg2`, `default`, and `csr_alg1`.
+- Current W7900 default: `HIPSPARSE_SPMV_CSR_ALG1`.
+- Rollback: `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
+
+See `validation/w7900_p11_spmv_tuning_summary_20260617.md`.

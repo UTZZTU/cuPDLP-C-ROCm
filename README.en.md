@@ -176,3 +176,27 @@ Then set the matching architecture, for example:
 ```
 
 for AMD Radeon PRO W7900, depending on ROCm support.
+
+## Final W7900 project status / 2026-06-17
+
+The W7900 / `gfx1100` project stage is now complete for the current
+repository scope. The branch has progressed beyond first-port and baseline
+documentation:
+
+- W7900 ROCm build, smoke validation, Netlib validation, large-MPS baseline,
+  targeted profiling, and P11 SpMV tuning have been completed.
+- P10 targeted profiling identified rocSPARSE/hipSPARSE CSR SpMV as the main
+  GPU kernel hotspot on the selected W7900 cases.
+- P11 added an opt-in HIP SpMV algorithm switch and validated three modes:
+  `csr_alg2`, `default`, and `csr_alg1`.
+- The current W7900 default SpMV algorithm is
+  `HIPSPARSE_SPMV_CSR_ALG1`.
+- The previous default remains recoverable with
+  `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
+- This is a W7900-specific current-default tuning choice, not a final
+  cross-platform peak-performance claim.
+
+For the authoritative W7900 endpoint, see:
+
+- `docs/W7900_CURRENT_STATUS.md`
+- `validation/w7900_p11_spmv_tuning_summary_20260617.md`

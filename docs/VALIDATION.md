@@ -402,3 +402,21 @@ These are intentionally ignored by Git. Only source scripts, case lists, manifes
 - Add ROCm CI when a suitable runner is available.
 - Validate additional ROCm architectures such as `gfx1100`.
 - Add performance regression checks after profiling and tuning mature.
+
+## W7900 validation endpoint / 2026-06-17
+
+In addition to the original Radeon 890M / `gfx1150` validation target,
+the current branch now includes a completed W7900 / `gfx1100` validation
+and tuning endpoint.
+
+W7900 validation artifacts include:
+
+- smoke/build validation and platform notes;
+- Netlib validation and large-MPS baseline summaries;
+- P10 targeted rocprof summaries;
+- P11 SpMV algorithm switch smoke and five-case sweep;
+- final P11 SpMV tuning summary.
+
+The current W7900 default SpMV algorithm is
+`HIPSPARSE_SPMV_CSR_ALG1`, with rollback via
+`CUPDLP_HIP_SPMV_ALG=csr_alg2`.

@@ -299,3 +299,18 @@ scripts/summarize_rocprofv3_milestones.py
 > ROCm tuning sequence 的主要收益来自减少 HIP runtime API overhead 和 kernel dispatch count；当前 CPU/CUDA/ROCm 三模态工程分支保留了这些优化后的 trace 结构。
 
 这使得项目的性能叙事从“运行时间变短”升级为“有 profiler 证据说明为什么变快”，对后续 W7900 迁移、大规模 MPS 实验和比赛技术方案都有直接价值。
+
+## W7900 profiling 完成状态更新 / 2026-06-17
+
+本文前面提到的 W7900 migration，在当前项目阶段已经完成。W7900 不再是未来
+profiling 目标，而是已经拥有 P10 targeted rocprof summaries 和 P11 SpMV
+tuning endpoint。
+
+当前 W7900 profiling/tuning 入口：
+
+- `validation/w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md`
+- `validation/w7900_p11_spmv_alg_sweep_20260617_summary.zh-CN.md`
+- `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`
+
+当前结论是：SpMV 是第一条已经完成的 W7900-specific tuning path。copy
+reduction 和 reduction-kernel 仍可作为未来方向，但不属于当前项目终点。
