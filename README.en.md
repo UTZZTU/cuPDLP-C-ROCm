@@ -5,11 +5,13 @@
 
 # cuPDLP-C-ROCm
 
-> 中文主页: [README.md](README.md)
-> ROCm/gfx1150 quick start: [README_ROCM_gfx1150.md](README_ROCM_gfx1150.md)
-> Documentation map: [docs/README.md](docs/README.md)
-> Validation index: [validation/README.md](validation/README.md)
-> Benchmark index: [docs/benchmarks/README.md](docs/benchmarks/README.md)
+| Entry | Link |
+|---|---|
+| Chinese homepage | [README.md](README.md) |
+| ROCm/gfx1150 quick start | [README_ROCM_gfx1150.md](README_ROCM_gfx1150.md) |
+| Documentation map | [docs/README.md](docs/README.md) |
+| Validation index | [validation/README.md](validation/README.md) |
+| Benchmark index | [docs/benchmarks/README.md](docs/benchmarks/README.md) |
 
 `cuPDLP-C-ROCm` is a ROCm/HIP port and validation fork of upstream cuPDLP-C for AMD GPUs/APUs. The project keeps the CPU path and upstream-compatible CUDA path, and adds a ROCm/HIP backend for AMD Radeon-class hardware.
 
