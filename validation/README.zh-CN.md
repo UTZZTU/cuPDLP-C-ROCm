@@ -199,3 +199,17 @@ P11 先从源码级 runtime callsite inventory 开始，再决定是否做优化
 关键结论：P10 显示 targeted cases 中 rank-1 HIP API 成本是 `hipMemcpy`，
 rank-1 GPU kernel 是 `rocsparse::csrmvn_general_kernel`。因此 P11 先定位
 copy、synchronization、sparse-BLAS、BLAS 和 kernel-launch 调用点，再决定是否改代码。
+
+## W7900 P11 第一轮优化候选 / 2026-06-17
+
+P11 first-patch candidate analysis 把 P10 targeted rocprof 结果和
+P11 runtime 调用点清单结合起来，在真正改 solver 代码前，对下一步安全
+优化方向进行排序。
+
+- 汇总：[w7900_p11_first_patch_candidates_20260617.zh-CN.md](w7900_p11_first_patch_candidates_20260617.zh-CN.md)
+- 英文汇总：[w7900_p11_first_patch_candidates_20260617.md](w7900_p11_first_patch_candidates_20260617.md)
+- CSV：[w7900_p11_first_patch_candidates_20260617.csv](w7900_p11_first_patch_candidates_20260617.csv)
+
+关键结论：copy reduction 很诱人，因为 P10 显示 `hipMemcpy` 是 rank-1
+HIP API 成本；但如果这些 copy 绑定 residual、restart 或 termination 逻辑，
+就具有数值风险。因此第一个代码 patch 应该是 opt-in 且必须经过验证。

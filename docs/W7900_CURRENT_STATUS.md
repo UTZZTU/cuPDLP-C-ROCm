@@ -214,3 +214,19 @@ This inventory connects the P10 trace findings to source code locations.
 The next optimization patch should be execution-layer only and must not
 blindly change residual, restart, termination, scaling, or floating-point
 update order.
+
+## P11 first patch candidates / 2026-06-17
+
+P11 first-patch candidate analysis ranks the next safe tuning directions
+after P10 profiling and P11 callsite inventory.
+
+Links:
+
+- [P11 first patch candidates](../validation/w7900_p11_first_patch_candidates_20260617.md)
+- [P11 first patch candidates CSV](../validation/w7900_p11_first_patch_candidates_20260617.csv)
+- [P11 Chinese summary](../validation/w7900_p11_first_patch_candidates_20260617.zh-CN.md)
+
+The current recommendation is to avoid blind `hipMemcpy` removal. The
+first real code change should be an opt-in experiment, preferably either
+an SpMV algorithm-selection/profiling switch or a narrowly guarded
+scalar-copy experiment with explicit fast-core6 and P10 validation.

@@ -202,3 +202,18 @@ Key interpretation: P10 showed `hipMemcpy` as the rank-1 HIP API cost
 and `rocsparse::csrmvn_general_kernel` as the rank-1 GPU kernel across
 the targeted cases. P11 therefore first maps copy, synchronization,
 sparse-BLAS, BLAS, and kernel-launch callsites before changing code.
+
+## W7900 P11 first patch candidates / 2026-06-17
+
+P11 first-patch candidate analysis combines the P10 targeted rocprof
+results with the P11 runtime callsite inventory. It ranks the safest
+next optimization directions before changing solver code.
+
+- Summary: [w7900_p11_first_patch_candidates_20260617.md](w7900_p11_first_patch_candidates_20260617.md)
+- Chinese summary: [w7900_p11_first_patch_candidates_20260617.zh-CN.md](w7900_p11_first_patch_candidates_20260617.zh-CN.md)
+- CSV: [w7900_p11_first_patch_candidates_20260617.csv](w7900_p11_first_patch_candidates_20260617.csv)
+
+Key interpretation: copy reduction is attractive because P10 shows
+`hipMemcpy` as the rank-1 HIP API cost, but it is also numerically risky
+if the copies are tied to residual, restart, or termination logic. The
+first code patch should therefore be opt-in and validation-driven.

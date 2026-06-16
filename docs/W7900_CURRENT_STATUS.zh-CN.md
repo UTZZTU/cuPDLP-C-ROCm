@@ -202,3 +202,18 @@ P11 在正式调优 patch 前，先补充源码级调用点清单。
 该清单把 P10 trace 热点和源码位置联系起来。下一步优化 patch 应只属于
 execution-layer，不应盲目改动 residual、restart、termination、scaling 或
 浮点更新顺序。
+
+## P11 第一轮优化候选 / 2026-06-17
+
+P11 first-patch candidate analysis 在 P10 profiling 和 P11 调用点清单
+之后，对下一步安全调优方向进行排序。
+
+链接：
+
+- [P11 第一轮优化候选中文汇总](../validation/w7900_p11_first_patch_candidates_20260617.zh-CN.md)
+- [P11 first patch candidates CSV](../validation/w7900_p11_first_patch_candidates_20260617.csv)
+- [P11 英文汇总](../validation/w7900_p11_first_patch_candidates_20260617.md)
+
+当前建议是不要盲目删除 `hipMemcpy`。第一个真正代码改动应是 opt-in
+实验，优先考虑 SpMV algorithm-selection/profiling 开关，或一个窄范围、
+有保护的 scalar-copy experiment，并用 fast-core6 和 P10 targeted cases 明确验证。
