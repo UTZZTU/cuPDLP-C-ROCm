@@ -245,3 +245,17 @@ solver status and iteration count across modes. `csr_alg1` is slightly
 faster on most long cases, but the margin is small and should be treated
 as a promising experiment result rather than a final performance
 conclusion.
+
+## W7900 P11 default SpMV ALG1 smoke / 2026-06-17
+
+This smoke validation checks the P11 default-policy update after the
+five-case SpMV algorithm sweep.
+
+- Summary: [w7900_p11_default_spmv_alg1_smoke_20260617_summary.md](w7900_p11_default_spmv_alg1_smoke_20260617_summary.md)
+- Chinese summary: [w7900_p11_default_spmv_alg1_smoke_20260617_summary.zh-CN.md](w7900_p11_default_spmv_alg1_smoke_20260617_summary.zh-CN.md)
+- CSV: [w7900_p11_default_spmv_alg1_smoke_20260617.csv](w7900_p11_default_spmv_alg1_smoke_20260617.csv)
+
+Key interpretation: the no-env default path now uses
+`HIPSPARSE_SPMV_CSR_ALG1`, while the previous default can still be
+restored with `CUPDLP_HIP_SPMV_ALG=csr_alg2`. The smoke confirms both
+paths solve `set-cover-model` successfully with the same iteration count.

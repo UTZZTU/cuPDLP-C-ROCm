@@ -263,3 +263,21 @@ preserve solver status and iteration count on the five targeted cases.
 but the effect size is small. The next step should either repeat the
 sweep to estimate noise or run rocprofv3 on the most interesting pair,
 `csr_alg1` vs default `csr_alg2`.
+
+## P11 default SpMV ALG1 smoke / 2026-06-17
+
+P11 now defaults the HIP SpMV algorithm to `HIPSPARSE_SPMV_CSR_ALG1`
+for W7900 current tuning, while preserving an explicit rollback path:
+
+- rollback: `CUPDLP_HIP_SPMV_ALG=csr_alg2`
+- hipSPARSE default experiment: `CUPDLP_HIP_SPMV_ALG=default`
+
+Links:
+
+- [P11 default SpMV ALG1 smoke summary](../validation/w7900_p11_default_spmv_alg1_smoke_20260617_summary.md)
+- [P11 default SpMV ALG1 smoke CSV](../validation/w7900_p11_default_spmv_alg1_smoke_20260617.csv)
+- [P11 Chinese smoke summary](../validation/w7900_p11_default_spmv_alg1_smoke_20260617_summary.zh-CN.md)
+
+This is a policy update based on the P11 five-case sweep. It should be
+described as the current W7900 default tuning choice, not as a final
+cross-platform performance conclusion.

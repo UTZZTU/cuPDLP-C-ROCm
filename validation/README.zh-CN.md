@@ -239,3 +239,16 @@ algorithm switch，共比较 3 种 SpMV mode。
 关键结论：15 个 run 全部成功完成，并且每个 case 在不同 mode 下保持
 solver status 和迭代数一致。`csr_alg1` 在多数长 case 上略快，但幅度很小，
 应写作“有希望的实验结果”，不能直接写成最终性能结论。
+
+## W7900 P11 default SpMV ALG1 smoke / 2026-06-17
+
+本次 smoke validation 检查 P11 在五 case SpMV algorithm sweep 之后的
+默认策略更新。
+
+- 汇总：[w7900_p11_default_spmv_alg1_smoke_20260617_summary.zh-CN.md](w7900_p11_default_spmv_alg1_smoke_20260617_summary.zh-CN.md)
+- 英文汇总：[w7900_p11_default_spmv_alg1_smoke_20260617_summary.md](w7900_p11_default_spmv_alg1_smoke_20260617_summary.md)
+- CSV：[w7900_p11_default_spmv_alg1_smoke_20260617.csv](w7900_p11_default_spmv_alg1_smoke_20260617.csv)
+
+关键结论：无环境变量默认路径现在使用 `HIPSPARSE_SPMV_CSR_ALG1`，
+旧默认仍可通过 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 恢复。smoke 确认两个路径
+都能成功求解 `set-cover-model`，且迭代数一致。

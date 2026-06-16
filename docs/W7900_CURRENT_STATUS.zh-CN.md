@@ -247,3 +247,20 @@ sweep 确认 `csr_alg2`、`env_default` 和 `csr_alg1` 在 5 个 targeted case
 上都保持 solver status 和迭代数一致。单次 sweep 中，`csr_alg1` 在多数长
 case 上略快，但幅度很小。下一步应选择重复 sweep 估计噪声，或对最有代表性
 的 `csr_alg1` vs 默认 `csr_alg2` 做 rocprofv3 对比。
+
+## P11 default SpMV ALG1 smoke / 2026-06-17
+
+P11 现在将 W7900 当前调优默认 HIP SpMV algorithm 设为
+`HIPSPARSE_SPMV_CSR_ALG1`，同时保留显式回退路径：
+
+- 回退旧默认：`CUPDLP_HIP_SPMV_ALG=csr_alg2`
+- hipSPARSE default 实验：`CUPDLP_HIP_SPMV_ALG=default`
+
+链接：
+
+- [P11 default SpMV ALG1 smoke 中文汇总](../validation/w7900_p11_default_spmv_alg1_smoke_20260617_summary.zh-CN.md)
+- [P11 default SpMV ALG1 smoke CSV](../validation/w7900_p11_default_spmv_alg1_smoke_20260617.csv)
+- [P11 英文 smoke 汇总](../validation/w7900_p11_default_spmv_alg1_smoke_20260617_summary.md)
+
+这是基于 P11 五 case sweep 的策略更新。应描述为当前 W7900 默认调优选择，
+不应写成最终跨平台性能结论。
