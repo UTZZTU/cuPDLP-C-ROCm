@@ -230,3 +230,18 @@ an opt-in HIP SpMV algorithm switch.
 Key interpretation: `set-cover-model` succeeds in all three modes:
 default `csr_alg2`, opt-in `default`, and opt-in `csr_alg1`. The patch
 preserves solver status and iteration count in the initial smoke test.
+
+## W7900 P11 SpMV algorithm sweep / 2026-06-17
+
+This sweep evaluates the opt-in HIP SpMV algorithm switch across the five
+P10 targeted cases and three SpMV modes.
+
+- Summary: [w7900_p11_spmv_alg_sweep_20260617_summary.md](w7900_p11_spmv_alg_sweep_20260617_summary.md)
+- Chinese summary: [w7900_p11_spmv_alg_sweep_20260617_summary.zh-CN.md](w7900_p11_spmv_alg_sweep_20260617_summary.zh-CN.md)
+- CSV: [w7900_p11_spmv_alg_sweep_20260617.csv](w7900_p11_spmv_alg_sweep_20260617.csv)
+
+Key interpretation: all 15 runs complete successfully and preserve
+solver status and iteration count across modes. `csr_alg1` is slightly
+faster on most long cases, but the margin is small and should be treated
+as a promising experiment result rather than a final performance
+conclusion.

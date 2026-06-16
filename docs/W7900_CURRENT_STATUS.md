@@ -245,3 +245,21 @@ Links:
 The initial `set-cover-model` smoke passes for default `csr_alg2`,
 opt-in `default`, and opt-in `csr_alg1`. The next step is a targeted
 five-case sweep across the same three modes.
+
+## P11 SpMV algorithm sweep / 2026-06-17
+
+P11 now includes a five-case, three-mode sweep for the opt-in HIP SpMV
+algorithm switch.
+
+Links:
+
+- [P11 SpMV algorithm sweep summary](../validation/w7900_p11_spmv_alg_sweep_20260617_summary.md)
+- [P11 SpMV algorithm sweep CSV](../validation/w7900_p11_spmv_alg_sweep_20260617.csv)
+- [P11 Chinese sweep summary](../validation/w7900_p11_spmv_alg_sweep_20260617_summary.zh-CN.md)
+
+The sweep confirms that `csr_alg2`, `env_default`, and `csr_alg1` all
+preserve solver status and iteration count on the five targeted cases.
+`csr_alg1` is slightly faster on most long cases in this single sweep,
+but the effect size is small. The next step should either repeat the
+sweep to estimate noise or run rocprofv3 on the most interesting pair,
+`csr_alg1` vs default `csr_alg2`.

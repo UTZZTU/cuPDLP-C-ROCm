@@ -232,3 +232,18 @@ P11 first-patch candidate analysis 在 P10 profiling 和 P11 调用点清单
 初始 `set-cover-model` smoke 在默认 `csr_alg2`、opt-in `default` 和
 opt-in `csr_alg1` 三种模式下均通过。下一步是在 P10 五个 targeted case
 上做三模式 sweep。
+
+## P11 SpMV algorithm sweep / 2026-06-17
+
+P11 已补充 opt-in HIP SpMV algorithm switch 的五 case、三 mode sweep。
+
+链接：
+
+- [P11 SpMV algorithm sweep 中文汇总](../validation/w7900_p11_spmv_alg_sweep_20260617_summary.zh-CN.md)
+- [P11 SpMV algorithm sweep CSV](../validation/w7900_p11_spmv_alg_sweep_20260617.csv)
+- [P11 英文 sweep 汇总](../validation/w7900_p11_spmv_alg_sweep_20260617_summary.md)
+
+sweep 确认 `csr_alg2`、`env_default` 和 `csr_alg1` 在 5 个 targeted case
+上都保持 solver status 和迭代数一致。单次 sweep 中，`csr_alg1` 在多数长
+case 上略快，但幅度很小。下一步应选择重复 sweep 估计噪声，或对最有代表性
+的 `csr_alg1` vs 默认 `csr_alg2` 做 rocprofv3 对比。

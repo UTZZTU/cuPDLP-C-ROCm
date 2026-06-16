@@ -226,3 +226,16 @@ opt-in HIP SpMV algorithm switch。
 关键结论：`set-cover-model` 在三种模式下均成功完成：默认 `csr_alg2`、
 opt-in `default` 和 opt-in `csr_alg1`。初始 smoke 中该 patch 保持了
 solver status 和迭代数一致。
+
+## W7900 P11 SpMV algorithm sweep / 2026-06-17
+
+本次 sweep 在 P10 的 5 个 targeted case 上评估 opt-in HIP SpMV
+algorithm switch，共比较 3 种 SpMV mode。
+
+- 汇总：[w7900_p11_spmv_alg_sweep_20260617_summary.zh-CN.md](w7900_p11_spmv_alg_sweep_20260617_summary.zh-CN.md)
+- 英文汇总：[w7900_p11_spmv_alg_sweep_20260617_summary.md](w7900_p11_spmv_alg_sweep_20260617_summary.md)
+- CSV：[w7900_p11_spmv_alg_sweep_20260617.csv](w7900_p11_spmv_alg_sweep_20260617.csv)
+
+关键结论：15 个 run 全部成功完成，并且每个 case 在不同 mode 下保持
+solver status 和迭代数一致。`csr_alg1` 在多数长 case 上略快，但幅度很小，
+应写作“有希望的实验结果”，不能直接写成最终性能结论。
