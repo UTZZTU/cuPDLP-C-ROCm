@@ -111,15 +111,22 @@ total time ≈ per-iteration cost × number of iterations
 详见 [W7900 ROCm profiling 计划](W7900_ROCM_PROFILING_PLAN.zh-CN.md)。
 <!-- W7900_ROCM_PROFILING_PLAN_20260614_END -->
 
-## 后续动作
+## 下一步
 
-1. 在 `set-cover-model.mps`、`square41.mps`、`s100.mps` 上运行 W7900 `rocprof` starter3。
-2. 对 `dlr1.mps` 和 `fhnw-binschedule1.mps` 运行 hard3 probe2；`Dual2_5000.mps` 先作为已有强 hard 行为记录保留，除非后续出现新证据。
-3. 运行 true before/current core6 对比：`ae3b683 / pre_tuning` 对比当前 `rocm-w7900-gfx1100`。
-4. 生成整理后的 profiling 结果摘要，只提交 compact CSV/Markdown，不提交 raw profiler traces。
-5. 只有在 profiling 数据明确瓶颈后，再决定第一轮 W7900-specific tuning 目标。
+P2--P9 的 W7900 验证、profiling、批处理吞吐和派生指标分析已经提交。
+下一阶段应从“补证据”转向 W7900-specific tuning triage：
 
-<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
+1. 基于 fast-core6 派生指标，优先分析 `L2CTA3D`、`set-cover-model`、
+   `tpl-tub-ws1617` 为什么在 current 下虽然 ms/iter 降低，但迭代数增加。
+2. 后续 profiling 不盲目扩大 benchmark 矩阵，而是选择代表性 case：
+   - 正向执行效率样本：`thk_48`
+   - 迭代数稳定样本：`square41`
+   - 收敛迭代数回退样本：`L2CTA3D`、`set-cover-model`、`tpl-tub-ws1617`
+3. 优先寻找“保留 current 单迭代执行收益，同时恢复接近 pre_tuning 收敛行为”的改动。
+4. 继续关注 copy reduction 和 rocSPARSE/SpMV profiling，但不要在没有明确
+   数值验证的情况下改动 residual、restart、termination 或 scaling 逻辑。
+5. 8-card fast8 批处理吞吐结果单独作为 independent-MPS throughput 亮点保留，
+   不写成“单个 MPS 由 8 张 GPU 联合求解”。
 ## 最新 W7900 实验状态 / 2026-06-16
 
 W7900 / `gfx1100` 实验集已更新四组 compact summary：

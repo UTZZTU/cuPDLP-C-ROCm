@@ -113,13 +113,27 @@ See [W7900 ROCm profiling plan](W7900_ROCM_PROFILING_PLAN.md).
 
 ## Next actions
 
-1. Run W7900 `rocprof` starter3 on `set-cover-model.mps`, `square41.mps`, and `s100.mps`.
-2. Run hard3 probe2 for `dlr1.mps` and `fhnw-binschedule1.mps`; keep `Dual2_5000.mps` as already-known hard behavior unless new evidence suggests otherwise.
-3. Run the true before/current core6 comparison: `ae3b683 / pre_tuning` versus current `rocm-w7900-gfx1100`.
-4. Generate curated profiling result summaries and commit only compact CSV/Markdown outputs, not raw profiler traces.
-5. Decide the first W7900-specific tuning target only after the profiling data identifies a bottleneck.
+The P2--P9 W7900 validation, profiling, batch-throughput, and derived-metric
+summaries are now committed. The next stage should move from evidence
+collection to W7900-specific tuning triage:
 
-<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
+1. Use the derived fast-core6 metrics to investigate why `L2CTA3D`,
+   `set-cover-model`, and `tpl-tub-ws1617` require more iterations under
+   current even though ms/iter improved.
+2. Run targeted profiling only on representative cases rather than expanding
+   the benchmark matrix blindly:
+   - positive execution sample: `thk_48`
+   - stable iteration-count sample: `square41`
+   - convergence-regression samples: `L2CTA3D`, `set-cover-model`,
+     `tpl-tub-ws1617`
+3. Prioritize changes that preserve current's per-iteration execution gains
+   while recovering pre_tuning-like convergence behavior.
+4. Continue copy-reduction and rocSPARSE/SpMV profiling, but avoid changing
+   residual, restart, termination, or scaling logic without explicit
+   numerical validation.
+5. Keep the 8-card fast8 batch-throughput result as an independent-MPS
+   throughput highlight, not as evidence that one MPS is solved jointly by
+   eight GPUs.
 ## Latest W7900 experiment status / 2026-06-16
 
 The W7900 / `gfx1100` experiment set has been updated with four committed compact summaries:
