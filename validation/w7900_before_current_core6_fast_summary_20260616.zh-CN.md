@@ -47,3 +47,16 @@ Fast-core6 case list：
 ## 仓库策略
 
 只提交 compact CSV 和 Markdown summary。raw large-MPS 文件和大型运行目录保存在 Git 外部。
+
+## 派生每迭代分析 / 2026-06-17
+
+后续派生分析已经补充：
+
+- [派生指标中文汇总](w7900_before_current_core6_fast_derived_metrics_20260617.zh-CN.md)
+- [派生指标 CSV](w7900_before_current_core6_fast_derived_metrics_20260617.csv)
+- [单迭代耗时比图](../docs/assets/w7900/latest_experiments/w7900_before_current_fast_core6_ms_per_iter_ratio.svg)
+- [迭代次数比图](../docs/assets/w7900/latest_experiments/w7900_before_current_fast_core6_iter_ratio.svg)
+
+派生指标显示，current 在 6 个 case 上均降低了 ms/iter，但由于部分
+case 需要更多迭代，总 solve time 仍呈 mixed pattern。这说明下一阶段
+调优应保留执行效率收益，同时检查收敛行为变化。

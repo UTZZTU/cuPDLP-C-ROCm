@@ -141,3 +141,20 @@ W7900 / `gfx1100` 实验集已更新四组 compact summary：
 
 最适合作为材料亮点的是 8-card fast8 批处理吞吐图：8 个独立 MPS 任务在 8 张 W7900 上并发完成时间为 146s，而单张 W7900 顺序运行需要 558s。
 <!-- W7900_LATEST_FIGURES_20260616_END -->
+
+## before/current 派生分析 / 2026-06-17
+
+最新 fast-core6 派生指标把总求解时间拆分为迭代次数和单迭代执行耗时：
+
+- [派生指标中文汇总](../validation/w7900_before_current_core6_fast_derived_metrics_20260617.zh-CN.md)
+- [派生指标 CSV](../validation/w7900_before_current_core6_fast_derived_metrics_20260617.csv)
+- [英文汇总](../validation/w7900_before_current_core6_fast_derived_metrics_20260617.md)
+
+![W7900 fast-core6 单迭代耗时比](assets/w7900/latest_experiments/w7900_before_current_fast_core6_ms_per_iter_ratio.svg)
+
+![W7900 fast-core6 迭代次数比](assets/w7900/latest_experiments/w7900_before_current_fast_core6_iter_ratio.svg)
+
+该派生结果对后续调优解释很重要：current 在 6 个 fast-core6 case 上
+均降低了单迭代执行耗时，但由于部分 case 迭代次数增加，总 solve time
+仍呈 mixed pattern。因此后续 W7900-specific tuning 应同时优化执行效率
+与收敛行为。

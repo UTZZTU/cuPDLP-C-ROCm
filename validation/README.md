@@ -156,3 +156,18 @@ Key result highlights:
 |---|---|
 | [W7900 latest experiment figures](w7900_latest_experiment_figures_20260616.md) | SVG figures for 8-card fast8 throughput, before/current fast-core6, hard3 probe2, and rocprof kernel share |
 <!-- W7900_LATEST_FIGURES_20260616_END -->
+
+## W7900 before/current derived metrics / 2026-06-17
+
+The fast-core6 derived analysis separates total solve time into iteration
+count and per-iteration execution time.
+
+- Summary: [w7900_before_current_core6_fast_derived_metrics_20260617.md](w7900_before_current_core6_fast_derived_metrics_20260617.md)
+- CSV: [w7900_before_current_core6_fast_derived_metrics_20260617.csv](w7900_before_current_core6_fast_derived_metrics_20260617.csv)
+- Chinese summary: [w7900_before_current_core6_fast_derived_metrics_20260617.zh-CN.md](w7900_before_current_core6_fast_derived_metrics_20260617.zh-CN.md)
+- ms/iter ratio figure: [w7900_before_current_fast_core6_ms_per_iter_ratio.svg](../docs/assets/w7900/latest_experiments/w7900_before_current_fast_core6_ms_per_iter_ratio.svg)
+- iteration ratio figure: [w7900_before_current_fast_core6_iter_ratio.svg](../docs/assets/w7900/latest_experiments/w7900_before_current_fast_core6_iter_ratio.svg)
+
+Key interpretation: current improves per-iteration execution time on all
+six fast-core6 cases, but total solve time remains mixed because several
+cases require more iterations.

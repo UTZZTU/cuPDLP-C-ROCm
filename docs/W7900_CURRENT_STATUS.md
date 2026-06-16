@@ -141,3 +141,22 @@ The latest W7900 figure index is available here:
 
 The strongest visual result is the 8-card fast8 batch throughput figure: 8 independent MPS tasks completed in 146s concurrently on 8 W7900 GPUs versus 558s sequentially on one W7900 GPU.
 <!-- W7900_LATEST_FIGURES_20260616_END -->
+
+## Derived before/current analysis / 2026-06-17
+
+The latest fast-core6 derived metrics split total solve time into
+iteration count and per-iteration execution time:
+
+- [Derived metrics summary](../validation/w7900_before_current_core6_fast_derived_metrics_20260617.md)
+- [Derived metrics CSV](../validation/w7900_before_current_core6_fast_derived_metrics_20260617.csv)
+- [Chinese summary](../validation/w7900_before_current_core6_fast_derived_metrics_20260617.zh-CN.md)
+
+![W7900 fast-core6 ms/iter ratio](assets/w7900/latest_experiments/w7900_before_current_fast_core6_ms_per_iter_ratio.svg)
+
+![W7900 fast-core6 iteration ratio](assets/w7900/latest_experiments/w7900_before_current_fast_core6_iter_ratio.svg)
+
+The derived result is important for tuning interpretation: current
+improves per-iteration execution time on all six fast-core6 cases, but
+total solve time remains mixed because several cases require more
+iterations. Future W7900-specific tuning should therefore optimize
+execution efficiency and convergence behavior together.

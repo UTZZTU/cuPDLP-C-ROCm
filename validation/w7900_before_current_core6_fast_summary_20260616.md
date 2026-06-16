@@ -47,3 +47,17 @@ Fast-core6 case list:
 ## Repository policy
 
 Commit only compact CSV and Markdown summaries. Raw large-MPS files and raw run directories stay outside Git.
+
+## Derived per-iteration analysis / 2026-06-17
+
+A follow-up derived analysis is available:
+
+- [Derived metrics summary](w7900_before_current_core6_fast_derived_metrics_20260617.md)
+- [Derived metrics CSV](w7900_before_current_core6_fast_derived_metrics_20260617.csv)
+- [ms/iter ratio figure](../docs/assets/w7900/latest_experiments/w7900_before_current_fast_core6_ms_per_iter_ratio.svg)
+- [iteration ratio figure](../docs/assets/w7900/latest_experiments/w7900_before_current_fast_core6_iter_ratio.svg)
+
+The derived metrics show that current lowers ms/iter on all six cases,
+while total solve time remains mixed because several cases need more
+iterations. This supports the next tuning direction: preserve execution
+efficiency gains while investigating convergence behavior.

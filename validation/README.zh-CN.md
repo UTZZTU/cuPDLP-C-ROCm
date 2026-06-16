@@ -156,3 +156,17 @@
 |---|---|
 | [W7900 最新实验图表](w7900_latest_experiment_figures_20260616.zh-CN.md) | 包含 8-card fast8 吞吐、before/current fast-core6、hard3 probe2、rocprof kernel 占比等 SVG 图 |
 <!-- W7900_LATEST_FIGURES_20260616_END -->
+
+## W7900 before/current 派生指标 / 2026-06-17
+
+fast-core6 派生分析把总求解时间拆分为迭代次数和单迭代执行耗时，
+用于避免只看 solve time 得出片面结论。
+
+- 汇总：[w7900_before_current_core6_fast_derived_metrics_20260617.zh-CN.md](w7900_before_current_core6_fast_derived_metrics_20260617.zh-CN.md)
+- CSV：[w7900_before_current_core6_fast_derived_metrics_20260617.csv](w7900_before_current_core6_fast_derived_metrics_20260617.csv)
+- 英文汇总：[w7900_before_current_core6_fast_derived_metrics_20260617.md](w7900_before_current_core6_fast_derived_metrics_20260617.md)
+- 单迭代耗时比图：[w7900_before_current_fast_core6_ms_per_iter_ratio.svg](../docs/assets/w7900/latest_experiments/w7900_before_current_fast_core6_ms_per_iter_ratio.svg)
+- 迭代次数比图：[w7900_before_current_fast_core6_iter_ratio.svg](../docs/assets/w7900/latest_experiments/w7900_before_current_fast_core6_iter_ratio.svg)
+
+关键结论：current 在 6 个 fast-core6 case 上均降低了单迭代执行耗时，
+但由于部分 case 迭代次数增加，总 solve time 仍呈 mixed pattern。
