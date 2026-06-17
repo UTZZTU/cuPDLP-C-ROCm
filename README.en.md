@@ -248,3 +248,13 @@ P14-A1 result:
 P14-B CSR ALG1-vs-ALG2 repeated validation is no longer a blocker. It can remain a future optional robustness check, but it is not required for the current project closure.
 
 See [P14-A1 quick6 summary](validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md).
+
+## Final supplemental validation after P14-A1 / 2026-06-18
+
+W7900 now includes P14-A1 quick6 current-vs-pre_tuning repeated validation.
+`current` is faster than `pre_tuning` on `6/6` quick6 cases, with geometric-mean
+speedup `1.18889` and median speedup `1.19502`, while preserving iteration counts.
+
+This is quick-set tuning-transfer evidence and should be reported separately from
+the non-hard23 large-MPS baseline. No additional W7900 experiment is required for
+the current project closure; P14-B remains future optional only.

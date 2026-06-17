@@ -132,9 +132,7 @@ for the current project stage:
 5. The P12 rejected experiment note records the unaccepted buffer-algorithm
    consistency patch.
 
-The remaining items are optional evidence strengthening, not blockers:
-P14-A current-vs-before repeated validation and P14-B CSR ALG1-vs-ALG2
-repeated validation, when a W7900 machine becomes available.
+P14-A1 current-vs-before quick6 repeated validation is now complete. P14-B CSR ALG1-vs-ALG2 repeated validation remains future optional only, not a current closure blocker.
 
 ## Latest W7900 experiment status / 2026-06-16
 
@@ -174,8 +172,7 @@ iteration count and per-iteration execution time:
 The derived result is important for tuning interpretation: current
 improves per-iteration execution time on all six fast-core6 cases, but
 total solve time remains mixed because several cases require more
-iterations. Future W7900-specific tuning should therefore optimize
-execution efficiency and convergence behavior together.
+iterations. P14-A1 now provides repeated quick-set evidence for the current endpoint. Further W7900-specific tuning is future optional and should not be treated as a current closure blocker.
 
 ## P10 targeted rocprof summary / 2026-06-17
 

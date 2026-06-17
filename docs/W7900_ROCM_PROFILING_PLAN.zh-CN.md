@@ -7,7 +7,7 @@
 <!-- W7900_OPTIMIZATION_BASELINES_20260614_BEGIN -->
 ## 后续 profiling 的 baseline 口径修正
 
-当前 W7900 分支已经继承此前 890M/gfx1150 ROCm tuning。后续 profiling 应区分：`ae3b683` 作为真正 pre-tuning anchor，current W7900 作为 post-890M-tuning engineering baseline，future W7900-specific tuning branch 作为最终 after-tuning 结果。
+当前 W7900 分支继承了此前 890M/gfx1150 ROCm tuning，并已经完成自身 P10/P11/P12/P14-A1 证据链。`ae3b683` 仍作为真正 pre-tuning anchor，当前 W7900 HEAD 是 P11 和 P14-A1 后已接受的项目终点。
 
 详见 [W7900 优化基线说明](W7900_OPTIMIZATION_BASELINES.zh-CN.md)。
 <!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->

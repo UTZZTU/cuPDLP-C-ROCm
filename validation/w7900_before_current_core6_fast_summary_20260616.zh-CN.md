@@ -41,7 +41,7 @@ Fast-core6 case list：
 - 两个版本在 fast-core6 的 6 个 case 上都达到 `OPTIMAL`。
 - 当前工程分支在这个 fast subset 上并非全面快于 `ae3b683 / pre_tuning`。
 - 这轮结果应作为真实 before/current 工程对比，而不能写成笼统的 W7900 加速结论。
-- 该混合结果进一步说明后续 W7900-specific profiling 和 tuning 是必要的。
+- 该混合结果后来由 W7900 P10/P11/P12/P14-A1 证据链进一步补充说明。尤其是 P14-A1 已提供 repeated quick-set current-vs-pre_tuning validation；本文保留为 fast-core6 mixed-pattern 历史记录。
 - `s100` 和 `Primal2_1000` 因已知 W7900 运行时间较长，被有意排除在本次 fast-core6 之外，以适配当前实验时间窗口。
 
 ## 仓库策略

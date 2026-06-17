@@ -7,7 +7,7 @@ This document defines the profiling plan before W7900 / `gfx1100` tuning. It sho
 <!-- W7900_OPTIMIZATION_BASELINES_20260614_BEGIN -->
 ## Baseline correction for future profiling
 
-The current W7900 branch has already inherited earlier 890M/gfx1150 ROCm tuning. Future profiling should therefore distinguish `ae3b683` as the true pre-tuning anchor, current W7900 as the post-890M-tuning engineering baseline, and a future W7900-specific tuning branch as the final after-tuning result.
+The current W7900 branch inherited earlier 890M/gfx1150 ROCm tuning and has now completed its own P10/P11/P12/P14-A1 evidence chain. `ae3b683` remains the true pre-tuning anchor, while current W7900 HEAD is the accepted project endpoint after P11 and P14-A1.
 
 See [W7900 optimization baselines](W7900_OPTIMIZATION_BASELINES.md).
 <!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->
