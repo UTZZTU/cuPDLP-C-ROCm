@@ -161,7 +161,7 @@ docs/W7900_ROCM_PROFILING_PLAN.md
 2. `square41`：competitive case，用于展示 W7900 强项。
 3. `s100`：slow-but-solvable，用于区分迭代次数和单次迭代成本。
 
-不要从 hard3 开始。hard3 应等 profiling workflow 稳定后再用。
+原始计划中不从 hard3 开始；当前 hard3 probe2 已归档，后续不再作为 pending profiling 前置项。
 
 ## 完成状态更新 / 2026-06-17
 

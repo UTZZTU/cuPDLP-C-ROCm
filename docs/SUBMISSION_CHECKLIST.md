@@ -49,7 +49,7 @@ This checklist tracks contest-facing deliverables without turning the repository
 - Do not describe current W7900 non-hard23 as an unoptimized baseline.
 - Do not mix hard3 cases into the primary non-hard23 baseline.
 - Do not commit raw `.mps` data or raw profiler trace directories.
-- Do not claim W7900-specific bottlenecks have been optimized before `rocprof` results exist.
+- Keep W7900-specific tuning claims within the committed P10/P11/P12 evidence: P10 targeted profiling, P11 default `HIPSPARSE_SPMV_CSR_ALG1`, rollback with `CUPDLP_HIP_SPMV_ALG=csr_alg2`, and the P12 rejected experiment note.
 - Keep English and Chinese documents synchronized.
 
 <!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->

@@ -300,7 +300,7 @@ reduce_scalar_copies (`b44c7ab`)
 - `DeviceMatVecProdTime` 只能解释部分 GPU 时间；
 - 还缺少完整 `rocprofv3` trace 对比；
 - 大规模 MPS 数据集尚未系统纳入；
-- W7900 / `gfx1100` 平台还需要后续实测。
+- W7900 / `gfx1100` 已完成独立 P10/P11/P12 证据链；若要增强性能统计说服力，后续只补代表 case repeated validation。
 
 ## 后续计划
 
@@ -312,7 +312,7 @@ reduce_scalar_copies (`b44c7ab`)
 4. 引入 H100 上的大规模 MPS 数据集；
 5. 在 3090、4090D、H100、890M、W7900 上建立分层 benchmark；
 6. 对比 cuPDLP-C 与 cuPDLPx；
-7. 在 W7900 上针对 `gfx1100` 做平台化调优。
+7. W7900 平台化调优已由 P10/P11/P12 证据链闭环；后续仅保留 P14 representative repeated validation 作为可选增强。
 
 ## 相关数据文件
 
