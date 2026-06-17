@@ -104,36 +104,38 @@ The current W7900 non-hard23 result is not an unoptimized first-port baseline. I
 See [W7900 optimization baselines](W7900_OPTIMIZATION_BASELINES.md).
 <!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->
 
-## ROCm profiling and tuning plan
+## ROCm profiling and tuning completion status
 
-The next stage is not blind kernel editing. It starts with a fixed profiling case matrix and records wall time, solver time, `DeviceMatVecProdTime`, `nIter`, HIP/kernel trace, and GPU telemetry.
+The original profiling plan has been executed and superseded by the P10/P11/P12
+evidence chain. Starter profiling and W7900-specific tuning should no longer
+be described as pending blockers.
 
-See [W7900 ROCm profiling plan](W7900_ROCM_PROFILING_PLAN.md).
-<!-- W7900_ROCM_PROFILING_PLAN_20260614_END -->
+Final references:
 
-## Next actions
+- [W7900 ROCm profiling plan](W7900_ROCM_PROFILING_PLAN.md)
+- [P11 SpMV tuning summary](../validation/w7900_p11_spmv_tuning_summary_20260617.md)
+- [P12 rejected experiment note](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md)
 
-The P2--P9 W7900 validation, profiling, batch-throughput, and derived-metric
-summaries are now committed. The next stage should move from evidence
-collection to W7900-specific tuning triage:
+## Next-action status
 
-1. Use the derived fast-core6 metrics to investigate why `L2CTA3D`,
-   `set-cover-model`, and `tpl-tub-ws1617` require more iterations under
-   current even though ms/iter improved.
-2. Run targeted profiling only on representative cases rather than expanding
-   the benchmark matrix blindly:
-   - positive execution sample: `thk_48`
-   - stable iteration-count sample: `square41`
-   - convergence-regression samples: `L2CTA3D`, `set-cover-model`,
-     `tpl-tub-ws1617`
-3. Prioritize changes that preserve current's per-iteration execution gains
-   while recovering pre_tuning-like convergence behavior.
-4. Continue copy-reduction and rocSPARSE/SpMV profiling, but avoid changing
-   residual, restart, termination, or scaling logic without explicit
-   numerical validation.
-5. Keep the 8-card fast8 batch-throughput result as an independent-MPS
-   throughput highlight, not as evidence that one MPS is solved jointly by
-   eight GPUs.
+The earlier W7900 starter profiling, hard3 probe2, before/current core6,
+compact profiling summary, and first W7900-specific tuning pass are complete
+for the current project stage:
+
+1. P10 targeted rocprof profiling has been archived.
+2. hard3 probe2 has been archived; hard3 is not mixed into the primary
+   non-hard23 baseline.
+3. before/current fast-core6 has been completed; if stronger timing evidence
+   is needed, only add representative repeated validation later.
+4. P11 SpMV tuning has been accepted. The current default SpMV algorithm is
+   `HIPSPARSE_SPMV_CSR_ALG1`.
+5. The P12 rejected experiment note records the unaccepted buffer-algorithm
+   consistency patch.
+
+The remaining items are optional evidence strengthening, not blockers:
+P14-A current-vs-before repeated validation and P14-B CSR ALG1-vs-ALG2
+repeated validation, when a W7900 machine becomes available.
+
 ## Latest W7900 experiment status / 2026-06-16
 
 The W7900 / `gfx1100` experiment set has been updated with four committed compact summaries:

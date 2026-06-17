@@ -77,15 +77,21 @@ W7900 更适合规模足够大、带宽敏感、SpMV/向量操作占比较高且
 
 ## 下一步计划状态
 
-原计划中的 W7900 starter profiling、hard3 short probes、before/current core6 comparison 和 W7900-specific tuning 已由 P10/P11/P12 证据链闭环：
+原计划中的 W7900 starter profiling、hard3 short probes、before/current
+comparison 和 W7900-specific tuning 已由 P10/P11/P12 证据链闭环：
 
-1. P10 targeted rocprof profiling 已完成并归档。
-2. hard3 probe2 已完成，hard3 不混入 primary non-hard23 baseline。
-3. before/current fast-core6 已完成；若要增强性能统计说服力，后续只补 representative repeated validation。
-4. P11 已完成 SpMV algorithm switch、smoke、five-case sweep，并将当前默认设为 `HIPSPARSE_SPMV_CSR_ALG1`。
-5. P12 已记录一个被拒绝的 SpMV buffer algorithm consistency patch，说明额外 execution-layer 改动经过保守验证。
+1. P10 targeted rocprof profiling 已归档。
+2. hard3 probe2 已归档；hard3 不混入 primary non-hard23 baseline。
+3. before/current fast-core6 已完成；若要增强性能统计说服力，后续只补
+   representative repeated validation。
+4. P11 已完成 SpMV algorithm switch、smoke validation、five-case sweep，并将
+   当前默认设为 `HIPSPARSE_SPMV_CSR_ALG1`。
+5. P12 已记录一个被拒绝的 SpMV buffer-algorithm consistency patch。
 
-<!-- REPRODUCIBILITY_20260614_BEGIN -->
+剩余 W7900 工作只是可选证据增强：等 W7900 机器可用后补 P14-A
+current-vs-before repeated validation 和 P14-B CSR ALG1-vs-ALG2 repeated
+validation。
+
 ## 可复现性
 
 评委导向的复现步骤见 [REPRODUCIBILITY.zh-CN.md](REPRODUCIBILITY.zh-CN.md)。

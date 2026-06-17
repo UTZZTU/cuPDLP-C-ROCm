@@ -301,3 +301,11 @@ solver 轨迹。源码 patch 已撤回，未提交。
 
 - [P12 negative finding 中文汇总](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md)
 - [P12 英文 negative finding summary](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md)
+
+## P14 可选增强说明 / 2026-06-17
+
+当前 W7900 状态页不再把 profiling/tuning 写成 pending blocker。后续仅在
+W7900 机器可用时补两个可选 repeated validation：
+
+1. P14-A：current-vs-before representative repeated validation。
+2. P14-B：CSR ALG1-vs-ALG2 representative repeated validation。

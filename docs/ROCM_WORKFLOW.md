@@ -18,7 +18,7 @@ The repository currently provides:
 - copy-trace analysis helpers,
 - cross-device and large MPS benchmark workflows.
 
-The currently verified ROCm target is AMD Radeon 890M / `gfx1150`.
+The currently verified ROCm targets include AMD Radeon 890M / `gfx1150` and Radeon PRO W7900 / `gfx1100`. W7900 has completed P10 targeted profiling, P11 SpMV tuning, and the P12 rejected experiment note.
 
 ## 1. Repository health checks
 
@@ -264,10 +264,18 @@ tools/emps.c
 large raw MPS files
 ```
 
-## 13. Current next priorities
+## 13. Current next-priority status
 
-1. Keep English and Chinese documentation in sync.
-2. Finish the large MPS benchmark matrix.
-3. Record Radeon 890M pre-tuning ROCm baseline and later tuned rerun.
-4. Expand profiling evidence beyond smoke cases.
-5. Prepare W7900 / `gfx1100` migration and profiling.
+The original priorities are mostly complete: the large-MPS benchmark matrix,
+890M tuning history, W7900 / `gfx1100` migration, profiling, and P11 tuning
+have all been archived.
+
+Current remaining recommendations:
+
+1. Keep English and Chinese documentation plus validation indexes in sync.
+2. Add P14-A current-vs-before repeated validation only when a W7900 machine
+   is available.
+3. Add P14-B CSR ALG1-vs-ALG2 repeated validation only when a W7900 machine
+   is available.
+4. Do not add deeper numerical-path optimization unless a complete validation
+   protocol is designed first.

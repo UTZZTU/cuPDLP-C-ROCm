@@ -382,41 +382,37 @@ tools/emps.c
 
 These are intentionally ignored by Git. Only source scripts, case lists, manifests, curated summaries, and documentation should be committed.
 
-## Current limitations
+## Current limitations and completed validation scope
 
-- The tested matrix is still expanding.
-- Larger LP problems are under active validation.
-- `share2b` remains INCOMPLETE at the current iteration/time limit.
-- `greenbea` is convergence-sensitive and should be documented separately.
-- No CI runner is currently available for ROCm validation.
-- The current ROCm/HIP backend is verified on `gfx1150`; other AMD architectures require separate validation.
+- The ROCm/HIP backend remains experimental and is not a production-certified
+  solver release.
+- The original `gfx1150` / 890M validation target is complete for the current
+  scope.
+- W7900 / `gfx1100` validation is also complete for the current scope: smoke,
+  Netlib, large-MPS baseline, P10 profiling, P11 SpMV tuning, and P12 rejected
+  experiment note are documented.
+- `share2b` remains INCOMPLETE at the current Netlib iteration/time limit.
+- `greenbea` is convergence-sensitive and should remain documented separately.
+- No ROCm CI runner is currently available.
 - Some legacy CUDA-style names remain intentionally for C/HIP compatibility.
 
 ## Future validation work
 
-- Add more Netlib LP cases.
-- Add larger sparse LP cases.
-- Add infeasible and unbounded LP cases.
-- Add badly scaled cases.
-- Record periodic validation snapshots.
-- Add ROCm CI when a suitable runner is available.
-- Validate additional ROCm architectures such as `gfx1100`.
-- Add performance regression checks after profiling and tuning mature.
+Completed or superseded items:
 
-## W7900 validation endpoint / 2026-06-17
+- larger sparse LP validation: completed for the curated large-MPS benchmark
+  scope;
+- validate `gfx1100`: completed for W7900 current project scope;
+- profiling/tuning validation: completed through P10/P11/P12.
 
-In addition to the original Radeon 890M / `gfx1150` validation target,
-the current branch now includes a completed W7900 / `gfx1100` validation
-and tuning endpoint.
+Optional future work:
 
-W7900 validation artifacts include:
-
-- smoke/build validation and platform notes;
-- Netlib validation and large-MPS baseline summaries;
-- P10 targeted rocprof summaries;
-- P11 SpMV algorithm switch smoke and five-case sweep;
-- final P11 SpMV tuning summary.
-
-The current W7900 default SpMV algorithm is
-`HIPSPARSE_SPMV_CSR_ALG1`, with rollback via
-`CUPDLP_HIP_SPMV_ALG=csr_alg2`.
+- add more Netlib LP cases;
+- add infeasible and unbounded LP cases;
+- add badly scaled cases;
+- record periodic validation snapshots;
+- add ROCm CI when a suitable runner is available;
+- add P14-A W7900 current-vs-before repeated validation when W7900 is
+  available;
+- add P14-B W7900 CSR ALG1-vs-ALG2 repeated validation when W7900 is
+  available.

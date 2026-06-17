@@ -382,39 +382,32 @@ tools/emps.c
 
 这些路径应被 Git 忽略。只提交源脚本、case list、manifest、整理后的 summary 和文档。
 
-## 当前限制
+## 当前限制与已完成验证范围
 
-- 测试矩阵仍在扩展中。
-- 更大 LP 问题正在验证。
-- `share2b` 在当前迭代或时间限制下仍为 INCOMPLETE。
-- `greenbea` 是 convergence-sensitive case，应单独记录。
-- 当前没有可用 ROCm CI runner。
-- 当前 ROCm/HIP backend 已在 `gfx1150` 上验证；其他 AMD 架构需要单独验证。
-- 部分 legacy CUDA-style 名称仍为 C/HIP 兼容而有意保留。
+- ROCm/HIP backend 仍是实验性，不是生产级认证 solver release。
+- 原始 `gfx1150` / 890M validation target 已完成当前范围。
+- W7900 / `gfx1100` validation 也已完成当前范围：smoke、Netlib、
+  large-MPS baseline、P10 profiling、P11 SpMV tuning、P12 rejected
+  experiment note 均已归档。
+- `share2b` 在当前 Netlib 迭代或时间限制下仍为 INCOMPLETE。
+- `greenbea` 是 convergence-sensitive case，应继续单独记录。
+- 当前还没有 ROCm CI runner。
+- 部分 legacy CUDA-style 名称因 C/HIP 兼容边界仍保留。
 
 ## 后续验证工作
 
-- 添加更多 Netlib LP case。
-- 添加更大的 sparse LP case。
-- 添加 infeasible 和 unbounded LP case。
-- 添加 badly scaled case。
-- 定期记录 validation snapshot。
-- 有合适 runner 后添加 ROCm CI。
-- 验证 `gfx1100` 等其他 ROCm 架构。
-- profiling 和 tuning 更成熟后添加性能回归检查。
+已完成或已被取代的项目：
 
-## W7900 validation 终点 / 2026-06-17
+- larger sparse LP validation：已在 curated large-MPS benchmark 范围完成；
+- validate `gfx1100`：已在 W7900 当前项目范围完成；
+- profiling/tuning validation：已由 P10/P11/P12 完成。
 
-除了原始 Radeon 890M / `gfx1150` validation target 之外，当前分支已经包含
-完整的 W7900 / `gfx1100` validation 和 tuning endpoint。
+可选未来工作：
 
-W7900 validation artifacts 包括：
-
-- smoke/build validation 和 platform notes；
-- Netlib validation 和 large-MPS baseline summaries；
-- P10 targeted rocprof summaries；
-- P11 SpMV algorithm switch smoke 和五 case sweep；
-- final P11 SpMV tuning summary。
-
-当前 W7900 默认 SpMV algorithm 为 `HIPSPARSE_SPMV_CSR_ALG1`，
-可通过 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 回退旧默认。
+- 增加更多 Netlib LP cases；
+- 增加 infeasible 和 unbounded LP cases；
+- 增加 badly scaled cases；
+- 定期记录 validation snapshots；
+- 有合适 runner 时添加 ROCm CI；
+- W7900 可用后补 P14-A current-vs-before repeated validation；
+- W7900 可用后补 P14-B CSR ALG1-vs-ALG2 repeated validation。

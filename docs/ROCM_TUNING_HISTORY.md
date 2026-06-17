@@ -194,3 +194,21 @@ its own completed evidence chain:
 If stronger W7900 timing evidence is needed later, add a small
 `current` vs `pre_tuning` repeated validation instead of rerunning the full
 890M-style six-milestone ablation.
+
+## Completed-plan markers / 2026-06-17
+
+Several items from the earlier “recommended next steps” have now been
+completed or superseded by newer W7900 documents:
+
+- W7900 / `gfx1100` platform validation: completed through smoke, Netlib, and
+  large-MPS baseline.
+- W7900 profiling: archived through P10 targeted rocprof.
+- W7900 platform-specific tuning: closed by P11 SpMV tuning.
+- Additional execution-layer candidate: P12 records a rejected experiment.
+- cuPDLP-C vs cuPDLPx comparison: short13 is documented separately with final
+  positioning.
+
+Remaining optional enhancements:
+
+- P14-A: W7900 current-vs-before representative repeated validation.
+- P14-B: W7900 CSR ALG1-vs-ALG2 representative repeated validation.

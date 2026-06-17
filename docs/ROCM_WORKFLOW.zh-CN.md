@@ -266,11 +266,12 @@ large raw MPS files
 
 ## 13. 当前下一步优先级状态
 
-原优先级已基本完成：large MPS benchmark matrix、890M tuning history、W7900 / `gfx1100` migration、profiling 和 P11 tuning 均已归档。
+原优先级已基本完成：large-MPS benchmark matrix、890M tuning history、W7900 /
+`gfx1100` migration、profiling 和 P11 tuning 均已归档。
 
 当前剩余建议：
 
 1. 保持中英文文档和 validation 索引同步。
 2. 只在 W7900 机器可用时补 P14-A current-vs-before repeated validation。
 3. 只在 W7900 机器可用时补 P14-B CSR ALG1-vs-ALG2 repeated validation。
-4. 不再新增深层数值路径优化，除非重新设计完整验证协议。
+4. 不再新增深层数值路径优化，除非先重新设计完整验证协议。

@@ -17,7 +17,7 @@ Large-scale linear programming is a scientific-computing and operations-research
 | Platform | Role |
 |---|---|
 | Radeon 890M / `gfx1150` | First ROCm/HIP migration, tuning history, and baseline validation |
-| Radeon PRO W7900 / `gfx1100` | Large-MPS workstation GPU validation and future W7900-specific profiling/tuning |
+| Radeon PRO W7900 / `gfx1100` | Large-MPS workstation GPU validation, P10 profiling, P11 SpMV tuning, and P12 rejected experiment record |
 | RTX 3090 / RTX 4090D / H100 | CUDA reference devices for cross-device comparison |
 
 ## Implementation summary
@@ -75,15 +75,25 @@ total time ≈ per-iteration cost × number of iterations
 
 W7900 can be strong on large, bandwidth-sensitive, SpMV/vector-operation-heavy cases with stable convergence. Slow cases such as `s100` and `Primal2_1000` should be explained through iteration count and gap trajectory as well as kernel performance.
 
-## Next planned work
+## Next planned work status
 
-1. Run W7900 `rocprofv3` starter3 profiling on `set-cover-model`, `square41`, and `s100`.
-2. Record wall time, solver time, `DeviceMatVecProdTime`, `nIter`, HIP/kernel trace, and GPU telemetry.
-3. Run hard3 short probes for `dlr1` and `fhnw-binschedule1`.
-4. Run true before/current comparison on the core6 list using `ae3b683` vs current.
-5. Perform W7900-specific tuning only after profiling results identify bottlenecks.
+The original W7900 starter profiling, hard3 short probes, before/current
+comparison, and W7900-specific tuning items have been closed by the P10/P11/P12
+evidence chain:
 
-<!-- REPRODUCIBILITY_20260614_BEGIN -->
+1. P10 targeted rocprof profiling has been archived.
+2. hard3 probe2 has been archived; hard3 is not mixed into the primary
+   non-hard23 baseline.
+3. before/current fast-core6 has been completed; if stronger timing evidence
+   is needed, only add representative repeated validation later.
+4. P11 completed the SpMV algorithm switch, smoke validation, five-case sweep,
+   and current default `HIPSPARSE_SPMV_CSR_ALG1` policy.
+5. P12 recorded a rejected SpMV buffer-algorithm consistency patch.
+
+Remaining W7900 work is optional evidence strengthening only: P14-A
+current-vs-before repeated validation and P14-B CSR ALG1-vs-ALG2 repeated
+validation, when a W7900 machine is available.
+
 ## Reproducibility
 
 For reviewer-oriented reproduction steps, see [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
@@ -103,7 +113,7 @@ It covers:
 | Competition material | Repository status |
 |---|---|
 | Technical paper | to be built from this README, performance behavior, tuning history, and profiling results |
-| Demo PPT | to be created after first profiling results |
+| Demo PPT | can be created from W7900 current status, P10 targeted profiling, P11 SpMV tuning, P12 rejected finding, and cuPDLPx positioning |
 | Demo video | should show build, validation, charts, and profiling workflow |
 | Engineering repository | current repository with scripts, validation CSVs, Markdown summaries, SVG charts |
 | Reproducibility | documented in [REPRODUCIBILITY.md](REPRODUCIBILITY.md); covers environment recovery, data checks, expected outputs, and starter profiling |
