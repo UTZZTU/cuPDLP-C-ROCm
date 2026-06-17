@@ -104,11 +104,11 @@ total time ≈ per-iteration cost × number of iterations
 详见 [W7900 优化基线说明](W7900_OPTIMIZATION_BASELINES.zh-CN.md)。
 <!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->
 
-## ROCm profiling 与调优计划
+## ROCm profiling 与调优完成状态
 
-下一阶段不是盲目改 kernel，而是先固定 profiling case matrix，并记录 wall time、solver time、`DeviceMatVecProdTime`、`nIter`、HIP/kernel trace 和 GPU telemetry。
+原 profiling 计划已执行并由 P10/P11/P12 证据链取代。当前不再把 starter profiling 或 W7900-specific tuning 写成 pending blocker。
 
-详见 [W7900 ROCm profiling 计划](W7900_ROCM_PROFILING_PLAN.zh-CN.md)。
+最终入口见 [W7900 ROCm profiling 计划](W7900_ROCM_PROFILING_PLAN.zh-CN.md)、[P11 SpMV tuning summary](../validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md) 和 [P12 rejected experiment note](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md)。
 <!-- W7900_ROCM_PROFILING_PLAN_20260614_END -->
 
 ## 下一步

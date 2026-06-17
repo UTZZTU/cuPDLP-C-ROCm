@@ -24,14 +24,14 @@
 
 ## 已验证 ROCm 目标
 
-| 项目 | 值 |
-|---|---|
-| GPU/APU | AMD Radeon 890M |
-| 架构 | `gfx1150` |
-| ROCm | 7.2.1 |
-| HIP compiler | ROCm Clang 22.0.0 |
-| Solver 可执行文件 | `build-rocm-plc/bin/plc` |
-| CPU baseline 可执行文件 | `build-cpu/bin/plc` |
+| 项目 | 890M / `gfx1150` | W7900 / `gfx1100` |
+|---|---|---|
+| GPU/APU | AMD Radeon 890M | AMD Radeon PRO W7900 |
+| ROCm | 7.2.1 | W7900 ROCm SDK environment |
+| HIP compiler | ROCm Clang 22.0.0 | `/opt/python/bin/hipcc` / ROCm SDK |
+| Solver 可执行文件 | `build-rocm-plc/bin/plc` | `build-rocm-w7900/bin/plc` |
+| 状态 | smoke、Netlib、benchmark、890M tuning history 已归档 | smoke、Netlib、large-MPS baseline、P10 profiling、P11 tuning、P12 rejected finding 已归档 |
+| CPU baseline 可执行文件 | `build-cpu/bin/plc` | `build-cpu/bin/plc` |
 
 ## 验证目标
 

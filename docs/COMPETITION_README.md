@@ -63,7 +63,7 @@ The current W7900 non-hard23 result is **not** an unoptimized first-port baselin
 |---|---|---|
 | Before | `ae3b683` / `pre_tuning` | true first-runnable ROCm anchor |
 | Current | current `rocm-w7900-gfx1100` | post-890M-tuning W7900 engineering baseline |
-| After | future W7900-specific tuning branch | final W7900-specific optimized result |
+| After / accepted endpoint | P11 current W7900 tuning policy | current default `HIPSPARSE_SPMV_CSR_ALG1`, rollback with `CUPDLP_HIP_SPMV_ALG=csr_alg2` |
 
 ## Performance interpretation
 

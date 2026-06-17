@@ -380,3 +380,18 @@ tuning 历史的一部分。W7900 当前终点仍是 cuPDLP-C-ROCm 分支中的
 若后续还要增强 W7900 的性能说服力，推荐只补一个小规模
 `current` vs `pre_tuning` repeated validation，而不是重跑完整 890M 式
 6-milestone ablation。
+
+## 后续计划完成标记 / 2026-06-17
+
+本文早期“后续计划”中的多项工作已经完成或被新的 W7900 文档取代：
+
+- W7900 / `gfx1100` 平台实测：已完成 smoke、Netlib、large-MPS baseline。
+- W7900 profiling：已由 P10 targeted rocprof 归档。
+- W7900 平台化调优：已由 P11 SpMV tuning 闭环。
+- 额外 execution-layer 小改动：P12 已记录一个被拒绝实验。
+- cuPDLP-C 与 cuPDLPx 对比：short13 已单独成文档，并已补最终定位说明。
+
+仍可选增强：
+
+- P14-A：W7900 current-vs-before representative repeated validation。
+- P14-B：W7900 CSR ALG1-vs-ALG2 representative repeated validation。

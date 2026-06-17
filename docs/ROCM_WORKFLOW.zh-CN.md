@@ -18,7 +18,7 @@
 - copy-trace analysis helper；
 - cross-device 和 large MPS benchmark workflow。
 
-当前已验证 ROCm 目标是 AMD Radeon 890M / `gfx1150`。
+当前已验证 ROCm 目标包括 AMD Radeon 890M / `gfx1150` 和 Radeon PRO W7900 / `gfx1100`。W7900 已完成 P10 targeted profiling、P11 SpMV tuning 与 P12 rejected experiment note。
 
 ## 1. 仓库健康检查
 
@@ -264,10 +264,13 @@ tools/emps.c
 large raw MPS files
 ```
 
-## 13. 当前下一步优先级
+## 13. 当前下一步优先级状态
 
-1. 保持中英文文档同步。
-2. 完成 large MPS benchmark matrix。
-3. 记录 Radeon 890M pre-tuning ROCm baseline，之后记录 tuned rerun。
-4. 将 profiling 证据从 smoke case 扩展到更大 case。
-5. 准备 W7900 / `gfx1100` 迁移和 profiling。
+原优先级已基本完成：large MPS benchmark matrix、890M tuning history、W7900 / `gfx1100` migration、profiling 和 P11 tuning 均已归档。
+
+当前剩余建议：
+
+1. 保持中英文文档和 validation 索引同步。
+2. 只在 W7900 机器可用时补 P14-A current-vs-before repeated validation。
+3. 只在 W7900 机器可用时补 P14-B CSR ALG1-vs-ALG2 repeated validation。
+4. 不再新增深层数值路径优化，除非重新设计完整验证协议。

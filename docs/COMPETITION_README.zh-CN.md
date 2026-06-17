@@ -17,7 +17,7 @@
 | 平台 | 作用 |
 |---|---|
 | Radeon 890M / `gfx1150` | ROCm/HIP 首轮迁移、调优历史和 baseline 验证 |
-| Radeon PRO W7900 / `gfx1100` | large-MPS 工作站 GPU 验证和后续 W7900-specific profiling/tuning |
+| Radeon PRO W7900 / `gfx1100` | large-MPS 工作站 GPU 验证、P10 profiling、P11 SpMV tuning 与 P12 rejected experiment 记录 |
 | RTX 3090 / RTX 4090D / H100 | CUDA 跨设备参考 |
 
 ## 方案与实现
@@ -63,7 +63,7 @@ W7900 分支已经不再只是 first-port smoke 实验。目前已有：
 |---|---|---|
 | Before | `ae3b683` / `pre_tuning` | 真正 first-runnable ROCm anchor |
 | Current | current `rocm-w7900-gfx1100` | post-890M-tuning W7900 engineering baseline |
-| After | future W7900-specific tuning branch | 最终 W7900-specific optimized result |
+| After / accepted endpoint | P11 current W7900 tuning policy | 当前默认 `HIPSPARSE_SPMV_CSR_ALG1`，旧默认可用 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 回退 |
 
 ## 性能解释
 
@@ -75,13 +75,15 @@ total time ≈ per-iteration cost × number of iterations
 
 W7900 更适合规模足够大、带宽敏感、SpMV/向量操作占比较高且收敛稳定的 case。`s100`、`Primal2_1000` 等慢 case 应结合迭代次数、gap trajectory 和 kernel performance 一起解释。
 
-## 下一步计划
+## 下一步计划状态
 
-1. 在 `set-cover-model`、`square41`、`s100` 上运行 W7900 `rocprofv3` starter3 profiling。
-2. 记录 wall time、solver time、`DeviceMatVecProdTime`、`nIter`、HIP/kernel trace 和 GPU telemetry。
-3. 对 `dlr1`、`fhnw-binschedule1` 运行 hard3 short probes。
-4. 使用 `ae3b683` vs current 跑 core6 true before/current comparison。
-5. profiling 结果定位瓶颈后再做 W7900-specific tuning。
+原计划中的 W7900 starter profiling、hard3 short probes、before/current core6 comparison 和 W7900-specific tuning 已由 P10/P11/P12 证据链闭环：
+
+1. P10 targeted rocprof profiling 已完成并归档。
+2. hard3 probe2 已完成，hard3 不混入 primary non-hard23 baseline。
+3. before/current fast-core6 已完成；若要增强性能统计说服力，后续只补 representative repeated validation。
+4. P11 已完成 SpMV algorithm switch、smoke、five-case sweep，并将当前默认设为 `HIPSPARSE_SPMV_CSR_ALG1`。
+5. P12 已记录一个被拒绝的 SpMV buffer algorithm consistency patch，说明额外 execution-layer 改动经过保守验证。
 
 <!-- REPRODUCIBILITY_20260614_BEGIN -->
 ## 可复现性
@@ -103,7 +105,7 @@ W7900 更适合规模足够大、带宽敏感、SpMV/向量操作占比较高且
 | 竞赛材料 | 仓库当前状态 |
 |---|---|
 | 技术论文 | 可基于本文、performance behavior、tuning history、profiling results 撰写 |
-| 演示说明 PPT | 第一轮 profiling 结果完成后制作 |
+| 演示说明 PPT | 可基于 W7900 current status、P10 targeted profiling、P11 SpMV tuning、P12 rejected finding 和 cuPDLPx positioning 制作 |
 | 演示视频 | 展示 build、validation、charts 和 profiling workflow |
 | 工程代码仓库 | 当前仓库已有 scripts、validation CSV、Markdown summaries、SVG charts |
 | 可复现性 | 已在 [REPRODUCIBILITY.zh-CN.md](REPRODUCIBILITY.zh-CN.md) 中说明；覆盖环境恢复、数据校验、期望输出和 starter profiling |
