@@ -358,3 +358,25 @@ W7900 终点：
 upstream cuPDLP-C。该结果应作为未来算法路线参考，而不是 W7900 ROCm/HIP
 tuning 历史的一部分。W7900 当前终点仍是 cuPDLP-C-ROCm 分支中的
 `HIPSPARSE_SPMV_CSR_ALG1` 默认策略与可回退 P11 tuning 闭环。
+
+## W7900 后续状态更新 / 2026-06-17
+
+本文档前半部分记录的是 890M / `gfx1150` 阶段的 repeated tuning ablation。
+其中，`current` 相对 `pre_tuning` 在 6-case quick set 上几何平均约为
+`1.094x speedup`，说明 ROCm/HIP 后端 tuning 在 890M 上有可测收益。
+
+但该结论不能直接替代 W7900 / `gfx1100` 的性能结论。W7900 是不同硬件目标，
+因此 W7900 已单独完成：
+
+- W7900 build、smoke validation、Netlib validation 和 large-MPS baseline；
+- P10 targeted rocprof profiling；
+- P11 SpMV algorithm switch、smoke 和五 case sweep；
+- 当前 W7900 默认 SpMV algorithm：
+  `HIPSPARSE_SPMV_CSR_ALG1`；
+- 回退旧默认：
+  `CUPDLP_HIP_SPMV_ALG=csr_alg2`；
+- P12 记录了被拒绝的 SpMV buffer algorithm consistency patch。
+
+若后续还要增强 W7900 的性能说服力，推荐只补一个小规模
+`current` vs `pre_tuning` repeated validation，而不是重跑完整 890M 式
+6-milestone ablation。

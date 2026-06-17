@@ -170,3 +170,27 @@ W7900 endpoint:
 - Rollback: `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
 
 See `validation/w7900_p11_spmv_tuning_summary_20260617.md`.
+
+## W7900 follow-up status update / 2026-06-17
+
+The earlier part of this document records the 890M / `gfx1150` repeated
+tuning ablation. In that quick set, `current` achieved about `1.094x`
+geometric-mean speedup over `pre_tuning`, showing that ROCm/HIP tuning had
+measurable benefit on 890M.
+
+That result should not be used as a direct substitute for W7900 / `gfx1100`
+performance evidence. W7900 is a different hardware target, and it now has
+its own completed evidence chain:
+
+- W7900 build, smoke validation, Netlib validation, and large-MPS baseline;
+- P10 targeted rocprof profiling;
+- P11 SpMV algorithm switch, smoke, and five-case sweep;
+- current W7900 default SpMV algorithm:
+  `HIPSPARSE_SPMV_CSR_ALG1`;
+- rollback:
+  `CUPDLP_HIP_SPMV_ALG=csr_alg2`;
+- P12 rejected SpMV buffer algorithm consistency experiment.
+
+If stronger W7900 timing evidence is needed later, add a small
+`current` vs `pre_tuning` repeated validation instead of rerunning the full
+890M-style six-milestone ablation.
