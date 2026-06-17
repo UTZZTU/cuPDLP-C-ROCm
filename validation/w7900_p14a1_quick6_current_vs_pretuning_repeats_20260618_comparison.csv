@@ -1,0 +1,7 @@
+case,pre_median_solve_sec,current_median_solve_sec,median_speedup_pre_over_current,pre_niters,current_niters,pre_statuses,current_statuses,pre_cv,current_cv
+80bau3b,1.265655,1.008045,1.25555407,7800,7800,Optimal current solution.,Optimal current solution.,0.0108991426,0.00507783893
+afiro,0.1074691,0.1012969,1.06093178,200,200,Optimal current solution.,Optimal current solution.,0.00793286526,0.00597291356
+lotfi,11.31668,8.445734,1.33992854,85840,85840,Optimal current solution.,Optimal current solution.,0.00799375331,0.0240343531
+maros-r7,0.1602161,0.144289,1.11038333,560,560,Optimal average solution.,Optimal average solution.,0.00860019225,0.0105703049
+pilot87,12.76718,10.20149,1.2515015,82240,82240,Optimal current solution.,Optimal current solution.,0.00684175363,0.00564898594
+sc50b,0.1539228,0.1351941,1.13853193,560,560,Optimal average solution.,Optimal average solution.,0.00650458873,0.00725505234
