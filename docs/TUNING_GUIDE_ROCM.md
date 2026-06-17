@@ -220,7 +220,7 @@ Use large-case profiling to decide whether the next bottleneck is launch count, 
 - Investigate remaining scalar readback and synchronization.
 - Investigate reduction kernels only after validation coverage is larger.
 - Investigate SpMV descriptor and buffer reuse.
-- Compare `gfx1150` with `gfx1100` after W7900 migration.
+- `gfx1150` vs `gfx1100` comparison is now represented by W7900 P10/P11/P12/P14-A1 artifacts.
 
 ## Summary
 
@@ -247,3 +247,18 @@ Current W7900 policy:
 No additional long profiling run is required for the current project
 endpoint. Further tuning should be treated as future work and should
 focus on carefully validated scalar-copy or reduction-path changes.
+
+## Final W7900 tuning-guide status after P14-A1 / 2026-06-18
+
+This guide was originally centered on 890M / `gfx1150` tuning. The W7900 /
+`gfx1100` follow-up now has its own closure evidence:
+
+- P10 targeted profiling;
+- P11 SpMV algorithm policy, current default `HIPSPARSE_SPMV_CSR_ALG1`;
+- P12 rejected buffer-algorithm consistency experiment;
+- P14-A1 quick6 repeated current-vs-pre_tuning validation.
+
+P14-A1 shows `current` faster on `6/6` quick6 cases, with geomean speedup
+`1.18889` and median speedup `1.19502`.
+
+No further W7900 experiment is required for the current project closure.

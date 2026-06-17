@@ -320,3 +320,19 @@ W7900 现在已有与此前 890M-style 方法论对应的 quick-set repeated tim
 中位数 speedup 为 `1.19502`，同时保持迭代数一致。
 
 见 [P14-A1 quick6 中文汇总](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md)。
+
+## P14-A1 后的 W7900 最终收口 / 2026-06-18
+
+P14-A1 已完成此前列为可选增强的 representative repeated validation。它在
+890M-style quick6 case set 上对比 `pre_tuning`（`ae3b683`）与当前 HEAD，
+每个 case/version 组合重复 3 次。
+
+结果：
+
+- `current` 在 quick6 的 `6/6` 个 case 上更快；
+- 几何平均 speedup 为 `1.18889`；
+- 中位数 speedup 为 `1.19502`；
+- 迭代数保持一致。
+
+当前 W7900 收口证据链为 P10 + P11 + P12 + P14-A1。P14-B CSR ALG1-vs-ALG2
+repeated validation 不再是当前收尾所需实验。

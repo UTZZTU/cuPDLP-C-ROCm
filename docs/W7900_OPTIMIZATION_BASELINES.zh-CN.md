@@ -41,13 +41,13 @@ It is not the original first-runnable ROCm baseline.
 
 因此，当前 W7900 数据应表述为 **post-tuning engineering validation on W7900**，而不是 **before-tuning W7900 data**。
 
-## 后续 before/after 策略
+## Before/after 策略状态
 
 | 角色 | 版本 | 目的 |
 |---|---|---|
 | Before | `pre_tuning` / `ae3b683` | 真正 first-runnable / pre-tuning ROCm anchor |
 | Current | `rocm-w7900-gfx1100` current HEAD | 当前 post-890M-tuning W7900 engineering baseline |
-| After | future W7900-specific tuning branch | 最终 W7900-specific optimized result |
+| Current endpoint | 当前 `rocm-w7900-gfx1100` HEAD | P11/P14-A1 后已接受的 W7900 endpoint |
 
 ## 建议第一组 before/after 子集
 
@@ -88,3 +88,18 @@ W7900-specific tuning endpoint。
 
 - `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`
 - `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md`
+
+## P14-A1 后的最终 before/after 解释 / 2026-06-18
+
+早期 “future before/after policy” 已由 P14-A1 部分闭环。当前项目终点不需要再
+新建完整 W7900-specific after branch。
+
+当前解释：
+
+| 角色 | 版本 | 当前解释 |
+|---|---|---|
+| Before | `pre_tuning` / `ae3b683` | 真正 first-runnable / pre-tuning ROCm anchor |
+| Current endpoint | 当前 `rocm-w7900-gfx1100` HEAD | 已接受的 W7900 工程终点，包含 P11 默认 `HIPSPARSE_SPMV_CSR_ALG1` |
+| Repeated evidence | P14-A1 quick6 | current 在 quick6 的 `6/6` case 上更快；geomean `1.18889`；median `1.19502` |
+
+不要把 P14-B 描述为必做项。它仅保留为未来可选稳健性检查。

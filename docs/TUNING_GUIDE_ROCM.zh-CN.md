@@ -245,3 +245,18 @@ W7900 / `gfx1100` follow-up 已经完成。
 
 当前项目终点不需要继续追加长 profiling。后续若继续调优，应作为未来工作，
 并重点关注需要严格验证的 scalar-copy 或 reduction-path 改动。
+
+## P14-A1 后的 W7900 tuning-guide 最终状态 / 2026-06-18
+
+本指南最初围绕 890M / `gfx1150` tuning 编写。W7900 / `gfx1100` follow-up
+现在已有独立收口证据：
+
+- P10 targeted profiling；
+- P11 SpMV algorithm policy，当前默认 `HIPSPARSE_SPMV_CSR_ALG1`；
+- P12 rejected buffer-algorithm consistency experiment；
+- P14-A1 quick6 repeated current-vs-pre_tuning validation。
+
+P14-A1 显示 `current` 在 quick6 的 `6/6` 个 case 上更快，geomean speedup
+为 `1.18889`，median speedup 为 `1.19502`。
+
+当前项目收尾不再需要额外 W7900 实验。

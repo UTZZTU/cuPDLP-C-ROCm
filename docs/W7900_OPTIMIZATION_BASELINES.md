@@ -34,13 +34,13 @@ The repository tuning history already states that `pre_tuning` is `ae3b683`, `re
 
 Therefore, current W7900 data should be presented as **post-tuning engineering validation on W7900**, not as **before-tuning W7900 data**.
 
-## Future before/after policy
+## Before/after policy status
 
 | Role | Version | Purpose |
 |---|---|---|
 | Before | `pre_tuning` / `ae3b683` | true first-runnable/pre-tuning ROCm anchor |
 | Current | `rocm-w7900-gfx1100` current HEAD | current post-890M-tuning W7900 engineering baseline |
-| After | future W7900-specific tuning branch | final W7900-specific optimized result |
+| Current endpoint | current `rocm-w7900-gfx1100` HEAD | accepted W7900 endpoint after P11/P14-A1 |
 
 ## Recommended first before/after subset
 
@@ -83,3 +83,19 @@ Final references:
 
 - `validation/w7900_p11_spmv_tuning_summary_20260617.md`
 - `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md`
+
+## Final before/after interpretation after P14-A1 / 2026-06-18
+
+The earlier “future before/after policy” has now been partially closed by
+P14-A1. The project does not need a new full W7900-specific after branch for
+the current endpoint.
+
+Current interpretation:
+
+| Role | Version | Current interpretation |
+|---|---|---|
+| Before | `pre_tuning` / `ae3b683` | true first-runnable/pre-tuning ROCm anchor |
+| Current endpoint | current `rocm-w7900-gfx1100` HEAD | accepted W7900 engineering endpoint with P11 default `HIPSPARSE_SPMV_CSR_ALG1` |
+| Repeated evidence | P14-A1 quick6 | current is faster on `6/6` quick6 cases; geomean `1.18889`; median `1.19502` |
+
+Do not describe P14-B as required. It remains a future optional robustness check only.

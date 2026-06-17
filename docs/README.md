@@ -113,3 +113,15 @@ Current W7900 tuning policy:
 - rollback: `CUPDLP_HIP_SPMV_ALG=csr_alg2`;
 - P12 buffer algorithm consistency patch: tested and rejected because
   iteration count changed.
+
+## Final W7900 repeated validation / 2026-06-18
+
+P14-A1 is the final repeated validation added for this project stage.
+
+- [P14-A1 quick6 summary](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md)
+- [P14-A1 quick6 Chinese summary](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md)
+- [P14-A1 comparison CSV](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv)
+
+Result: `current` is faster on `6/6` quick6 cases, with geometric-mean
+speedup `1.18889` and median speedup `1.19502`, while preserving iteration
+counts. P14-B remains future optional and is not a current blocker.

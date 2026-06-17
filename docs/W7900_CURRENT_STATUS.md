@@ -334,3 +334,20 @@ Result: `current` is faster on `6/6` cases, with geometric-mean speedup
 `1.18889` and median speedup `1.19502`, while preserving iteration counts.
 
 See [P14-A1 quick6 summary](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md).
+
+## Final W7900 closure after P14-A1 / 2026-06-18
+
+P14-A1 has now completed the representative repeated validation that was
+previously listed as optional. It compares `pre_tuning` (`ae3b683`) with
+current HEAD on the 890M-style quick6 set, with three repeats per
+case/version pair.
+
+Result:
+
+- `current` faster on `6/6` quick6 cases;
+- geometric-mean speedup `1.18889`;
+- median speedup `1.19502`;
+- iteration counts preserved.
+
+The current W7900 closure is therefore P10 + P11 + P12 + P14-A1. P14-B
+CSR ALG1-vs-ALG2 repeated validation is not required for current closure.
