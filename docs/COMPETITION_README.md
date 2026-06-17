@@ -153,3 +153,25 @@ Recommended final evidence links:
 - `docs/W7900_CURRENT_STATUS.md`
 - `validation/w7900_p11_spmv_tuning_summary_20260617.md`
 - `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md`
+
+## Final reproducibility update after P14-A1 / 2026-06-18
+
+Competition-oriented reproducibility now includes P14-A1 quick6 repeated
+validation in addition to environment recovery, data checks, smoke
+validation, non-hard23 summary inspection, and starter profiling.
+
+The key no-W7900 check is:
+
+```bash
+python3 - <<'PY'
+import csv
+from pathlib import Path
+rows = list(csv.DictReader(Path("validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv").open()))
+speedups = [float(r["median_speedup_pre_over_current"]) for r in rows]
+print(len(rows), sum(x > 1 for x in speedups), min(speedups), max(speedups))
+PY
+```
+
+Expected interpretation: `6` rows, `6` current wins, all speedups greater
+than `1`. See [REPRODUCIBILITY.md](REPRODUCIBILITY.md) for the full command
+path.

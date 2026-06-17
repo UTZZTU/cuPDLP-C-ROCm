@@ -296,3 +296,67 @@ assert set(r["terminationCode"] for r in rows) == {"OPTIMAL"}
 print("W7900 non-hard23 summary check: OK")
 PY
 ```
+
+## 10. Reproduce or inspect P14-A1 quick6 repeated validation
+
+P14-A1 is the final repeated validation added for the current W7900 project
+closure. It repeats the earlier 890M-style quick6 protocol on W7900 /
+`gfx1100` and compares `pre_tuning` (`ae3b683`) with current
+`rocm-w7900-gfx1100` HEAD.
+
+Committed artifacts:
+
+```text
+validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_raw.csv
+validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_aggregated.csv
+validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv
+validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md
+validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md
+```
+
+Check the committed result without W7900 access:
+
+```bash
+cd cuPDLP-C-ROCm
+
+python3 - <<'PY'
+import csv
+from pathlib import Path
+
+p = Path("validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv")
+rows = list(csv.DictReader(p.open()))
+speedups = [float(r["median_speedup_pre_over_current"]) for r in rows]
+print("rows:", len(rows))
+print("wins current faster:", sum(x > 1.0 for x in speedups), "/", len(speedups))
+print("min speedup:", min(speedups))
+print("max speedup:", max(speedups))
+print("cases:", ", ".join(r["case"] for r in rows))
+PY
+```
+
+Expected interpretation:
+
+```text
+rows: 6
+wins current faster: 6 / 6
+all speedups are greater than 1
+```
+
+The summary reports geometric-mean speedup `1.18889` and median speedup
+`1.19502`, with preserved iteration counts across compared versions.
+
+To rerun P14-A1 on a W7900 machine after the environment and quick6 MPS files
+are available:
+
+```bash
+cd /app/cupdlp_w7900/src/cuPDLP-C-ROCm
+source /app/cupdlp_w7900/activate_w7900.sh
+
+./scripts/run_w7900_p14a1_quick6_current_vs_pretuning_repeats.sh \
+  2>&1 | tee /app/cupdlp_w7900/logs/run_w7900_p14a1_quick6_current_vs_pretuning_$(date +%Y%m%d_%H%M%S).log
+
+python3 scripts/analysis/archive_w7900_p14a1_quick6_current_vs_pretuning_20260618.py
+```
+
+Raw run directories and local result pointers under `validation/results/` are
+not committed. Only compact CSV/Markdown summaries are committed.

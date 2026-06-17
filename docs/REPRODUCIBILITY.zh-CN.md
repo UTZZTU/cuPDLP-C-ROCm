@@ -274,3 +274,65 @@ docker/README_DOCKER_W7900.zh-CN.md
 ```
 
 该骨架用于说明预期 build environment 形态和 final-submission 打包方向。它不声称是当前已提交 W7900 性能数字的来源。raw MPS 数据和 raw profiler traces 不进入镜像。
+
+## 10. 复现或检查 P14-A1 quick6 repeated validation
+
+P14-A1 是当前 W7900 项目收口阶段补充的最终 repeated validation。它在
+W7900 / `gfx1100` 上复用此前 890M-style quick6 protocol，对比
+`pre_tuning`（`ae3b683`）与当前 `rocm-w7900-gfx1100` HEAD。
+
+已提交 artifacts：
+
+```text
+validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_raw.csv
+validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_aggregated.csv
+validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv
+validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md
+validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md
+```
+
+没有 W7900 机器时，可以直接检查已提交结果：
+
+```bash
+cd cuPDLP-C-ROCm
+
+python3 - <<'PY'
+import csv
+from pathlib import Path
+
+p = Path("validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv")
+rows = list(csv.DictReader(p.open()))
+speedups = [float(r["median_speedup_pre_over_current"]) for r in rows]
+print("rows:", len(rows))
+print("wins current faster:", sum(x > 1.0 for x in speedups), "/", len(speedups))
+print("min speedup:", min(speedups))
+print("max speedup:", max(speedups))
+print("cases:", ", ".join(r["case"] for r in rows))
+PY
+```
+
+期望解释：
+
+```text
+rows: 6
+wins current faster: 6 / 6
+all speedups are greater than 1
+```
+
+summary 记录的几何平均 speedup 为 `1.18889`，中位数 speedup 为
+`1.19502`，且 pre/current 迭代数保持一致。
+
+若要在 W7900 机器上重跑 P14-A1，先恢复环境并准备 quick6 MPS 文件，然后运行：
+
+```bash
+cd /app/cupdlp_w7900/src/cuPDLP-C-ROCm
+source /app/cupdlp_w7900/activate_w7900.sh
+
+./scripts/run_w7900_p14a1_quick6_current_vs_pretuning_repeats.sh \
+  2>&1 | tee /app/cupdlp_w7900/logs/run_w7900_p14a1_quick6_current_vs_pretuning_$(date +%Y%m%d_%H%M%S).log
+
+python3 scripts/analysis/archive_w7900_p14a1_quick6_current_vs_pretuning_20260618.py
+```
+
+raw run directories 和 `validation/results/` 下的本地 pointer 不提交到 Git。
+Git 中只提交 compact CSV/Markdown summaries。

@@ -149,3 +149,24 @@ work”的 W7900 profiling、before/current analysis 和 W7900-specific tuning
 - `docs/W7900_CURRENT_STATUS.zh-CN.md`
 - `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`
 - `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md`
+
+## P14-A1 后的最终复现说明 / 2026-06-18
+
+面向竞赛的可复现性现在除了环境恢复、数据校验、smoke validation、
+non-hard23 summary inspection 和 starter profiling 外，还包括 P14-A1
+quick6 repeated validation。
+
+没有 W7900 机器时，关键检查命令为：
+
+```bash
+python3 - <<'PY'
+import csv
+from pathlib import Path
+rows = list(csv.DictReader(Path("validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv").open()))
+speedups = [float(r["median_speedup_pre_over_current"]) for r in rows]
+print(len(rows), sum(x > 1 for x in speedups), min(speedups), max(speedups))
+PY
+```
+
+期望解释：`6` 行、`6` 个 current wins、所有 speedup 均大于 `1`。
+完整命令路径见 [REPRODUCIBILITY.zh-CN.md](REPRODUCIBILITY.zh-CN.md)。
