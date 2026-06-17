@@ -161,10 +161,11 @@ W7900 / `gfx1100` 实验集已更新四组 compact summary：
 
 ![W7900 fast-core6 迭代次数比](assets/w7900/latest_experiments/w7900_before_current_fast_core6_iter_ratio.svg)
 
-该派生结果对后续调优解释很重要：current 在 6 个 fast-core6 case 上
-均降低了单迭代执行耗时，但由于部分 case 迭代次数增加，总 solve time
-仍呈 mixed pattern。因此后续 W7900-specific tuning 应同时优化执行效率
-与收敛行为。
+该派生结果现在作为 fast-core6 mixed-pattern 历史记录保留：current 在
+6 个 fast-core6 case 上均降低了单迭代执行耗时，但由于部分 case 迭代次数增加，
+总 solve time 仍呈 mixed pattern。后续 P10/P11/P12/P14-A1 已进一步补充证据链，
+其中 P14-A1 quick6 repeated validation 显示 current 在 6/6 quick6 case 上快于
+pre_tuning，geomean speedup 为 1.18889，median speedup 为 1.19502。
 
 ## P10 targeted rocprof 汇总 / 2026-06-17
 
