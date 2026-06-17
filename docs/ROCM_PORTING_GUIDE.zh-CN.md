@@ -251,19 +251,23 @@ tools/migration/
 
 不要在没有专门兼容性 pass 和 validation run 的情况下删除 `cuda_csr_Ax`、`cuda_csc_ATy` 或 `cuda_alloc_MVbuffer`。
 
-## 14. 当前限制
+## 14. 当前限制与完成状态
 
-- ROCm/HIP backend 仍是实验性。
-- `gfx1150` 是当前已验证 AMD 目标。
-- `gfx1100` / W7900 需要单独 validation pass。
-- 部分内部 CUDA-style 名称因兼容性仍保留。
-- Broad large MPS validation 正在进行中。
+- ROCm/HIP backend 仍是实验性，不应描述为生产级 solver release。
+- `gfx1150` / 890M 与 `gfx1100` / W7900 都已有验证记录。
+- W7900 validation pass 已完成当前阶段闭环：smoke、Netlib、
+  large-MPS baseline、P10 profiling、P11 SpMV tuning、P12 rejected
+  experiment note。
+- 部分内部 CUDA-style 名称因 C/HIP 兼容边界仍保留。
+- Broad large MPS validation 已有 curated summaries；raw MPS 和 raw logs
+  仍不提交到 Git。
 - 尚无 ROCm CI。
 
-## 15. 推荐下一步
+## 15. 推荐下一步状态
 
-1. 保持用户可见 CUDA wording 清理，同时保留必要兼容符号。
-2. 完成 large MPS benchmark matrix。
-3. 记录 Radeon 890M pre-tuning 和 tuned ROCm 结果。
-4. 添加 W7900 / `gfx1100` 构建和验证说明。
-5. 将 profiling 从 smoke case 扩展到更大 LP 实例。
+原推荐下一步已基本完成。当前只保留两个可选增强：
+
+1. W7900 P14-A：current-vs-before representative repeated validation。
+2. W7900 P14-B：CSR ALG1-vs-ALG2 representative repeated validation。
+
+除此之外，不建议继续新增深层数值路径优化，除非重新设计完整验证协议。

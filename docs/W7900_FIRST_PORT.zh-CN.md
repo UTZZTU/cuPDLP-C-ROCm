@@ -206,36 +206,27 @@ GPU timing 摘要：
 Hard3 说明：[W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md](W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md)
 <!-- W7900_DOC_SWEEP_20260614_END -->
 
-## 9. 已知限制
+## 9. 已知限制与当前完成状态
 
-当前阶段仅完成 first-port smoke validation，尚未完成：
+本文是 W7900 / `gfx1100` first-port smoke milestone 的历史记录。原始
+first-port 限制已经由后续 W7900 文档取代：
 
-* extended Netlib validation
-* large MPS benchmark
-* W7900 profiling
-* W7900 单卡调优
-* 8 GPU 并发吞吐实验
-* 跨设备 benchmark matrix 更新
+* extended Netlib validation：已完成。
+* large MPS benchmark：non-hard23 baseline 已完成，hard3 单独记录。
+* W7900 profiling：P10 targeted rocprof 已归档。
+* W7900 单卡调优：P11 SpMV tuning 已完成，当前默认
+  `HIPSPARSE_SPMV_CSR_ALG1`。
+* 8 GPU 并发吞吐实验：fast8 batch throughput 已归档。
+* 跨设备 benchmark matrix：已有 curated summaries。
 
-因此当前状态应描述为：
+当前仍不应描述为生产级 solver release，但已经超过 first-port smoke 阶段。
+权威状态见 [W7900_CURRENT_STATUS.zh-CN.md](W7900_CURRENT_STATUS.zh-CN.md)。
 
-```text
-W7900 / gfx1100 first-port smoke validation passed.
-Extended validation and tuning are in progress.
-```
+## 10. 后续计划状态
 
-不应描述为完整生产级验证完成。
+原下一步计划已基本完成。当前仅保留可选增强：
 
-## 10. 下一步计划
+1. W7900 P14-A：current-vs-before representative repeated validation。
+2. W7900 P14-B：CSR ALG1-vs-ALG2 representative repeated validation。
 
-后续计划：
-
-1. 固化 W7900 CPU/ROCm 构建脚本。
-2. 补充英文版 `W7900_FIRST_PORT.md`。
-3. 更新 README 中 W7900 的状态描述。
-4. 跑 W7900 smoke validation 脚本。
-5. 跑 extended Netlib validation。
-6. 使用 ROCm profiling 工具定位 W7900 单卡瓶颈。
-7. 基于 profile 结果进行单卡调优。
-8. 做 8 GPU single-GPU sweep 与多任务并发吞吐实验。
-9. 将结果汇总到比赛报告。
+其他深层数值路径优化不纳入当前项目终点。
