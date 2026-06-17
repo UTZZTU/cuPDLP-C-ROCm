@@ -276,3 +276,18 @@ W7900-specific tuning 策略，不是最终跨平台性能结论。
 关键结论：该 patch 作为实现一致性实验是合理的，但它使
 `set-cover-model` 的迭代数从此前稳定的 `7480` 变为 `7600`。因此该 patch
 已被拒绝，未合入源码。
+
+## W7900 P14-A1 quick6 current vs pre_tuning repeated validation / 2026-06-18
+
+本实验在 W7900 / `gfx1100` 上复用此前 890M-style quick6 方法论，对比
+`pre_tuning`（`ae3b683`）与当前 `rocm-w7900-gfx1100` 分支，每个
+case/version 组合重复运行 3 次。
+
+- 汇总：[w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md)
+- 英文汇总：[w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md)
+- 对比 CSV：[w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv)
+- 聚合 CSV：[w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_aggregated.csv](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_aggregated.csv)
+- 原始 CSV：[w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_raw.csv](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_raw.csv)
+
+结果：`current` 在 quick6 的 `6/6` 个 case 上均更快，几何平均 speedup 为
+`1.18889`，中位数 speedup 为 `1.19502`，同时保持 pre/current 迭代数一致。

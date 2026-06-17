@@ -309,3 +309,14 @@ W7900 机器可用时补两个可选 repeated validation：
 
 1. P14-A：current-vs-before representative repeated validation。
 2. P14-B：CSR ALG1-vs-ALG2 representative repeated validation。
+
+## P14-A1 quick6 repeated validation 更新 / 2026-06-18
+
+W7900 现在已有与此前 890M-style 方法论对应的 quick-set repeated timing
+证据。P14-A1 在 6 个 quick Netlib case 上对比 `pre_tuning`（`ae3b683`）与
+当前分支，每个 case/version 组合重复运行 3 次。
+
+结果：`current` 在 `6/6` 个 case 上更快，几何平均 speedup 为 `1.18889`，
+中位数 speedup 为 `1.19502`，同时保持迭代数一致。
+
+见 [P14-A1 quick6 中文汇总](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md)。

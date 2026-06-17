@@ -322,3 +322,15 @@ Links:
 
 - [P12 negative finding summary](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md)
 - [P12 Chinese negative finding summary](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md)
+
+## P14-A1 quick6 repeated validation update / 2026-06-18
+
+W7900 now has quick-set repeated timing evidence matching the earlier
+890M-style methodology. P14-A1 compares `pre_tuning` (`ae3b683`) with the
+current branch on six quick Netlib cases, with three repeats per
+case/version pair.
+
+Result: `current` is faster on `6/6` cases, with geometric-mean speedup
+`1.18889` and median speedup `1.19502`, while preserving iteration counts.
+
+See [P14-A1 quick6 summary](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md).

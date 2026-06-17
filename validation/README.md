@@ -286,3 +286,19 @@ Key interpretation: although the patch was reasonable as an implementation
 consistency experiment, it changed the `set-cover-model` iteration count
 from the previously stable `7480` to `7600`. The patch was therefore
 rejected and not committed.
+
+## W7900 P14-A1 quick6 current vs pre_tuning repeated validation / 2026-06-18
+
+This experiment repeats the earlier 890M-style quick6 methodology on W7900
+/ `gfx1100`. It compares `pre_tuning` (`ae3b683`) with the current
+`rocm-w7900-gfx1100` branch, with three repeats per case/version pair.
+
+- Summary: [w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md)
+- Chinese summary: [w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md)
+- Comparison CSV: [w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv)
+- Aggregated CSV: [w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_aggregated.csv](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_aggregated.csv)
+- Raw CSV: [w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_raw.csv](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_raw.csv)
+
+Result: `current` is faster on `6/6` quick6 cases, with geometric-mean
+speedup `1.18889` and median speedup `1.19502`, while preserving iteration
+counts across the compared versions.
