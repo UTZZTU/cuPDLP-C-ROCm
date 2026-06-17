@@ -206,35 +206,30 @@ Current status page: [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md)
 Hard3 note: [W7900_LARGE_MPS_HARD3_NOTES.md](W7900_LARGE_MPS_HARD3_NOTES.md)
 <!-- W7900_DOC_SWEEP_20260614_END -->
 
-## 9. Known Limitations
+## 9. Known limitations and current completion status
 
-This stage only completes first-port smoke validation. The following items are not completed yet:
+This document is kept as the historical W7900 / `gfx1100` first-port smoke
+milestone. The original first-port limitations have been superseded by later
+W7900 validation and tuning documents:
 
-* extended Netlib validation
-* large MPS benchmark
-* W7900 profiling
-* W7900 single-GPU tuning
-* 8-GPU concurrent throughput experiment
-* cross-device benchmark matrix update
+* extended Netlib validation: completed.
+* large MPS benchmark: non-hard23 baseline completed; hard3 tracked separately.
+* W7900 profiling: P10 targeted rocprof archived.
+* W7900 single-GPU tuning: P11 SpMV tuning completed, with current default
+  `HIPSPARSE_SPMV_CSR_ALG1`.
+* 8-GPU concurrent throughput experiment: fast8 batch throughput archived.
+* cross-device benchmark matrix: curated summaries are available.
 
-The current status should therefore be described as:
+The project still should not be described as a production-certified ROCm
+solver release, but it has moved beyond the first-port smoke stage. The
+authoritative status is [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md).
 
-```text
-W7900 / gfx1100 first-port smoke validation passed.
-Extended validation and tuning are in progress.
-```
+## 10. Next-step status
 
-It should not be described as a fully production-certified ROCm solver release.
+The original next-step list is now mostly completed. The only remaining
+optional enhancements are:
 
-## 10. Next Steps
+1. W7900 P14-A: current-vs-before representative repeated validation.
+2. W7900 P14-B: CSR ALG1-vs-ALG2 representative repeated validation.
 
-Planned next steps:
-
-1. Keep W7900 CPU/ROCm build scripts reproducible.
-2. Update the README W7900 status description.
-3. Run W7900 smoke validation through scripted workflows.
-4. Run extended Netlib validation.
-5. Profile W7900 single-GPU execution with ROCm profiling tools.
-6. Tune the ROCm backend based on profiling evidence.
-7. Run 8-GPU single-device sweep and multi-process throughput experiments.
-8. Summarize the engineering and experimental results for the competition report.
+Deeper numerical-path optimization is not part of the current project endpoint.

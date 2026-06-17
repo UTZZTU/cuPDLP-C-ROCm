@@ -13,7 +13,7 @@
 
 原始 cuPDLP-C 项目包含用于 GPU 加速线性规划的 CUDA backend。本 port 保留 CPU 路径和上游兼容 CUDA 路径，同时为 AMD 硬件新增 ROCm/HIP backend。
 
-当前已验证 ROCm 目标：
+最初验证的 ROCm 目标：
 
 | 项目 | 值 |
 |---|---|
@@ -255,11 +255,11 @@ tools/migration/
 
 - ROCm/HIP backend 仍是实验性，不应描述为生产级 solver release。
 - `gfx1150` / 890M 与 `gfx1100` / W7900 都已有验证记录。
-- W7900 validation pass 已完成当前阶段闭环：smoke、Netlib、
-  large-MPS baseline、P10 profiling、P11 SpMV tuning、P12 rejected
-  experiment note。
+- W7900 validation pass 已完成当前阶段闭环：smoke validation、Netlib
+  validation、large-MPS baseline、P10 profiling、P11 SpMV tuning 和 P12
+  rejected experiment note 均已归档。
 - 部分内部 CUDA-style 名称因 C/HIP 兼容边界仍保留。
-- Broad large MPS validation 已有 curated summaries；raw MPS 和 raw logs
+- Broad large-MPS validation 已有 curated summaries；raw MPS 和 raw logs
   仍不提交到 Git。
 - 尚无 ROCm CI。
 
@@ -270,4 +270,4 @@ tools/migration/
 1. W7900 P14-A：current-vs-before representative repeated validation。
 2. W7900 P14-B：CSR ALG1-vs-ALG2 representative repeated validation。
 
-除此之外，不建议继续新增深层数值路径优化，除非重新设计完整验证协议。
+除此之外，不建议继续新增深层数值路径优化，除非先重新设计完整验证协议。

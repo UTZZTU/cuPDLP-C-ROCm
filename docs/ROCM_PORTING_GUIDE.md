@@ -13,7 +13,7 @@ It has two purposes:
 
 The original cuPDLP-C project contains a CUDA backend for GPU-accelerated linear programming. This port keeps the CPU path and upstream-compatible CUDA path, and adds a ROCm/HIP backend for AMD hardware.
 
-Current validated ROCm target:
+Initial validated ROCm target:
 
 | Item | Value |
 |---|---|
@@ -253,19 +253,26 @@ User-visible documentation and output should prefer ROCm/HIP terminology. Histor
 
 Do not remove `cuda_csr_Ax`, `cuda_csc_ATy`, or `cuda_alloc_MVbuffer` without a dedicated compatibility pass and validation run.
 
-## 14. Current limitations
+## 14. Current limitations and completion status
 
-- The ROCm/HIP backend is still experimental.
-- `gfx1150` is the currently verified AMD target.
-- `gfx1100` / W7900 needs a separate validation pass.
-- Some internal CUDA-style names remain for compatibility.
-- Broad large MPS validation is currently in progress.
+- The ROCm/HIP backend is still experimental and should not be described as
+  a production-certified solver release.
+- Both `gfx1150` / 890M and `gfx1100` / W7900 now have validation records.
+- The W7900 validation pass has been completed for the current project stage:
+  smoke validation, Netlib validation, large-MPS baseline, P10 profiling,
+  P11 SpMV tuning, and the P12 rejected experiment note are all documented.
+- Some internal CUDA-style names remain at the C/HIP compatibility boundary.
+- Broad large-MPS validation has curated summaries; raw MPS files and raw
+  logs remain outside Git.
 - ROCm CI is not yet available.
 
-## 15. Recommended next steps
+## 15. Recommended next-step status
 
-1. Keep user-facing CUDA wording cleaned up while preserving required compatibility symbols.
-2. Finish the large MPS benchmark matrix.
-3. Record Radeon 890M pre-tuning and tuned ROCm results.
-4. Add W7900 / `gfx1100` build and validation notes.
-5. Expand profiling from smoke cases to larger LP instances.
+The original recommended next steps are mostly completed. The only remaining
+optional enhancements are:
+
+1. W7900 P14-A: current-vs-before representative repeated validation.
+2. W7900 P14-B: CSR ALG1-vs-ALG2 representative repeated validation.
+
+Beyond these, do not add deeper numerical-path optimization unless a full
+validation protocol is designed first.

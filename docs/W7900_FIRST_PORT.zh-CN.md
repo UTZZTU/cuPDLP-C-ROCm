@@ -208,8 +208,8 @@ Hard3 说明：[W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md](W7900_LARGE_MPS_HARD3_NOTE
 
 ## 9. 已知限制与当前完成状态
 
-本文是 W7900 / `gfx1100` first-port smoke milestone 的历史记录。原始
-first-port 限制已经由后续 W7900 文档取代：
+本文保留为 W7900 / `gfx1100` first-port smoke milestone 的历史记录。原始
+first-port 限制已经由后续 W7900 validation 和 tuning 文档取代：
 
 * extended Netlib validation：已完成。
 * large MPS benchmark：non-hard23 baseline 已完成，hard3 单独记录。
@@ -219,8 +219,8 @@ first-port 限制已经由后续 W7900 文档取代：
 * 8 GPU 并发吞吐实验：fast8 batch throughput 已归档。
 * 跨设备 benchmark matrix：已有 curated summaries。
 
-当前仍不应描述为生产级 solver release，但已经超过 first-port smoke 阶段。
-权威状态见 [W7900_CURRENT_STATUS.zh-CN.md](W7900_CURRENT_STATUS.zh-CN.md)。
+当前仍不应描述为生产级 ROCm solver release，但已经超过 first-port smoke
+阶段。权威状态见 [W7900_CURRENT_STATUS.zh-CN.md](W7900_CURRENT_STATUS.zh-CN.md)。
 
 ## 10. 后续计划状态
 
