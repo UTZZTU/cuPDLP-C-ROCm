@@ -226,29 +226,6 @@ Authoritative endpoints:
 - `validation/w7900_p11_spmv_tuning_summary_20260617.md`
 - `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md`
 
-## Final W7900 validation endpoint after P14-A1 / 2026-06-18
-
-The current project endpoint no longer requires additional experiments.
-
-Final W7900 evidence chain:
-
-- W7900 build, smoke validation, Netlib validation, and large-MPS baseline are documented.
-- P10 targeted rocprof profiling is documented.
-- P11 SpMV tuning is documented; current default is `HIPSPARSE_SPMV_CSR_ALG1`.
-- P12 records a rejected SpMV buffer-algorithm consistency experiment.
-- P14-A1 adds repeated quick6 current-vs-pre_tuning validation.
-
-P14-A1 result:
-
-- `current` is faster than `pre_tuning` on `6/6` quick6 cases.
-- geometric-mean speedup: `1.18889`.
-- median speedup: `1.19502`.
-- iteration counts are preserved across compared versions.
-
-P14-B CSR ALG1-vs-ALG2 repeated validation is no longer a blocker. It can remain a future optional robustness check, but it is not required for the current project closure.
-
-See [P14-A1 quick6 summary](validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md).
-
 ## Final supplemental validation after P14-A1 / 2026-06-18
 
 W7900 now includes P14-A1 quick6 current-vs-pre_tuning repeated validation.

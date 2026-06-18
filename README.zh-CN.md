@@ -222,29 +222,6 @@ baseline-only 目标或 pre-tuning 目标。
 - `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`
 - `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md`
 
-## P14-A1 后的 W7900 最终验证终点 / 2026-06-18
-
-当前项目终点不再需要继续补实验。
-
-W7900 最终证据链：
-
-- W7900 build、smoke validation、Netlib validation 和 large-MPS baseline 已归档。
-- P10 targeted rocprof profiling 已归档。
-- P11 SpMV tuning 已归档；当前默认 SpMV algorithm 为 `HIPSPARSE_SPMV_CSR_ALG1`。
-- P12 记录了被拒绝的 SpMV buffer-algorithm consistency 实验。
-- P14-A1 补充了 quick6 current-vs-pre_tuning repeated validation。
-
-P14-A1 结果：
-
-- `current` 在 quick6 的 `6/6` 个 case 上快于 `pre_tuning`。
-- 几何平均 speedup：`1.18889`。
-- 中位数 speedup：`1.19502`。
-- pre/current 迭代数保持一致。
-
-P14-B CSR ALG1-vs-ALG2 repeated validation 不再是当前收尾 blocker。它可以保留为未来可选稳健性检查，但当前项目闭环不再需要继续补实验。
-
-见 [P14-A1 quick6 中文汇总](validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md)。
-
 ## P14-A1 后的最终补充验证 / 2026-06-18
 
 W7900 已补充 P14-A1 quick6 current-vs-pre_tuning repeated validation。结果显示
