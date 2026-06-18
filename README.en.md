@@ -23,7 +23,7 @@
 | Additional validated ROCm target | AMD Radeon PRO W7900 / `gfx1100` |
 | CUDA baseline devices | RTX 3090, RTX 4090D, H100 |
 
-> Status: experimental but buildable. The ROCm/HIP backend has passed smoke validation, Netlib validation, cross-device benchmark checks, and large-MPS baseline testing on AMD Radeon 890M / `gfx1150`. The W7900 / `gfx1100` branch has completed smoke validation, Netlib 27-case validation, and a 23-case non-hard large-MPS baseline; the remaining large-MPS hard3 cases are tracked separately before full tuning. It is not yet a production-ready or fully tuned ROCm solver release.
+> Status: experimental but buildable. The ROCm/HIP backend has passed smoke validation, Netlib validation, cross-device benchmark checks, and large-MPS baseline testing on AMD Radeon 890M / `gfx1150`. The W7900 / `gfx1100` branch has completed smoke validation, Netlib validation, non-hard large-MPS baseline, P10 targeted profiling, P11 SpMV tuning, P12 rejected-experiment documentation, and P14-A1 quick6 repeated validation. It is still an experimental ROCm solver branch rather than a production-certified solver release, but the current project-stage W7900 evidence chain is closed.
 
 ## Start here
 
