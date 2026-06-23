@@ -107,30 +107,64 @@ cuPDLPx short13 comparison status:
 | cuPDLP-C upstream | RTX 4090D CUDA | 13/13 OPTIMAL on selected short/medium cases |
 | cuPDLPx v0.2.9 | RTX 4090D CUDA | 13/13 OPTIMAL on the same selected cases |
 
-## Quick start: ROCm/HIP build
+## Quick start
+
+This section gives the W7900 / `gfx1100` path from cloning the repository to running a minimal smoke example. For the complete environment recovery, data preparation, batch validation, profiling, and result-reproduction workflow, see [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md).
+
+### 1. Clone the project
 
 ```bash
-cmake -S . -B build-rocm-plc -G Ninja \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DBUILD_CUDA=OFF \
+git clone -b rocm-w7900-gfx1100 https://github.com/UTZZTU/cuPDLP-C-ROCm.git
+cd cuPDLP-C-ROCm
+```
+
+If submodules are needed, initialize them with:
+
+```bash
+git submodule update --init --recursive
+```
+
+### 2. Recover the W7900 ROCm/HIP environment
+
+The W7900 test environment should be treated as a volatile machine. Prefer the repository bootstrap script to recreate the workspace, dependencies, HiGHS installation, build directories, and runtime environment. See the reproducibility guide for prerequisites and optional controls.
+
+```bash
+bash scripts/bootstrap_w7900_workspace.sh
+```
+
+If the local ROCm SDK or HiGHS installation paths differ from the defaults, follow [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md) and adjust `ROCM_PATH`, `HIP_HIPCC_EXECUTABLE`, and `HIGHS_HOME`.
+
+### 3. Build the ROCm/HIP version
+
+W7900 uses the AMD `gfx1100` target. A typical build command is:
+
+```bash
+cmake -S . -B build-w7900-rocm -G Ninja \
   -DBUILD_ROCM=ON \
-  -DBUILD_APPS=OFF \
-  -DBUILD_PYTHON=OFF \
-  -DBUILD_TESTING=ON \
-  -DCMAKE_PREFIX_PATH=/opt/rocm \
-  -DCMAKE_HIP_ARCHITECTURES=gfx1150
+  -DROCM_PATH=/opt/python \
+  -DHIP_HIPCC_EXECUTABLE=/opt/python/bin/hipcc \
+  -DCMAKE_HIP_ARCHITECTURES=gfx1100 \
+  -DHIGHS_HOME=/root/cupdlp_w7900/deps/install/highs-1.6.0
 
-cmake --build build-rocm-plc --target plc -j"$(nproc)"
+cmake --build build-w7900-rocm -j"$(nproc)"
 ```
 
-Run a smoke example:
+### 4. Run a minimal smoke example
+
+After the build finishes, run `afiro.mps` first to confirm that the ROCm/HIP backend can read an MPS file and complete a small solve.
 
 ```bash
-./build-rocm-plc/bin/plc \
-  -fname ./example/afiro.mps \
-  -out /tmp/afiro_rocm_sum.json \
-  -nIterLim 200
+find . -iname "afiro.mps" -o -iname "afiro.mps.gz"
+find build-w7900-rocm -maxdepth 4 -type f -executable | sort | grep -Ei "cupdlp|pdlp|mps|solver"
 ```
+
+Run the executable and MPS path found above, for example:
+
+```bash
+./build-w7900-rocm/bin/cupdlp ./example/afiro.mps
+```
+
+If the repository provides a wrapper script for single-case smoke validation, it can be used instead. For large-MPS data preparation, non-hard23 validation, 8-card independent-MPS throughput, and profiling/tuning reproduction, continue with [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md).
 
 ## Validation
 
