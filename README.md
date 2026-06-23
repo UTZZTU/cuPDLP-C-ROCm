@@ -107,30 +107,64 @@ cuPDLPx short13 对比状态：
 | cuPDLP-C upstream | RTX 4090D CUDA | 选定 13 个短/中等 case 上 13/13 OPTIMAL |
 | cuPDLPx v0.2.9 | RTX 4090D CUDA | 同一批 case 上 13/13 OPTIMAL |
 
-## 快速开始：构建 ROCm/HIP 版本
+## 快速开始
+
+本节给出 W7900 / gfx1100 版本从拉取仓库到完成一个最小样例运行的路径。更完整的环境恢复、数据准备、批量验证和结果复现说明见 [docs/REPRODUCIBILITY.zh-CN.md](docs/REPRODUCIBILITY.zh-CN.md)。
+
+### 1. 拉取项目
 
 ```bash
-cmake -S . -B build-rocm-plc -G Ninja \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DBUILD_CUDA=OFF \
+git clone -b rocm-w7900-gfx1100 https://github.com/UTZZTU/cuPDLP-C-ROCm.git
+cd cuPDLP-C-ROCm
+```
+
+如需同步子模块，可执行：
+
+```bash
+git submodule update --init --recursive
+```
+
+### 2. 恢复 W7900 ROCm/HIP 环境
+
+W7900 测试环境按“非持久化机器”处理，建议优先使用仓库提供的恢复脚本重建基础依赖、HiGHS、构建目录和运行环境。脚本的详细说明、前置条件和可选参数见复现文档。
+
+```bash
+bash scripts/bootstrap_w7900_workspace.sh
+```
+
+如果本机 ROCm SDK 或 HiGHS 安装路径与脚本默认值不同，请按照 [docs/REPRODUCIBILITY.zh-CN.md](docs/REPRODUCIBILITY.zh-CN.md) 中的说明调整 `ROCM_PATH`、`HIP_HIPCC_EXECUTABLE` 和 `HIGHS_HOME`。
+
+### 3. 构建 ROCm/HIP 版本
+
+W7900 对应 AMD gfx1100 架构。典型构建命令如下：
+
+```bash
+cmake -S . -B build-w7900-rocm -G Ninja \
   -DBUILD_ROCM=ON \
-  -DBUILD_APPS=OFF \
-  -DBUILD_PYTHON=OFF \
-  -DBUILD_TESTING=ON \
-  -DCMAKE_PREFIX_PATH=/opt/rocm \
-  -DCMAKE_HIP_ARCHITECTURES=gfx1150
+  -DROCM_PATH=/opt/python \
+  -DHIP_HIPCC_EXECUTABLE=/opt/python/bin/hipcc \
+  -DCMAKE_HIP_ARCHITECTURES=gfx1100 \
+  -DHIGHS_HOME=/root/cupdlp_w7900/deps/install/highs-1.6.0
 
-cmake --build build-rocm-plc --target plc -j"$(nproc)"
+cmake --build build-w7900-rocm -j"$(nproc)"
 ```
 
-运行 smoke example：
+### 4. 运行最小样例
+
+构建完成后，可先使用 `afiro.mps` 做 smoke test，确认 ROCm/HIP 后端可以正常读取 MPS 并完成一次小规模求解。
 
 ```bash
-./build-rocm-plc/bin/plc \
-  -fname ./example/afiro.mps \
-  -out /tmp/afiro_rocm_sum.json \
-  -nIterLim 200
+find . -iname "afiro.mps" -o -iname "afiro.mps.gz"
+find build-w7900-rocm -maxdepth 4 -type f -executable | sort | grep -Ei "cupdlp|pdlp|mps|solver"
 ```
+
+根据上面找到的可执行文件和 `afiro.mps` 路径运行，例如：
+
+```bash
+./build-w7900-rocm/bin/cupdlp ./example/afiro.mps
+```
+
+若仓库中提供了封装好的单样例运行脚本，也可以优先使用脚本入口；批量数据准备、non-hard23 验证、8 卡 independent-MPS 吞吐实验和 profiling/tuning 复现流程请继续阅读 [docs/REPRODUCIBILITY.zh-CN.md](docs/REPRODUCIBILITY.zh-CN.md)。
 
 ## 验证
 
