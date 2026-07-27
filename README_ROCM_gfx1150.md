@@ -1,9 +1,15 @@
 # ROCm/HIP quick start for Radeon 890M / gfx1150
 
-> 中文: [README_ROCM_gfx1150.zh-CN.md](README_ROCM_gfx1150.zh-CN.md)  
-> Main README: [README.md](README.md)  
-> Documentation map: [docs/README.md](docs/README.md)  
-> Validation index: [validation/README.md](validation/README.md)  
+<!-- DOCUMENT_STATUS_NOTICE_BEGIN -->
+> **Earlier platform milestone**
+>
+> This page preserves the Radeon 890M / `gfx1150` build and validation path. It is not the current branch homepage. Start from [README.en.md](README.en.md) and [W7900 current status](docs/W7900_CURRENT_STATUS.md) for the current project state.
+<!-- DOCUMENT_STATUS_NOTICE_END -->
+
+> 中文: [README_ROCM_gfx1150.zh-CN.md](README_ROCM_gfx1150.zh-CN.md)
+> Main README: [README.md](README.md)
+> Documentation map: [docs/README.md](docs/README.md)
+> Validation index: [validation/README.md](validation/README.md)
 > Benchmark index: [docs/benchmarks/README.md](docs/benchmarks/README.md)
 
 This page is a focused quick-start for the currently validated ROCm/HIP target: AMD Radeon 890M / `gfx1150`.

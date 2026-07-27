@@ -1,293 +1,88 @@
 # Validation 结果索引
 
-> English: [README.md](README.md)  
-> 文档地图: [../docs/README.md](../docs/README.md)  
-> 根 README: [../README.zh-CN.md](../README.zh-CN.md)
+> English: [README.md](README.md)
 
-本目录保存 ROCm/HIP 验证和调优实验的 case 列表、整理后的 CSV 输出，以及 Markdown 汇总说明。
+本目录保存可提交、可审阅的 case lists、curated CSV 和 Markdown summaries。日期化文件是实验记录；当前结论请从 [W7900 当前状态](../docs/W7900_CURRENT_STATUS.zh-CN.md) 开始。
 
-## Case 列表
+## 当前 W7900 主证据
 
-| 文件 | 用途 |
-|---|---|
-| [cases.txt](cases.txt) | 基础 validation case 列表 |
-| [cases_benchmark_200m.txt](cases_benchmark_200m.txt) | 跨设备 Netlib benchmark case 列表 |
-| [cases_extended_netlib.txt](cases_extended_netlib.txt) | 扩展 Netlib validation 列表 |
-| [cases_medium_netlib.txt](cases_medium_netlib.txt) | 中等规模 Netlib case 列表 |
-| [cases_tuning_quick.txt](cases_tuning_quick.txt) | 快速 tuning sanity-check 列表 |
+| 主题 | Summary | CSV / 数据 | 结论 |
+|---|---|---|---|
+| Smoke | [中文](w7900_smoke_summary_20260611.zh-CN.md) | [CSV](w7900_smoke_summary_20260611.csv) | CPU 与 ROCm 状态检查 |
+| Netlib extended | [中文](w7900_extended_netlib_summary_20260611.zh-CN.md) | [CSV](w7900_extended_netlib_summary_20260611.csv) | 扩展 Netlib 验证 |
+| 27-case baseline | [中文](w7900_27cases_baseline_20260611.zh-CN.md) | [aggregated](w7900_27cases_baseline_20260611_aggregated.csv), [raw](w7900_27cases_baseline_20260611_raw.csv) | W7900 早期完整基线 |
+| Large-MPS non-hard23 | [中文](w7900_large_mps_nonhard23_20260613.zh-CN.md) | [solver](w7900_large_mps_nonhard23_20260613.csv), [runtime](w7900_large_mps_nonhard23_20260613_runtime.csv) | 23/23 `OPTIMAL` |
+| P10 targeted profiling | [中文](w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md) | [runtime](w7900_p10_current_targeted_rocprof_20260617_runtime.csv), [kernel](w7900_p10_current_targeted_rocprof_20260617_kernel_top.csv), [HIP API](w7900_p10_current_targeted_rocprof_20260617_hip_api_top.csv) | CSR SpMV 为主要热点 |
+| P11 SpMV tuning | [中文](w7900_p11_spmv_tuning_summary_20260617.zh-CN.md) | [sweep](w7900_p11_spmv_alg_sweep_20260617.csv), [default smoke](w7900_p11_default_spmv_alg1_smoke_20260617.csv) | 接受 `CSR_ALG1` 默认策略 |
+| P12 negative result | [中文](w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md) | — | 修改迭代轨迹，patch 被拒绝 |
+| P14-A1 quick6 repeats | [中文](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md) | [comparison](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv), [aggregated](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_aggregated.csv), [raw](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_raw.csv) | current 6/6 胜出 |
+| hard3 probe2 | [中文](w7900_large_mps_hard3_probe2_600s_summary_20260616.zh-CN.md) | [solver](w7900_large_mps_hard3_probe2_600s_solver_20260616.csv), [runtime](w7900_large_mps_hard3_probe2_600s_runtime_20260616.csv) | 困难 case 单独诊断 |
+| 8-card fast8 batch | [中文](w7900_8card_batch_fast8_summary_20260616.zh-CN.md) | [comparison](w7900_8card_batch_fast8_comparison_20260616.csv) | 独立任务吞吐，不是单 LP 多 GPU |
 
-## 跨设备验证汇总
+## P11 分析链
 
-| 文件 | 说明 |
-|---|---|
-| [cross_device_full_summary.csv](cross_device_full_summary.csv) | 跨设备 CPU/GPU/ROCm Netlib 汇总 CSV |
+P11 的结论不是直接从一次 sweep 得出，而是按以下顺序建立：
 
-结果解释见 [../docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md](../docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md)，英文版见 [../docs/CROSS_DEVICE_BENCHMARKS.md](../docs/CROSS_DEVICE_BENCHMARKS.md)。
+1. [runtime 调用点清单](w7900_p11_runtime_callsite_inventory_20260617.zh-CN.md)
+   [CSV](w7900_p11_runtime_callsite_inventory_20260617.csv)
+2. [第一轮优化候选](w7900_p11_first_patch_candidates_20260617.zh-CN.md)
+   [CSV](w7900_p11_first_patch_candidates_20260617.csv)
+3. [SpMV algorithm switch smoke](w7900_p11_spmv_alg_switch_smoke_20260617_summary.zh-CN.md)
+   [CSV](w7900_p11_spmv_alg_switch_smoke_20260617.csv)
+4. [五 case algorithm sweep](w7900_p11_spmv_alg_sweep_20260617_summary.zh-CN.md)
+   [CSV](w7900_p11_spmv_alg_sweep_20260617.csv)
+5. [default ALG1 smoke](w7900_p11_default_spmv_alg1_smoke_20260617_summary.zh-CN.md)
+   [CSV](w7900_p11_default_spmv_alg1_smoke_20260617.csv)
+6. [P11 最终总结](w7900_p11_spmv_tuning_summary_20260617.zh-CN.md)
 
-## ROCm current vs reduce-scalar-copies 重复测试对比
+## Before/current 与 earlier ROCm 证据
 
-| 文件 | 说明 |
-|---|---|
-| [rocm_current_vs_reduce_27cases_repeats_comparison.md](rocm_current_vs_reduce_27cases_repeats_comparison.md) | 英文 Markdown 汇总 |
-| [rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md](rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md) | 中文 Markdown 汇总 |
-| [rocm_current_vs_reduce_27cases_repeats_comparison.csv](rocm_current_vs_reduce_27cases_repeats_comparison.csv) | 逐 case 对比 CSV |
-| [rocm_current_vs_reduce_27cases_repeats_aggregated.csv](rocm_current_vs_reduce_27cases_repeats_aggregated.csv) | 重复运行聚合 CSV |
-| [rocm_current_vs_reduce_27cases_repeats_raw.csv](rocm_current_vs_reduce_27cases_repeats_raw.csv) | 重复运行原始 CSV |
-
-## ROCm profiling tuning milestones
-
-| 文件 | 说明 |
-|---|---|
-| [rocm_prof_tuning_milestones_summary.md](rocm_prof_tuning_milestones_summary.md) | 英文 Markdown 汇总 |
-| [rocm_prof_tuning_milestones_summary.zh-CN.md](rocm_prof_tuning_milestones_summary.zh-CN.md) | 中文 Markdown 汇总 |
-| [rocm_prof_tuning_milestones_summary.csv](rocm_prof_tuning_milestones_summary.csv) | tuning milestone 汇总 CSV |
-| [rocm_prof_tuning_milestones_deltas.csv](rocm_prof_tuning_milestones_deltas.csv) | milestone delta CSV |
-| [rocm_prof_tuning_milestones_hip_api_top.csv](rocm_prof_tuning_milestones_hip_api_top.csv) | HIP API top events |
-| [rocm_prof_tuning_milestones_kernel_top.csv](rocm_prof_tuning_milestones_kernel_top.csv) | kernel dispatch top events |
-| [rocm_prof_tuning_milestones_memory_copy_top.csv](rocm_prof_tuning_milestones_memory_copy_top.csv) | memory-copy top events |
-
-## ROCm tuning ablation
-
-| 文件 | 说明 |
-|---|---|
-| [rocm_tuning_ablation_6cases_repeats_summary.md](rocm_tuning_ablation_6cases_repeats_summary.md) | 英文 Markdown 汇总 |
-| [rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md](rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md) | 中文 Markdown 汇总 |
-| [rocm_tuning_ablation_6cases_repeats_summary.csv](rocm_tuning_ablation_6cases_repeats_summary.csv) | 重复运行 summary CSV |
-| [rocm_tuning_ablation_6cases_repeats_raw.csv](rocm_tuning_ablation_6cases_repeats_raw.csv) | 重复运行原始 CSV |
-
-## W7900 / gfx1100 validation 汇总
-
-| 文件 | 说明 |
-|---|---|
-| [w7900_smoke_summary_20260611.md](w7900_smoke_summary_20260611.md) | W7900 / `gfx1100` smoke validation 英文汇总 |
-| [w7900_smoke_summary_20260611.zh-CN.md](w7900_smoke_summary_20260611.zh-CN.md) | W7900 / `gfx1100` smoke validation 中文汇总 |
-| [w7900_smoke_summary_20260611.csv](w7900_smoke_summary_20260611.csv) | W7900 smoke validation CSV |
-| [w7900_extended_netlib_summary_20260611.md](w7900_extended_netlib_summary_20260611.md) | W7900 / `gfx1100` extended Netlib validation 英文汇总 |
-| [w7900_extended_netlib_summary_20260611.zh-CN.md](w7900_extended_netlib_summary_20260611.zh-CN.md) | W7900 / `gfx1100` extended Netlib validation 中文汇总 |
-| [w7900_extended_netlib_summary_20260611.csv](w7900_extended_netlib_summary_20260611.csv) | W7900 extended Netlib validation CSV |
-
-<!-- W7900_27CASE_BASELINE_20260611_BEGIN -->
-## W7900 / gfx1100 27-case baseline
-
-| 文件 | 说明 |
-|---|---|
-| [w7900_27cases_baseline_20260611.md](w7900_27cases_baseline_20260611.md) | W7900 / `gfx1100` 27-case repeated ROCm baseline 英文汇总 |
-| [w7900_27cases_baseline_20260611.zh-CN.md](w7900_27cases_baseline_20260611.zh-CN.md) | W7900 / `gfx1100` 27-case repeated ROCm baseline 中文汇总 |
-| [w7900_27cases_baseline_20260611_aggregated.csv](w7900_27cases_baseline_20260611_aggregated.csv) | 聚合 median/mean/CV baseline CSV |
-| [w7900_27cases_baseline_20260611_raw.csv](w7900_27cases_baseline_20260611_raw.csv) | repeated-run raw baseline CSV |
-<!-- W7900_27CASE_BASELINE_20260611_END -->
-
-<!-- W7900_CROSS_DEVICE_20260611_BEGIN -->
-## W7900 vs 既有跨设备 reference
-
-| 文件 | 说明 |
-|---|---|
-| [w7900_vs_cross_device_27cases_20260611.md](w7900_vs_cross_device_27cases_20260611.md) | W7900 / `gfx1100` 与既有 RTX 3090、RTX 4090D、Radeon 890M Netlib 跨设备 reference 的英文对比 |
-| [w7900_vs_cross_device_27cases_20260611.zh-CN.md](w7900_vs_cross_device_27cases_20260611.zh-CN.md) | W7900 跨设备 reference 中文对比 |
-| [w7900_vs_cross_device_27cases_20260611.csv](w7900_vs_cross_device_27cases_20260611.csv) | per-case 跨设备对比 CSV |
-<!-- W7900_CROSS_DEVICE_20260611_END -->
-
-<!-- W7900_LARGE_MPS_INITIAL17_20260613_BEGIN -->
-## W7900 / gfx1100 large-MPS initial17 safe baseline
-
-| 文件 | 说明 |
-|---|---|
-| [w7900_large_mps_initial17_safe_20260613.md](w7900_large_mps_initial17_safe_20260613.md) | W7900 / `gfx1100` large-MPS initial17 safe baseline 英文汇总 |
-| [w7900_large_mps_initial17_safe_20260613.zh-CN.md](w7900_large_mps_initial17_safe_20260613.zh-CN.md) | W7900 large-MPS initial17 safe baseline 中文汇总 |
-| [w7900_large_mps_initial17_safe_20260613.csv](w7900_large_mps_initial17_safe_20260613.csv) | parsed solver summary CSV |
-| [w7900_large_mps_initial17_safe_20260613_runtime.csv](w7900_large_mps_initial17_safe_20260613_runtime.csv) | runtime wall-time summary CSV |
-| [cases_w7900_large_mps_initial17_safe.txt](cases_w7900_large_mps_initial17_safe.txt) | 已完成的 safe 第一批 large-MPS case list |
-| [cases_w7900_large_mps_watchlist6.txt](cases_w7900_large_mps_watchlist6.txt) | 后续中等风险 large-MPS case list |
-| [cases_w7900_large_mps_hard3.txt](cases_w7900_large_mps_hard3.txt) | hard-case 后续列表 |
-<!-- W7900_LARGE_MPS_INITIAL17_20260613_END -->
-
-<!-- W7900_LARGE_MPS_NONHARD23_20260613_BEGIN -->
-## W7900 / gfx1100 large-MPS non-hard23 baseline
-
-| 文件 | 说明 |
-|---|---|
-| [w7900_large_mps_nonhard23_20260613.md](w7900_large_mps_nonhard23_20260613.md) | W7900 / `gfx1100` 23-case non-hard large-MPS baseline 英文汇总 |
-| [w7900_large_mps_nonhard23_20260613.zh-CN.md](w7900_large_mps_nonhard23_20260613.zh-CN.md) | W7900 23-case non-hard large-MPS baseline 中文汇总 |
-| [w7900_large_mps_nonhard23_20260613.csv](w7900_large_mps_nonhard23_20260613.csv) | 合并后的 parsed solver summary CSV |
-| [w7900_large_mps_nonhard23_20260613_runtime.csv](w7900_large_mps_nonhard23_20260613_runtime.csv) | 合并后的 runtime wall-time CSV |
-| [w7900_large_mps_watchlist6_diag_900s_20260613.csv](w7900_large_mps_watchlist6_diag_900s_20260613.csv) | 900 秒 watchlist 诊断 CSV |
-| [w7900_large_mps_near_optimal2_1800s_20260613.csv](w7900_large_mps_near_optimal2_1800s_20260613.csv) | 1800 秒 near-optimal follow-up CSV |
-<!-- W7900_LARGE_MPS_NONHARD23_20260613_END -->
-
-<!-- W7900_DOC_SWEEP_20260614_BEGIN -->
-## W7900 hard3 后续说明
-
-| 文件 | 说明 |
-|---|---|
-| [../docs/W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md](../docs/W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md) | `dlr1`、`Dual2_5000`、`fhnw-binschedule1` 的 hard3 策略与收敛行为说明 |
-<!-- W7900_DOC_SWEEP_20260614_END -->
-
-## 相关项目文档
-
-- [../docs/VALIDATION.zh-CN.md](../docs/VALIDATION.zh-CN.md) / [English](../docs/VALIDATION.md)
-- [../docs/ROCM_WORKFLOW.zh-CN.md](../docs/ROCM_WORKFLOW.zh-CN.md) / [English](../docs/ROCM_WORKFLOW.md)
-- [../docs/ROCM_TUNING_HISTORY.zh-CN.md](../docs/ROCM_TUNING_HISTORY.zh-CN.md) / [English](../docs/ROCM_TUNING_HISTORY.md)
-- [../docs/TUNING_GUIDE_ROCM.zh-CN.md](../docs/TUNING_GUIDE_ROCM.zh-CN.md) / [English](../docs/TUNING_GUIDE_ROCM.md)
-
-<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
-## W7900 最新实验摘要 / 2026-06-16
-
-这些 compact summary 记录最新的 W7900 / `gfx1100` 实验里程碑。raw MPS 文件、raw profiler traces 和大型运行目录均保存在 Git 外部。
-
-| 里程碑 | 摘要 | Compact CSV 输出 |
+| 主题 | Summary | 数据 |
 |---|---|---|
-| P2: rocprof starter3 | [W7900 rocprof starter3 摘要](w7900_rocprof_starter3_summary_20260616.zh-CN.md) | [runtime](w7900_rocprof_starter3_runtime_20260616.csv), [solver](w7900_rocprof_starter3_solver_20260616.csv), [HIP API top](w7900_rocprof_starter3_hip_api_top_20260616.csv), [kernel top](w7900_rocprof_starter3_kernel_top_20260616.csv) |
-| P3: hard3 probe2 600s | [W7900 hard3 probe2 600s 摘要](w7900_large_mps_hard3_probe2_600s_summary_20260616.zh-CN.md) | [runtime](w7900_large_mps_hard3_probe2_600s_runtime_20260616.csv), [solver](w7900_large_mps_hard3_probe2_600s_solver_20260616.csv), [case list](cases_w7900_large_mps_hard3_probe2.txt) |
-| P4: before/current fast-core6 | [W7900 before/current fast-core6 摘要](w7900_before_current_core6_fast_summary_20260616.zh-CN.md) | [comparison](w7900_before_current_core6_fast_comparison_20260616.csv), [current solver](w7900_before_current_core6_fast_current_solver_20260616.csv), [pre-tuning solver](w7900_before_current_core6_fast_pre_tuning_solver_20260616.csv), [case list](cases_w7900_large_mps_before_after_core6_fast.txt) |
-| P5: 8-card fast8 batch throughput | [W7900 8-card fast8 batch 摘要](w7900_8card_batch_fast8_summary_20260616.zh-CN.md) | [comparison](w7900_8card_batch_fast8_comparison_20260616.csv), [concurrent solver](w7900_8card_batch_fast8_concurrent_solver_20260616.csv), [single-GPU sequential solver](w7900_8card_batch_fast8_single_gpu_seq_solver_20260616.csv), [case list](cases_w7900_8card_batch_fast8.txt) |
+| before/current fast-core6 | [中文](w7900_before_current_core6_fast_summary_20260616.zh-CN.md) | [comparison](w7900_before_current_core6_fast_comparison_20260616.csv) |
+| 派生单迭代指标 | [中文](w7900_before_current_core6_fast_derived_metrics_20260617.zh-CN.md) | [CSV](w7900_before_current_core6_fast_derived_metrics_20260617.csv) |
+| W7900 vs cross-device 27 cases | [中文](w7900_vs_cross_device_27cases_20260611.zh-CN.md) | [CSV](w7900_vs_cross_device_27cases_20260611.csv) |
+| Cross-device full summary | [项目文档](../docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md) | [CSV](cross_device_full_summary.csv) |
+| ROCm current vs reduce repeated | [中文](rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md) | [comparison](rocm_current_vs_reduce_27cases_repeats_comparison.csv), [aggregated](rocm_current_vs_reduce_27cases_repeats_aggregated.csv), [raw](rocm_current_vs_reduce_27cases_repeats_raw.csv) |
+| ROCm profiling milestones | [中文](rocm_prof_tuning_milestones_summary.zh-CN.md) | [summary](rocm_prof_tuning_milestones_summary.csv), [deltas](rocm_prof_tuning_milestones_deltas.csv) |
+| ROCm tuning ablation | [中文](rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md) | [summary](rocm_tuning_ablation_6cases_repeats_summary.csv), [raw](rocm_tuning_ablation_6cases_repeats_raw.csv) |
 
-关键结果：
+## Large-MPS 分层证据
 
-- P2 记录 W7900 `rocprof` starter3 的 compact profiling 证据；raw trace 文件不进入 Git。
-- P3 确认 `dlr1` 和 `fhnw-binschedule1` 在 600 秒诊断预算下仍属于 hard case。
-- P4 显示 `ae3b683 / pre_tuning` 与当前 `rocm-w7900-gfx1100` 在 fast-core6 上均达到 6/6 `OPTIMAL`，但性能结果是混合的，不能写成笼统加速结论。
-- P5 显示 8 个独立 MPS 任务在 8 张 W7900 上并发完成时间为 146s，而单张 W7900 顺序运行需要 558s，实测 batch makespan speedup 约为 3.82x。
-<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
+| 分组 | Summary | 数据 |
+|---|---|---|
+| initial17 safe | [中文](w7900_large_mps_initial17_safe_20260613.zh-CN.md) | [solver](w7900_large_mps_initial17_safe_20260613.csv), [runtime](w7900_large_mps_initial17_safe_20260613_runtime.csv) |
+| near-optimal2 | — | [solver](w7900_large_mps_near_optimal2_1800s_20260613.csv), [runtime](w7900_large_mps_near_optimal2_1800s_20260613_runtime.csv) |
+| watchlist6 diagnostics | — | [solver](w7900_large_mps_watchlist6_diag_900s_20260613.csv), [runtime](w7900_large_mps_watchlist6_diag_900s_20260613_runtime.csv) |
+| non-hard23 merged result | [中文](w7900_large_mps_nonhard23_20260613.zh-CN.md) | [solver](w7900_large_mps_nonhard23_20260613.csv), [runtime](w7900_large_mps_nonhard23_20260613_runtime.csv) |
+| hard3 | [项目说明](../docs/W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md) | [probe2 summary](w7900_large_mps_hard3_probe2_600s_summary_20260616.zh-CN.md) |
 
-<!-- W7900_LATEST_FIGURES_20260616_BEGIN -->
-## W7900 最新实验图表 / 2026-06-16
+## Case lists
 
-| 图表索引 | 说明 |
+| Purpose | File |
 |---|---|
-| [W7900 最新实验图表](w7900_latest_experiment_figures_20260616.zh-CN.md) | 包含 8-card fast8 吞吐、before/current fast-core6、hard3 probe2、rocprof kernel 占比等 SVG 图 |
-<!-- W7900_LATEST_FIGURES_20260616_END -->
+| Basic smoke | [cases.txt](cases.txt) |
+| Extended Netlib | [cases_extended_netlib.txt](cases_extended_netlib.txt) |
+| W7900 27-case | [cases_benchmark_200m_w7900_27.txt](cases_benchmark_200m_w7900_27.txt) |
+| Tuning quick6 | [cases_tuning_quick.txt](cases_tuning_quick.txt) |
+| P10 starter3 | [cases_w7900_rocprof_starter3.txt](cases_w7900_rocprof_starter3.txt) |
+| before/current core6 | [cases_w7900_large_mps_before_after_core6_fast.txt](cases_w7900_large_mps_before_after_core6_fast.txt) |
+| non-hard23 | [cases_w7900_large_mps_before_after_nonhard23.txt](cases_w7900_large_mps_before_after_nonhard23.txt) |
+| hard3 | [cases_w7900_large_mps_hard3.txt](cases_w7900_large_mps_hard3.txt) |
+| 8-card fast8 | [cases_w7900_8card_batch_fast8.txt](cases_w7900_8card_batch_fast8.txt) |
 
-## W7900 before/current 派生指标 / 2026-06-17
+## 解释规则
 
-fast-core6 派生分析把总求解时间拆分为迭代次数和单迭代执行耗时，
-用于避免只看 solve time 得出片面结论。
+- 日期化 summary 是不可变实验记录；新的当前结论更新索引和状态页，不改写旧结果。
+- `non-hard23` 与 hard3 分开解释。
+- 8-card fast8 是 independent-MPS throughput。
+- 性能比较必须同时查看 wall time、solve time、`nIter`、termination、feasibility 和 gap。
+- P12 属于负向证据，不能从索引中删除。
+- raw `.mps`、raw profiler trace 和机器本地运行目录不提交。
 
-- 汇总：[w7900_before_current_core6_fast_derived_metrics_20260617.zh-CN.md](w7900_before_current_core6_fast_derived_metrics_20260617.zh-CN.md)
-- CSV：[w7900_before_current_core6_fast_derived_metrics_20260617.csv](w7900_before_current_core6_fast_derived_metrics_20260617.csv)
-- 英文汇总：[w7900_before_current_core6_fast_derived_metrics_20260617.md](w7900_before_current_core6_fast_derived_metrics_20260617.md)
-- 单迭代耗时比图：[w7900_before_current_fast_core6_ms_per_iter_ratio.svg](../docs/assets/w7900/latest_experiments/w7900_before_current_fast_core6_ms_per_iter_ratio.svg)
-- 迭代次数比图：[w7900_before_current_fast_core6_iter_ratio.svg](../docs/assets/w7900/latest_experiments/w7900_before_current_fast_core6_iter_ratio.svg)
+## 相关入口
 
-关键结论：current 在 6 个 fast-core6 case 上均降低了单迭代执行耗时，
-但由于部分 case 迭代次数增加，总 solve time 仍呈 mixed pattern。
-
-## W7900 P10 targeted rocprof / 2026-06-17
-
-P10 基于 P9 派生指标选择 5 个代表 case，对 current W7900/gfx1100
-分支做 targeted profiling。
-
-- 汇总：[w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md](w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md)
-- 英文汇总：[w7900_p10_current_targeted_rocprof_20260617_summary.md](w7900_p10_current_targeted_rocprof_20260617_summary.md)
-- 运行 CSV：[w7900_p10_current_targeted_rocprof_20260617_runtime.csv](w7900_p10_current_targeted_rocprof_20260617_runtime.csv)
-- Kernel top CSV：[w7900_p10_current_targeted_rocprof_20260617_kernel_top.csv](w7900_p10_current_targeted_rocprof_20260617_kernel_top.csv)
-- HIP API top CSV：[w7900_p10_current_targeted_rocprof_20260617_hip_api_top.csv](w7900_p10_current_targeted_rocprof_20260617_hip_api_top.csv)
-- Memory copy top CSV：[w7900_p10_current_targeted_rocprof_20260617_memory_copy_top.csv](w7900_p10_current_targeted_rocprof_20260617_memory_copy_top.csv)
-
-关键结论：5 个 targeted case 在 current 下均成功完成。trace 结果确认
-rocSPARSE CSR SpMV kernel 是主要 GPU 热点之一；较长 case 中
-`hipMemcpy`、`hipMemcpyAsync` 和 `hipLaunchKernel` 也是突出的 HIP API 成本。
-
-## W7900 P11 runtime 调用点清单 / 2026-06-17
-
-P11 先从源码级 runtime callsite inventory 开始，再决定是否做优化 patch。
-这是有意设计的 pre-patch triage 步骤。
-
-- 汇总：[w7900_p11_runtime_callsite_inventory_20260617.zh-CN.md](w7900_p11_runtime_callsite_inventory_20260617.zh-CN.md)
-- 英文汇总：[w7900_p11_runtime_callsite_inventory_20260617.md](w7900_p11_runtime_callsite_inventory_20260617.md)
-- CSV：[w7900_p11_runtime_callsite_inventory_20260617.csv](w7900_p11_runtime_callsite_inventory_20260617.csv)
-
-关键结论：P10 显示 targeted cases 中 rank-1 HIP API 成本是 `hipMemcpy`，
-rank-1 GPU kernel 是 `rocsparse::csrmvn_general_kernel`。因此 P11 先定位
-copy、synchronization、sparse-BLAS、BLAS 和 kernel-launch 调用点，再决定是否改代码。
-
-## W7900 P11 第一轮优化候选 / 2026-06-17
-
-P11 first-patch candidate analysis 把 P10 targeted rocprof 结果和
-P11 runtime 调用点清单结合起来，在真正改 solver 代码前，对下一步安全
-优化方向进行排序。
-
-- 汇总：[w7900_p11_first_patch_candidates_20260617.zh-CN.md](w7900_p11_first_patch_candidates_20260617.zh-CN.md)
-- 英文汇总：[w7900_p11_first_patch_candidates_20260617.md](w7900_p11_first_patch_candidates_20260617.md)
-- CSV：[w7900_p11_first_patch_candidates_20260617.csv](w7900_p11_first_patch_candidates_20260617.csv)
-
-关键结论：copy reduction 很诱人，因为 P10 显示 `hipMemcpy` 是 rank-1
-HIP API 成本；但如果这些 copy 绑定 residual、restart 或 termination 逻辑，
-就具有数值风险。因此第一个代码 patch 应该是 opt-in 且必须经过验证。
-
-## W7900 P11 SpMV algorithm switch smoke / 2026-06-17
-
-本次 smoke validation 检查第一个真正的 P11 tuning patch：
-opt-in HIP SpMV algorithm switch。
-
-- 汇总：[w7900_p11_spmv_alg_switch_smoke_20260617_summary.zh-CN.md](w7900_p11_spmv_alg_switch_smoke_20260617_summary.zh-CN.md)
-- 英文汇总：[w7900_p11_spmv_alg_switch_smoke_20260617_summary.md](w7900_p11_spmv_alg_switch_smoke_20260617_summary.md)
-- CSV：[w7900_p11_spmv_alg_switch_smoke_20260617.csv](w7900_p11_spmv_alg_switch_smoke_20260617.csv)
-
-关键结论：`set-cover-model` 在三种模式下均成功完成：默认 `csr_alg2`、
-opt-in `default` 和 opt-in `csr_alg1`。初始 smoke 中该 patch 保持了
-solver status 和迭代数一致。
-
-## W7900 P11 SpMV algorithm sweep / 2026-06-17
-
-本次 sweep 在 P10 的 5 个 targeted case 上评估 opt-in HIP SpMV
-algorithm switch，共比较 3 种 SpMV mode。
-
-- 汇总：[w7900_p11_spmv_alg_sweep_20260617_summary.zh-CN.md](w7900_p11_spmv_alg_sweep_20260617_summary.zh-CN.md)
-- 英文汇总：[w7900_p11_spmv_alg_sweep_20260617_summary.md](w7900_p11_spmv_alg_sweep_20260617_summary.md)
-- CSV：[w7900_p11_spmv_alg_sweep_20260617.csv](w7900_p11_spmv_alg_sweep_20260617.csv)
-
-关键结论：15 个 run 全部成功完成，并且每个 case 在不同 mode 下保持
-solver status 和迭代数一致。`csr_alg1` 在多数长 case 上略快，但幅度很小，
-应写作“有希望的实验结果”，不能直接写成最终性能结论。
-
-## W7900 P11 default SpMV ALG1 smoke / 2026-06-17
-
-本次 smoke validation 检查 P11 在五 case SpMV algorithm sweep 之后的
-默认策略更新。
-
-- 汇总：[w7900_p11_default_spmv_alg1_smoke_20260617_summary.zh-CN.md](w7900_p11_default_spmv_alg1_smoke_20260617_summary.zh-CN.md)
-- 英文汇总：[w7900_p11_default_spmv_alg1_smoke_20260617_summary.md](w7900_p11_default_spmv_alg1_smoke_20260617_summary.md)
-- CSV：[w7900_p11_default_spmv_alg1_smoke_20260617.csv](w7900_p11_default_spmv_alg1_smoke_20260617.csv)
-
-关键结论：无环境变量默认路径现在使用 `HIPSPARSE_SPMV_CSR_ALG1`，
-旧默认仍可通过 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 恢复。smoke 确认两个路径
-都能成功求解 `set-cover-model`，且迭代数一致。
-
-## W7900 P11 SpMV tuning 总结 / 2026-06-17
-
-本 P11 final note 总结 W7900 SpMV 调优路径：从 P10 profiling 到默认
-`HIPSPARSE_SPMV_CSR_ALG1` 策略。
-
-- 汇总：[w7900_p11_spmv_tuning_summary_20260617.zh-CN.md](w7900_p11_spmv_tuning_summary_20260617.zh-CN.md)
-- 英文汇总：[w7900_p11_spmv_tuning_summary_20260617.md](w7900_p11_spmv_tuning_summary_20260617.md)
-
-关键结论：P11 基于五 case sweep，将当前 W7900 默认 SpMV algorithm 改为
-`csr_alg1`，同时保留 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 显式回退路径。这是
-W7900-specific tuning 策略，不是最终跨平台性能结论。
-
-## W7900 P12 negative finding：SpMV buffer algorithm consistency / 2026-06-17
-
-本条记录 P11 之后一次被拒绝的低风险执行层调优尝试：让
-`hipsparseSpMV_bufferSize()` 使用与实际 runtime SpMV 一致的 algorithm。
-
-- 汇总：[w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md](w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md)
-- 英文汇总：[w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md](w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md)
-
-关键结论：该 patch 作为实现一致性实验是合理的，但它使
-`set-cover-model` 的迭代数从此前稳定的 `7480` 变为 `7600`。因此该 patch
-已被拒绝，未合入源码。
-
-## W7900 P14-A1 quick6 current vs pre_tuning repeated validation / 2026-06-18
-
-本实验在 W7900 / `gfx1100` 上复用此前 890M-style quick6 方法论，对比
-`pre_tuning`（`ae3b683`）与当前 `rocm-w7900-gfx1100` 分支，每个
-case/version 组合重复运行 3 次。
-
-- 汇总：[w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md)
-- 英文汇总：[w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md)
-- 对比 CSV：[w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv)
-- 聚合 CSV：[w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_aggregated.csv](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_aggregated.csv)
-- 原始 CSV：[w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_raw.csv](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_raw.csv)
-
-结果：`current` 在 quick6 的 `6/6` 个 case 上均更快，几何平均 speedup 为
-`1.18889`，中位数 speedup 为 `1.19502`，同时保持 pre/current 迭代数一致。
+- [W7900 当前状态](../docs/W7900_CURRENT_STATUS.zh-CN.md)
+- [可复现性指南](../docs/REPRODUCIBILITY.zh-CN.md)
+- [验证语义](../docs/VALIDATION.zh-CN.md)
+- [Benchmark 索引](../docs/benchmarks/README.md)

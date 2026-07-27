@@ -1,5 +1,11 @@
 # W7900 ROCm profiling plan
 
+<!-- DOCUMENT_STATUS_NOTICE_BEGIN -->
+> **Completed historical plan**
+>
+> This profiling plan has been executed and is preserved to show the original experimental design. Current conclusions are in [W7900 current status](W7900_CURRENT_STATUS.md), [ROCm profiling notes](ROCM_PROFILING_NOTES.md), and the [validation index](../validation/README.md).
+<!-- DOCUMENT_STATUS_NOTICE_END -->
+
 > 中文: [W7900_ROCM_PROFILING_PLAN.zh-CN.md](W7900_ROCM_PROFILING_PLAN.zh-CN.md)
 
 This document defines the profiling plan before W7900 / `gfx1100` tuning. It should be used after the baseline documentation is stable and before making kernel-level changes.

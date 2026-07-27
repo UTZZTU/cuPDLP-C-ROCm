@@ -1,5 +1,11 @@
 # W7900 ROCm profiling 计划
 
+<!-- DOCUMENT_STATUS_NOTICE_BEGIN -->
+> **已完成的历史计划**
+>
+> 本 profiling 计划已经执行，现作为原始实验设计记录保留。当前结论见 [W7900 当前状态](W7900_CURRENT_STATUS.zh-CN.md)、[ROCm profiling 记录](ROCM_PROFILING_NOTES.zh-CN.md) 和 [Validation 索引](../validation/README.zh-CN.md)。
+<!-- DOCUMENT_STATUS_NOTICE_END -->
+
 > English: [W7900_ROCM_PROFILING_PLAN.md](W7900_ROCM_PROFILING_PLAN.md)
 
 本文定义 W7900 / `gfx1100` 调优前的 profiling 计划。它应在 baseline 文档稳定之后、kernel 级修改之前使用。

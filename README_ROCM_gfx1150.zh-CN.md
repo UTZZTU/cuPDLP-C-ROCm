@@ -1,9 +1,15 @@
 # Radeon 890M / gfx1150 的 ROCm/HIP 快速入口
 
-> English: [README_ROCM_gfx1150.md](README_ROCM_gfx1150.md)  
-> 主 README: [README.zh-CN.md](README.zh-CN.md)  
-> 文档地图: [docs/README.md](docs/README.md)  
-> 验证数据索引: [validation/README.zh-CN.md](validation/README.zh-CN.md)  
+<!-- DOCUMENT_STATUS_NOTICE_BEGIN -->
+> **早期平台里程碑**
+>
+> 本页保留 Radeon 890M / `gfx1150` 的构建与验证路径，但不是当前分支主页。当前项目状态请从 [README.md](README.md) 和 [W7900 当前状态](docs/W7900_CURRENT_STATUS.zh-CN.md) 开始。
+<!-- DOCUMENT_STATUS_NOTICE_END -->
+
+> English: [README_ROCM_gfx1150.md](README_ROCM_gfx1150.md)
+> 主 README: [README.md](README.md)
+> 文档地图: [docs/README.md](docs/README.md)
+> 验证数据索引: [validation/README.zh-CN.md](validation/README.zh-CN.md)
 > Benchmark 索引: [docs/benchmarks/README.md](docs/benchmarks/README.md)
 
 本页是当前已经验证的 ROCm/HIP 目标平台 AMD Radeon 890M / `gfx1150` 的快速入口。

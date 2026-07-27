@@ -1,304 +1,88 @@
 # Validation results index
 
-> 中文: [README.zh-CN.md](README.zh-CN.md)  
-> Main documentation map: [../docs/README.md](../docs/README.md)  
-> Root README: [../README.md](../README.md)
+> 中文: [README.zh-CN.md](README.zh-CN.md)
 
-This directory contains validation case lists, curated CSV outputs, and Markdown summaries for ROCm/HIP validation and tuning experiments.
+This directory stores reviewable case lists, curated CSV files, and Markdown summaries. Dated files are experiment records; start from [W7900 current status](../docs/W7900_CURRENT_STATUS.md) for the current interpretation.
+
+## Primary current W7900 evidence
+
+| Topic | Summary | CSV / data | Conclusion |
+|---|---|---|---|
+| Smoke | [English](w7900_smoke_summary_20260611.md) | [CSV](w7900_smoke_summary_20260611.csv) | CPU and ROCm status check |
+| Extended Netlib | [English](w7900_extended_netlib_summary_20260611.md) | [CSV](w7900_extended_netlib_summary_20260611.csv) | Extended Netlib validation |
+| 27-case baseline | [English](w7900_27cases_baseline_20260611.md) | [aggregated](w7900_27cases_baseline_20260611_aggregated.csv), [raw](w7900_27cases_baseline_20260611_raw.csv) | Early full W7900 baseline |
+| Large-MPS non-hard23 | [English](w7900_large_mps_nonhard23_20260613.md) | [solver](w7900_large_mps_nonhard23_20260613.csv), [runtime](w7900_large_mps_nonhard23_20260613_runtime.csv) | 23/23 `OPTIMAL` |
+| P10 targeted profiling | [English](w7900_p10_current_targeted_rocprof_20260617_summary.md) | [runtime](w7900_p10_current_targeted_rocprof_20260617_runtime.csv), [kernel](w7900_p10_current_targeted_rocprof_20260617_kernel_top.csv), [HIP API](w7900_p10_current_targeted_rocprof_20260617_hip_api_top.csv) | CSR SpMV is the main hotspot |
+| P11 SpMV tuning | [English](w7900_p11_spmv_tuning_summary_20260617.md) | [sweep](w7900_p11_spmv_alg_sweep_20260617.csv), [default smoke](w7900_p11_default_spmv_alg1_smoke_20260617.csv) | `CSR_ALG1` accepted as default |
+| P12 negative result | [English](w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md) | — | Iteration trajectory changed; patch rejected |
+| P14-A1 quick6 repeats | [English](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md) | [comparison](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv), [aggregated](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_aggregated.csv), [raw](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_raw.csv) | current wins 6/6 |
+| hard3 probe2 | [English](w7900_large_mps_hard3_probe2_600s_summary_20260616.md) | [solver](w7900_large_mps_hard3_probe2_600s_solver_20260616.csv), [runtime](w7900_large_mps_hard3_probe2_600s_runtime_20260616.csv) | Difficult cases reported separately |
+| 8-card fast8 batch | [English](w7900_8card_batch_fast8_summary_20260616.md) | [comparison](w7900_8card_batch_fast8_comparison_20260616.csv) | Independent-job throughput, not one-LP multi-GPU |
+
+## P11 analysis chain
+
+P11 was not based on one isolated sweep. The evidence was built in this order:
+
+1. [Runtime callsite inventory](w7900_p11_runtime_callsite_inventory_20260617.md)
+   [CSV](w7900_p11_runtime_callsite_inventory_20260617.csv)
+2. [First patch candidates](w7900_p11_first_patch_candidates_20260617.md)
+   [CSV](w7900_p11_first_patch_candidates_20260617.csv)
+3. [SpMV algorithm-switch smoke](w7900_p11_spmv_alg_switch_smoke_20260617_summary.md)
+   [CSV](w7900_p11_spmv_alg_switch_smoke_20260617.csv)
+4. [Five-case algorithm sweep](w7900_p11_spmv_alg_sweep_20260617_summary.md)
+   [CSV](w7900_p11_spmv_alg_sweep_20260617.csv)
+5. [Default ALG1 smoke](w7900_p11_default_spmv_alg1_smoke_20260617_summary.md)
+   [CSV](w7900_p11_default_spmv_alg1_smoke_20260617.csv)
+6. [Final P11 summary](w7900_p11_spmv_tuning_summary_20260617.md)
+
+## Before/current and earlier ROCm evidence
+
+| Topic | Summary | Data |
+|---|---|---|
+| before/current fast-core6 | [English](w7900_before_current_core6_fast_summary_20260616.md) | [comparison](w7900_before_current_core6_fast_comparison_20260616.csv) |
+| Derived per-iteration metrics | [English](w7900_before_current_core6_fast_derived_metrics_20260617.md) | [CSV](w7900_before_current_core6_fast_derived_metrics_20260617.csv) |
+| W7900 vs cross-device 27 cases | [English](w7900_vs_cross_device_27cases_20260611.md) | [CSV](w7900_vs_cross_device_27cases_20260611.csv) |
+| Cross-device full summary | [Project document](../docs/CROSS_DEVICE_BENCHMARKS.md) | [CSV](cross_device_full_summary.csv) |
+| ROCm current vs reduce repeats | [English](rocm_current_vs_reduce_27cases_repeats_comparison.md) | [comparison](rocm_current_vs_reduce_27cases_repeats_comparison.csv), [aggregated](rocm_current_vs_reduce_27cases_repeats_aggregated.csv), [raw](rocm_current_vs_reduce_27cases_repeats_raw.csv) |
+| ROCm profiling milestones | [English](rocm_prof_tuning_milestones_summary.md) | [summary](rocm_prof_tuning_milestones_summary.csv), [deltas](rocm_prof_tuning_milestones_deltas.csv) |
+| ROCm tuning ablation | [English](rocm_tuning_ablation_6cases_repeats_summary.md) | [summary](rocm_tuning_ablation_6cases_repeats_summary.csv), [raw](rocm_tuning_ablation_6cases_repeats_raw.csv) |
+
+## Large-MPS evidence layers
+
+| Group | Summary | Data |
+|---|---|---|
+| initial17 safe | [English](w7900_large_mps_initial17_safe_20260613.md) | [solver](w7900_large_mps_initial17_safe_20260613.csv), [runtime](w7900_large_mps_initial17_safe_20260613_runtime.csv) |
+| near-optimal2 | — | [solver](w7900_large_mps_near_optimal2_1800s_20260613.csv), [runtime](w7900_large_mps_near_optimal2_1800s_20260613_runtime.csv) |
+| watchlist6 diagnostics | — | [solver](w7900_large_mps_watchlist6_diag_900s_20260613.csv), [runtime](w7900_large_mps_watchlist6_diag_900s_20260613_runtime.csv) |
+| merged non-hard23 | [English](w7900_large_mps_nonhard23_20260613.md) | [solver](w7900_large_mps_nonhard23_20260613.csv), [runtime](w7900_large_mps_nonhard23_20260613_runtime.csv) |
+| hard3 | [Project notes](../docs/W7900_LARGE_MPS_HARD3_NOTES.md) | [probe2 summary](w7900_large_mps_hard3_probe2_600s_summary_20260616.md) |
 
 ## Case lists
 
-| File | Purpose |
+| Purpose | File |
 |---|---|
-| [cases.txt](cases.txt) | Basic validation case list |
-| [cases_benchmark_200m.txt](cases_benchmark_200m.txt) | Cross-device Netlib benchmark case list |
-| [cases_extended_netlib.txt](cases_extended_netlib.txt) | Extended Netlib validation list |
-| [cases_medium_netlib.txt](cases_medium_netlib.txt) | Medium Netlib case list |
-| [cases_tuning_quick.txt](cases_tuning_quick.txt) | Short tuning sanity-check list |
-
-## Cross-device validation summary
-
-| File | Description |
-|---|---|
-| [cross_device_full_summary.csv](cross_device_full_summary.csv) | Cross-device CPU/GPU/ROCm Netlib summary CSV |
-
-The interpretation of these results is documented in [../docs/CROSS_DEVICE_BENCHMARKS.md](../docs/CROSS_DEVICE_BENCHMARKS.md) and [../docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md](../docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md).
-
-## ROCm current vs reduce-scalar-copies repeated comparison
-
-| File | Description |
-|---|---|
-| [rocm_current_vs_reduce_27cases_repeats_comparison.md](rocm_current_vs_reduce_27cases_repeats_comparison.md) | English Markdown summary |
-| [rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md](rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md) | Chinese Markdown summary |
-| [rocm_current_vs_reduce_27cases_repeats_comparison.csv](rocm_current_vs_reduce_27cases_repeats_comparison.csv) | Per-case comparison CSV |
-| [rocm_current_vs_reduce_27cases_repeats_aggregated.csv](rocm_current_vs_reduce_27cases_repeats_aggregated.csv) | Aggregated repeated-run CSV |
-| [rocm_current_vs_reduce_27cases_repeats_raw.csv](rocm_current_vs_reduce_27cases_repeats_raw.csv) | Raw repeated-run CSV |
-
-## ROCm profiling tuning milestones
-
-| File | Description |
-|---|---|
-| [rocm_prof_tuning_milestones_summary.md](rocm_prof_tuning_milestones_summary.md) | English Markdown summary |
-| [rocm_prof_tuning_milestones_summary.zh-CN.md](rocm_prof_tuning_milestones_summary.zh-CN.md) | Chinese Markdown summary |
-| [rocm_prof_tuning_milestones_summary.csv](rocm_prof_tuning_milestones_summary.csv) | Milestone summary CSV |
-| [rocm_prof_tuning_milestones_deltas.csv](rocm_prof_tuning_milestones_deltas.csv) | Per-milestone delta CSV |
-| [rocm_prof_tuning_milestones_hip_api_top.csv](rocm_prof_tuning_milestones_hip_api_top.csv) | Top HIP API calls |
-| [rocm_prof_tuning_milestones_kernel_top.csv](rocm_prof_tuning_milestones_kernel_top.csv) | Top kernel dispatches |
-| [rocm_prof_tuning_milestones_memory_copy_top.csv](rocm_prof_tuning_milestones_memory_copy_top.csv) | Top memory-copy events |
-
-## ROCm tuning ablation
-
-| File | Description |
-|---|---|
-| [rocm_tuning_ablation_6cases_repeats_summary.md](rocm_tuning_ablation_6cases_repeats_summary.md) | English Markdown summary |
-| [rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md](rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md) | Chinese Markdown summary |
-| [rocm_tuning_ablation_6cases_repeats_summary.csv](rocm_tuning_ablation_6cases_repeats_summary.csv) | Repeated-run summary CSV |
-| [rocm_tuning_ablation_6cases_repeats_raw.csv](rocm_tuning_ablation_6cases_repeats_raw.csv) | Raw repeated-run CSV |
-
-## W7900 / gfx1100 validation summaries
-
-| File | Description |
-|---|---|
-| [w7900_smoke_summary_20260611.md](w7900_smoke_summary_20260611.md) | W7900 / `gfx1100` smoke validation summary |
-| [w7900_smoke_summary_20260611.zh-CN.md](w7900_smoke_summary_20260611.zh-CN.md) | Chinese W7900 / `gfx1100` smoke validation summary |
-| [w7900_smoke_summary_20260611.csv](w7900_smoke_summary_20260611.csv) | W7900 smoke validation CSV |
-| [w7900_extended_netlib_summary_20260611.md](w7900_extended_netlib_summary_20260611.md) | W7900 / `gfx1100` extended Netlib validation summary |
-| [w7900_extended_netlib_summary_20260611.zh-CN.md](w7900_extended_netlib_summary_20260611.zh-CN.md) | Chinese W7900 / `gfx1100` extended Netlib validation summary |
-| [w7900_extended_netlib_summary_20260611.csv](w7900_extended_netlib_summary_20260611.csv) | W7900 extended Netlib validation CSV |
-
-<!-- W7900_27CASE_BASELINE_20260611_BEGIN -->
-## W7900 / gfx1100 27-case baseline
-
-| File | Description |
-|---|---|
-| [w7900_27cases_baseline_20260611.md](w7900_27cases_baseline_20260611.md) | W7900 / `gfx1100` 27-case repeated ROCm baseline |
-| [w7900_27cases_baseline_20260611.zh-CN.md](w7900_27cases_baseline_20260611.zh-CN.md) | Chinese W7900 / `gfx1100` 27-case repeated ROCm baseline |
-| [w7900_27cases_baseline_20260611_aggregated.csv](w7900_27cases_baseline_20260611_aggregated.csv) | Aggregated median/mean/CV baseline CSV |
-| [w7900_27cases_baseline_20260611_raw.csv](w7900_27cases_baseline_20260611_raw.csv) | Raw repeated-run baseline CSV |
-<!-- W7900_27CASE_BASELINE_20260611_END -->
-
-<!-- W7900_CROSS_DEVICE_20260611_BEGIN -->
-## W7900 vs existing cross-device reference
-
-| File | Description |
-|---|---|
-| [w7900_vs_cross_device_27cases_20260611.md](w7900_vs_cross_device_27cases_20260611.md) | W7900 / `gfx1100` vs existing RTX 3090, RTX 4090D, and Radeon 890M cross-device Netlib reference |
-| [w7900_vs_cross_device_27cases_20260611.zh-CN.md](w7900_vs_cross_device_27cases_20260611.zh-CN.md) | Chinese W7900 cross-device reference comparison |
-| [w7900_vs_cross_device_27cases_20260611.csv](w7900_vs_cross_device_27cases_20260611.csv) | Per-case cross-device comparison CSV |
-<!-- W7900_CROSS_DEVICE_20260611_END -->
-
-<!-- W7900_LARGE_MPS_INITIAL17_20260613_BEGIN -->
-## W7900 / gfx1100 large-MPS initial17 safe baseline
-
-| File | Description |
-|---|---|
-| [w7900_large_mps_initial17_safe_20260613.md](w7900_large_mps_initial17_safe_20260613.md) | W7900 / `gfx1100` large-MPS initial17 safe baseline summary |
-| [w7900_large_mps_initial17_safe_20260613.zh-CN.md](w7900_large_mps_initial17_safe_20260613.zh-CN.md) | Chinese W7900 large-MPS initial17 safe baseline summary |
-| [w7900_large_mps_initial17_safe_20260613.csv](w7900_large_mps_initial17_safe_20260613.csv) | Parsed solver summary CSV |
-| [w7900_large_mps_initial17_safe_20260613_runtime.csv](w7900_large_mps_initial17_safe_20260613_runtime.csv) | Runtime wall-time summary CSV |
-| [cases_w7900_large_mps_initial17_safe.txt](cases_w7900_large_mps_initial17_safe.txt) | Completed safe first-batch large-MPS case list |
-| [cases_w7900_large_mps_watchlist6.txt](cases_w7900_large_mps_watchlist6.txt) | Medium-risk large-MPS follow-up case list |
-| [cases_w7900_large_mps_hard3.txt](cases_w7900_large_mps_hard3.txt) | Hard-case follow-up list |
-<!-- W7900_LARGE_MPS_INITIAL17_20260613_END -->
-
-<!-- W7900_LARGE_MPS_NONHARD23_20260613_BEGIN -->
-## W7900 / gfx1100 large-MPS non-hard23 baseline
-
-| File | Description |
-|---|---|
-| [w7900_large_mps_nonhard23_20260613.md](w7900_large_mps_nonhard23_20260613.md) | W7900 / `gfx1100` 23-case non-hard large-MPS baseline |
-| [w7900_large_mps_nonhard23_20260613.zh-CN.md](w7900_large_mps_nonhard23_20260613.zh-CN.md) | Chinese W7900 23-case non-hard large-MPS baseline |
-| [w7900_large_mps_nonhard23_20260613.csv](w7900_large_mps_nonhard23_20260613.csv) | Combined parsed solver summary CSV |
-| [w7900_large_mps_nonhard23_20260613_runtime.csv](w7900_large_mps_nonhard23_20260613_runtime.csv) | Combined runtime wall-time CSV |
-| [w7900_large_mps_watchlist6_diag_900s_20260613.csv](w7900_large_mps_watchlist6_diag_900s_20260613.csv) | 900-second watchlist diagnostic CSV |
-| [w7900_large_mps_near_optimal2_1800s_20260613.csv](w7900_large_mps_near_optimal2_1800s_20260613.csv) | 1800-second near-optimal follow-up CSV |
-<!-- W7900_LARGE_MPS_NONHARD23_20260613_END -->
-
-<!-- W7900_DOC_SWEEP_20260614_BEGIN -->
-## W7900 hard3 follow-up
-
-| File | Description |
-|---|---|
-| [../docs/W7900_LARGE_MPS_HARD3_NOTES.md](../docs/W7900_LARGE_MPS_HARD3_NOTES.md) | Hard3 policy and convergence-behavior notes for `dlr1`, `Dual2_5000`, and `fhnw-binschedule1` |
-<!-- W7900_DOC_SWEEP_20260614_END -->
-
-## Related project docs
-
-- [../docs/VALIDATION.md](../docs/VALIDATION.md) / [中文](../docs/VALIDATION.zh-CN.md)
-- [../docs/ROCM_WORKFLOW.md](../docs/ROCM_WORKFLOW.md) / [中文](../docs/ROCM_WORKFLOW.zh-CN.md)
-- [../docs/ROCM_TUNING_HISTORY.md](../docs/ROCM_TUNING_HISTORY.md) / [中文](../docs/ROCM_TUNING_HISTORY.zh-CN.md)
-- [../docs/TUNING_GUIDE_ROCM.md](../docs/TUNING_GUIDE_ROCM.md) / [中文](../docs/TUNING_GUIDE_ROCM.zh-CN.md)
-
-<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
-## W7900 latest experiment summaries / 2026-06-16
-
-These compact summaries record the latest W7900 / `gfx1100` experiment milestones. Raw MPS files, raw profiler traces, and large run directories stay outside Git.
-
-| Milestone | Summary | Compact CSV outputs |
-|---|---|---|
-| P2: rocprof starter3 | [W7900 rocprof starter3 summary](w7900_rocprof_starter3_summary_20260616.md) | [runtime](w7900_rocprof_starter3_runtime_20260616.csv), [solver](w7900_rocprof_starter3_solver_20260616.csv), [HIP API top](w7900_rocprof_starter3_hip_api_top_20260616.csv), [kernel top](w7900_rocprof_starter3_kernel_top_20260616.csv) |
-| P3: hard3 probe2 600s | [W7900 hard3 probe2 600s summary](w7900_large_mps_hard3_probe2_600s_summary_20260616.md) | [runtime](w7900_large_mps_hard3_probe2_600s_runtime_20260616.csv), [solver](w7900_large_mps_hard3_probe2_600s_solver_20260616.csv), [case list](cases_w7900_large_mps_hard3_probe2.txt) |
-| P4: before/current fast-core6 | [W7900 before/current fast-core6 summary](w7900_before_current_core6_fast_summary_20260616.md) | [comparison](w7900_before_current_core6_fast_comparison_20260616.csv), [current solver](w7900_before_current_core6_fast_current_solver_20260616.csv), [pre-tuning solver](w7900_before_current_core6_fast_pre_tuning_solver_20260616.csv), [case list](cases_w7900_large_mps_before_after_core6_fast.txt) |
-| P5: 8-card fast8 batch throughput | [W7900 8-card fast8 batch summary](w7900_8card_batch_fast8_summary_20260616.md) | [comparison](w7900_8card_batch_fast8_comparison_20260616.csv), [concurrent solver](w7900_8card_batch_fast8_concurrent_solver_20260616.csv), [single-GPU sequential solver](w7900_8card_batch_fast8_single_gpu_seq_solver_20260616.csv), [case list](cases_w7900_8card_batch_fast8.txt) |
-
-Key result highlights:
-
-- P2 records compact W7900 `rocprof` starter3 evidence; raw trace files are intentionally not committed.
-- P3 confirms `dlr1` and `fhnw-binschedule1` remain hard under a 600-second diagnostic budget.
-- P4 shows both `ae3b683 / pre_tuning` and current `rocm-w7900-gfx1100` reach 6/6 `OPTIMAL` on fast-core6, with mixed performance rather than a blanket speedup claim.
-- P5 shows 8 independent MPS tasks complete in 146s on 8 W7900 GPUs versus 558s sequentially on one W7900 GPU, giving about 3.82x measured batch makespan speedup.
-<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
-
-<!-- W7900_LATEST_FIGURES_20260616_BEGIN -->
-## W7900 latest experiment figures / 2026-06-16
-
-| Figure index | Description |
-|---|---|
-| [W7900 latest experiment figures](w7900_latest_experiment_figures_20260616.md) | SVG figures for 8-card fast8 throughput, before/current fast-core6, hard3 probe2, and rocprof kernel share |
-<!-- W7900_LATEST_FIGURES_20260616_END -->
-
-## W7900 before/current derived metrics / 2026-06-17
-
-The fast-core6 derived analysis separates total solve time into iteration
-count and per-iteration execution time.
-
-- Summary: [w7900_before_current_core6_fast_derived_metrics_20260617.md](w7900_before_current_core6_fast_derived_metrics_20260617.md)
-- CSV: [w7900_before_current_core6_fast_derived_metrics_20260617.csv](w7900_before_current_core6_fast_derived_metrics_20260617.csv)
-- Chinese summary: [w7900_before_current_core6_fast_derived_metrics_20260617.zh-CN.md](w7900_before_current_core6_fast_derived_metrics_20260617.zh-CN.md)
-- ms/iter ratio figure: [w7900_before_current_fast_core6_ms_per_iter_ratio.svg](../docs/assets/w7900/latest_experiments/w7900_before_current_fast_core6_ms_per_iter_ratio.svg)
-- iteration ratio figure: [w7900_before_current_fast_core6_iter_ratio.svg](../docs/assets/w7900/latest_experiments/w7900_before_current_fast_core6_iter_ratio.svg)
-
-Key interpretation: current improves per-iteration execution time on all
-six fast-core6 cases, but total solve time remains mixed because several
-cases require more iterations.
-
-## W7900 P10 targeted rocprof / 2026-06-17
-
-P10 profiles the current W7900/gfx1100 branch on five representative
-cases selected from the P9 derived metrics.
-
-- Summary: [w7900_p10_current_targeted_rocprof_20260617_summary.md](w7900_p10_current_targeted_rocprof_20260617_summary.md)
-- Chinese summary: [w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md](w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md)
-- Runtime CSV: [w7900_p10_current_targeted_rocprof_20260617_runtime.csv](w7900_p10_current_targeted_rocprof_20260617_runtime.csv)
-- Kernel top CSV: [w7900_p10_current_targeted_rocprof_20260617_kernel_top.csv](w7900_p10_current_targeted_rocprof_20260617_kernel_top.csv)
-- HIP API top CSV: [w7900_p10_current_targeted_rocprof_20260617_hip_api_top.csv](w7900_p10_current_targeted_rocprof_20260617_hip_api_top.csv)
-- Memory copy top CSV: [w7900_p10_current_targeted_rocprof_20260617_memory_copy_top.csv](w7900_p10_current_targeted_rocprof_20260617_memory_copy_top.csv)
-
-Key interpretation: all five targeted cases complete successfully under
-current. The traces confirm that rocSPARSE CSR SpMV kernels are major GPU
-hotspots, while `hipMemcpy`, `hipMemcpyAsync`, and `hipLaunchKernel` are
-prominent HIP API costs on the longer cases.
-
-## W7900 P11 runtime callsite inventory / 2026-06-17
-
-P11 starts from a source-level runtime callsite inventory before applying
-optimization patches. This is intentionally a pre-patch triage step.
-
-- Summary: [w7900_p11_runtime_callsite_inventory_20260617.md](w7900_p11_runtime_callsite_inventory_20260617.md)
-- Chinese summary: [w7900_p11_runtime_callsite_inventory_20260617.zh-CN.md](w7900_p11_runtime_callsite_inventory_20260617.zh-CN.md)
-- CSV: [w7900_p11_runtime_callsite_inventory_20260617.csv](w7900_p11_runtime_callsite_inventory_20260617.csv)
-
-Key interpretation: P10 showed `hipMemcpy` as the rank-1 HIP API cost
-and `rocsparse::csrmvn_general_kernel` as the rank-1 GPU kernel across
-the targeted cases. P11 therefore first maps copy, synchronization,
-sparse-BLAS, BLAS, and kernel-launch callsites before changing code.
-
-## W7900 P11 first patch candidates / 2026-06-17
-
-P11 first-patch candidate analysis combines the P10 targeted rocprof
-results with the P11 runtime callsite inventory. It ranks the safest
-next optimization directions before changing solver code.
-
-- Summary: [w7900_p11_first_patch_candidates_20260617.md](w7900_p11_first_patch_candidates_20260617.md)
-- Chinese summary: [w7900_p11_first_patch_candidates_20260617.zh-CN.md](w7900_p11_first_patch_candidates_20260617.zh-CN.md)
-- CSV: [w7900_p11_first_patch_candidates_20260617.csv](w7900_p11_first_patch_candidates_20260617.csv)
-
-Key interpretation: copy reduction is attractive because P10 shows
-`hipMemcpy` as the rank-1 HIP API cost, but it is also numerically risky
-if the copies are tied to residual, restart, or termination logic. The
-first code patch should therefore be opt-in and validation-driven.
-
-## W7900 P11 SpMV algorithm switch smoke / 2026-06-17
-
-This smoke validation checks the first real P11 tuning patch:
-an opt-in HIP SpMV algorithm switch.
-
-- Summary: [w7900_p11_spmv_alg_switch_smoke_20260617_summary.md](w7900_p11_spmv_alg_switch_smoke_20260617_summary.md)
-- Chinese summary: [w7900_p11_spmv_alg_switch_smoke_20260617_summary.zh-CN.md](w7900_p11_spmv_alg_switch_smoke_20260617_summary.zh-CN.md)
-- CSV: [w7900_p11_spmv_alg_switch_smoke_20260617.csv](w7900_p11_spmv_alg_switch_smoke_20260617.csv)
-
-Key interpretation: `set-cover-model` succeeds in all three modes:
-default `csr_alg2`, opt-in `default`, and opt-in `csr_alg1`. The patch
-preserves solver status and iteration count in the initial smoke test.
-
-## W7900 P11 SpMV algorithm sweep / 2026-06-17
-
-This sweep evaluates the opt-in HIP SpMV algorithm switch across the five
-P10 targeted cases and three SpMV modes.
-
-- Summary: [w7900_p11_spmv_alg_sweep_20260617_summary.md](w7900_p11_spmv_alg_sweep_20260617_summary.md)
-- Chinese summary: [w7900_p11_spmv_alg_sweep_20260617_summary.zh-CN.md](w7900_p11_spmv_alg_sweep_20260617_summary.zh-CN.md)
-- CSV: [w7900_p11_spmv_alg_sweep_20260617.csv](w7900_p11_spmv_alg_sweep_20260617.csv)
-
-Key interpretation: all 15 runs complete successfully and preserve
-solver status and iteration count across modes. `csr_alg1` is slightly
-faster on most long cases, but the margin is small and should be treated
-as a promising experiment result rather than a final performance
-conclusion.
-
-## W7900 P11 default SpMV ALG1 smoke / 2026-06-17
-
-This smoke validation checks the P11 default-policy update after the
-five-case SpMV algorithm sweep.
-
-- Summary: [w7900_p11_default_spmv_alg1_smoke_20260617_summary.md](w7900_p11_default_spmv_alg1_smoke_20260617_summary.md)
-- Chinese summary: [w7900_p11_default_spmv_alg1_smoke_20260617_summary.zh-CN.md](w7900_p11_default_spmv_alg1_smoke_20260617_summary.zh-CN.md)
-- CSV: [w7900_p11_default_spmv_alg1_smoke_20260617.csv](w7900_p11_default_spmv_alg1_smoke_20260617.csv)
-
-Key interpretation: the no-env default path now uses
-`HIPSPARSE_SPMV_CSR_ALG1`, while the previous default can still be
-restored with `CUPDLP_HIP_SPMV_ALG=csr_alg2`. The smoke confirms both
-paths solve `set-cover-model` successfully with the same iteration count.
-
-## W7900 P11 SpMV tuning summary / 2026-06-17
-
-This final P11 note summarizes the W7900 SpMV tuning path from P10 profiling
-to the default `HIPSPARSE_SPMV_CSR_ALG1` policy.
-
-- Summary: [w7900_p11_spmv_tuning_summary_20260617.md](w7900_p11_spmv_tuning_summary_20260617.md)
-- Chinese summary: [w7900_p11_spmv_tuning_summary_20260617.zh-CN.md](w7900_p11_spmv_tuning_summary_20260617.zh-CN.md)
-
-Key interpretation: P11 changes the current W7900 default SpMV algorithm to
-`csr_alg1` based on the five-case sweep, while preserving explicit rollback
-with `CUPDLP_HIP_SPMV_ALG=csr_alg2`. This is a W7900-specific tuning policy,
-not a final cross-platform performance claim.
-
-## W7900 P12 negative finding: SpMV buffer algorithm consistency / 2026-06-17
-
-This note records a rejected low-risk execution-layer tuning attempt after
-P11: aligning `hipsparseSpMV_bufferSize()` with the selected runtime SpMV
-algorithm.
-
-- Summary: [w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md](w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md)
-- Chinese summary: [w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md](w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md)
-
-Key interpretation: although the patch was reasonable as an implementation
-consistency experiment, it changed the `set-cover-model` iteration count
-from the previously stable `7480` to `7600`. The patch was therefore
-rejected and not committed.
-
-## W7900 P14-A1 quick6 current vs pre_tuning repeated validation / 2026-06-18
-
-This experiment repeats the earlier 890M-style quick6 methodology on W7900
-/ `gfx1100`. It compares `pre_tuning` (`ae3b683`) with the current
-`rocm-w7900-gfx1100` branch, with three repeats per case/version pair.
-
-- Summary: [w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md)
-- Chinese summary: [w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md)
-- Comparison CSV: [w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv)
-- Aggregated CSV: [w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_aggregated.csv](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_aggregated.csv)
-- Raw CSV: [w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_raw.csv](w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_raw.csv)
-
-Result: `current` is faster on `6/6` quick6 cases, with geometric-mean
-speedup `1.18889` and median speedup `1.19502`, while preserving iteration
-counts across the compared versions.
+| Basic smoke | [cases.txt](cases.txt) |
+| Extended Netlib | [cases_extended_netlib.txt](cases_extended_netlib.txt) |
+| W7900 27-case | [cases_benchmark_200m_w7900_27.txt](cases_benchmark_200m_w7900_27.txt) |
+| Tuning quick6 | [cases_tuning_quick.txt](cases_tuning_quick.txt) |
+| P10 starter3 | [cases_w7900_rocprof_starter3.txt](cases_w7900_rocprof_starter3.txt) |
+| before/current core6 | [cases_w7900_large_mps_before_after_core6_fast.txt](cases_w7900_large_mps_before_after_core6_fast.txt) |
+| non-hard23 | [cases_w7900_large_mps_before_after_nonhard23.txt](cases_w7900_large_mps_before_after_nonhard23.txt) |
+| hard3 | [cases_w7900_large_mps_hard3.txt](cases_w7900_large_mps_hard3.txt) |
+| 8-card fast8 | [cases_w7900_8card_batch_fast8.txt](cases_w7900_8card_batch_fast8.txt) |
+
+## Interpretation rules
+
+- Dated summaries are immutable experiment records; new current conclusions update the indexes and current-status page.
+- `non-hard23` and hard3 are interpreted separately.
+- Eight-card fast8 is independent-MPS throughput.
+- Performance comparisons must include wall time, solve time, `nIter`, termination, feasibility, and gap.
+- P12 is negative evidence and must remain discoverable.
+- Raw `.mps`, raw profiler traces, and machine-local result directories are not committed.
+
+## Related entries
+
+- [W7900 current status](../docs/W7900_CURRENT_STATUS.md)
+- [Reproducibility](../docs/REPRODUCIBILITY.md)
+- [Validation semantics](../docs/VALIDATION.md)
+- [Benchmark index](../docs/benchmarks/README.md)

@@ -1,5 +1,11 @@
 # Large MPS benchmark 计划
 
+<!-- DOCUMENT_STATUS_NOTICE_BEGIN -->
+> **历史 benchmark 计划**
+>
+> 本文件保留最初的 large-MPS benchmark 设计。该流程已经产出 CUDA/ROCm 与 W7900 证据；当前结果请查看 [Benchmark 索引](benchmarks/README.md)、[Validation 索引](../validation/README.zh-CN.md) 和 [W7900 当前状态](W7900_CURRENT_STATUS.zh-CN.md)。
+<!-- DOCUMENT_STATUS_NOTICE_END -->
+
 > English version: [`LARGE_MPS_BENCHMARK_PLAN.md`](LARGE_MPS_BENCHMARK_PLAN.md)
 
 本文记录 `cuPDLP-C-ROCm` 的 large MPS benchmark workflow。

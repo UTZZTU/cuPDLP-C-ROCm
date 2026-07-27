@@ -1,350 +1,147 @@
-# W7900 current status and documentation refresh anchor
+# W7900 current status
 
 > 中文: [W7900_CURRENT_STATUS.zh-CN.md](W7900_CURRENT_STATUS.zh-CN.md)
 
-This page is the current W7900 / `gfx1100` status anchor. It should be used to replace older first-port-only wording across the repository.
+This is the authoritative current-status page for Radeon PRO W7900 / `gfx1100`. Dated experiment details remain under `validation/`; this page maintains only validated conclusions, interpretation boundaries, and primary evidence links.
 
-## Current status
+## Current conclusion
 
-The W7900 branch is no longer only an `afiro` smoke experiment. It now has:
+- W7900 ROCm/HIP build, smoke, Netlib, and large-MPS validation are closed for the current project stage.
+- The primary large-MPS result is `non-hard23`: 23/23 `OPTIMAL`; hard3 is reported separately.
+- P10 targeted profiling identifies rocSPARSE CSR SpMV as the main GPU-kernel hotspot.
+- P11 accepts a runtime-selectable SpMV policy and makes `HIPSPARSE_SPMV_CSR_ALG1` the current default.
+- The previous policy remains available through `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
+- The P12 buffer-algorithm consistency patch was rejected because it changed the iteration trajectory.
+- P14-A1 repeated validation reports 6/6 current wins on quick6 with unchanged pre/current iteration counts.
 
-- W7900 first-port build and smoke validation.
-- W7900 Netlib 27-case baseline.
-- W7900 large-MPS `initial17_safe` baseline.
-- W7900 large-MPS `non-hard23` baseline.
-- Remaining large-MPS hard cases intentionally split out: `dlr1.mps`, `Dual2_5000.mps`, and `fhnw-binschedule1.mps`.
+The current branch is not an “unoptimized first port.” The correct baseline terminology is:
 
-## Large-MPS non-hard23 summary
+| Role | Version | Meaning |
+|---|---|---|
+| Pre-tuning anchor | `ae3b683` / `pre_tuning` | First runnable ROCm anchor |
+| Current engineering baseline | current `rocm-w7900-gfx1100` | W7900 build after inherited 890M tuning |
+| Accepted W7900 endpoint | P11 policy | `CSR_ALG1` default with `csr_alg2` fallback |
+| Rejected experiment | P12 | Negative result that did not enter the accepted behavior |
+
+## Large-MPS non-hard23
 
 | Metric | Value |
-|---|---|
+|---|---:|
 | Cases | 23 |
-| Termination | 23/23 OPTIMAL |
-| Source groups | initial17_safe: 17, near_optimal2_1800s: 2, watchlist6_900s: 4 |
+| Termination | 23/23 `OPTIMAL` |
 | W7900 total wall time | 2960.171 s |
 | W7900 total solve time | 2742.940 s |
+| Source groups | `initial17_safe` 17; `near_optimal2_1800s` 2; `watchlist6_900s` 4 |
 
-<!-- W7900_COMPETITIVE_CHARTS_20260614_BEGIN -->
-## Per-case competitiveness highlight
+Primary evidence:
 
-The non-hard23 aggregate totals are useful, but the strongest W7900 story is per-case: W7900 can match or exceed H100 wall time on selected large-MPS cases, while the slow cases are better interpreted through convergence behavior.
+- [non-hard23 summary](../validation/w7900_large_mps_nonhard23_20260613.md)
+- [solver CSV](../validation/w7900_large_mps_nonhard23_20260613.csv)
+- [runtime CSV](../validation/w7900_large_mps_nonhard23_20260613_runtime.csv)
 
-![W7900 wall ratio vs H100](assets/w7900/w7900_nonhard23_wall_ratio_vs_h100.svg)
+![W7900 non-hard23 wall comparison](assets/w7900/w7900_nonhard23_wall_compare.svg)
 
-See [W7900 performance behavior analysis](W7900_PERFORMANCE_BEHAVIOR.md) for the full competitiveness and case-class discussion.
-<!-- W7900_COMPETITIVE_CHARTS_20260614_END -->
+![W7900 non-hard23 solve comparison](assets/w7900/w7900_nonhard23_solve_compare.svg)
 
-## Cross-device reference on matching 23 cases
+## Cross-device reference on the matching 23 cases
 
-| Device | Wall time sum | Solve time sum | Wall vs W7900 | Solve vs W7900 |
-|---|---|---|---|---|
-| H100 / CUDA | 1701.350 | 1433.577 | 0.57x | 0.52x |
-| RTX 3090 / CUDA | 1898.370 | 1513.214 | 0.64x | 0.55x |
-| RTX 4090D / CUDA | 2730.760 | 1329.789 | 0.92x | 0.48x |
-| W7900 / ROCm | 2960.171 | 2742.940 | 1.00x | 1.00x |
-| Radeon 890M / ROCm | 5015.740 | 4842.987 | 1.69x | 1.77x |
+| Device | Backend | Wall time sum | Solve time sum |
+|---|---|---:|---:|
+| H100 | CUDA | 1701.350 s | 1433.577 s |
+| RTX 3090 | CUDA | 1898.370 s | 1513.214 s |
+| RTX 4090D | CUDA | 2730.760 s | 1329.789 s |
+| W7900 | ROCm/HIP | 2960.171 s | 2742.940 s |
+| Radeon 890M | ROCm/HIP | 5015.740 s | 4842.987 s |
 
-![Non-hard23 wall comparison](assets/w7900/w7900_nonhard23_wall_compare.svg)
+The correct interpretation is:
 
-![Non-hard23 solve comparison](assets/w7900/w7900_nonhard23_solve_compare.svg)
+- W7900 substantially improves over 890M;
+- W7900 is competitive on selected cases;
+- aggregate solve time remains behind the high-end CUDA references in this repository;
+- conclusions must not be generalized from peak hardware specifications or one case.
 
-## W7900 slowest non-hard cases
+See [W7900 performance behavior](W7900_PERFORMANCE_BEHAVIOR.md) for case classes.
 
-| Case | Source group | nIter | Wall time | Solve time | Rel gap |
-|---|---|---|---|---|---|
-| s100 | near_optimal2_1800s | 675400 | 1100.650 | 1098.047 | 9.986063828e-05 |
-| Primal2_1000 | near_optimal2_1800s | 1203440 | 1046.038 | 1037.885 | 9.830367122e-05 |
-| thk_63 | watchlist6_900s | 73960 | 288.564 | 252.165 | 4.756861046e-05 |
-| square41 | watchlist6_900s | 128360 | 115.159 | 106.404 | 9.463231177e-05 |
-| tpl-tub-ws1617 | watchlist6_900s | 82600 | 112.519 | 98.123 | 4.13613801e-05 |
-| thk_48 | watchlist6_900s | 17720 | 110.058 | 68.336 | 5.213466659e-05 |
-| rmine15 | initial17_safe | 15000 | 28.928 | 27.271 | 4.180620533e-05 |
-| neos-3025225 | initial17_safe | 6080 | 23.590 | 17.538 | 7.825931282e-05 |
-| set-cover-model | initial17_safe | 7480 | 26.926 | 11.464 | 9.3551367e-06 |
-| irish-electricity | initial17_safe | 53680 | 9.285 | 8.229 | 1.62842043e-06 |
+## P10–P12 profiling and tuning evidence
 
-![W7900 slowest cases](assets/w7900/w7900_nonhard23_slowest_cases.svg)
+### P10: targeted profiling
 
-## Theory and application value
+Compact profiling for five representative cases shows that:
 
-cuPDLP/PDLP-style solvers target large-scale LP problems where the core operation is sparse matrix-vector multiplication. This is a good match for GPU acceleration, but the total time depends on both per-iteration throughput and convergence behavior.
+- rocSPARSE CSR SpMV is the dominant GPU kernel on multiple cases;
+- `hipMemcpy`, `hipMemcpyAsync`, and `hipLaunchKernel` are also material on longer cases;
+- follow-up tuning should prioritize SpMV policy, launch count, and narrow copy-reduction experiments;
+- residual, restart, termination, scaling, and floating-point update order must not be changed without explicit numerical validation.
 
-For project reporting, this W7900 milestone demonstrates:
+Evidence: [P10 summary](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.md).
 
-- A reproducible CUDA-to-ROCm migration path for a scientific computing solver.
-- A large-memory AMD workstation GPU validation path for large LP/MPS workloads.
-- A data-driven benchmark split between safe, slow-but-solvable, and hard-case behavior.
-- A basis for future ROCm profiling and tuning with clear before-tuning baselines.
+### P11: accepted SpMV tuning
 
-## Why W7900 can be fast on some cases and slow on others
-
-W7900 has high FP32 throughput, large VRAM, and high memory bandwidth, so cases with enough sparse matrix-vector work and stable convergence can benefit from the hardware. However, PDLP total time is not only a hardware-throughput problem:
+P11 first created a runtime callsite inventory and ranked safe candidates, then implemented an opt-in SpMV algorithm switch, smoke validation, and a five-case sweep. The accepted policy is:
 
 ```text
-total time ≈ per-iteration cost × number of iterations
+default: HIPSPARSE_SPMV_CSR_ALG1
+fallback: CUPDLP_HIP_SPMV_ALG=csr_alg2
 ```
 
-For hard LP instances, small differences in sparse reductions, floating-point ordering, adaptive restart timing, step-size evolution, or residual/gap behavior can change the iteration path. That explains why W7900 can be strong on some large cases but unexpectedly slow on cases such as `s100`, `Primal2_1000`, or the excluded hard3.
+Evidence:
 
-<!-- W7900_PERFORMANCE_BEHAVIOR_20260614_BEGIN -->
-## Related performance behavior analysis
+- [P11 tuning summary](../validation/w7900_p11_spmv_tuning_summary_20260617.md)
+- [algorithm sweep](../validation/w7900_p11_spmv_alg_sweep_20260617_summary.md)
+- [default ALG1 smoke](../validation/w7900_p11_default_spmv_alg1_smoke_20260617_summary.md)
 
-For an explanation of why W7900 is fast on some large-MPS cases but slow on others, see:
+### P12: rejected execution-layer change
 
-- [W7900 performance behavior analysis](W7900_PERFORMANCE_BEHAVIOR.md)
-- [W7900 性能行为分析](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md)
-<!-- W7900_PERFORMANCE_BEHAVIOR_20260614_END -->
+P12 made `hipsparseSpMV_bufferSize()` use the same selected algorithm as execution. `set-cover-model` changed from 7480 to 7600 iterations, so the patch was not accepted.
 
-<!-- W7900_ROCM_PROFILING_PLAN_20260614_BEGIN -->
-<!-- W7900_OPTIMIZATION_BASELINES_20260614_BEGIN -->
-## Optimization baseline interpretation
+This demonstrates that an execution-layer-only change is not automatically numerically neutral. Evidence: [P12 negative finding](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md).
 
-The current W7900 non-hard23 result is not an unoptimized first-port baseline. It is a validation of the current post-890M-tuning ROCm/HIP engineering branch on W7900 / `gfx1100`.
+## P14-A1 repeated validation
 
-See [W7900 optimization baselines](W7900_OPTIMIZATION_BASELINES.md).
-<!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->
+quick6 repeated validation compares `ae3b683 / pre_tuning` against the current branch:
 
-## ROCm profiling and tuning completion status
+| Metric | Result |
+|---|---:|
+| Cases | 6 |
+| Current wins | 6/6 |
+| Geometric-mean speedup | 1.18889 |
+| Median speedup | 1.19502 |
+| Iteration-count consistency | unchanged between pre/current |
 
-The original profiling plan has been executed and superseded by the P10/P11/P12
-evidence chain. Starter profiling and W7900-specific tuning should no longer
-be described as pending blockers.
+Evidence:
 
-Final references:
+- [P14-A1 summary](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md)
+- [comparison CSV](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv)
+- [aggregated CSV](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_aggregated.csv)
 
-- [W7900 ROCm profiling plan](W7900_ROCM_PROFILING_PLAN.md)
-- [P11 SpMV tuning summary](../validation/w7900_p11_spmv_tuning_summary_20260617.md)
-- [P12 rejected experiment note](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md)
+## hard3 and eight-GPU boundaries
 
-## Next-action status
+hard3 consists of:
 
-The earlier W7900 starter profiling, hard3 probe2, before/current core6,
-compact profiling summary, and first W7900-specific tuning pass are complete
-for the current project stage:
+```text
+dlr1.mps
+Dual2_5000.mps
+fhnw-binschedule1.mps
+```
 
-1. P10 targeted rocprof profiling has been archived.
-2. hard3 probe2 has been archived; hard3 is not mixed into the primary
-   non-hard23 baseline.
-3. before/current fast-core6 has been completed; if stronger timing evidence
-   is needed, only add representative repeated validation later.
-4. P11 SpMV tuning has been accepted. The current default SpMV algorithm is
-   `HIPSPARSE_SPMV_CSR_ALG1`.
-5. The P12 rejected experiment note records the unaccepted buffer-algorithm
-   consistency patch.
+These cases are used for difficult-case diagnosis and are not merged into the primary non-hard23 result. See [hard3 notes](W7900_LARGE_MPS_HARD3_NOTES.md) and the [probe2 summary](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.md).
 
-P14-A1 current-vs-before quick6 repeated validation is now complete. P14-B CSR ALG1-vs-ALG2 repeated validation remains future optional only, not a current closure blocker.
+The eight-card fast8 result, 146 s versus 558 s sequential on one GPU, measures concurrent throughput for eight independent MPS jobs. It is not an algorithm that distributes one LP across eight GPUs. See the [8-card fast8 summary](../validation/w7900_8card_batch_fast8_summary_20260616.md).
 
-## Latest W7900 experiment status / 2026-06-16
+## Known limitations
 
-The W7900 / `gfx1100` experiment set has been updated with four committed compact summaries:
+- The implementation and tuning conclusions primarily target `gfx1100` and inherit selected `gfx1150` experience.
+- Custom-kernel parameters and reduction assumptions do not constitute broad AMD-architecture certification.
+- Aggregate performance remains jointly controlled by iteration count, convergence path, and host/device overhead.
+- There is no distributed multi-GPU solver for one problem.
+- The Docker files are an environment skeleton; committed W7900 numbers come from actual host runs.
+- Every new optimization must check termination, feasibility, gap, iteration count, and repeated-run performance.
 
-- [rocprof starter3](../validation/w7900_rocprof_starter3_summary_20260616.md)
-- [hard3 probe2 600s](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.md)
-- [before/current fast-core6](../validation/w7900_before_current_core6_fast_summary_20260616.md)
-- [8-card fast8 batch throughput](../validation/w7900_8card_batch_fast8_summary_20260616.md)
+## Continue reading
 
-The 8-card fast8 experiment solved all 8 cases to `OPTIMAL` in both concurrent and single-GPU sequential modes, with 146s concurrent makespan versus 558s single-GPU sequential makespan.
-<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
-
-<!-- W7900_LATEST_FIGURES_20260616_BEGIN -->
-## Latest W7900 figures / 2026-06-16
-
-The latest W7900 figure index is available here:
-
-- [W7900 latest experiment figures](../validation/w7900_latest_experiment_figures_20260616.md)
-
-The strongest visual result is the 8-card fast8 batch throughput figure: 8 independent MPS tasks completed in 146s concurrently on 8 W7900 GPUs versus 558s sequentially on one W7900 GPU.
-<!-- W7900_LATEST_FIGURES_20260616_END -->
-
-## Derived before/current analysis / 2026-06-17
-
-The latest fast-core6 derived metrics split total solve time into
-iteration count and per-iteration execution time:
-
-- [Derived metrics summary](../validation/w7900_before_current_core6_fast_derived_metrics_20260617.md)
-- [Derived metrics CSV](../validation/w7900_before_current_core6_fast_derived_metrics_20260617.csv)
-- [Chinese summary](../validation/w7900_before_current_core6_fast_derived_metrics_20260617.zh-CN.md)
-
-![W7900 fast-core6 ms/iter ratio](assets/w7900/latest_experiments/w7900_before_current_fast_core6_ms_per_iter_ratio.svg)
-
-![W7900 fast-core6 iteration ratio](assets/w7900/latest_experiments/w7900_before_current_fast_core6_iter_ratio.svg)
-
-The derived result is important for tuning interpretation: current
-improves per-iteration execution time on all six fast-core6 cases, but
-total solve time remains mixed because several cases require more
-iterations. P14-A1 now provides repeated quick-set evidence for the current endpoint. Further W7900-specific tuning is future optional and should not be treated as a current closure blocker.
-
-## P10 targeted rocprof summary / 2026-06-17
-
-P10 adds targeted rocprofv3 profiling for five representative cases from
-the P9 derived-metric analysis:
-
-- positive execution-efficiency sample: `thk_48`
-- stable iteration-count sample: `square41`
-- convergence-regression samples: `L2CTA3D`, `set-cover-model`,
-  `tpl-tub-ws1617`
-
-Links:
-
-- [P10 summary](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.md)
-- [P10 runtime CSV](../validation/w7900_p10_current_targeted_rocprof_20260617_runtime.csv)
-- [P10 kernel top CSV](../validation/w7900_p10_current_targeted_rocprof_20260617_kernel_top.csv)
-- [P10 HIP API top CSV](../validation/w7900_p10_current_targeted_rocprof_20260617_hip_api_top.csv)
-- [P10 memory copy top CSV](../validation/w7900_p10_current_targeted_rocprof_20260617_memory_copy_top.csv)
-
-All five targeted cases finish successfully under current. The compact
-traces show that rocSPARSE CSR SpMV kernels dominate several GPU kernel
-profiles, while `hipMemcpy`, `hipMemcpyAsync`, and `hipLaunchKernel`
-remain important HIP API costs. This supports the next tuning direction:
-focus on SpMV behavior, kernel-launch volume, and host-device copy
-reduction without changing solver numerical logic blindly.
-
-## P11 runtime callsite inventory / 2026-06-17
-
-P11 adds a source-level callsite inventory before making tuning patches.
-
-Links:
-
-- [P11 runtime callsite inventory](../validation/w7900_p11_runtime_callsite_inventory_20260617.md)
-- [P11 inventory CSV](../validation/w7900_p11_runtime_callsite_inventory_20260617.csv)
-- [P11 Chinese summary](../validation/w7900_p11_runtime_callsite_inventory_20260617.zh-CN.md)
-
-This inventory connects the P10 trace findings to source code locations.
-The next optimization patch should be execution-layer only and must not
-blindly change residual, restart, termination, scaling, or floating-point
-update order.
-
-## P11 first patch candidates / 2026-06-17
-
-P11 first-patch candidate analysis ranks the next safe tuning directions
-after P10 profiling and P11 callsite inventory.
-
-Links:
-
-- [P11 first patch candidates](../validation/w7900_p11_first_patch_candidates_20260617.md)
-- [P11 first patch candidates CSV](../validation/w7900_p11_first_patch_candidates_20260617.csv)
-- [P11 Chinese summary](../validation/w7900_p11_first_patch_candidates_20260617.zh-CN.md)
-
-The current recommendation is to avoid blind `hipMemcpy` removal. The
-first real code change should be an opt-in experiment, preferably either
-an SpMV algorithm-selection/profiling switch or a narrowly guarded
-scalar-copy experiment with explicit fast-core6 and P10 validation.
-
-## P11 SpMV algorithm switch smoke / 2026-06-17
-
-The first real P11 tuning patch adds an opt-in HIP SpMV algorithm switch.
-Default behavior remains `HIPSPARSE_SPMV_CSR_ALG2`.
-
-Links:
-
-- [P11 SpMV algorithm switch smoke summary](../validation/w7900_p11_spmv_alg_switch_smoke_20260617_summary.md)
-- [P11 SpMV algorithm switch smoke CSV](../validation/w7900_p11_spmv_alg_switch_smoke_20260617.csv)
-- [P11 Chinese smoke summary](../validation/w7900_p11_spmv_alg_switch_smoke_20260617_summary.zh-CN.md)
-
-The initial `set-cover-model` smoke passes for default `csr_alg2`,
-opt-in `default`, and opt-in `csr_alg1`. The next step is a targeted
-five-case sweep across the same three modes.
-
-## P11 SpMV algorithm sweep / 2026-06-17
-
-P11 now includes a five-case, three-mode sweep for the opt-in HIP SpMV
-algorithm switch.
-
-Links:
-
-- [P11 SpMV algorithm sweep summary](../validation/w7900_p11_spmv_alg_sweep_20260617_summary.md)
-- [P11 SpMV algorithm sweep CSV](../validation/w7900_p11_spmv_alg_sweep_20260617.csv)
-- [P11 Chinese sweep summary](../validation/w7900_p11_spmv_alg_sweep_20260617_summary.zh-CN.md)
-
-The sweep confirms that `csr_alg2`, `env_default`, and `csr_alg1` all
-preserve solver status and iteration count on the five targeted cases.
-`csr_alg1` is slightly faster on most long cases in this single sweep,
-but the effect size is small. The next step should either repeat the
-sweep to estimate noise or run rocprofv3 on the most interesting pair,
-`csr_alg1` vs default `csr_alg2`.
-
-## P11 default SpMV ALG1 smoke / 2026-06-17
-
-P11 now defaults the HIP SpMV algorithm to `HIPSPARSE_SPMV_CSR_ALG1`
-for W7900 current tuning, while preserving an explicit rollback path:
-
-- rollback: `CUPDLP_HIP_SPMV_ALG=csr_alg2`
-- hipSPARSE default experiment: `CUPDLP_HIP_SPMV_ALG=default`
-
-Links:
-
-- [P11 default SpMV ALG1 smoke summary](../validation/w7900_p11_default_spmv_alg1_smoke_20260617_summary.md)
-- [P11 default SpMV ALG1 smoke CSV](../validation/w7900_p11_default_spmv_alg1_smoke_20260617.csv)
-- [P11 Chinese smoke summary](../validation/w7900_p11_default_spmv_alg1_smoke_20260617_summary.zh-CN.md)
-
-This is a policy update based on the P11 five-case sweep. It should be
-described as the current W7900 default tuning choice, not as a final
-cross-platform performance conclusion.
-
-## P11 SpMV tuning final note / 2026-06-17
-
-P11 closes the first W7900-specific tuning loop:
-
-- P10 targeted profiling identified rocSPARSE CSR SpMV as the dominant GPU
-  kernel hotspot on the selected cases.
-- P11 added an opt-in HIP SpMV algorithm switch.
-- P11 smoke validation confirmed that `csr_alg2`, `default`, and `csr_alg1`
-  modes are runnable on `set-cover-model`.
-- P11 five-case sweep confirmed that all three modes preserve solver status
-  and iteration count on the targeted cases.
-- The current W7900 default is now `HIPSPARSE_SPMV_CSR_ALG1`.
-- The old default remains available with `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
-
-Links:
-
-- [P11 SpMV tuning summary](../validation/w7900_p11_spmv_tuning_summary_20260617.md)
-- [P11 Chinese tuning summary](../validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md)
-
-This closes P11 as a conservative policy update. The result should be
-described as a W7900 current-default tuning choice, not as a final global
-performance conclusion.
-
-## P12 negative finding: rejected SpMV buffer algorithm consistency patch / 2026-06-17
-
-After P11, one additional low-risk execution-layer candidate was tested:
-making `hipsparseSpMV_bufferSize()` use the same algorithm selected by
-`cupdlp_hip_spmv_alg()`.
-
-The experiment was rejected because `set-cover-model` still solved
-successfully but changed iteration count from `7480` to `7600`. This
-indicates that even SpMV buffer/algorithm consistency changes can affect the
-solver trajectory. The source patch was reverted and not committed.
-
-Links:
-
-- [P12 negative finding summary](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md)
-- [P12 Chinese negative finding summary](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md)
-
-## P14-A1 quick6 repeated validation update / 2026-06-18
-
-W7900 now has quick-set repeated timing evidence matching the earlier
-890M-style methodology. P14-A1 compares `pre_tuning` (`ae3b683`) with the
-current branch on six quick Netlib cases, with three repeats per
-case/version pair.
-
-Result: `current` is faster on `6/6` cases, with geometric-mean speedup
-`1.18889` and median speedup `1.19502`, while preserving iteration counts.
-
-See [P14-A1 quick6 summary](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md).
-
-## Final W7900 closure after P14-A1 / 2026-06-18
-
-P14-A1 has now completed the representative repeated validation that was
-previously listed as optional. It compares `pre_tuning` (`ae3b683`) with
-current HEAD on the 890M-style quick6 set, with three repeats per
-case/version pair.
-
-Result:
-
-- `current` faster on `6/6` quick6 cases;
-- geometric-mean speedup `1.18889`;
-- median speedup `1.19502`;
-- iteration counts preserved.
-
-The current W7900 closure is therefore P10 + P11 + P12 + P14-A1. P14-B
-CSR ALG1-vs-ALG2 repeated validation is not required for current closure.
+- [Reproducibility](REPRODUCIBILITY.md)
+- [Validation index](../validation/README.md)
+- [ROCm profiling notes](ROCM_PROFILING_NOTES.md)
+- [ROCm tuning history](ROCM_TUNING_HISTORY.md)
+- [W7900 performance behavior](W7900_PERFORMANCE_BEHAVIOR.md)
+- [Optimization-baseline policy](W7900_OPTIMIZATION_BASELINES.md)

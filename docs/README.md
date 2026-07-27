@@ -1,127 +1,86 @@
 # Documentation map / 文档地图
 
-This page is the central index for project-maintained documentation.  
-本页是项目维护文档的总索引，目的是避免文档存在但没有入口的问题。
+This is the central navigation page for maintained project documentation.
+本页是项目维护文档的唯一总导航，区分当前结论、使用说明、证据索引和历史里程碑。
 
-## Reader paths / 读者路径
+## Recommended reading paths / 推荐阅读路径
 
-| Reader / 读者 | Start from / 建议入口 | Purpose / 用途 |
+| Reader / 读者 | Start here / 建议入口 | Goal / 目标 |
 |---|---|---|
-| General GitHub users / 普通 GitHub 读者 | [English README](../README.en.md) / [中文主页](../README.md) | Understand the project scope, backend modes, validation status, and quick-start workflow |
-| ROCm migration developers / ROCm 迁移开发者 | [ROCm porting guide](ROCM_PORTING_GUIDE.md), [CUDA-to-ROCm case study](CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md), [ROCM_WORKFLOW.md](ROCM_WORKFLOW.md) | Reuse the migration process, build workflow, and backend design notes |
-| Validation and benchmark readers / 验证与 benchmark 读者 | [validation index](../validation/README.md), [benchmark index](benchmarks/README.md), [REPRODUCIBILITY.md](REPRODUCIBILITY.md) | Check committed summaries, case lists, CSV files, and expected outputs |
-| W7900 / gfx1100 readers | [W7900 current status](W7900_CURRENT_STATUS.md), [W7900 profiling plan](W7900_ROCM_PROFILING_PLAN.md), [W7900 optimization baselines](W7900_OPTIMIZATION_BASELINES.md) | Follow the W7900 validation, profiling, and before/current/after plan |
-| AMD ROCm/Radeon contest reviewers / 赛题评委 | [COMPETITION_README.md](COMPETITION_README.md), [COMPETITION_SCORECARD.md](COMPETITION_SCORECARD.md) | Read the same project evidence through the contest scoring requirements |
+| General GitHub reader / 普通读者 | [English homepage](../README.en.md) / [中文主页](../README.md) | Understand scope, contributions, results, and limitations |
+| User reproducing the project / 复现项目 | [Reproducibility](REPRODUCIBILITY.md) / [可复现性](REPRODUCIBILITY.zh-CN.md) | Inspect committed evidence or rerun W7900 workflows |
+| ROCm migration developer / ROCm 迁移开发者 | [ROCm porting guide](ROCM_PORTING_GUIDE.md), [migration case study](CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) | Understand backend boundaries and porting decisions |
+| Validation reader / 验证读者 | [validation index](../validation/README.md) / [验证索引](../validation/README.zh-CN.md) | Locate case lists, curated CSV, summaries, and expected interpretation |
+| Performance researcher / 性能研究者 | [W7900 current status](W7900_CURRENT_STATUS.md), [profiling notes](ROCM_PROFILING_NOTES.md), [tuning history](ROCM_TUNING_HISTORY.md) | Follow profiling, accepted tuning, negative results, and convergence effects |
+| Contest reviewer / 竞赛评委 | [Competition entry](COMPETITION_README.md) / [竞赛入口](COMPETITION_README.zh-CN.md) | Read the general repository evidence through contest requirements |
 
-## Main entry points / 主入口
+## Core project documents / 核心项目文档
 
-| Topic / 主题 | English | 中文 | Notes / 说明 |
+| Topic / 主题 | English | 中文 | Role / 作用 |
 |---|---|---|---|
-| Repository homepage / 仓库主页 | [../README.en.md](../README.en.md) | [../README.md](../README.md) | Main project overview |
-| ROCm 890M quick README | [../README_ROCM_gfx1150.md](../README_ROCM_gfx1150.md) | [../README_ROCM_gfx1150.zh-CN.md](../README_ROCM_gfx1150.zh-CN.md) | Focused quick-start page for the gfx1150 milestone |
-| Validation index / Validation 索引 | [../validation/README.md](../validation/README.md) | [../validation/README.zh-CN.md](../validation/README.zh-CN.md) | Validation Markdown summaries and CSV links |
-| Benchmark index / Benchmark 索引 | [benchmarks/README.md](benchmarks/README.md) | [benchmarks/README.md](benchmarks/README.md) | Benchmark documents and CSV links |
-| Reproducibility / 可复现性 | [REPRODUCIBILITY.md](REPRODUCIBILITY.md) | [REPRODUCIBILITY.zh-CN.md](REPRODUCIBILITY.zh-CN.md) | Reproduce committed summaries, recover W7900 machines, check data, and run starter profiling |
-| Competition README / 竞赛入口 | [COMPETITION_README.md](COMPETITION_README.md) | [COMPETITION_README.zh-CN.md](COMPETITION_README.zh-CN.md) | Reviewer-oriented path through the general project evidence |
-| Competition scorecard / 竞赛评分项对照 | [COMPETITION_SCORECARD.md](COMPETITION_SCORECARD.md) | [COMPETITION_SCORECARD.zh-CN.md](COMPETITION_SCORECARD.zh-CN.md) | Contest scoring requirements mapped to repository evidence |
-| Submission checklist / 提交清单 | [SUBMISSION_CHECKLIST.md](SUBMISSION_CHECKLIST.md) | [SUBMISSION_CHECKLIST.zh-CN.md](SUBMISSION_CHECKLIST.zh-CN.md) | Final paper, PPT, video, repository, Docker, and experiment readiness checklist |
-| Upstream reference / 上游参考 | [../README_UPSTREAM.md](../README_UPSTREAM.md) | — | Intentionally preserved as upstream snapshot; not translated |
+| Repository overview / 项目总览 | [README](../README.en.md) | [README](../README.md) | Authoritative current homepage |
+| Build and run / 构建运行 | [ROCm workflow](ROCM_WORKFLOW.md) | [ROCm 工作流](ROCM_WORKFLOW.zh-CN.md) | Daily build and execution workflow |
+| Reproducibility / 可复现性 | [Guide](REPRODUCIBILITY.md) | [指南](REPRODUCIBILITY.zh-CN.md) | Evidence inspection and rerun instructions |
+| Validation semantics / 验证语义 | [Validation](VALIDATION.md) | [验证说明](VALIDATION.zh-CN.md) | PASS/FAIL/INCOMPLETE comparison rules |
+| Backend architecture / 后端架构 | [Backend modes](BACKEND_MODES_AND_NAMING.md) | [后端模式](BACKEND_MODES_AND_NAMING.zh-CN.md) | CPU/CUDA/ROCm boundaries and naming |
+| Porting / 移植 | [ROCm porting guide](ROCM_PORTING_GUIDE.md) | [ROCm 移植指南](ROCM_PORTING_GUIDE.zh-CN.md) | Practical HIP migration guidance |
+| Migration case study / 迁移案例 | [Case study](CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) | [案例](CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) | End-to-end engineering narrative |
 
-## Workflow, validation, and build semantics / 工作流、验证与构建语义
+## Current results and analysis / 当前结果与分析
 
-| Topic / 主题 | English | 中文 |
+| Topic / 主题 | English | 中文 | Source evidence / 证据 |
+|---|---|---|---|
+| W7900 current status / 当前状态 | [Status](W7900_CURRENT_STATUS.md) | [状态](W7900_CURRENT_STATUS.zh-CN.md) | non-hard23, P10–P12, P14-A1, limitations |
+| Performance behavior / 性能行为 | [Analysis](W7900_PERFORMANCE_BEHAVIOR.md) | [分析](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md) | Per-case and convergence interpretation |
+| Profiling / 性能剖析 | [Notes](ROCM_PROFILING_NOTES.md) | [记录](ROCM_PROFILING_NOTES.zh-CN.md) | Profiling workflow and hotspot findings |
+| Tuning history / 调优历史 | [History](ROCM_TUNING_HISTORY.md) | [历史](ROCM_TUNING_HISTORY.zh-CN.md) | Accepted changes and validation gates |
+| Tuning guidance / 调优指南 | [Guide](TUNING_GUIDE_ROCM.md) | [指南](TUNING_GUIDE_ROCM.zh-CN.md) | Safe optimization methodology |
+| Cross-device results / 跨设备结果 | [Benchmarks](CROSS_DEVICE_BENCHMARKS.md) | [Benchmark](CROSS_DEVICE_BENCHMARKS.zh-CN.md) | CPU/CUDA/ROCm references |
+| Numerical behavior / 数值行为 | [greenbea note](NUMERICAL_BEHAVIOR_GREENBEA.md) | [greenbea 说明](NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md) | Case-specific convergence behavior |
+
+## Evidence indexes / 证据索引
+
+| Evidence area / 证据区域 | Entry / 入口 |
+|---|---|
+| Validation case lists, CSV, and summaries | [validation/README.md](../validation/README.md) / [validation/README.zh-CN.md](../validation/README.zh-CN.md) |
+| Benchmark reports and curated CSV | [benchmarks/README.md](benchmarks/README.md) |
+| W7900 figures | [`assets/w7900/`](assets/w7900/) |
+| Competition architecture and evidence maps | [`assets/competition/`](assets/competition/) |
+| Upstream project snapshot | [README_UPSTREAM.md](../README_UPSTREAM.md) |
+
+## Competition-facing documents / 竞赛材料
+
+| Document / 文档 | English | 中文 | Maintenance status / 维护状态 |
+|---|---|---|---|
+| Reviewer entry / 评审入口 | [COMPETITION_README](COMPETITION_README.md) | [竞赛入口](COMPETITION_README.zh-CN.md) | Current |
+| Score mapping / 评分项映射 | [Scorecard](COMPETITION_SCORECARD.md) | [评分对照](COMPETITION_SCORECARD.zh-CN.md) | Update when rules change |
+| Submission checklist / 提交清单 | [Checklist](SUBMISSION_CHECKLIST.md) | [清单](SUBMISSION_CHECKLIST.zh-CN.md) | Repository readiness; external artifacts are owner-managed |
+| Video guide / 视频指南 | — | [视频演示指南](VIDEO_DEMO_GUIDE.zh-CN.md) | Optional submission support |
+
+## Historical and milestone documents / 历史与里程碑文档
+
+These files remain in place because they preserve decisions and experimental context, but they are not current-status entry points.
+这些文件用于保留决策和实验上下文，不应作为当前状态入口。
+
+| Document / 文档 | Status / 状态 | Current replacement / 当前入口 |
 |---|---|---|
-| Daily ROCm workflow / 日常 ROCm 工作流 | [ROCM_WORKFLOW.md](ROCM_WORKFLOW.md) | [ROCM_WORKFLOW.zh-CN.md](ROCM_WORKFLOW.zh-CN.md) |
-| Validation semantics / 验证语义 | [VALIDATION.md](VALIDATION.md) | [VALIDATION.zh-CN.md](VALIDATION.zh-CN.md) |
-| Backend modes and naming / 后端模式与命名 | [BACKEND_MODES_AND_NAMING.md](BACKEND_MODES_AND_NAMING.md) | [BACKEND_MODES_AND_NAMING.zh-CN.md](BACKEND_MODES_AND_NAMING.zh-CN.md) |
-| ROCm porting guide / ROCm porting 指南 | [ROCM_PORTING_GUIDE.md](ROCM_PORTING_GUIDE.md) | [ROCM_PORTING_GUIDE.zh-CN.md](ROCM_PORTING_GUIDE.zh-CN.md) |
-| CUDA to ROCm case study / CUDA 到 ROCm 迁移案例 | [CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md](CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) | [CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md](CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) |
+| `README_ROCM_gfx1150*` | Earlier Radeon 890M / `gfx1150` milestone | [Current homepage](../README.en.md) / [中文主页](../README.md) |
+| `W7900_FIRST_PORT*` | First-port snapshot | [W7900 current status](W7900_CURRENT_STATUS.md) |
+| `W7900_ROCM_PROFILING_PLAN*` | Completed profiling plan | [Profiling notes](ROCM_PROFILING_NOTES.md), P10/P11/P12 in validation index |
+| `LARGE_MPS_BENCHMARK_PLAN*` | Original benchmark plan | [Benchmark index](benchmarks/README.md), [validation index](../validation/README.md) |
+| Dated files under `validation/` | Immutable experiment evidence | [Validation index](../validation/README.md) |
 
-## Validation data directory / Validation 数据目录
+## Documentation maintenance rules / 文档维护规则
 
-| Topic / 主题 | English | 中文 | Raw CSV / 原始汇总 |
-|---|---|---|---|
-| Validation directory index / validation 目录索引 | [../validation/README.md](../validation/README.md) | [../validation/README.zh-CN.md](../validation/README.zh-CN.md) | See validation index |
-| W7900 smoke validation / W7900 smoke 验证 | [../validation/w7900_smoke_summary_20260611.md](../validation/w7900_smoke_summary_20260611.md) | [../validation/w7900_smoke_summary_20260611.zh-CN.md](../validation/w7900_smoke_summary_20260611.zh-CN.md) | [CSV](../validation/w7900_smoke_summary_20260611.csv) |
-| W7900 extended Netlib validation / W7900 扩展 Netlib 验证 | [../validation/w7900_extended_netlib_summary_20260611.md](../validation/w7900_extended_netlib_summary_20260611.md) | [../validation/w7900_extended_netlib_summary_20260611.zh-CN.md](../validation/w7900_extended_netlib_summary_20260611.zh-CN.md) | [CSV](../validation/w7900_extended_netlib_summary_20260611.csv) |
-| W7900 27-case ROCm baseline / W7900 27-case ROCm baseline | [../validation/w7900_27cases_baseline_20260611.md](../validation/w7900_27cases_baseline_20260611.md) | [../validation/w7900_27cases_baseline_20260611.zh-CN.md](../validation/w7900_27cases_baseline_20260611.zh-CN.md) | [aggregated CSV](../validation/w7900_27cases_baseline_20260611_aggregated.csv), [raw CSV](../validation/w7900_27cases_baseline_20260611_raw.csv) |
-| W7900 vs cross-device reference / W7900 跨设备参考对比 | [../validation/w7900_vs_cross_device_27cases_20260611.md](../validation/w7900_vs_cross_device_27cases_20260611.md) | [../validation/w7900_vs_cross_device_27cases_20260611.zh-CN.md](../validation/w7900_vs_cross_device_27cases_20260611.zh-CN.md) | [CSV](../validation/w7900_vs_cross_device_27cases_20260611.csv) |
-| Cross-device Netlib summary / 跨设备 Netlib 汇总 | [CROSS_DEVICE_BENCHMARKS.md](CROSS_DEVICE_BENCHMARKS.md) | [CROSS_DEVICE_BENCHMARKS.zh-CN.md](CROSS_DEVICE_BENCHMARKS.zh-CN.md) | [cross_device_full_summary.csv](../validation/cross_device_full_summary.csv) |
-| current vs reduce repeated comparison | [../validation/rocm_current_vs_reduce_27cases_repeats_comparison.md](../validation/rocm_current_vs_reduce_27cases_repeats_comparison.md) | [../validation/rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md](../validation/rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md) | [comparison](../validation/rocm_current_vs_reduce_27cases_repeats_comparison.csv), [aggregated](../validation/rocm_current_vs_reduce_27cases_repeats_aggregated.csv), [raw](../validation/rocm_current_vs_reduce_27cases_repeats_raw.csv) |
-| rocprof tuning milestones / rocprof tuning 里程碑 | [../validation/rocm_prof_tuning_milestones_summary.md](../validation/rocm_prof_tuning_milestones_summary.md) | [../validation/rocm_prof_tuning_milestones_summary.zh-CN.md](../validation/rocm_prof_tuning_milestones_summary.zh-CN.md) | [summary](../validation/rocm_prof_tuning_milestones_summary.csv), [deltas](../validation/rocm_prof_tuning_milestones_deltas.csv), [HIP API](../validation/rocm_prof_tuning_milestones_hip_api_top.csv), [kernel](../validation/rocm_prof_tuning_milestones_kernel_top.csv), [memory-copy](../validation/rocm_prof_tuning_milestones_memory_copy_top.csv) |
-| tuning ablation 6-case repeats / 6-case tuning ablation 重复测试 | [../validation/rocm_tuning_ablation_6cases_repeats_summary.md](../validation/rocm_tuning_ablation_6cases_repeats_summary.md) | [../validation/rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md](../validation/rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md) | [summary](../validation/rocm_tuning_ablation_6cases_repeats_summary.csv), [raw](../validation/rocm_tuning_ablation_6cases_repeats_raw.csv) |
-
-## Benchmarks and numerical behavior / Benchmark 与数值行为
-| Topic / 主题 | English | 中文 | Raw data / 原始汇总数据 |
-|---|---|---|---|
-| Netlib cross-device benchmarks / Netlib 跨设备 benchmark | [CROSS_DEVICE_BENCHMARKS.md](CROSS_DEVICE_BENCHMARKS.md) | [CROSS_DEVICE_BENCHMARKS.zh-CN.md](CROSS_DEVICE_BENCHMARKS.zh-CN.md) | [cross_device_full_summary.csv](../validation/cross_device_full_summary.csv) |
-| Large MPS benchmark plan / large MPS benchmark 计划 | [LARGE_MPS_BENCHMARK_PLAN.md](LARGE_MPS_BENCHMARK_PLAN.md) | [LARGE_MPS_BENCHMARK_PLAN.zh-CN.md](LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) | See benchmark docs below |
-| W7900 hard3 notes / W7900 hard3 说明 | [W7900_LARGE_MPS_HARD3_NOTES.md](W7900_LARGE_MPS_HARD3_NOTES.md) | [W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md](W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md) | hard3 split for `dlr1`, `Dual2_5000`, and `fhnw-binschedule1` |
-| W7900 optimization baselines / W7900 优化基线 | [W7900_OPTIMIZATION_BASELINES.md](W7900_OPTIMIZATION_BASELINES.md) | [W7900_OPTIMIZATION_BASELINES.zh-CN.md](W7900_OPTIMIZATION_BASELINES.zh-CN.md) | Clarifies `ae3b683` pre-tuning, `b44c7ab` reduce-scalar-copies, current engineering baseline, and future before/after policy |
-| W7900 ROCm profiling plan / W7900 ROCm profiling 计划 | [W7900_ROCM_PROFILING_PLAN.md](W7900_ROCM_PROFILING_PLAN.md) | [W7900_ROCM_PROFILING_PLAN.zh-CN.md](W7900_ROCM_PROFILING_PLAN.zh-CN.md) | Profiling case matrix, metrics, tools, and output policy before ROCm/gfx1100 tuning |
-| W7900 performance behavior / W7900 性能行为分析 | [W7900_PERFORMANCE_BEHAVIOR.md](W7900_PERFORMANCE_BEHAVIOR.md) | [W7900_PERFORMANCE_BEHAVIOR.zh-CN.md](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md) | Theory/application value, speedup charts, case classes, and tuning implications |
-| W7900 current status / W7900 当前状态 | [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md) | [W7900_CURRENT_STATUS.zh-CN.md](W7900_CURRENT_STATUS.zh-CN.md) | Current W7900 baseline, charts, non-hard23 status, and hard3 split |
-| W7900 large-MPS non-hard23 baseline / W7900 large-MPS non-hard23 baseline | [../validation/w7900_large_mps_nonhard23_20260613.md](../validation/w7900_large_mps_nonhard23_20260613.md) | [../validation/w7900_large_mps_nonhard23_20260613.zh-CN.md](../validation/w7900_large_mps_nonhard23_20260613.zh-CN.md) | [solver CSV](../validation/w7900_large_mps_nonhard23_20260613.csv), [runtime CSV](../validation/w7900_large_mps_nonhard23_20260613_runtime.csv) |
-| W7900 large-MPS initial17 safe baseline / W7900 large-MPS initial17 safe baseline | [../validation/w7900_large_mps_initial17_safe_20260613.md](../validation/w7900_large_mps_initial17_safe_20260613.md) | [../validation/w7900_large_mps_initial17_safe_20260613.zh-CN.md](../validation/w7900_large_mps_initial17_safe_20260613.zh-CN.md) | [solver CSV](../validation/w7900_large_mps_initial17_safe_20260613.csv), [runtime CSV](../validation/w7900_large_mps_initial17_safe_20260613_runtime.csv) |
-| Large MPS CUDA/ROCm baseline / large MPS CUDA/ROCm baseline | [benchmarks/large_mps_cuda_rocm_baseline_20260610.md](benchmarks/large_mps_cuda_rocm_baseline_20260610.md) | [benchmarks/large_mps_cuda_rocm_baseline_20260610.zh-CN.md](benchmarks/large_mps_cuda_rocm_baseline_20260610.zh-CN.md) | [platform summary](../results/benchmarks/large_mps_platform_summary_20260610.csv), [per-case timing](../results/benchmarks/large_mps_per_case_timing_summary_20260610.csv) |
-| cuPDLPx vs cuPDLP-C short13 / cuPDLPx 对比 | [benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.md](benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.md) | [benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.zh-CN.md](benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.zh-CN.md) | [comparison CSV](../results/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.csv) |
-| greenbea numerical behavior / greenbea 数值行为 | [NUMERICAL_BEHAVIOR_GREENBEA.md](NUMERICAL_BEHAVIOR_GREENBEA.md) | [NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md](NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md) | Case-specific notes |
-
-## Profiling and tuning / Profiling 与调优
-
-| Topic / 主题 | English | 中文 |
-|---|---|---|
-| ROCm profiling notes / ROCm profiling 记录 | [ROCM_PROFILING_NOTES.md](ROCM_PROFILING_NOTES.md) | [ROCM_PROFILING_NOTES.zh-CN.md](ROCM_PROFILING_NOTES.zh-CN.md) |
-| ROCm tuning history / ROCm tuning 历史 | [ROCM_TUNING_HISTORY.md](ROCM_TUNING_HISTORY.md) | [ROCM_TUNING_HISTORY.zh-CN.md](ROCM_TUNING_HISTORY.zh-CN.md) |
-| ROCm tuning guide / ROCm tuning 指南 | [TUNING_GUIDE_ROCM.md](TUNING_GUIDE_ROCM.md) | [TUNING_GUIDE_ROCM.zh-CN.md](TUNING_GUIDE_ROCM.zh-CN.md) |
-
-## Maintenance rules / 维护规则
-
-- Keep `README.md`, `README.zh-CN.md`, and this file as the main navigation hubs.
-- Keep `validation/README.md` and `validation/README.zh-CN.md` as the validation data entry points.
-- Benchmark and validation Markdown summaries should link to their CSV source files.
-- If an English project document is updated, update the matching Chinese document.
-- If a Chinese project document is updated first, update the matching English document.
-- Keep `README_UPSTREAM.md` as an upstream reference snapshot.
-
-<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
-## Latest W7900 experiment summaries / 最新 W7900 实验摘要
-
-| Topic / 主题 | English | 中文 | Notes / 说明 |
-|---|---|---|---|
-| W7900 rocprof starter3 | [summary](../validation/w7900_rocprof_starter3_summary_20260616.md) | [摘要](../validation/w7900_rocprof_starter3_summary_20260616.zh-CN.md) | Compact profiling evidence; raw traces stay outside Git |
-| W7900 hard3 probe2 600s | [summary](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.md) | [摘要](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.zh-CN.md) | 600s diagnostic for hard cases |
-| W7900 before/current fast-core6 | [summary](../validation/w7900_before_current_core6_fast_summary_20260616.md) | [摘要](../validation/w7900_before_current_core6_fast_summary_20260616.zh-CN.md) | `ae3b683 / pre_tuning` versus current branch |
-| W7900 8-card fast8 throughput | [summary](../validation/w7900_8card_batch_fast8_summary_20260616.md) | [摘要](../validation/w7900_8card_batch_fast8_summary_20260616.zh-CN.md) | 8 independent MPS tasks: 146s concurrent versus 558s single-GPU sequential |
-<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
-
-## Final W7900 endpoint documents / 2026-06-17
-
-The W7900 / `gfx1100` project stage is complete for the current repository
-scope. Use the following documents as the final W7900 entry points:
-
-| Topic | English | 中文 |
-|---|---|---|
-| W7900 current status | [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md) | [W7900_CURRENT_STATUS.zh-CN.md](W7900_CURRENT_STATUS.zh-CN.md) |
-| P11 SpMV tuning summary | [../validation/w7900_p11_spmv_tuning_summary_20260617.md](../validation/w7900_p11_spmv_tuning_summary_20260617.md) | [../validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md](../validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md) |
-| P12 rejected experiment note | [../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md) | [../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md) |
-| P10 targeted rocprof summary | [../validation/w7900_p10_current_targeted_rocprof_20260617_summary.md](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.md) | [../validation/w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md) |
-
-Current W7900 tuning policy:
-
-- default SpMV algorithm: `HIPSPARSE_SPMV_CSR_ALG1`;
-- rollback: `CUPDLP_HIP_SPMV_ALG=csr_alg2`;
-- P12 buffer algorithm consistency patch: tested and rejected because
-  iteration count changed.
-
-## Final W7900 repeated validation / 2026-06-18
-
-P14-A1 is the final repeated validation added for this project stage.
-
-- [P14-A1 quick6 summary](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md)
-- [P14-A1 quick6 Chinese summary](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md)
-- [P14-A1 comparison CSV](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv)
-
-Result: `current` is faster on `6/6` quick6 cases, with geometric-mean
-speedup `1.18889` and median speedup `1.19502`, while preserving iteration
-counts. P14-B remains future optional and is not a current blocker.
+1. Current claims belong in the two root homepages, `W7900_CURRENT_STATUS*`, and index pages.
+   当前结论只在根目录中英文主页、`W7900_CURRENT_STATUS*` 和索引页维护。
+2. Dated experiment reports are evidence records; do not append new “final status” sections to them.
+   日期化实验报告是证据记录，不再追加新的“最终状态”。
+3. New experiments should add a compact CSV/Markdown pair, then update the relevant index and current-status page.
+   新实验提交 compact CSV/Markdown 后，只更新相应索引和当前状态页。
+4. English and Chinese current documents must be updated together.
+   当前态中英文文档必须同步修改。
+5. Raw MPS files, raw profiler traces, local builds, and credentials stay outside Git.
+   原始 MPS、原始 profiler trace、本地构建和凭据不进入 Git。
+6. Competition documents map general project evidence; they must not redefine the project as contest-only software.
+   竞赛文档只映射通用项目证据，不把项目改写成一次性竞赛软件。

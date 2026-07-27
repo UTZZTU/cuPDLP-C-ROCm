@@ -2,88 +2,60 @@
 
 > 中文: [SUBMISSION_CHECKLIST.zh-CN.md](SUBMISSION_CHECKLIST.zh-CN.md)
 
-This checklist tracks contest-facing deliverables without turning the repository into a contest-only project. The repository remains a general ROCm/HIP migration, validation, and benchmarking project.
+This checklist separates repository-verifiable material from external submission artifacts. The actual status of the paper, slides, and video is maintained by the project owner at submission time so that the repository does not preserve stale “not started” or “in progress” claims.
 
-## Repository delivery
+## Repository engineering material
 
-| Item | Status | Evidence / next step |
+| Item | Status | Entry |
 |---|---|---|
-| General project README | Done | [../README.md](../README.md), [../README.zh-CN.md](../README.zh-CN.md) |
-| Documentation map | Done | [README.md](README.md) |
-| Competition reviewer path | Done | [COMPETITION_README.md](COMPETITION_README.md), [COMPETITION_SCORECARD.md](COMPETITION_SCORECARD.md) |
-| Reproducibility guide | Done | [REPRODUCIBILITY.md](REPRODUCIBILITY.md) |
-| W7900 current status | Done | [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md) |
-| W7900 performance interpretation | Done | [W7900_PERFORMANCE_BEHAVIOR.md](W7900_PERFORMANCE_BEHAVIOR.md) |
-| W7900 optimization-baseline policy | Done | [W7900_OPTIMIZATION_BASELINES.md](W7900_OPTIMIZATION_BASELINES.md) |
-| Docker/container skeleton | Done as skeleton | [../docker/Dockerfile.w7900](../docker/Dockerfile.w7900), [../docker/README_DOCKER_W7900.md](../docker/README_DOCKER_W7900.md). This is an environment declaration skeleton, not the source of current W7900 performance numbers. |
-| Project architecture and evidence map | Done | [project architecture](assets/competition/project_architecture.svg), [evidence map](assets/competition/evidence_map.svg) |
-| Curated validation summaries | Done for current milestone | See [../validation/README.md](../validation/README.md) |
-| Raw MPS data policy | Done | Raw `.mps` files stay outside Git. |
+| English and Chinese homepages | Available | [English](../README.en.md), [中文](../README.md) |
+| Documentation map | Available | [docs/README.md](README.md) |
+| W7900 current status | Available | [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md) |
+| Reproducibility guide | Available | [REPRODUCIBILITY.md](REPRODUCIBILITY.md) |
+| Validation evidence index | Available | [validation/README.md](../validation/README.md) |
+| Competition reviewer path | Available | [COMPETITION_README.md](COMPETITION_README.md) |
+| Score mapping | Available; update when rules change | [COMPETITION_SCORECARD.md](COMPETITION_SCORECARD.md) |
+| Architecture and evidence maps | Available | [architecture](assets/competition/project_architecture.svg), [evidence map](assets/competition/evidence_map.svg) |
+| Docker/container | Environment skeleton | [Docker notes](../docker/README_DOCKER_W7900.md) |
+| Raw-data policy | Defined | `.mps` files and raw traces stay outside Git |
 
-## W7900 experiment items
-
-| Item | Status | Notes |
-|---|---|---|
-| W7900 smoke validation | Done | Current repository documents completed smoke validation. |
-| W7900 Netlib 27-case validation | Done | Current repository documents completed Netlib validation. |
-| W7900 non-hard large-MPS baseline | Done | `non-hard23`: 23/23 `OPTIMAL`; hard3 tracked separately. |
-| W7900 `rocprof` starter3 | Pending W7900 machine | Cases: `set-cover-model.mps`, `square41.mps`, `s100.mps`. |
-| hard3 probe2 | Pending W7900 machine | Cases: `dlr1.mps`, `fhnw-binschedule1.mps`. |
-| true before/current core6 | Pending W7900 machine | `ae3b683 / pre_tuning` versus current `rocm-w7900-gfx1100`. |
-| W7900-specific tuning | Pending profiling evidence | Do not tune blindly; choose the first target after profiler results. |
-| W7900 profiling result summary | Pending W7900 machine | Commit compact CSV/Markdown only, not raw profiler traces. |
-
-## Contest submission materials
-
-| Material | Status | Repository support |
-|---|---|---|
-| Technical paper | Not started | Use `COMPETITION_README`, `COMPETITION_SCORECARD`, `REPRODUCIBILITY`, W7900 status/performance docs, and future profiling results. |
-| Presentation slides | Not started | Build after paper outline and W7900 profiling results. |
-| Demo video | Not started | Should show repository structure, reproducibility workflow, W7900 run/profiling evidence if available, and result summaries. |
-| Engineering code repository | In progress, mostly ready | Current branch: `rocm-w7900-gfx1100`. |
-| Docker image / container package | Skeleton present | Strict final image remains future packaging work. |
-| Example inputs and expected outputs | Mostly ready | Validation case lists and committed CSV/Markdown summaries are present. |
-
-## Final cautions
-
-- Do not describe current W7900 non-hard23 as an unoptimized baseline.
-- Do not mix hard3 cases into the primary non-hard23 baseline.
-- Do not commit raw `.mps` data or raw profiler trace directories.
-- Keep W7900-specific tuning claims within the committed P10/P11/P12 evidence: P10 targeted profiling, P11 default `HIPSPARSE_SPMV_CSR_ALG1`, rollback with `CUPDLP_HIP_SPMV_ALG=csr_alg2`, and the P12 rejected experiment note.
-- Keep English and Chinese documents synchronized.
-
-<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
-## W7900 experiment completion / 2026-06-16
+## W7900 evidence closure
 
 | Item | Status | Evidence |
 |---|---|---|
-| rocprof starter3 | Done | [W7900 rocprof starter3 summary](../validation/w7900_rocprof_starter3_summary_20260616.md) |
-| hard3 probe2 | Done | [W7900 hard3 probe2 600s summary](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.md) |
-| true before/current fast-core6 | Done | [W7900 before/current fast-core6 summary](../validation/w7900_before_current_core6_fast_summary_20260616.md) |
-| 8-card independent-MPS batch throughput | Done | [W7900 8-card fast8 batch summary](../validation/w7900_8card_batch_fast8_summary_20260616.md) |
-<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
+| build and smoke | Closed for current stage | [smoke summary](../validation/w7900_smoke_summary_20260611.md) |
+| Netlib / 27-case | Complete | [27-case baseline](../validation/w7900_27cases_baseline_20260611.md) |
+| non-hard23 | 23/23 `OPTIMAL` | [summary](../validation/w7900_large_mps_nonhard23_20260613.md) |
+| hard3 | Reported separately | [notes](W7900_LARGE_MPS_HARD3_NOTES.md) |
+| P10 profiling | Complete | [summary](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.md) |
+| P11 tuning | `CSR_ALG1` default accepted | [summary](../validation/w7900_p11_spmv_tuning_summary_20260617.md) |
+| P12 negative result | Patch rejected and documented | [negative finding](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md) |
+| P14-A1 repeats | current wins 6/6 | [summary](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md) |
+| 8-card fast8 | independent-MPS throughput | [summary](../validation/w7900_8card_batch_fast8_summary_20260616.md) |
 
-## Final W7900 competition status / 2026-06-17
+## External submission artifacts
 
-The W7900 competition-facing workflow is now complete for the current
-repository scope. Earlier “next planned work” items such as W7900 profiling,
-before/current analysis, and W7900-specific tuning have been closed by the
-P10/P11/P12 evidence chain.
+The owner completes these checks before final submission; their status is not permanently hard-coded in the repository:
 
-Final competition-facing conclusion:
+| Artifact | Final check |
+|---|---|
+| Technical paper | Title, contribution boundaries, numbers, figures, and repository citations agree |
+| Presentation slides | Do not overclaim algorithmic novelty or describe eight-card throughput as one-problem multi-GPU |
+| Demo video | Show an actual build/run or explicitly identify committed-evidence inspection |
+| Submission form | Branch, commit, environment, dataset source, and license are accurate |
+| Optional container | Clearly distinguish an environment skeleton from a fully validated reproduction image |
 
-- W7900 / `gfx1100` ROCm build and validation are complete.
-- P10 targeted rocprof profiling has been archived.
-- P11 SpMV tuning is the accepted W7900-specific tuning endpoint.
-- The current W7900 default SpMV algorithm is
-  `HIPSPARSE_SPMV_CSR_ALG1`.
-- The old default can be restored with
-  `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
-- P12 records a rejected buffer-algorithm consistency patch to show that
-  additional execution-layer changes were tested conservatively.
+## Final consistency checks
 
-Recommended final evidence links:
-
-- `docs/W7900_CURRENT_STATUS.md`
-- `validation/w7900_p11_spmv_tuning_summary_20260617.md`
-- `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md`
+- [ ] Main branch and commit are recorded.
+- [ ] English and Chinese homepages agree with the W7900 current-status pages.
+- [ ] non-hard23 is reported as 23/23 `OPTIMAL`, with hard3 separate.
+- [ ] The current default is `HIPSPARSE_SPMV_CSR_ALG1`; fallback is `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
+- [ ] The rejected P12 experiment remains discoverable.
+- [ ] P14-A1 is reported as 6/6 current wins, geometric mean 1.18889, median 1.19502.
+- [ ] Eight-card results are described as eight independent MPS jobs.
+- [ ] No claim is made of a new PDLP algorithm.
+- [ ] No claim is made that W7900 beats CUDA on every case.
+- [ ] Raw MPS, raw traces, build directories, and credentials are not staged.
+- [ ] `git diff --check` and Markdown/link checks pass.
+- [ ] Repository links and file paths cited by submission materials are accessible.

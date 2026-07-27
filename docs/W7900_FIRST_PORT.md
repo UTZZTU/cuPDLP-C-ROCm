@@ -1,5 +1,11 @@
 # W7900 / gfx1100 First-Port Notes
 
+<!-- DOCUMENT_STATUS_NOTICE_BEGIN -->
+> **Historical first-port snapshot**
+>
+> This document records the initial W7900 bring-up state. It is preserved as migration evidence and does not represent the current endpoint. See [W7900 current status](W7900_CURRENT_STATUS.md).
+<!-- DOCUMENT_STATUS_NOTICE_END -->
+
 This document records the first successful build, run, and smoke validation of cuPDLP-C-ROCm on an AMD Radeon PRO W7900 / `gfx1100` platform.
 
 ## 1. Stage Goal

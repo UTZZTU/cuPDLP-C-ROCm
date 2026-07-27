@@ -1,265 +1,170 @@
-<!-- COMPETITION_README_20260614_BEGIN -->
-> 普通 GitHub 读者：请从本 README 和 [文档地图](docs/README.md) 开始。
-> AMD ROCm/Radeon 赛题评委：请查看 [docs/COMPETITION_README.md](docs/COMPETITION_README.md) / [docs/COMPETITION_README.zh-CN.md](docs/COMPETITION_README.zh-CN.md)。
-<!-- COMPETITION_README_20260614_END -->
-
 # cuPDLP-C-ROCm
 
-| 入口 | 链接 |
+> English: [README.en.md](README.en.md)
+> 文档地图：[docs/README.md](docs/README.md)
+> 竞赛评审入口：[docs/COMPETITION_README.zh-CN.md](docs/COMPETITION_README.zh-CN.md)
+
+`cuPDLP-C-ROCm` 是上游 [cuPDLP-C](README_UPSTREAM.md) 的 ROCm/HIP 移植、验证与性能分析分支。项目保留 CPU 和上游兼容 CUDA 路径，并新增 AMD GPU 后端，重点记录科学计算求解器从 CUDA 迁移到 ROCm 时的工程边界、数值验证和性能证据。
+
+## 项目定位
+
+本项目的贡献不是提出新的线性规划算法，而是：
+
+- 将 cuPDLP-C 的 GPU 执行路径迁移到 ROCm/HIP；
+- 维护 CPU、CUDA、ROCm 三种后端模式；
+- 为 smoke、Netlib、large-MPS、profiling 和 tuning 建立可追溯证据链；
+- 记录性能优化与数值收敛相互影响的正向和负向实验；
+- 提供可复用的 CUDA-to-ROCm 科学计算迁移经验。
+
+| 项目 | 当前状态 |
 |---|---|
-| English homepage | [README.en.md](README.en.md) |
-| ROCm/gfx1150 快速入口 | [README_ROCM_gfx1150.zh-CN.md](README_ROCM_gfx1150.zh-CN.md) |
-| 文档地图 | [docs/README.md](docs/README.md) |
-| 验证数据索引 | [validation/README.zh-CN.md](validation/README.zh-CN.md) |
-| Benchmark 索引 | [docs/benchmarks/README.md](docs/benchmarks/README.md) |
+| 当前主分支 | `rocm-w7900-gfx1100` |
+| 当前主要 ROCm 平台 | Radeon PRO W7900 / `gfx1100` |
+| 早期 ROCm 里程碑 | Radeon 890M / `gfx1150` |
+| 参考后端 | CPU、CUDA（RTX 3090、RTX 4090D、H100） |
+| 当前 W7900 SpMV 默认策略 | `HIPSPARSE_SPMV_CSR_ALG1` |
+| 回退策略 | `CUPDLP_HIP_SPMV_ALG=csr_alg2` |
+| 发布属性 | 研究与工程验证项目；不是生产级、广泛认证的求解器发行版 |
 
-`cuPDLP-C-ROCm` 是基于上游 cuPDLP-C 的 ROCm/HIP 移植与验证分支。项目保留 CPU 路径和上游兼容 CUDA 路径，并新增面向 AMD Radeon 平台的 ROCm/HIP 后端。
+## 关键结果
 
-| 项目 | 当前值 |
-|---|---|
-| 主要 ROCm 目标 | AMD Radeon 890M |
-| ROCm 架构 | `gfx1150` |
-| 本地验证 ROCm 版本 | 7.2.1 |
-| 已完成验证与调优的额外 ROCm 目标 | AMD Radeon PRO W7900 / `gfx1100` |
-| CUDA baseline 设备 | RTX 3090, RTX 4090D, H100 |
-
-> 状态：实验性但可构建。当前 ROCm/HIP 后端已经通过 smoke validation、Netlib 验证、跨设备 benchmark、large-MPS baseline，以及 Radeon 890M / `gfx1150` 与 Radeon PRO W7900 / `gfx1100` 上的验证与调优记录。W7900 阶段已经完成 P10 targeted profiling 和 P11 SpMV tuning；当前默认 SpMV algorithm 为 `HIPSPARSE_SPMV_CSR_ALG1`，旧默认可用 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 回退。它仍不是生产级、广泛认证的 ROCm solver release，但当前项目阶段已经完成。
-
-## 从哪里开始
-
-| 需求 | English | 中文 |
+| 证据 | 结果 | 说明 |
 |---|---|---|
-| ROCm/gfx1150 快速入口 | [README_ROCM_gfx1150.md](README_ROCM_gfx1150.md) | [README_ROCM_gfx1150.zh-CN.md](README_ROCM_gfx1150.zh-CN.md) |
-| 完整文档地图 | [docs/README.md](docs/README.md) | [docs/README.md](docs/README.md) |
-| 验证数据索引 | [validation/README.md](validation/README.md) | [validation/README.zh-CN.md](validation/README.zh-CN.md) |
-| Benchmark 索引 | [docs/benchmarks/README.md](docs/benchmarks/README.md) | [docs/benchmarks/README.md](docs/benchmarks/README.md) |
+| W7900 large-MPS non-hard23 | 23/23 `OPTIMAL` | wall time 2960.171 s；solve time 2742.940 s |
+| P10 targeted profiling | rocSPARSE CSR SpMV 为主要 GPU 热点 | `hipMemcpy`、`hipMemcpyAsync` 和 kernel launch 也值得关注 |
+| P11 SpMV tuning | 接受 `CSR_ALG1` 作为当前默认 | 保留 `csr_alg2` 环境变量回退路径 |
+| P12 negative experiment | patch 被拒绝 | `set-cover-model` 迭代数由 7480 变为 7600，说明执行层修改也可能改变数值轨迹 |
+| P14-A1 quick6 repeats | current 6/6 胜出 | geomean speedup 1.18889；median 1.19502；迭代数保持一致 |
+| 8-card fast8 batch | 146 s vs 单卡顺序 558 s | 这是 8 个独立 MPS 任务的吞吐实验，不是单个 LP 的分布式多 GPU 求解 |
 
-## 文档
+完整结果、边界条件和证据链接见 [W7900 当前状态](docs/W7900_CURRENT_STATUS.zh-CN.md) 与 [Validation 索引](validation/README.zh-CN.md)。
 
-| 需求 | English | 中文 |
-|---|---|---|
-| 构建、运行、验证日常流程 | [docs/ROCM_WORKFLOW.md](docs/ROCM_WORKFLOW.md) | [docs/ROCM_WORKFLOW.zh-CN.md](docs/ROCM_WORKFLOW.zh-CN.md) |
-| CPU vs ROCm 验证语义 | [docs/VALIDATION.md](docs/VALIDATION.md) | [docs/VALIDATION.zh-CN.md](docs/VALIDATION.zh-CN.md) |
-| 后端模式与命名策略 | [docs/BACKEND_MODES_AND_NAMING.md](docs/BACKEND_MODES_AND_NAMING.md) | [docs/BACKEND_MODES_AND_NAMING.zh-CN.md](docs/BACKEND_MODES_AND_NAMING.zh-CN.md) |
-| CUDA 到 ROCm 迁移案例 | [docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) | [docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) |
-| ROCm porting 指南 | [docs/ROCM_PORTING_GUIDE.md](docs/ROCM_PORTING_GUIDE.md) | [docs/ROCM_PORTING_GUIDE.zh-CN.md](docs/ROCM_PORTING_GUIDE.zh-CN.md) |
-| ROCm profiling 记录 | [docs/ROCM_PROFILING_NOTES.md](docs/ROCM_PROFILING_NOTES.md) | [docs/ROCM_PROFILING_NOTES.zh-CN.md](docs/ROCM_PROFILING_NOTES.zh-CN.md) |
-| ROCm tuning 历史 | [docs/ROCM_TUNING_HISTORY.md](docs/ROCM_TUNING_HISTORY.md) | [docs/ROCM_TUNING_HISTORY.zh-CN.md](docs/ROCM_TUNING_HISTORY.zh-CN.md) |
-| ROCm tuning 指南 | [docs/TUNING_GUIDE_ROCM.md](docs/TUNING_GUIDE_ROCM.md) | [docs/TUNING_GUIDE_ROCM.zh-CN.md](docs/TUNING_GUIDE_ROCM.zh-CN.md) |
-| Netlib 跨设备 benchmark | [docs/CROSS_DEVICE_BENCHMARKS.md](docs/CROSS_DEVICE_BENCHMARKS.md) | [docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md](docs/CROSS_DEVICE_BENCHMARKS.zh-CN.md) |
-| large MPS benchmark 计划 | [docs/LARGE_MPS_BENCHMARK_PLAN.md](docs/LARGE_MPS_BENCHMARK_PLAN.md) | [docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md](docs/LARGE_MPS_BENCHMARK_PLAN.zh-CN.md) |
-| greenbea 数值行为 | [docs/NUMERICAL_BEHAVIOR_GREENBEA.md](docs/NUMERICAL_BEHAVIOR_GREENBEA.md) | [docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md](docs/NUMERICAL_BEHAVIOR_GREENBEA.zh-CN.md) |
-| W7900 / `gfx1100` current status | [docs/W7900_CURRENT_STATUS.md](docs/W7900_CURRENT_STATUS.md) | [docs/W7900_CURRENT_STATUS.zh-CN.md](docs/W7900_CURRENT_STATUS.zh-CN.md) |
-| W7900 / `gfx1100` first-port 记录 | [docs/W7900_FIRST_PORT.md](docs/W7900_FIRST_PORT.md) | [docs/W7900_FIRST_PORT.zh-CN.md](docs/W7900_FIRST_PORT.zh-CN.md) |
-| 上游参考快照 | [README_UPSTREAM.md](README_UPSTREAM.md) | — |
+## 求解与执行流程
 
-`README_UPSTREAM.md` 是上游 README 备份，故意作为原始参考快照保留，不翻译、不重写。
+```text
+MPS input
+  -> HiGHS parsing / optional presolve
+  -> cuPDLP model and scaling
+  -> CSR + CSC sparse matrices
+  -> CPU / CUDA / ROCm backend
+  -> PDHG iterations
+  -> feasibility, gap and termination checks
+  -> JSON / solution output
+```
 
-## Benchmarks
+核心工作负载包括 `Ax`、`Aᵀy` 稀疏矩阵向量乘、向量更新、投影、归约、步长调整和 restart。端到端性能通常可以理解为：
 
-原始 `.mps` 大文件不提交到 Git。仓库只提交整理后的 CSV 结果和解释文档。
+```text
+total time ≈ per-iteration cost × number of iterations
+```
 
-| 主题 | English | 中文 | 原始结果 CSV |
-|---|---|---|---|
-| Large MPS CUDA/ROCm baseline | [summary](docs/benchmarks/large_mps_cuda_rocm_baseline_20260610.md) | [中文版](docs/benchmarks/large_mps_cuda_rocm_baseline_20260610.zh-CN.md) | [platform summary](results/benchmarks/large_mps_platform_summary_20260610.csv), [per-case timing](results/benchmarks/large_mps_per_case_timing_summary_20260610.csv) |
-| cuPDLPx vs cuPDLP-C short13 | [comparison](docs/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.md) | [中文版](docs/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.zh-CN.md) | [comparison CSV](results/benchmarks/cupdlpx_vs_cupdlp_c_4090d_short13_20260610.csv) |
-
-## 本仓库提供什么
-
-- CPU-only cuPDLP-C 构建路径。
-- 上游兼容 CUDA 构建路径，用于 NVIDIA baseline。
-- 由 CUDA backend 迁移而来的 ROCm/HIP backend。
-- 链接 ROCm/HIP backend 的 `plc` 可执行文件。
-- CPU-vs-ROCm smoke validation 脚本。
-- W7900 / `gfx1100` build、smoke validation、Netlib validation、large-MPS baseline、P10 profiling、P11 SpMV tuning 和 P12 rejected experiment 记录。
-- 扩展 Netlib 验证 case。
-- RTX 3090、RTX 4090D、H100、Radeon 890M 的跨设备 benchmark 工作流与结果文档。
-- large MPS benchmark 文档和整理后的 CSV 汇总。
-- `rocprofv3` profiling 工作流与 ROCm tuning 笔记。
-- 面向 CUDA 到 ROCm/HIP 科学计算项目迁移的案例文档。
+因此，GPU kernel 更快不一定自动带来总求解时间更短；浮点顺序和执行层变化也可能改变收敛路径。
 
 ## 后端模式
 
-| 模式 | CMake 选项 | 作用 |
+| 模式 | CMake 选项 | 用途 |
 |---|---|---|
-| CPU | `BUILD_CUDA=OFF`, `BUILD_ROCM=OFF` | 正确性与可移植性 baseline |
-| CUDA | `BUILD_CUDA=ON`, `BUILD_ROCM=OFF` | 上游兼容 NVIDIA 后端与 benchmark baseline |
-| ROCm/HIP | `BUILD_CUDA=OFF`, `BUILD_ROCM=ON` | AMD Radeon ROCm/HIP 目标后端 |
+| CPU | `BUILD_CUDA=OFF`, `BUILD_ROCM=OFF` | 正确性与可移植性基线 |
+| CUDA | `BUILD_CUDA=ON`, `BUILD_ROCM=OFF` | NVIDIA 参考后端 |
+| ROCm/HIP | `BUILD_CUDA=OFF`, `BUILD_ROCM=ON` | AMD GPU 后端 |
 
-`BUILD_CUDA` 和 `BUILD_ROCM` 不能同时开启。不同后端建议使用不同 build 目录，例如 `build-cpu`、`build-cuda`、`build-rocm-plc`。
-
-## 当前验证与 benchmark 状态
-
-Large MPS baseline 状态：
-
-| 平台 | 后端 | 结果 |
-|---|---|---|
-| RTX 3090 | CUDA upstream | 25/26 OPTIMAL, 1/26 TIMELIMIT |
-| Radeon 890M | ROCm/HIP baseline | 24/26 OPTIMAL, 2/26 TIMELIMIT |
-| RTX 4090D | CUDA upstream | 26/26 OPTIMAL |
-| H100 | CUDA upstream | 26/26 OPTIMAL |
-| Radeon PRO W7900 | ROCm/HIP W7900 当前调优终点 | non-hard large-MPS 23/23 OPTIMAL；P10 profiling、P11 SpMV tuning、P12 rejected experiment 已归档 |
-
-cuPDLPx short13 对比状态：
-
-| Solver | 平台 | 结果 |
-|---|---|---|
-| cuPDLP-C upstream | RTX 4090D CUDA | 选定 13 个短/中等 case 上 13/13 OPTIMAL |
-| cuPDLPx v0.2.9 | RTX 4090D CUDA | 同一批 case 上 13/13 OPTIMAL |
+`BUILD_CUDA` 与 `BUILD_ROCM` 不应同时开启。不同后端应使用独立构建目录。
 
 ## 快速开始
 
-本节给出 W7900 / gfx1100 版本从拉取仓库到完成一个最小样例运行的路径。更完整的环境恢复、数据准备、批量验证和结果复现说明见 [docs/REPRODUCIBILITY.zh-CN.md](docs/REPRODUCIBILITY.zh-CN.md)。
-
-### 1. 拉取项目
+### 1. 克隆仓库
 
 ```bash
-git clone -b rocm-w7900-gfx1100 https://github.com/UTZZTU/cuPDLP-C-ROCm.git
+git clone --recurse-submodules \
+  --branch rocm-w7900-gfx1100 \
+  https://github.com/UTZZTU/cuPDLP-C-ROCm.git
 cd cuPDLP-C-ROCm
 ```
 
-如需同步子模块，可执行：
+### 2. 在任意主机检查已提交证据
+
+没有 W7900 时仍可检查仓库中已提交的 CSV、Markdown 和 SVG：
 
 ```bash
-git submodule update --init --recursive
+python3 - <<'PY'
+import csv
+from pathlib import Path
+
+rows = list(csv.DictReader(
+    Path("validation/w7900_large_mps_nonhard23_20260613.csv").open()
+))
+print("cases:", len(rows))
+print("termination:", sorted({r["terminationCode"] for r in rows}))
+print("wall:", sum(float(r["wall_seconds"]) for r in rows))
+print("solve:", sum(float(r["dSolvingTime"]) for r in rows))
+PY
 ```
 
-### 2. 恢复 W7900 ROCm/HIP 环境
+预期为 23 个 case，且 termination 全部为 `OPTIMAL`。
 
-W7900 测试环境按“非持久化机器”处理，建议优先使用仓库提供的恢复脚本重建基础依赖、HiGHS、构建目录和运行环境。脚本的详细说明、前置条件和可选参数见复现文档。
+### 3. 在 W7900 上恢复、构建并运行 smoke
 
 ```bash
 bash scripts/bootstrap_w7900_workspace.sh
+bash scripts/build_w7900_cpu.sh
+bash scripts/build_w7900_rocm.sh
+bash scripts/run_w7900_smoke.sh
 ```
 
-如果本机 ROCm SDK 或 HiGHS 安装路径与脚本默认值不同，请按照 [docs/REPRODUCIBILITY.zh-CN.md](docs/REPRODUCIBILITY.zh-CN.md) 中的说明调整 `ROCM_PATH`、`HIP_HIPCC_EXECUTABLE` 和 `HIGHS_HOME`。
+仓库提供的 W7900 脚本统一使用：
 
-### 3. 构建 ROCm/HIP 版本
+```text
+build-cpu/bin/plc
+build-rocm-w7900/bin/plc
+```
 
-W7900 对应 AMD gfx1100 架构。典型构建命令如下：
+`plc` 的最小调用形式为：
 
 ```bash
-cmake -S . -B build-w7900-rocm -G Ninja \
-  -DBUILD_ROCM=ON \
-  -DROCM_PATH=/opt/python \
-  -DHIP_HIPCC_EXECUTABLE=/opt/python/bin/hipcc \
-  -DCMAKE_HIP_ARCHITECTURES=gfx1100 \
-  -DHIGHS_HOME=/root/cupdlp_w7900/deps/install/highs-1.6.0
-
-cmake --build build-w7900-rocm -j"$(nproc)"
+./build-rocm-w7900/bin/plc \
+  -fname ./example/afiro.mps \
+  -out /tmp/afiro_rocm.json \
+  -nIterLim 200
 ```
 
-### 4. 运行最小样例
+环境、数据集、profiling 和 repeated-validation 细节见 [可复现性指南](docs/REPRODUCIBILITY.zh-CN.md)。
 
-构建完成后，可先使用 `afiro.mps` 做 smoke test，确认 ROCm/HIP 后端可以正常读取 MPS 并完成一次小规模求解。
+## 文档入口
 
-```bash
-find . -iname "afiro.mps" -o -iname "afiro.mps.gz"
-find build-w7900-rocm -maxdepth 4 -type f -executable | sort | grep -Ei "cupdlp|pdlp|mps|solver"
-```
+| 需求 | 中文 | English |
+|---|---|---|
+| 完整文档导航 | [文档地图](docs/README.md) | [Documentation map](docs/README.md) |
+| 构建和运行 | [ROCm 工作流](docs/ROCM_WORKFLOW.zh-CN.md) | [ROCm workflow](docs/ROCM_WORKFLOW.md) |
+| 复现实验 | [可复现性指南](docs/REPRODUCIBILITY.zh-CN.md) | [Reproducibility](docs/REPRODUCIBILITY.md) |
+| 验证语义 | [验证说明](docs/VALIDATION.zh-CN.md) | [Validation semantics](docs/VALIDATION.md) |
+| 当前 W7900 结论 | [W7900 当前状态](docs/W7900_CURRENT_STATUS.zh-CN.md) | [W7900 current status](docs/W7900_CURRENT_STATUS.md) |
+| 性能与调优 | [性能行为](docs/W7900_PERFORMANCE_BEHAVIOR.zh-CN.md)、[调优历史](docs/ROCM_TUNING_HISTORY.zh-CN.md) | [Performance behavior](docs/W7900_PERFORMANCE_BEHAVIOR.md), [tuning history](docs/ROCM_TUNING_HISTORY.md) |
+| 原始汇总索引 | [Validation 索引](validation/README.zh-CN.md) | [Validation index](validation/README.md) |
+| CUDA-to-ROCm 迁移 | [迁移案例](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) | [Migration case study](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) |
+| 竞赛评审 | [竞赛入口](docs/COMPETITION_README.zh-CN.md) | [Competition entry](docs/COMPETITION_README.md) |
 
-根据上面找到的可执行文件和 `afiro.mps` 路径运行，例如：
+## 结果与数据策略
 
-```bash
-./build-w7900-rocm/bin/cupdlp ./example/afiro.mps
-```
+原始 large-MPS 文件、原始 profiler trace、机器本地构建目录和临时运行目录不进入 Git。仓库提交：
 
-若仓库中提供了封装好的单样例运行脚本，也可以优先使用脚本入口；批量数据准备、non-hard23 验证、8 卡 independent-MPS 吞吐实验和 profiling/tuning 复现流程请继续阅读 [docs/REPRODUCIBILITY.zh-CN.md](docs/REPRODUCIBILITY.zh-CN.md)。
+- case lists 和 manifests；
+- curated CSV；
+- Markdown summaries；
+- 小型 SVG 图表；
+- 可复现脚本；
+- 接受和拒绝的调优结论。
 
-## 验证
+历史日期化报告保留为证据，但当前结论只在主页、`docs/W7900_CURRENT_STATUS*` 和索引文档中维护。
 
-```bash
-./scripts/check_rocm_port.sh
-ctest --test-dir build-rocm-plc --output-on-failure
-```
+## 已知限制
 
-扩展验证：
+- 当前 ROCm 实现和参数主要在 `gfx1150`、`gfx1100` 上验证，不能等同于所有 AMD 架构均已认证。
+- W7900 aggregate performance 仍落后于本项目中的高端 CUDA 参考；竞争力需要结合具体 case 和收敛路径解释。
+- hard3 与 non-hard23 分开报告，不能把 hard3 隐藏或混入主结果。
+- 8 卡结果是独立任务并发吞吐，不是单问题多 GPU 算法。
+- Docker 文件是环境骨架，不是当前 W7900 性能数字的来源。
+- Python/apps 等可选路径不是当前 ROCm 主验证路径。
 
-```bash
-RESULT_ROOT=validation/results/extended_netlib \
-  ./scripts/run_validation.sh validation/cases_extended_netlib.txt
-```
+## 上游与许可证
 
-整理后的验证结果和 CSV 见 [validation/README.zh-CN.md](validation/README.zh-CN.md)。
-
-## Profiling 与 tuning
-
-```bash
-RESULT_ROOT=profiling/results/current ./scripts/profile_rocm_smoke.sh
-
-python3 scripts/summarize_rocm_profile.py \
-  --input profiling/results/current \
-  --output profiling/results/current/profile_summary.md
-```
-
-详见 [docs/ROCM_PROFILING_NOTES.zh-CN.md](docs/ROCM_PROFILING_NOTES.zh-CN.md)、[docs/ROCM_TUNING_HISTORY.zh-CN.md](docs/ROCM_TUNING_HISTORY.zh-CN.md)、[docs/TUNING_GUIDE_ROCM.zh-CN.md](docs/TUNING_GUIDE_ROCM.zh-CN.md)。
-
-## 适配其他 ROCm GPU
-
-先识别 GPU 架构：
-
-```bash
-rocminfo | grep -E "Name:|Marketing Name|gfx"
-rocm_agent_enumerator
-```
-
-然后设置对应架构，例如 W7900/gfx1100：
-
-```bash
--DCMAKE_HIP_ARCHITECTURES=gfx1100
-```
-
-实际支持取决于 ROCm 版本、Linux 发行版、内核和 AMD GPU/APU 支持状态。
-
-## W7900 项目最终状态 / 2026-06-17
-
-当前仓库范围内，W7900 / `gfx1100` 阶段已经完成。该分支已经不再停留在
-first-port 或 baseline 文档阶段：
-
-- W7900 ROCm build、smoke validation、Netlib validation、large-MPS baseline、
-  targeted profiling 和 P11 SpMV tuning 均已完成。
-- P10 targeted profiling 确认 rocSPARSE/hipSPARSE CSR SpMV 是所选 W7900
-  case 上的主要 GPU kernel 热点。
-- P11 增加 opt-in HIP SpMV algorithm switch，并验证了 `csr_alg2`、
-  `default`、`csr_alg1` 三种模式。
-- 当前 W7900 默认 SpMV algorithm 已设为
-  `HIPSPARSE_SPMV_CSR_ALG1`。
-- 旧默认仍可通过 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 显式恢复。
-- 这是 W7900-specific 当前默认调优策略，不是最终跨平台峰值性能结论。
-
-W7900 当前权威入口见：
-
-- `docs/W7900_CURRENT_STATUS.zh-CN.md`
-- `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`
-
-## W7900 最终终点 / 2026-06-17
-
-当前仓库范围内，W7900 / `gfx1100` 阶段已经完成。它不应再被描述为未来目标、
-baseline-only 目标或 pre-tuning 目标。
-
-当前已接受终点：
-
-- W7900 build、smoke validation、Netlib validation 和 large-MPS baseline
-  文档已完成。
-- P10 targeted rocprof profiling 已完成。
-- P11 SpMV tuning 已完成。
-- 当前 W7900 默认 SpMV algorithm：
-  `HIPSPARSE_SPMV_CSR_ALG1`。
-- 回退旧默认：
-  `CUPDLP_HIP_SPMV_ALG=csr_alg2`。
-- P12 记录了一次被拒绝的 SpMV buffer-algorithm consistency 实验；该实验导致
-  迭代数变化，因此未接受该 patch。
-
-权威入口：
-
-- `docs/W7900_CURRENT_STATUS.zh-CN.md`
-- `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`
-- `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md`
-
-## P14-A1 后的最终补充验证 / 2026-06-18
-
-W7900 已补充 P14-A1 quick6 current-vs-pre_tuning repeated validation。结果显示
-`current` 在 quick6 的 `6/6` 个 case 上快于 `pre_tuning`，几何平均 speedup 为
-`1.18889`，中位数 speedup 为 `1.19502`，且 pre/current 迭代数保持一致。
-
-这作为 quick-set tuning-transfer evidence，与 non-hard23 large-MPS baseline 分开表述。当前项目收尾不再需要额外 W7900 实验；P14-B 仅保留为未来可选稳健性检查。
+上游 README 快照保存在 [README_UPSTREAM.md](README_UPSTREAM.md)，用于说明原始项目背景。除非相应文件另有说明，本仓库遵循 [MIT License](LICENSE)。

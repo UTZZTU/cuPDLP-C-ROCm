@@ -1,5 +1,11 @@
 # W7900 / gfx1100 首次移植记录
 
+<!-- DOCUMENT_STATUS_NOTICE_BEGIN -->
+> **历史 first-port 快照**
+>
+> 本文记录 W7900 初次移植状态，作为迁移证据保留，不代表当前终点。当前结论见 [W7900 当前状态](W7900_CURRENT_STATUS.zh-CN.md)。
+<!-- DOCUMENT_STATUS_NOTICE_END -->
+
 本文记录 cuPDLP-C-ROCm 在 AMD Radeon PRO W7900 / `gfx1100` 平台上的首次构建、运行与 smoke validation 结果。
 
 ## 1. 阶段目标

@@ -1,5 +1,11 @@
 # Large MPS benchmark plan
 
+<!-- DOCUMENT_STATUS_NOTICE_BEGIN -->
+> **Historical benchmark plan**
+>
+> This file preserves the original large-MPS benchmark design. The workflow has since produced committed CUDA/ROCm and W7900 evidence. Use the [benchmark index](benchmarks/README.md), [validation index](../validation/README.md), and [W7900 current status](W7900_CURRENT_STATUS.md) for current results.
+<!-- DOCUMENT_STATUS_NOTICE_END -->
+
 > 中文版: [`LARGE_MPS_BENCHMARK_PLAN.zh-CN.md`](LARGE_MPS_BENCHMARK_PLAN.zh-CN.md)
 
 This document records the large MPS benchmark workflow for `cuPDLP-C-ROCm`.
