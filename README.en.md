@@ -52,6 +52,8 @@ MPS input
   -> JSON / solution output
 ```
 
+The primary committed validation path uses HiGHS parsing with presolve disabled. An optional presolve path exists in the code, but nontrivial postsolve and recovery to the original variable space are not part of the current validated contract.
+
 The main workload consists of `Ax` and `Aᵀy` sparse matrix-vector products, vector updates, projections, reductions, step-size adaptation, and restart logic. End-to-end behavior is usefully summarized as:
 
 ```text
@@ -104,14 +106,28 @@ The expected result is 23 cases with `OPTIMAL` termination.
 
 ### 3. Recover, build, and run smoke on W7900
 
+The bootstrap script manages a `/app/cupdlp_w7900` workspace by default. It clones or updates the fixed branch, prepares HiGHS, and builds the CPU and ROCm paths. To perform recovery, build, and smoke once:
+
 ```bash
-bash scripts/bootstrap_w7900_workspace.sh
+RUN_BUILD=1 RUN_SMOKE=1 \
+  bash scripts/bootstrap_w7900_workspace.sh
+```
+
+The managed checkout is then located at:
+
+```text
+/app/cupdlp_w7900/src/cuPDLP-C-ROCm
+```
+
+In an existing checkout with dependencies and the ROCm environment already activated, run only:
+
+```bash
 bash scripts/build_w7900_cpu.sh
 bash scripts/build_w7900_rocm.sh
 bash scripts/run_w7900_smoke.sh
 ```
 
-The maintained W7900 scripts use:
+The maintained scripts use:
 
 ```text
 build-cpu/bin/plc
@@ -164,6 +180,7 @@ Dated experiment reports remain as evidence. Current conclusions are maintained 
 - The eight-GPU result is independent-job throughput, not a multi-GPU algorithm for one LP.
 - The Docker files are an environment skeleton, not the source of the committed W7900 performance numbers.
 - Optional Python/apps paths are not part of the primary ROCm validation path.
+- Optional presolve exists, but nontrivial postsolve and original-variable recovery are not validated as the primary path.
 
 ## Upstream and license
 

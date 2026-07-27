@@ -193,46 +193,25 @@ GPU timing 摘要：
 
 该结果说明 W7900 / `gfx1100` ROCm backend 在 `afiro` smoke case 上与 CPU baseline 的终止状态一致，数值误差处于合理范围内。
 
-<!-- W7900_DOC_SWEEP_20260614_BEGIN -->
-## large-MPS baseline 之后的状态更新
+## 历史状态
 
-本文保留为 W7900 / `gfx1100` first-port smoke milestone 的历史记录。
+本文只记录 W7900 / `gfx1100` 首次 smoke milestone，保留原始环境和 CPU-vs-ROCm first-port 对比，不是当前项目状态页。
 
-当前分支状态已经超过 first-port smoke validation：
+first-port 阶段后续已由以下证据取代：
 
-- smoke validation：已完成
-- Netlib 27-case W7900 validation：已完成
-- large-MPS `initial17_safe`：已完成
-- large-MPS `watchlist6` diagnostic 与 near-optimal follow-up：已完成
-- 合并后的 large-MPS `non-hard23`：23/23 `OPTIMAL`
-- 剩余 hard3：`dlr1.mps`、`Dual2_5000.mps`、`fhnw-binschedule1.mps`，单独跟踪
+- W7900 Netlib validation；
+- large-MPS non-hard23 23/23 `OPTIMAL`；
+- P10 targeted profiling；
+- P11 accepted SpMV algorithm policy；
+- P12 rejected execution-layer experiment；
+- P14-A1 repeated current-vs-pre-tuning validation。
 
-当前状态页：[W7900_CURRENT_STATUS.zh-CN.md](W7900_CURRENT_STATUS.zh-CN.md)
+当前入口：
 
-Hard3 说明：[W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md](W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md)
-<!-- W7900_DOC_SWEEP_20260614_END -->
+- [W7900 当前状态](W7900_CURRENT_STATUS.zh-CN.md)
+- [可复现性指南](REPRODUCIBILITY.zh-CN.md)
+- [ROCm profiling 记录](ROCM_PROFILING_NOTES.zh-CN.md)
+- [ROCm 调优历史](ROCM_TUNING_HISTORY.zh-CN.md)
+- [Validation 索引](../validation/README.zh-CN.md)
 
-## 9. 已知限制与当前完成状态
-
-本文保留为 W7900 / `gfx1100` first-port smoke milestone 的历史记录。原始
-first-port 限制已经由后续 W7900 validation 和 tuning 文档取代：
-
-* extended Netlib validation：已完成。
-* large MPS benchmark：non-hard23 baseline 已完成，hard3 单独记录。
-* W7900 profiling：P10 targeted rocprof 已归档。
-* W7900 单卡调优：P11 SpMV tuning 已完成，当前默认
-  `HIPSPARSE_SPMV_CSR_ALG1`。
-* 8 GPU 并发吞吐实验：fast8 batch throughput 已归档。
-* 跨设备 benchmark matrix：已有 curated summaries。
-
-当前仍不应描述为生产级 ROCm solver release，但已经超过 first-port smoke
-阶段。权威状态见 [W7900_CURRENT_STATUS.zh-CN.md](W7900_CURRENT_STATUS.zh-CN.md)。
-
-## 10. 后续计划状态
-
-原下一步计划已基本完成。当前仅保留可选增强：
-
-1. W7900 P14-A：current-vs-before representative repeated validation。
-2. W7900 P14-B：CSR ALG1-vs-ALG2 representative repeated validation。
-
-其他深层数值路径优化不纳入当前项目终点。
+P14-B ALG1-vs-ALG2 repeated evidence 仍可作为可选增强，但不是 first-port milestone 的未完成要求。

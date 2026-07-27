@@ -264,18 +264,16 @@ tools/emps.c
 large raw MPS files
 ```
 
-## 13. Current next-priority status
+## 13. Current maintenance priorities
 
-The original priorities are mostly complete: the large-MPS benchmark matrix,
-890M tuning history, W7900 / `gfx1100` migration, profiling, and P11 tuning
-have all been archived.
+The original large-MPS, W7900 migration, P10 profiling, P11 tuning, P12 negative experiment, and P14-A1 repeated-validation tasks are complete for the current repository scope.
 
-Current remaining recommendations:
+Current priorities are:
 
-1. Keep English and Chinese documentation plus validation indexes in sync.
-2. Add P14-A current-vs-before repeated validation only when a W7900 machine
-   is available.
-3. Add P14-B CSR ALG1-vs-ALG2 repeated validation only when a W7900 machine
-   is available.
-4. Do not add deeper numerical-path optimization unless a complete validation
-   protocol is designed first.
+1. keep English and Chinese current documents and indexes synchronized;
+2. preserve dated reports as immutable evidence instead of appending new status blocks;
+3. rerun W7900 validation after code, ROCm, compiler, or dependency changes;
+4. add P14-B repeated ALG1-vs-ALG2 evidence only when it answers a concrete question;
+5. require a new validation protocol before deeper reduction or numerical-path optimization.
+
+Documentation-only work may be performed on another host, but it must not be described as fresh W7900 performance reproduction.

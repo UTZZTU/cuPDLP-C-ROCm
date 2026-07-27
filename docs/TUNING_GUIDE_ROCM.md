@@ -1,264 +1,206 @@
 # ROCm tuning guide
 
-> 中文版: [`TUNING_GUIDE_ROCM.zh-CN.md`](TUNING_GUIDE_ROCM.zh-CN.md)
+> 中文版：[TUNING_GUIDE_ROCM.zh-CN.md](TUNING_GUIDE_ROCM.zh-CN.md)
 
-This document records profiling and tuning notes for the ROCm/HIP port of cuPDLP-C.
+This guide describes how to tune the ROCm/HIP backend without weakening numerical reliability. It reflects the completed 890M and W7900 evidence rather than presenting old plans as current work.
 
-## Target and scope
+## Current platform policy
 
-| Item | Value |
+| Item | Current value |
 |---|---|
-| Current verified target | AMD Radeon 890M |
-| Architecture | `gfx1150` |
-| ROCm | 7.2.1 |
-| Profiler | `rocprofv3` |
-| Build target | `build-rocm-plc/bin/plc` |
+| Primary ROCm branch | `rocm-w7900-gfx1100` |
+| Primary ROCm platform | Radeon PRO W7900 / `gfx1100` |
+| Earlier tuning milestone | Radeon 890M / `gfx1150` |
+| Current SpMV default | `HIPSPARSE_SPMV_CSR_ALG1` |
+| Rollback | `CUPDLP_HIP_SPMV_ALG=csr_alg2` |
+| Main executable | `plc` |
 
-This document is not a claim that the ROCm/HIP backend is fully tuned. It records the current profiling baseline, completed low-risk tuning steps, and future optimization directions.
+The backend remains a research and engineering validation path, not a production-certified solver release.
 
-## Why tuning is needed
+## Core rule
 
-PDLP-style first-order LP solvers rely heavily on repeated sparse matrix-vector products and vector operations. Important operations include:
+A performance patch is acceptable only when all three questions have defensible answers:
 
-- `Ax`,
-- `Aty`,
-- hipSPARSE / rocSPARSE SpMV,
-- hipBLAS / rocBLAS vector operations,
-- vector updates,
-- reductions,
-- projection kernels,
-- residual computation,
-- host/device synchronization,
-- memory allocation,
-- host/device memory transfer.
+1. Is the output still valid?
+2. Is the convergence trajectory acceptably stable?
+3. Is the measured speedup repeatable on representative cases?
 
-Small cases such as `afiro.mps` and `sc50b.mps` are useful for correctness and workflow validation, but they are too small to represent final GPU performance on larger sparse LP problems.
+Kernel timing alone is not sufficient.
 
-## Profiling entry point
+## Why solver tuning is different
 
-Run smoke profiling:
+End-to-end solve time is approximately:
+
+```text
+solve time ≈ per-iteration cost × iteration count
+```
+
+A lower per-iteration cost can be offset by more iterations. Floating-point order, reductions, sparse-library policy, and synchronization can influence the path taken by PDHG.
+
+Always track:
+
+- termination status;
+- primal and dual feasibility;
+- relative gap;
+- `nIter`;
+- wall and solve time;
+- representative profiler metrics.
+
+## Establish the baseline
+
+Before changing code:
+
+```bash
+git rev-parse HEAD
+git status
+```
+
+Choose and record:
+
+- a fixed before commit;
+- the same case list;
+- iteration and timeout limits;
+- environment variables;
+- compiler and ROCm versions;
+- GPU architecture;
+- warm-up and repeat counts.
+
+For W7900 before/current comparisons, use `ae3b683 / pre_tuning` as the true before anchor. Do not use the current post-890M-tuning branch as an “unoptimized” baseline.
+
+## Validation ladder
+
+| Change type | Required evidence |
+|---|---|
+| Documentation or naming | Markdown/link checks |
+| Runtime-query or setup cleanup | Smoke plus representative validation |
+| Copy, synchronization, or launch change | Smoke, Netlib subset, repeated timing |
+| Sparse/BLAS algorithm policy | Smoke, targeted cases, iteration/residual checks, rollback |
+| Reduction or algorithm-adjacent code | Broad validation and trajectory diagnostics |
+| New architecture | Fresh build, smoke, representative large cases, profiling |
+
+Escalate validation when a change can affect operation ordering or floating-point reductions.
+
+## Profiling workflow
+
+W7900 targeted entry:
+
+```bash
+bash scripts/run_w7900_p10_current_targeted_rocprof.sh
+```
+
+P10 cases:
+
+```text
+thk_48
+square41
+L2CTA3D
+set-cover-model
+tpl-tub-ws1617
+```
+
+Generic smoke profiling:
 
 ```bash
 RESULT_ROOT=profiling/results/current \
-  ./scripts/profile_rocm_smoke.sh
+  bash scripts/profile_rocm_smoke.sh
 ```
 
-Summarize `rocprofv3` CSV traces:
+Raw traces stay outside Git. Commit compact tables and interpretation.
+
+## Select patches from evidence
+
+A good first patch should be:
+
+- localized;
+- reversible;
+- easy to validate;
+- motivated by a measured hotspot;
+- unlikely to alter mathematical semantics.
+
+The 890M sequence followed this rule by reducing synchronization, stable runtime queries, repeated AXPY launches, and scalar copies before attempting deeper kernel changes.
+
+On W7900, P10 identified SpMV as the major hotspot. P11 therefore compared supported hipSPARSE algorithms instead of replacing hipSPARSE wholesale.
+
+## Current SpMV switch
+
+| Mode | Configuration |
+|---|---|
+| Current default | no environment variable; `HIPSPARSE_SPMV_CSR_ALG1` |
+| Roll back to old policy | `CUPDLP_HIP_SPMV_ALG=csr_alg2` |
+| Try library default | `CUPDLP_HIP_SPMV_ALG=default` |
+
+Example:
 
 ```bash
-python3 scripts/summarize_rocm_profile.py \
-  --input profiling/results/current \
-  --output profiling/results/current/profile_summary.md
+CUPDLP_HIP_SPMV_ALG=csr_alg2 \
+  ./build-rocm-w7900/bin/plc \
+  -fname /path/to/case.mps \
+  -out /tmp/case.json \
+  -nIterLim 200000000
 ```
 
-For copy/copyBuffer analysis:
+Keep the environment setting in logs and result metadata.
 
-```bash
-python3 scripts/analyze_rocm_copy_trace.py \
-  --input profiling/results/current/sc50b_rocprofv3 \
-  | tee profiling/results/current/sc50b_copy_analysis.md
-```
+## Repeat timing correctly
 
-Profiling outputs are generated artifacts and should not be committed.
+For a timing claim:
 
-## Initial profiling observations
+1. run the same binary/case configuration;
+2. use at least one warm-up where appropriate;
+3. collect multiple measured repeats;
+4. report median or geometric-mean speedup;
+5. show per-case results, not only an aggregate;
+6. verify iteration counts and numerical fields.
 
-Initial `rocprofv3` runtime traces on `afiro` and `sc50b` showed that small-case runtime is dominated by many small GPU operations rather than one single custom kernel.
+P14-A1 is the current model: quick6, repeated current-vs-pre-tuning runs, 6/6 wins, geometric-mean speedup 1.18889, median 1.19502, and unchanged iterations.
 
-Observed hot areas include:
+## Rejection criteria
 
-- `hipLaunchKernel`,
-- `hipMemcpyAsync`,
-- `hipMemcpy`,
-- `hipDeviceSynchronize`,
-- `hipStreamSynchronize`,
-- `hipMalloc` / `hipFree`,
-- `__amd_rocclr_copyBuffer`,
-- `__amd_rocclr_fillBufferAligned`,
-- rocSPARSE SpMV kernels,
-- rocBLAS AXPY, dot, norm, and scaling kernels,
-- custom PDLP update and movement kernels.
+Reject or hold a patch when:
 
-First-pass conclusion:
+- status changes;
+- feasibility/gap exceeds the validation contract;
+- iteration count changes without a convincing explanation and benefit;
+- speedup is inconsistent across repeats;
+- a small-case gain regresses representative large cases;
+- rollback is unavailable for a platform-sensitive policy;
+- the profiler result does not support the patch rationale.
+
+P12 is the canonical negative example: a buffer-algorithm consistency change altered `set-cover-model` from 7480 to 7600 iterations and was rejected.
+
+## Reporting
+
+For each accepted or rejected experiment, record:
 
 ```text
-For small smoke cases, optimize structural overhead first: launches, copies, synchronization, and repeated runtime queries.
-Do not start with low-level instruction tuning or custom SpMV rewrites.
+before reference
+after reference
+platform and software environment
+case list and limits
+status and numerical comparison
+iteration counts
+timing repeats
+profiler evidence
+decision
+rollback method
 ```
 
-## Metrics to track
+Keep raw run directories outside Git and commit curated CSV/Markdown summaries.
 
-Solver-level metrics:
+## Current endpoint and optional work
 
-| Metric | Why it matters |
-|---|---|
-| Wall-clock time | End-to-end user-visible runtime |
-| Solve time | Main solver loop runtime |
-| Iteration count | Algorithmic progress |
-| Iterations per second | Coarse throughput |
-| Matvec time | Sparse linear algebra contribution |
-| Feasibility and gap | Correctness and convergence quality |
-
-Runtime-level metrics:
-
-| Metric | Why it matters |
-|---|---|
-| `hipLaunchKernel` count/time | Kernel launch granularity |
-| `hipMemcpyAsync` count/time | Async memory transfer frequency |
-| `hipMemcpy` count/time | Synchronous transfer frequency |
-| `hipDeviceSynchronize` count/time | Global synchronization overhead |
-| `hipStreamSynchronize` count/time | Stream synchronization overhead |
-| `hipMalloc` / `hipFree` count | Repeated allocation overhead |
-| `hipGetDevice` / attribute query count | Repeated runtime query overhead |
-
-Kernel-level metrics:
-
-| Kernel group | Why it matters |
-|---|---|
-| rocSPARSE SpMV kernels | PDLP core sparse matvec work |
-| rocBLAS AXPY kernels | Vector update overhead |
-| rocBLAS dot/norm kernels | Reduction overhead |
-| Custom gradient kernels | PDLP update cost |
-| Movement kernels | Restart and movement interaction cost |
-| ROCclr copy/fill kernels | Hidden copy/fill overhead |
-
-## Completed profiling-driven optimizations
-
-The current tuning pass completed four low-risk optimizations on Radeon 890M / `gfx1150`.
-
-### 1. Remove redundant device synchronization
-
-A redundant `hipDeviceSynchronize()` was removed from the ROCm/HIP movement interaction path. The final blocking device-to-host copy already provides the required ordering for reading scalar results on the host.
-
-Observed smoke-profile effect:
-
-| Case | Before | After |
-|---|---:|---:|
-| `afiro` `hipDeviceSynchronize` calls | 203 | 3 |
-| `sc50b` `hipDeviceSynchronize` calls | 564 | 3 |
-
-### 2. Cache HIP device attributes
-
-Repeated HIP device attribute queries were cached in the HIP linear algebra helper path.
-
-This reduces runtime API noise and avoids repeated queries of stable device attributes such as multiprocessor count and warp size.
-
-### 3. Fuse average-iterate AXPY updates
-
-Two per-iteration average-iterate AXPY updates were fused into one custom ROCm/HIP kernel:
-
-```text
-update_average_kernel
-```
-
-Observed effect:
-
-| Metric | `afiro` before | `afiro` after | `sc50b` before | `sc50b` after |
-|---|---:|---:|---:|---:|
-| `hipLaunchKernel` calls | 2667 | 2468 | 6071 | 5511 |
-| `rocblas_axpy_kernel` dispatches | 506 | 108 | 1270 | 150 |
-| `update_average_kernel` dispatches | 0 | 199 | 0 | 560 |
-
-### 4. Reduce movement interaction scalar D2D copies
-
-Two small device-to-device scalar copies in `cupdlp_movement_interaction_cuda()` were replaced by a small custom kernel:
-
-```text
-save_movement_xy_kernel
-```
-
-Observed smoke-profile effect:
-
-| Metric | `afiro` before | `afiro` after | `sc50b` before | `sc50b` after |
-|---|---:|---:|---:|---:|
-| `hipMemcpyAsync` calls | 1136 | 736 | 2485 | 1363 |
-| `__amd_rocclr_copyBuffer` dispatches | 1444 | 1044 | 3182 | 2060 |
-| `save_movement_xy_kernel` dispatches | 0 | 200 | 0 | 561 |
-
-This reduced many tiny copyBuffer dispatches while preserving validation results.
-
-## Current post-optimization profile shape
-
-Remaining hot areas include:
-
-- `hipLaunchKernel`,
-- remaining `hipMemcpy` / `hipMemcpyAsync`,
-- remaining `__amd_rocclr_copyBuffer`,
-- rocBLAS dot and norm reductions,
-- rocSPARSE SpMV kernels.
-
-The AXPY path is no longer the dominant rocBLAS issue. Remaining rocBLAS hotspots are mostly reduction-style operations, which are higher risk to replace.
-
-## What not to change casually
-
-Avoid these changes without larger validation and profiling:
-
-- removing legacy C/HIP compatibility symbols,
-- rewriting sparse matrix storage,
-- replacing all rocBLAS calls with custom kernels,
-- replacing all rocSPARSE calls with custom SpMV kernels,
-- replacing dot/norm reductions without careful numerical validation,
-- full HIP Graph capture of the solver loop,
-- tuning only for `afiro` or `sc50b`.
-
-## Large-case profiling policy
-
-The next profiling stage should use larger MPS cases. Suggested first large-case profiling targets should include:
-
-- one case where ROCm is competitive,
-- one case where ROCm is slower,
-- one large sparse case where SpMV dominates,
-- one convergence-sensitive case if logs are stable enough.
-
-Use large-case profiling to decide whether the next bottleneck is launch count, SpMV, BLAS reductions, memory movement, or convergence trajectory.
-
-## Future tuning work
-
-- Add profiling templates for large MPS cases.
-- Add ROCTx ranges around solver phases.
-- Separate setup time from main iteration time more clearly.
-- Investigate remaining scalar readback and synchronization.
-- Investigate reduction kernels only after validation coverage is larger.
-- Investigate SpMV descriptor and buffer reuse.
-- `gfx1150` vs `gfx1100` comparison is now represented by W7900 P10/P11/P12/P14-A1 artifacts.
-
-## Summary
-
-The current ROCm/HIP port is validated enough to begin profiling and controlled tuning, but not enough to claim final performance. Early tuning should focus on:
-
-```text
-launch count + synchronization + memory copies + SpMV + BLAS level-1 reductions
-```
-
-Every tuning change must be paired with validation and before/after profiling or benchmark evidence.
-
-## W7900 tuning endpoint / 2026-06-17
-
-This guide was originally written around the Radeon 890M / `gfx1150`
-tuning sequence. The W7900 / `gfx1100` follow-up is now complete for the
-current project scope.
-
-Current W7900 policy:
-
-- default HIP SpMV algorithm: `HIPSPARSE_SPMV_CSR_ALG1`
-- rollback to old default: `CUPDLP_HIP_SPMV_ALG=csr_alg2`
-- experimental hipSPARSE default: `CUPDLP_HIP_SPMV_ALG=default`
-
-No additional long profiling run is required for the current project
-endpoint. Further tuning should be treated as future work and should
-focus on carefully validated scalar-copy or reduction-path changes.
-
-## Final W7900 tuning-guide status after P14-A1 / 2026-06-18
-
-This guide was originally centered on 890M / `gfx1150` tuning. The W7900 /
-`gfx1100` follow-up now has its own closure evidence:
+The current W7900 tuning evidence chain is complete through:
 
 - P10 targeted profiling;
-- P11 SpMV algorithm policy, current default `HIPSPARSE_SPMV_CSR_ALG1`;
-- P12 rejected buffer-algorithm consistency experiment;
-- P14-A1 quick6 repeated current-vs-pre_tuning validation.
+- P11 accepted SpMV policy;
+- P12 rejected execution-layer experiment;
+- P14-A1 repeated before/current confirmation.
 
-P14-A1 shows `current` faster on `6/6` quick6 cases, with geomean speedup
-`1.18889` and median speedup `1.19502`.
+Optional future work should answer a specific new question. Examples include repeated ALG1-vs-ALG2 evidence, reduction-path profiling, scalar-readback analysis, or validation on another AMD architecture. These are enhancements, not unfinished core scope.
 
-No further W7900 experiment is required for the current project closure.
+## Related documents
+
+- [ROCm profiling notes](ROCM_PROFILING_NOTES.md)
+- [ROCm tuning history](ROCM_TUNING_HISTORY.md)
+- [Validation semantics](VALIDATION.md)
+- [W7900 current status](W7900_CURRENT_STATUS.md)

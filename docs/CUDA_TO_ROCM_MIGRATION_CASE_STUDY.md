@@ -442,32 +442,42 @@ cmake --build build-cuda --target plc -j"$(nproc)"
 
 Use machine-specific CUDA and HiGHS environment variables as needed.
 
-## What remains to improve
+## Current completion and remaining research directions
 
-The project is functional, but not finished.
+The migration and current platform evidence are complete for the repository scope:
 
-Remaining work:
+- CPU and CUDA baselines are retained;
+- ROCm/HIP is implemented as a third backend;
+- Radeon 890M preserves the first migration and structural-tuning history;
+- Radeon PRO W7900 has smoke, Netlib, and large-MPS evidence;
+- P10 profiling, P11 tuning, P12 negative evidence, and P14-A1 repeats are archived;
+- the RTX 4090D cuPDLP-C vs cuPDLPx short13 comparison is documented.
 
-1. Add more trajectory-level diagnostics for `greenbea`.
-2. Compare CPU/CUDA/ROCm feasibility and gap curves at fixed checkpoints.
-3. Continue ROCm profiling of launch overhead, SpMV, and vector update kernels.
-4. Expand the LP test set beyond the current Netlib subset.
-5. Keep CUDA smoke validation in CI-like scripts.
-6. Reduce internal CUDA-style naming only when compatibility is protected.
-7. Add clearer instructions for new contributors who want to reproduce the benchmark matrix.
+Remaining directions are not missing migration steps. They are future research or maintenance topics:
+
+1. add trajectory-level diagnostics for convergence-sensitive cases such as `greenbea`;
+2. validate optional presolve/postsolve and original-variable recovery explicitly;
+3. add ROCm CI when suitable hardware is available;
+4. test additional AMD architectures under a fresh validation contract;
+5. investigate reduction or scalar-readback bottlenecks only after profiling;
+6. reduce legacy shared CUDA-style naming through compatibility-preserving refactors;
+7. compare newer algorithmic solver lines without replacing the current migration baseline.
 
 ## Summary
 
-The most important lesson is:
+The central lesson is:
 
-> A robust CUDA-to-ROCm migration is not just a mechanical API translation. It is a staged engineering process involving backend boundaries, build-system design, validation, performance evidence, and numerical-behavior documentation.
+> A robust CUDA-to-ROCm migration is not a mechanical API translation. It is a staged engineering process involving backend boundaries, build-system design, validation, performance evidence, and numerical-behavior documentation.
 
 For this repository, the successful path was:
 
-1. keep CPU and CUDA baselines,
-2. add ROCm/HIP as a third backend,
-3. build compatibility aliases,
-4. validate broadly,
-5. benchmark across devices,
-6. document tuning and numerical behavior,
-7. avoid hiding difficult convergence-sensitive cases.
+1. retain CPU and CUDA references;
+2. add ROCm/HIP as a third backend;
+3. build a compatibility boundary;
+4. validate from smoke to representative large cases;
+5. profile before tuning;
+6. accept only repeatable changes that preserve numerical behavior;
+7. preserve rejected experiments and difficult cases;
+8. keep current conclusions separate from dated evidence.
+
+cuPDLPx remains a useful newer algorithmic reference, but it does not replace the cuPDLP-C CUDA-to-ROCm migration baseline documented here.

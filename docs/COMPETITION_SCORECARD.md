@@ -1,71 +1,69 @@
 # Competition scorecard alignment
 
-> 中文: [COMPETITION_SCORECARD.zh-CN.md](COMPETITION_SCORECARD.zh-CN.md)
+> 中文：[COMPETITION_SCORECARD.zh-CN.md](COMPETITION_SCORECARD.zh-CN.md)
 
-This page maps the AMD ROCm/Radeon contest requirements to repository evidence. It is a reviewer-oriented checklist, not the main project entry point. General users should start from the [Chinese homepage](../README.md), [English README](../README.en.md), and [documentation map](README.md).
+This page maps contest-oriented evaluation items to the current repository evidence. It is not the general project homepage. General readers should start from the [English README](../README.en.md) or [documentation map](README.md).
 
-## Scope
+## Current scope
 
-Project: ROCm/HIP migration, validation, benchmarking, and profiling of a large-scale linear programming solver on AMD Radeon-class GPUs.
+**Project:** migration, validation, profiling, and controlled tuning of cuPDLP-C on AMD ROCm/HIP.
 
-Current status:
-
-- Radeon 890M / `gfx1150`: first ROCm migration target, validation, and tuning history.
-- Radeon PRO W7900 / `gfx1100`: workstation-class validation target with current non-hard large-MPS baseline.
-- NVIDIA RTX 3090 / RTX 4090D / H100: CUDA reference devices for comparison.
-
-## Scorecard
-
-| Contest requirement | Repository evidence | Current status | Remaining work |
-|---|---|---|---|
-| Project background and challenge | [COMPETITION_README.md](COMPETITION_README.md), [CUDA-to-ROCm case study](CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) | CUDA-oriented solver migrated toward ROCm/HIP; LP/HPC workload challenge documented | Technical paper should turn this into a concise narrative |
-| Solution and implementation | HIP backend, [ROCM_WORKFLOW.md](ROCM_WORKFLOW.md), [ROCM_PORTING_GUIDE.md](ROCM_PORTING_GUIDE.md), README backend-mode section | CPU, CUDA, and ROCm backend modes are documented | Paper/PPT should include a module diagram and ROCm component map |
-| ROCm component usage | HIP runtime, hipBLAS/hipSPARSE build path, `rocprofv3`/`rocprof` workflow, ROCm device architecture selection | ROCm/HIP build and profiling workflow are present | Add W7900 profiling result tables after the next W7900 run |
-| Performance and resource analysis | [W7900 performance behavior](W7900_PERFORMANCE_BEHAVIOR.md), [ROCM tuning history](ROCM_TUNING_HISTORY.md), validation/benchmark CSVs | Current W7900 non-hard23 summary and cross-device references are committed | Need W7900 `rocprof` starter3 results, VRAM/telemetry, and before/current core6 comparison |
-| Reproducibility and delivery | [REPRODUCIBILITY.md](REPRODUCIBILITY.md), validation case lists, scripts, curated CSV/Markdown summaries | Fresh W7900 recovery, data policy, expected outputs, and profiling workflow are documented | Lightweight Docker/container skeleton is present; strict final image remains future packaging work |
-| Functional completeness and code quality | Source tree, scripts, validation summaries, backend mode policy | Main solver path is buildable and validation-driven | Add more code-level comments only where needed; avoid cosmetic churn |
-| Stage results and plan | [W7900 current status](W7900_CURRENT_STATUS.md), [W7900 optimization baselines](W7900_OPTIMIZATION_BASELINES.md), [W7900 profiling plan](W7900_ROCM_PROFILING_PLAN.md) | Current/before/after policy is explicit | Run W7900 profiling, hard3 probes, then W7900-specific tuning |
-| Innovation add-on: unsupported functionality | ROCm/HIP backend adaptation of a CUDA-oriented scientific solver | Project demonstrates a non-trivial ROCm backend migration | External ROCm upstream PR is not yet claimed |
-| Innovation add-on: bottleneck optimization | 890M tuning history and planned W7900 profiling | Prior ROCm optimization history is documented | W7900-specific bottleneck claims must wait for `rocprof` results |
-
-## Current caution
-
-The current W7900 non-hard23 result is a post-890M-tuning engineering baseline, not the true unoptimized first-runnable ROCm baseline. The true before/current comparison should use `ae3b683 / pre_tuning` versus current `rocm-w7900-gfx1100`.
-
-<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
-## 2026-06-16 W7900 evidence update
-
-The W7900 evidence set now includes:
-
-| Requirement area | Latest evidence |
+| Platform | Role |
 |---|---|
-| Profiling and bottleneck evidence | [W7900 rocprof starter3 summary](../validation/w7900_rocprof_starter3_summary_20260616.md) |
-| Hard-case handling | [W7900 hard3 probe2 600s summary](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.md) |
-| Before/current comparison | [W7900 before/current fast-core6 summary](../validation/w7900_before_current_core6_fast_summary_20260616.md) |
-| Multi-GPU throughput | [W7900 8-card fast8 batch summary](../validation/w7900_8card_batch_fast8_summary_20260616.md) |
-<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
+| Radeon PRO W7900 / `gfx1100` | Current primary ROCm validation and tuning platform |
+| Radeon 890M / `gfx1150` | Earlier migration and tuning milestone |
+| RTX 3090 / RTX 4090D / H100 | CUDA references |
+| CPU | Correctness and portability reference |
 
-## Final W7900 competition status / 2026-06-17
+The project does not claim a new LP algorithm. Its contribution is the backend migration and the evidence-driven engineering methodology.
 
-The W7900 competition-facing workflow is now complete for the current
-repository scope. Earlier “next planned work” items such as W7900 profiling,
-before/current analysis, and W7900-specific tuning have been closed by the
-P10/P11/P12 evidence chain.
+## Evidence scorecard
 
-Final competition-facing conclusion:
+| Evaluation area | Repository evidence | Current status and boundary |
+|---|---|---|
+| Background and challenge | [Competition entry](COMPETITION_README.md), [migration case study](CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) | Complete repository narrative; paper/PPT remain presentation artifacts |
+| Solution architecture | HIP backend, compatibility layer, [backend modes](BACKEND_MODES_AND_NAMING.md), [porting guide](ROCM_PORTING_GUIDE.md) | CPU, CUDA, and ROCm paths documented; optional Python/apps paths are outside the primary validation contract |
+| ROCm component usage | HIP runtime, hipBLAS, hipSPARSE, `rocprofv3`, `gfx1100` build scripts | Implemented and evidenced on W7900 |
+| Functional validation | [Validation semantics](VALIDATION.md), [validation index](../validation/README.md) | Smoke, Netlib, large-MPS non-hard23, hard-case diagnostics, and repeated validation are archived |
+| Performance analysis | [W7900 performance behavior](W7900_PERFORMANCE_BEHAVIOR.md), P10 summaries, cross-device CSV | P10 identifies rocSPARSE CSR SpMV as the dominant GPU hotspot; aggregate and per-case interpretations are both retained |
+| Platform-specific tuning | [Tuning history](ROCM_TUNING_HISTORY.md), [P11 summary](../validation/w7900_p11_spmv_tuning_summary_20260617.md) | P11 accepts `HIPSPARSE_SPMV_CSR_ALG1`; `csr_alg2` remains a rollback |
+| Conservative engineering | [P12 negative result](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md) | Rejected after a convergence-path change; demonstrates that execution-layer changes are not accepted on timing alone |
+| Repeated before/current evidence | [P14-A1 summary](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md) | Current wins 6/6; geometric-mean speedup 1.18889; median 1.19502; iteration counts unchanged |
+| Large-case outcome | [W7900 current status](W7900_CURRENT_STATUS.md) | non-hard23 is 23/23 `OPTIMAL`; hard3 remains explicitly separate |
+| Multi-GPU evidence | [8-card fast8 summary](../validation/w7900_8card_batch_fast8_summary_20260616.md) | Independent-job throughput only; not a distributed algorithm for one LP |
+| Reproducibility | [Reproducibility guide](REPRODUCIBILITY.md), scripts, case lists, checksums, curated CSV | Static evidence can be inspected on any host; fresh W7900 performance requires a matching ROCm machine |
+| Delivery readiness | [Submission checklist](SUBMISSION_CHECKLIST.md) | Repository evidence is ready; paper, slides, and video are separate deliverables |
 
-- W7900 / `gfx1100` ROCm build and validation are complete.
-- P10 targeted rocprof profiling has been archived.
-- P11 SpMV tuning is the accepted W7900-specific tuning endpoint.
-- The current W7900 default SpMV algorithm is
-  `HIPSPARSE_SPMV_CSR_ALG1`.
-- The old default can be restored with
-  `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
-- P12 records a rejected buffer-algorithm consistency patch to show that
-  additional execution-layer changes were tested conservatively.
+## Key numerical claims
 
-Recommended final evidence links:
+| Claim | Value |
+|---|---:|
+| W7900 non-hard23 | 23/23 `OPTIMAL` |
+| Total wall time | 2960.171 s |
+| Total solve time | 2742.940 s |
+| P14-A1 current wins | 6/6 |
+| P14-A1 geometric-mean speedup | 1.18889 |
+| P14-A1 median speedup | 1.19502 |
+| Eight independent jobs | 146 s concurrent vs 558 s one-GPU sequential |
 
-- `docs/W7900_CURRENT_STATUS.md`
-- `validation/w7900_p11_spmv_tuning_summary_20260617.md`
-- `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md`
+## Interpretation rules
+
+Reviewers should keep these boundaries explicit:
+
+1. The current W7900 result is a post-890M-tuning engineering baseline, not the true first-runnable baseline.
+2. The before anchor for W7900 analysis is `ae3b683 / pre_tuning`.
+3. The eight-card result measures throughput for independent jobs.
+4. hard3 is not hidden inside non-hard23.
+5. W7900 aggregate time trails the high-end CUDA references, while per-case competitiveness varies.
+6. P12 is a negative result and must not be presented as an accepted optimization.
+7. Optional P14-B repeated ALG1-vs-ALG2 evidence is an enhancement, not unfinished core scope.
+
+## Recommended reviewer path
+
+1. [Competition entry](COMPETITION_README.md)
+2. [W7900 current status](W7900_CURRENT_STATUS.md)
+3. [P10 targeted profiling](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.md)
+4. [P11 SpMV tuning](../validation/w7900_p11_spmv_tuning_summary_20260617.md)
+5. [P12 negative result](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md)
+6. [P14-A1 repeated validation](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md)
+7. [Reproducibility guide](REPRODUCIBILITY.md)

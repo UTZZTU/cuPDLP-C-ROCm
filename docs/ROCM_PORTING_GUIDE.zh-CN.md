@@ -263,11 +263,23 @@ tools/migration/
   仍不提交到 Git。
 - 尚无 ROCm CI。
 
-## 15. 推荐下一步状态
+## 15. 当前完成状态与后续维护
 
-原推荐下一步已基本完成。当前只保留两个可选增强：
+当前项目范围内，原迁移路线已经完成：
 
-1. W7900 P14-A：current-vs-before representative repeated validation。
-2. W7900 P14-B：CSR ALG1-vs-ALG2 representative repeated validation。
+- `gfx1150` / 890M 保留早期迁移与结构调优历史；
+- `gfx1100` / W7900 已有 build、smoke、Netlib 与 large-MPS 证据；
+- P10 targeted profiling 识别了主要 W7900 热点；
+- P11 建立 accepted SpMV algorithm policy；
+- P12 保留被拒绝的 execution-layer experiment；
+- P14-A1 确认 repeated current-vs-pre-tuning 收益。
 
-除此之外，不建议继续新增深层数值路径优化，除非先重新设计完整验证协议。
+剩余工作属于维护或可选增强：
+
+1. 验证新的 ROCm/compiler/dependency 组合；
+2. 为同时启用 CUDA 与 ROCm 增加 CMake fatal guard；
+3. 扩展架构覆盖时必须提供新的 build 与 validation 证据；
+4. 有明确需要时增加 P14-B repeated ALG1-vs-ALG2 evidence；
+5. 只有在有 compatibility wrapper 和全后端测试时才重构 legacy CUDA-style shared names。
+
+不要把可选增强描述为尚未完成的迁移范围。

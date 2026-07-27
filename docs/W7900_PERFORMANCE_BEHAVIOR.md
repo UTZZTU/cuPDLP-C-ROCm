@@ -166,14 +166,17 @@ The W7900 non-hard23 result should be read as a post-890M-tuning engineering bas
 See [W7900 optimization baselines](W7900_OPTIMIZATION_BASELINES.md).
 <!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->
 
-## Tuning implication
+## Tuning implications and current endpoint
 
-The next ROCm tuning stage should not only optimize kernels. It should also record numerical trajectory evidence:
+The completed evidence shows that W7900 tuning must combine kernel cost with numerical trajectory:
 
-- per-case `nIter`;
-- `DeviceMatVecProdTime`;
-- residuals and duality gap;
-- HIP/kernel/reduction profile;
-- before/after changes on the same case list.
+- record per-case `nIter`;
+- preserve residual and gap checks;
+- inspect `DeviceMatVecProdTime`;
+- use HIP API and kernel profiles;
+- compare the same case list and limits;
+- keep hard3 separate.
 
-Hard3 should stay separate until its convergence trajectory is documented.
+P10 identified rocSPARSE CSR SpMV as the dominant targeted hotspot. P11 accepted `HIPSPARSE_SPMV_CSR_ALG1` as the current default with `csr_alg2` rollback. P12 rejected a related execution-layer change after an iteration-count shift. P14-A1 then confirmed repeated current-vs-pre-tuning gains with unchanged iterations.
+
+The current project endpoint is therefore an evidence-backed SpMV policy, not a claim that every ROCm bottleneck has been eliminated. Future tuning should begin only from a new measured question and a predefined validation plan.

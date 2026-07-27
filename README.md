@@ -52,6 +52,8 @@ MPS input
   -> JSON / solution output
 ```
 
+当前提交的主要验证路径使用 HiGHS 解析，并保持 presolve 关闭。代码中存在 optional presolve 路径，但 nontrivial postsolve 与恢复到原始变量空间尚未纳入当前验证合同，因此不能把它描述为已经完整验证的主流程。
+
 核心工作负载包括 `Ax`、`Aᵀy` 稀疏矩阵向量乘、向量更新、投影、归约、步长调整和 restart。端到端性能通常可以理解为：
 
 ```text
@@ -104,14 +106,28 @@ PY
 
 ### 3. 在 W7900 上恢复、构建并运行 smoke
 
+仓库的 bootstrap 脚本默认管理 `/app/cupdlp_w7900` 工作区，并会在其中克隆或更新固定分支、准备 HiGHS、构建 CPU/ROCm 版本。一次完成恢复、构建和 smoke：
+
 ```bash
-bash scripts/bootstrap_w7900_workspace.sh
+RUN_BUILD=1 RUN_SMOKE=1 \
+  bash scripts/bootstrap_w7900_workspace.sh
+```
+
+完成后，脚本管理的仓库位于：
+
+```text
+/app/cupdlp_w7900/src/cuPDLP-C-ROCm
+```
+
+在已经激活依赖与 ROCm 环境的现有 checkout 中，也可以只运行：
+
+```bash
 bash scripts/build_w7900_cpu.sh
 bash scripts/build_w7900_rocm.sh
 bash scripts/run_w7900_smoke.sh
 ```
 
-仓库提供的 W7900 脚本统一使用：
+维护脚本使用：
 
 ```text
 build-cpu/bin/plc
@@ -127,7 +143,7 @@ build-rocm-w7900/bin/plc
   -nIterLim 200
 ```
 
-环境、数据集、profiling 和 repeated-validation 细节见 [可复现性指南](docs/REPRODUCIBILITY.zh-CN.md)。
+环境、数据集、profiling 和 repeated-validation 细节见[可复现性指南](docs/REPRODUCIBILITY.zh-CN.md)。
 
 ## 文档入口
 

@@ -212,10 +212,14 @@ validation/w7900_large_mps_nonhard23_20260613.zh-CN.md
 
 ## 8. P10 targeted profiling
 
-case list：
+P10 使用 5 个 targeted cases：
 
 ```text
-validation/cases_w7900_rocprof_starter3.txt
+thk_48
+square41
+L2CTA3D
+set-cover-model
+tpl-tub-ws1617
 ```
 
 主要执行入口：
@@ -224,7 +228,7 @@ validation/cases_w7900_rocprof_starter3.txt
 bash scripts/run_w7900_p10_current_targeted_rocprof.sh
 ```
 
-也可以使用通用矩阵脚本：
+更早的通用 starter3 workflow 仍可用于历史比较：
 
 ```bash
 CASE_LIST=validation/cases_w7900_rocprof_starter3.txt \
@@ -234,16 +238,16 @@ EXTERNAL_TIMEOUT=960 \
 bash scripts/run_w7900_rocprof_smoke_matrix.sh
 ```
 
-脚本优先检测 `rocprofv3`，其次 legacy `rocprof`；没有 profiler 时只能得到 baseline execution，不能声称完成 profiling。
+不要把 starter3 写成 P10 case list。脚本优先检测 `rocprofv3`，其次 legacy `rocprof`；没有 profiler 时只能得到 baseline execution，不能声称完成 profiling。
 
-compact 结果见：
+P10 compact 结果：
 
 ```text
 validation/w7900_p10_current_targeted_rocprof_20260617_*.csv
 validation/w7900_p10_current_targeted_rocprof_20260617_summary*.md
 ```
 
-raw trace 不提交。
+Raw traces 不提交。
 
 ## 9. P11 SpMV algorithm tuning
 
@@ -334,18 +338,50 @@ docker/README_DOCKER_W7900.zh-CN.md
 
 ## 14. 分享前检查
 
+运行仓库已有检查：
+
 ```bash
 git status
 git diff --check
 python3 scripts/docs/scan_markdown_format_issues_20260616.py
-python3 scripts/docs/check_markdown_links.py 2>/dev/null || true
+```
+
+仓库当前没有独立的 `scripts/docs/check_markdown_links.py`。检查本地相对链接可运行：
+
+```bash
+python3 - <<'PY'
+import re
+from pathlib import Path
+from urllib.parse import unquote
+
+root = Path(".").resolve()
+bad = []
+pat = re.compile(r"(?<!!)\[[^\]]*\]\(([^)]+)\)|!\[[^\]]*\]\(([^)]+)\)")
+for src in root.rglob("*.md"):
+    if ".git" in src.parts:
+        continue
+    text = src.read_text(encoding="utf-8", errors="replace")
+    for match in pat.finditer(text):
+        raw = next(x for x in match.groups() if x).strip().split()[0].strip("<>")
+        if raw.startswith(("http://", "https://", "mailto:", "#")):
+            continue
+        target = unquote(raw.split("#", 1)[0])
+        if target and not (src.parent / target).resolve().exists():
+            bad.append((src.relative_to(root), raw))
+if bad:
+    for src, target in bad:
+        print(f"{src}: {target}")
+    raise SystemExit(1)
+print("[OK] repository-internal Markdown links")
+PY
 ```
 
 确认：
 
 - 分支和提交已记录；
 - 输入数据通过 SHA256；
-- 所有比较使用相同 case list 和限制；
+- 所有比较使用相同 case list 与限制；
 - non-hard23、hard3、8-card 含义没有混淆；
 - 中英文当前态文档同步；
-- raw 数据和凭据未进入 Git。
+- raw 数据和凭据未进入 Git；
+- 非 W7900 主机上的文档检查没有写成 fresh W7900 性能复现。

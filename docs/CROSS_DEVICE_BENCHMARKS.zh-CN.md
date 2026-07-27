@@ -127,19 +127,17 @@ build-*/
 large raw MPS files
 ```
 
-## W7900 完成状态更新 / 2026-06-17
+## 当前 W7900 证据接入
 
-cross-device 叙事已经从最初的 Netlib 和 890M-only benchmark 阶段扩展到
-W7900 / `gfx1100`。当前分支已经包含 W7900 validation、large-MPS summaries、
-targeted profiling 和 P11 SpMV tuning 文档。
+上面的主要表格保留早期 Netlib 跨设备矩阵，其中包括 Radeon 890M milestone；不能把它当成全部当前 W7900 证据。
 
-之前写作“下一阶段”的事项，在当前项目范围内已经部分或全部完成。当前终点是：
+当前分支新增：
 
-- W7900 first-port 和 baseline 文档已完成。
-- P10 targeted rocprof 证据已收集。
-- P11 opt-in SpMV algorithm switch 已实现。
-- W7900 默认 SpMV algorithm 已设为 `HIPSPARSE_SPMV_CSR_ALG1`。
-- 旧默认可通过 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 回退。
+- W7900 smoke、Netlib 与 large-MPS validation；
+- non-hard23 23/23 `OPTIMAL`；
+- P10 targeted profiling；
+- P11 accepted `HIPSPARSE_SPMV_CSR_ALG1` 默认；
+- P12 rejected execution-layer experiment；
+- P14-A1 repeated current-vs-pre-tuning confirmation。
 
-详见 `docs/W7900_CURRENT_STATUS.zh-CN.md` 和
-`validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`。
+当前结论见 [W7900 当前状态](W7900_CURRENT_STATUS.zh-CN.md)，源证据见 [validation 索引](../validation/README.zh-CN.md)。跨设备 aggregate 结果仍有参考价值，但必须结合 per-case convergence 与迭代数。

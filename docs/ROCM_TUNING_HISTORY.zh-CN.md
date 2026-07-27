@@ -1,397 +1,175 @@
-# ROCm 调优历史与消融实验结果
+# ROCm 调优历史
 
-本文记录 `cuPDLP-C-ROCm` 分支中 ROCm/HIP 后端的调优过程、benchmark 方法和阶段性结论。
+> English: [ROCM_TUNING_HISTORY.md](ROCM_TUNING_HISTORY.md)
 
-这篇文档不是最终性能报告，而是一个可复现实验记录：它说明我们如何比较不同 ROCm tuning milestone，如何判断调优是否有效，以及如何看待 current 工程版本与历史最快 tuning 版本之间的关系。
+本文按统一时间线记录调优过程，不再把旧计划与当前状态混在一起。带日期的报告和 CSV 仍是权威实验材料。
 
-## 文档范围
+## Baseline 角色
 
-本项目当前保留三种后端模式：
-
-| 模式 | 作用 |
-|---|---|
-| CPU | 正确性与可移植性基线 |
-| CUDA | 上游兼容的 NVIDIA GPU 后端 |
-| ROCm/HIP | AMD Radeon / ROCm 目标后端 |
-
-本文只关注 ROCm/HIP 后端的调优历史。
-
-CUDA 后端的作用是提供上游兼容和 NVIDIA 对照基线；CPU 后端用于 correctness baseline。ROCm/HIP 后端是本项目的主要移植与优化对象。
-
-## 为什么要记录调优历史？
-
-最初的 ROCm/HIP 移植目标是“先跑通”。随着项目推进，后续又做了一些性能相关优化，例如减少同步、减少 host-device scalar copy、融合部分向量更新等。
-
-但是，仅仅说“做了优化”是不够的。科学计算项目需要回答：
-
-1. 优化是否真的带来性能收益？
-2. 收益是普遍存在，还是只在少数 case 上出现？
-3. 优化是否影响 solver 的 termination status？
-4. 优化是否改变迭代次数或数值结果？
-5. 后续工程化改动是否导致性能回退？
-
-因此，本项目补充了 repeated benchmark 和 tuning ablation，把调优过程变成可复查的数据证据。
-
-## Benchmark 方法
-
-调优 benchmark 使用以下原则：
-
-- 使用固定 case list；
-- 固定 `nIterLim=200000000`；
-- 对每个 version/case 重复运行；
-- 使用 median solve time 作为主指标；
-- 同时保留 mean、std、min、max、CV；
-- 保留 termination status、exit code、iteration count、feasibility 和 gap；
-- 不用单次运行结果直接下结论。
-
-采用 median 的原因是：小规模 GPU benchmark 很容易受到系统负载、功耗状态、温度、driver/runtime 状态和固定启动开销影响。重复运行并报告 median、mean、standard deviation 和 coefficient of variation 能更稳健地判断性能趋势。
-
-## Tuning milestones
-
-消融实验使用以下 milestone：
-
-| Milestone | Commit | 含义 |
+| 角色 | 参考 | 含义 |
 |---|---|---|
-| `pre_tuning` | `ae3b683` | 调优前 baseline |
-| `remove_sync` | `f9d7f0d` | 移除 movement interaction 中多余 HIP device synchronize |
-| `cache_attrs` | `8fed073` | 缓存 HIP device attributes |
-| `fused_average` | `fa7e860` | 融合 ROCm average iterate axpy updates |
-| `reduce_scalar_copies` | `b44c7ab` | 减少 movement interaction scalar copies |
-| `current` | current HEAD at run time | 当前三模态工程版本 |
+| Pre-tuning anchor | `ae3b683 / pre_tuning` | 用于 before/current 分析的 first-runnable ROCm anchor |
+| 890M engineering sequence | `ae3b683` 之后的 milestones | `gfx1150` 上的结构性开销调优 |
+| W7900 current branch | `rocm-w7900-gfx1100` | post-890M-tuning engineering baseline |
+| W7900 accepted endpoint | P11 policy | `HIPSPARSE_SPMV_CSR_ALG1` 默认，`csr_alg2` 回退 |
 
-其中 `reduce_scalar_copies` 是历史上观察到的最快 ROCm tuning milestone 之一；`current` 则包含后续工程化改动，例如恢复 CUDA 兼容、清理构建选项、补充文档和验证数据。
+当前 W7900 baseline 不能描述为未优化 first port。
 
-## 6-case repeated tuning ablation
+## 890M 结构性调优序列
 
-为了比较调优阶段的收益，项目首先使用 6 个代表性 case：
+早期 profiling-driven sequence 聚焦低风险结构性开销：
 
-| Case | Tier | 用途 |
-|---|---|---|
-| `afiro` | S | 极小 smoke/overhead case |
-| `sc50b` | S | 小型 Netlib case |
-| `lotfi` | M | 中等、多迭代 case |
-| `80bau3b` | M | 中等规模 case |
-| `maros-r7` | L | 大型但迭代数较少的 case |
-| `pilot87` | L | 较大代表性 case |
-
-实验设置：
-
-```text
-6 个 milestone × 6 个 case × 5 次 repeat = 180 次 solver run
-```
-
-主指标为 5 次运行的 median solve time。
-
-## 6-case correctness 结论
-
-在 6-case repeated ablation 中，所有 version/case/repeat 均达到：
-
-```text
-terminationCode = OPTIMAL
-exit code = 0
-```
-
-同时，同一 case 在不同 milestone 下 iteration count 保持一致。这说明这些 ROCm tuning 没有破坏 quick set 上的基本正确性和收敛状态。
-
-## 6-case median solve time
-
-主指标：5 次重复运行的 median solve time。
-
-| Milestone | afiro | sc50b | lotfi | 80bau3b | maros-r7 | pilot87 |
-|---|---:|---:|---:|---:|---:|---:|
-| `pre_tuning` | 0.052744 | 0.072827 | 4.537407 | 0.970653 | 0.124608 | 8.690948 |
-| `remove_sync` | 0.059098 | 0.071003 | 3.997434 | 0.915490 | 0.120013 | 8.179166 |
-| `cache_attrs` | 0.060280 | 0.069627 | 3.986371 | 0.912363 | 0.117736 | 8.218034 |
-| `fused_average` | 0.053140 | 0.069351 | 3.825229 | 0.901840 | 0.117184 | 8.000284 |
-| `reduce_scalar_copies` | 0.052801 | 0.066655 | 3.615290 | 0.869338 | 0.116324 | 7.820215 |
-| `current` | 0.052900 | 0.066839 | 3.646848 | 0.874944 | 0.121077 | 7.820457 |
-
-## current vs pre_tuning
-
-| Case | pre_tuning median | current median | Speedup | Time reduction |
-|---|---:|---:|---:|---:|
-| `afiro` | 0.052744 | 0.052900 | 0.997x | -0.30% |
-| `sc50b` | 0.072827 | 0.066839 | 1.090x | 8.22% |
-| `lotfi` | 4.537407 | 3.646848 | 1.244x | 19.63% |
-| `80bau3b` | 0.970653 | 0.874944 | 1.109x | 9.86% |
-| `maros-r7` | 0.124608 | 0.121077 | 1.029x | 2.83% |
-| `pilot87` | 8.690948 | 7.820457 | 1.111x | 10.02% |
-
-current 相对 pre-tuning 在 6-case quick set 上几何平均约为：
-
-```text
-1.094x speedup
-```
-
-这说明 ROCm tuning 对中等和较大 case 有可测收益。尤其是：
-
-- `lotfi`：约 19.6% median solve-time reduction；
-- `pilot87`：约 10.0%；
-- `80bau3b`：约 9.9%；
-- `sc50b`：约 8.2%。
-
-`afiro` 是极小 case，主要受固定启动开销影响，因此不能作为判断 GPU 优化效果的主要依据。
-
-## 最快 observed milestone
-
-在 6-case repeated ablation 中，各 case 的最快 milestone 如下：
-
-| Case | Fastest milestone | Fastest median solve time |
-|---|---|---:|
-| `afiro` | `pre_tuning` | 0.052744 |
-| `sc50b` | `reduce_scalar_copies` | 0.066655 |
-| `lotfi` | `reduce_scalar_copies` | 3.615290 |
-| `80bau3b` | `reduce_scalar_copies` | 0.869338 |
-| `maros-r7` | `reduce_scalar_copies` | 0.116324 |
-| `pilot87` | `reduce_scalar_copies` | 7.820215 |
-
-`reduce_scalar_copies` 是 5/6 case 中观察到的最快 milestone。
-
-这并不表示 current 分支不可接受。原因是 current 后续包含了三模态工程化修复、CUDA 兼容恢复、CMake 选项清理和文档补充等非纯性能改动。为了确认这些工程改动是否带来系统性性能回退，项目又做了 27-case current-vs-reduce 对比。
-
-## 27-case current vs reduce_scalar_copies comparison
-
-后续实验比较：
-
-```text
-base:    reduce_scalar_copies (`b44c7ab`)
-current: 当前 HEAD
-case:    validation/cases_benchmark_200m.txt 去掉 greenbea
-repeat:  3 次
-```
-
-该实验目标是判断：
-
-> 当前三模态工程版本是否相对历史最快 ROCm tuning milestone 出现系统性性能回退？
-
-实验结果显示：
-
-```text
-Geometric mean speedup of base over current: 0.9995092331107024
-```
-
-这说明 base 与 current 整体几何平均几乎持平。严格说，base 相对 current 只快约 0.05%，这个量级可以认为是噪声，不构成实质性能回退。
-
-## 27-case 结果解读
-
-current 慢超过 2% 的 case 包括：
-
-```text
-afiro
-sc50b
-recipe
-scfxm1
-```
-
-其中：
-
-- `afiro`、`sc50b`、`recipe` 都是小 case，绝对时间差很小，且容易被启动开销和测量噪声影响；
-- `recipe` 的 CV 较高，更可能是噪声；
-- `scfxm1` 是后续可做 focused profiling 的候选 case。
-
-同时，current 在一些中大型 case 上反而更快，例如：
-
-```text
-israel
-maros-r7
-ship08s
-degen2
-greenbeb
-pilot87
-```
-
-特别是 `greenbeb` 和 `pilot87` 更有代表性，因为它们不是极小 case。
-
-因此，27-case 结论是：
-
-> current 与 `reduce_scalar_copies` 基本性能持平；current 没有出现系统性性能回退；少数小 case 的波动应谨慎解释。
-
-## Median DeviceMatVecProdTime
-
-6-case ablation 中的 median DeviceMatVecProdTime 如下：
-
-| Milestone | afiro | sc50b | lotfi | 80bau3b | maros-r7 | pilot87 |
-|---|---:|---:|---:|---:|---:|---:|
-| `pre_tuning` | 0.019731 | 0.021287 | 0.283484 | 0.050591 | 0.019830 | 0.262654 |
-| `remove_sync` | 0.020783 | 0.022891 | 0.235519 | 0.042941 | 0.019717 | 0.226007 |
-| `cache_attrs` | 0.022485 | 0.020762 | 0.224449 | 0.043925 | 0.020229 | 0.242991 |
-| `fused_average` | 0.019422 | 0.022065 | 0.220678 | 0.047636 | 0.020546 | 0.233992 |
-| `reduce_scalar_copies` | 0.020542 | 0.020963 | 0.218564 | 0.046652 | 0.020861 | 0.231445 |
-| `current` | 0.020111 | 0.021583 | 0.233689 | 0.047721 | 0.020473 | 0.222489 |
-
-这个表说明，solve time 变化不完全由 `DeviceMatVecProdTime` 解释。一些优化主要减少的是 SpMV 之外的开销，例如：
-
-- host-device scalar copy；
-- device synchronize；
-- kernel launch / runtime overhead；
-- vector update 路径；
-- movement interaction 中的额外交互。
-
-因此，后续 profiling 应使用 `rocprofv3` 进一步拆分 HIP runtime、kernel、memory copy 和 synchronization 时间。
-
-## 如何解释这些调优？
-
-本阶段可以得出以下结论：
-
-1. ROCm/HIP 后端 tuning 在 quick set 上有可测收益；
-2. current 相对 pre-tuning baseline 有明显提升；
-3. `reduce_scalar_copies` 是 6-case quick set 中观察到的最快 milestone；
-4. current 与 `reduce_scalar_copies` 在 27-case repeated comparison 中整体持平；
-5. 当前工程化改动没有造成系统性性能回退；
-6. 后续若继续优化，应以 profiler 证据为依据，而不是仅凭单次 solve time。
-
-## 当前可以接受的工程判断
-
-虽然 current 不是每个 case 的 fastest observed point，但它是更完整的工程版本，因为它包含：
-
-- CPU / CUDA / ROCm 三模态边界；
-- CUDA backend 兼容恢复；
-- `BUILD_HIP` 公共选项移除；
-- backend compatibility layer；
-- 文档和 benchmark 结果固化；
-- 行尾和脚本结构规范。
-
-因此，当前版本适合作为后续 W7900 迁移和比赛平台验证的主线 baseline。
-
-如果后续需要追求极限性能，可以同时对照：
-
-```text
-current HEAD
-reduce_scalar_copies (`b44c7ab`)
-```
-
-## 后续 profiling 计划
-
-下一步应补充 ROCm profiling，不只看 solver JSON 中的总时间。
-
-建议使用 `rocprofv3` 采集：
-
-- HIP runtime API trace；
-- kernel dispatch trace；
-- memory copy trace；
-- memory allocation trace；
-- HSA trace；
-- marker trace；
-- kernel timeline。
-
-优先选择以下 case：
-
-| Case | 原因 |
+| Milestone | 修改 |
 |---|---|
-| `lotfi` | tuning 收益明显，适合解释收益来源 |
-| `scfxm1` | current 相对 reduce 略慢，是可疑 case |
-| `pilot87` | 较大 case，current 表现较好，可作正向对照 |
+| `ae3b683` | pre-tuning anchor |
+| `f9d7f0d` | 删除冗余同步 |
+| `8fed073` | 缓存 HIP device attributes |
+| `fa7e860` | 融合 average-iterate updates |
+| `b44c7ab` | 减少 movement-interaction scalar copies |
 
-后续目标是回答：
+具体代码级内容以 Git 历史为准。
 
-1. 哪些 kernel 或 runtime 调用占主要时间？
-2. 调优前后 memory copy 是否减少？
-3. 同步调用数量是否减少？
-4. vector update 或 movement interaction 是否变轻？
-5. SpMV 时间占比是否随 case scale 变化？
+### 为什么选择这些修改
 
-## 局限性
+Smoke profiling 显示以下调用较多：
 
-本调优历史仍有局限：
+- kernel launches；
+- small copies；
+- synchronization；
+- 稳定 device-attribute queries；
+- 重复向量更新。
 
-- 当前 case 仍以 Netlib 中小规模问题为主；
-- 890M 是本地开发平台，不是最终比赛平台；
-- 5-repeat / 3-repeat 适合工程判断，但不是最终论文级统计；
-- `DeviceMatVecProdTime` 只能解释部分 GPU 时间；
-- 还缺少完整 `rocprofv3` trace 对比；
-- 大规模 MPS 数据集尚未系统纳入；
-- W7900 / `gfx1100` 已完成独立 P10/P11/P12 证据链；若要增强性能统计说服力，后续只补代表 case repeated validation。
+因此先减少结构性开销，而不是直接重写 sparse 或 reduction 内核。
 
-## 后续计划
+### 验证证据
 
-建议后续按以下顺序推进：
+890M 阶段包括：
 
-1. 补齐中英文文档；
-2. 增加 `rocprofv3` profiling 脚本；
-3. 对 `lotfi`、`scfxm1`、`pilot87` 做 current-vs-reduce profiling；
-4. 引入 H100 上的大规模 MPS 数据集；
-5. 在 3090、4090D、H100、890M、W7900 上建立分层 benchmark；
-6. 对比 cuPDLP-C 与 cuPDLPx；
-7. W7900 平台化调优已由 P10/P11/P12 证据链闭环；后续仅保留 P14 representative repeated validation 作为可选增强。
+- 6-case repeated ablation；
+- 27-case current-vs-reduce comparison；
+- profiling milestone summaries；
+- CPU/ROCm validation checks。
 
-## 相关数据文件
+6-case 历史显示组合修改带来有效收益。最后两个接近 milestone 的 27-case 比较中，base-over-current geomean 接近持平（`0.9995092331107024`），说明不能过度解释很小的 aggregate 差异。
 
-本项目保留以下结果文件作为 tuning 证据：
+证据：
+
+- [profiling milestones](../validation/rocm_prof_tuning_milestones_summary.zh-CN.md)
+- [6-case repeated ablation](../validation/rocm_tuning_ablation_6cases_repeats_summary.zh-CN.md)
+- [27-case comparison](../validation/rocm_current_vs_reduce_27cases_repeats_comparison.zh-CN.md)
+
+## W7900 调优前验证
+
+W7900 / `gfx1100` 先建立了：
+
+1. CPU 与 ROCm build 路径；
+2. `afiro` smoke validation；
+3. Netlib validation；
+4. large-MPS subsets；
+5. non-hard23 23/23 `OPTIMAL`；
+6. hard3 独立分组。
+
+因此平台特化调优开始前已经有正确性和 large-case 证据基础。
+
+## P10：targeted profiling
+
+P10 使用：
 
 ```text
-validation/rocm_tuning_ablation_6cases_repeats_raw.csv
-validation/rocm_tuning_ablation_6cases_repeats_summary.csv
-validation/rocm_tuning_ablation_6cases_repeats_summary.md
-
-validation/rocm_current_vs_reduce_27cases_repeats_raw.csv
-validation/rocm_current_vs_reduce_27cases_repeats_aggregated.csv
-validation/rocm_current_vs_reduce_27cases_repeats_comparison.csv
-validation/rocm_current_vs_reduce_27cases_repeats_comparison.md
+thk_48
+square41
+L2CTA3D
+set-cover-model
+tpl-tub-ws1617
 ```
 
-## 总结
+主要结论是 rocSPARSE CSR SpMV 在 targeted W7900 GPU kernel profile 中占主导，copy 和 launch overhead 是次级关注点。
 
-本阶段最重要的结论是：
+见 [P10 summary](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md)。
 
-> ROCm/HIP 后端从 pre-tuning 到 current 有可测性能提升；current 三模态工程版本与历史最快 tuning milestone 在 27-case repeated comparison 中整体持平，没有出现系统性性能回退。
+## P11：接受的 SpMV algorithm policy
 
-这意味着当前分支既保留了工程完整性，又基本维持了 ROCm tuning 后的性能水平。后续优化应以 `rocprofv3` profiling 和大规模 MPS 数据为依据继续推进。
+P11 没有重写 sparse library，而是增加 runtime 选择：
 
-## W7900 follow-up tuning / 2026-06-17
+| 选择 | Runtime 值 |
+|---|---|
+| 当前默认 | `HIPSPARSE_SPMV_CSR_ALG1` |
+| 旧默认回退 | `CUPDLP_HIP_SPMV_ALG=csr_alg2` |
+| Library experimental default | `CUPDLP_HIP_SPMV_ALG=default` |
 
-本文原始 tuning history 记录的是 Radeon 890M / `gfx1150` 调优序列。
-W7900 / `gfx1100` follow-up 已经作为独立 P10/P11 证据链完成。
+该阶段包括：
 
-W7900 终点：
+- runtime call-site inventory；
+- algorithm switch smoke validation；
+- 5-case algorithm sweep；
+- default-policy smoke validation；
+- final tuning summary。
 
-- P10 targeted profiling 确认 SpMV 是主要 kernel 热点。
-- P11 增加 opt-in HIP SpMV algorithm switch。
-- P11 五 case sweep 验证 `csr_alg2`、`default`、`csr_alg1` 三种模式。
-- 当前 W7900 默认：`HIPSPARSE_SPMV_CSR_ALG1`。
-- 回退旧默认：`CUPDLP_HIP_SPMV_ALG=csr_alg2`。
+见 [P11 summary](../validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md)。
 
-详见 `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`。
+## P12：被拒绝的执行层实验
 
-## cuPDLPx 对比收尾说明 / 2026-06-17
+P12 尝试让 `hipsparseSpMV_bufferSize()` 查询与选定执行算法一致。由于 `set-cover-model` 迭代数从 7480 变为 7600，patch 被拒绝。
 
-已有 RTX 4090D short13 对比显示 cuPDLPx 在多数 short/medium case 上快于
-upstream cuPDLP-C。该结果应作为未来算法路线参考，而不是 W7900 ROCm/HIP
-tuning 历史的一部分。W7900 当前终点仍是 cuPDLP-C-ROCm 分支中的
-`HIPSPARSE_SPMV_CSR_ALG1` 默认策略与可回退 P11 tuning 闭环。
+该结果说明：
 
-## W7900 后续状态更新 / 2026-06-17
+> 一个修改即使局部合理、具有性能动机，如果引入无法充分解释的数值轨迹变化，也不应被接受。
 
-本文档前半部分记录的是 890M / `gfx1150` 阶段的 repeated tuning ablation。
-其中，`current` 相对 `pre_tuning` 在 6-case quick set 上几何平均约为
-`1.094x speedup`，说明 ROCm/HIP 后端 tuning 在 890M 上有可测收益。
+见 [P12 negative result](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md)。
 
-但该结论不能直接替代 W7900 / `gfx1100` 的性能结论。W7900 是不同硬件目标，
-因此 W7900 已单独完成：
+## P14-A1：重复 before/current 确认
 
-- W7900 build、smoke validation、Netlib validation 和 large-MPS baseline；
-- P10 targeted rocprof profiling；
-- P11 SpMV algorithm switch、smoke 和五 case sweep；
-- 当前 W7900 默认 SpMV algorithm：
-  `HIPSPARSE_SPMV_CSR_ALG1`；
-- 回退旧默认：
-  `CUPDLP_HIP_SPMV_ALG=csr_alg2`；
-- P12 记录了被拒绝的 SpMV buffer algorithm consistency patch。
+P14-A1 重复比较 current 与 `pre_tuning` quick6：
 
-若后续还要增强 W7900 的性能说服力，推荐只补一个小规模
-`current` vs `pre_tuning` repeated validation，而不是重跑完整 890M 式
-6-milestone ablation。
+| 指标 | 结果 |
+|---|---:|
+| Current wins | 6/6 |
+| Geomean speedup | 1.18889 |
+| Median speedup | 1.19502 |
+| 迭代数变化 | 0/6 |
 
-## 后续计划完成标记 / 2026-06-17
+见 [P14-A1 summary](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md)。
 
-本文早期“后续计划”中的多项工作已经完成或被新的 W7900 文档取代：
+## 8 卡吞吐
 
-- W7900 / `gfx1100` 平台实测：已完成 smoke、Netlib、large-MPS baseline。
-- W7900 profiling：已由 P10 targeted rocprof 归档。
-- W7900 平台化调优：已由 P11 SpMV tuning 闭环。
-- 额外 execution-layer 小改动：P12 已记录一个被拒绝实验。
-- cuPDLP-C 与 cuPDLPx 对比：short13 已单独成文档，并已补最终定位说明。
+fast8 实验测量 8 个独立 MPS 任务：
 
-仍可选增强：
+```text
+8 卡并发：146 s
+单卡顺序：558 s
+```
 
-- P14-A：W7900 current-vs-before representative repeated validation。
-- P14-B：W7900 CSR ALG1-vs-ALG2 representative repeated validation。
+这是 batch throughput，不是单个 LP 的分布式多 GPU 求解。
+
+见 [8-card summary](../validation/w7900_8card_batch_fast8_summary_20260616.zh-CN.md)。
+
+## 当前终点
+
+当前接受策略是：
+
+```text
+W7900 默认 SpMV：HIPSPARSE_SPMV_CSR_ALG1
+回退：CUPDLP_HIP_SPMV_ALG=csr_alg2
+验证保护：CPU/ROCm status 与数值检查
+before anchor：ae3b683 / pre_tuning
+```
+
+P10、P11、P12 和 P14-A1 已闭合当前 W7900 tuning 证据链。P14-B ALG1-vs-ALG2 repeated study 可作为可选增强，但不是未完成的核心范围。
+
+## 未来调优规则
+
+1. 固定 before reference 与 case list。
+2. 记录 status、residual、gap、`nIter`、wall time 和 solve time。
+3. 性能结论使用重复运行。
+4. 先 profiling，再选择 patch。
+5. 拒绝引入无法解释收敛变化的修改。
+6. 困难 case 必须可见并单独报告。
+7. 不只针对 smoke case 调优。
+8. 平台敏感 policy 保留 runtime rollback。
+
+## 相关文档
+
+- [ROCm profiling 记录](ROCM_PROFILING_NOTES.zh-CN.md)
+- [ROCm 调优指南](TUNING_GUIDE_ROCM.zh-CN.md)
+- [W7900 当前状态](W7900_CURRENT_STATUS.zh-CN.md)
+- [Validation 索引](../validation/README.zh-CN.md)

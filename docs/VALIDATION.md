@@ -396,23 +396,23 @@ These are intentionally ignored by Git. Only source scripts, case lists, manifes
 - No ROCm CI runner is currently available.
 - Some legacy CUDA-style names remain intentionally for C/HIP compatibility.
 
-## Future validation work
+## Future validation maintenance
 
-Completed or superseded items:
+Completed for the current scope:
 
-- larger sparse LP validation: completed for the curated large-MPS benchmark
-  scope;
-- validate `gfx1100`: completed for W7900 current project scope;
-- profiling/tuning validation: completed through P10/P11/P12.
+- curated larger sparse LP validation;
+- W7900 / `gfx1100` build and validation;
+- P10/P11/P12 profiling and tuning validation;
+- P14-A1 repeated current-vs-pre-tuning validation.
 
-Optional future work:
+Useful future extensions include:
 
-- add more Netlib LP cases;
-- add infeasible and unbounded LP cases;
-- add badly scaled cases;
-- record periodic validation snapshots;
-- add ROCm CI when a suitable runner is available;
-- add P14-A W7900 current-vs-before repeated validation when W7900 is
-  available;
-- add P14-B W7900 CSR ALG1-vs-ALG2 repeated validation when W7900 is
-  available.
+- more Netlib cases;
+- infeasible and unbounded cases;
+- badly scaled cases;
+- periodic snapshots after toolchain changes;
+- a ROCm CI runner when suitable hardware is available;
+- optional P14-B repeated ALG1-vs-ALG2 evidence;
+- explicit validation of optional presolve/postsolve behavior.
+
+The primary committed validation path keeps HiGHS presolve disabled. Optional presolve support exists, but nontrivial postsolve and recovery to the original variable space are not part of the current validated contract.

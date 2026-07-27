@@ -66,6 +66,7 @@ These files remain in place because they preserve decisions and experimental con
 |---|---|---|
 | `README_ROCM_gfx1150*` | Earlier Radeon 890M / `gfx1150` milestone | [Current homepage](../README.en.md) / [中文主页](../README.md) |
 | `W7900_FIRST_PORT*` | First-port snapshot | [W7900 current status](W7900_CURRENT_STATUS.md) |
+| `platforms/W7900_PLATFORM_NOTES.md` | Historical machine-specific environment record | [Current reproducibility](REPRODUCIBILITY.md) |
 | `W7900_ROCM_PROFILING_PLAN*` | Completed profiling plan | [Profiling notes](ROCM_PROFILING_NOTES.md), P10/P11/P12 in validation index |
 | `LARGE_MPS_BENCHMARK_PLAN*` | Original benchmark plan | [Benchmark index](benchmarks/README.md), [validation index](../validation/README.md) |
 | Dated files under `validation/` | Immutable experiment evidence | [Validation index](../validation/README.md) |

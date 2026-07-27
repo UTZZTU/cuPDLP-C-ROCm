@@ -166,14 +166,17 @@ W7900 non-hard23 结果应理解为 post-890M-tuning engineering baseline，不�
 详见 [W7900 优化基线说明](W7900_OPTIMIZATION_BASELINES.zh-CN.md)。
 <!-- W7900_OPTIMIZATION_BASELINES_20260614_END -->
 
-## 对调优的启示
+## 调优启示与当前终点
 
-下一阶段 ROCm tuning 不能只盯 kernel 时间，还要记录数值轨迹：
+已完成证据表明，W7900 tuning 必须联合考虑 kernel 成本和数值轨迹：
 
-- per-case `nIter`；
-- `DeviceMatVecProdTime`；
-- residual 与 duality gap；
-- HIP/kernel/reduction profile；
-- 同一 case list 上的 before/after 变化。
+- 记录 per-case `nIter`；
+- 保留 residual 与 gap 检查；
+- 观察 `DeviceMatVecProdTime`；
+- 使用 HIP API 与 kernel profiles；
+- 比较相同 case list 与 limits；
+- hard3 保持单独分组。
 
-Hard3 在完成收敛轨迹记录前，仍应保持单独分组。
+P10 识别出 rocSPARSE CSR SpMV 是主要 targeted hotspot。P11 接受 `HIPSPARSE_SPMV_CSR_ALG1` 作为当前默认，并保留 `csr_alg2` 回退。P12 因迭代数变化拒绝相关 execution-layer 修改。P14-A1 随后确认 repeated current-vs-pre-tuning 收益且迭代数不变。
+
+因此当前项目终点是有证据支撑的 SpMV policy，而不是声称已经消除所有 ROCm 瓶颈。未来 tuning 只有在提出新的测量问题并预先定义验证方案后才应开始。

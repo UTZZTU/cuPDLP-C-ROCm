@@ -394,20 +394,23 @@ tools/emps.c
 - 当前还没有 ROCm CI runner。
 - 部分 legacy CUDA-style 名称因 C/HIP 兼容边界仍保留。
 
-## 后续验证工作
+## 后续验证维护
 
-已完成或已被取代的项目：
+当前范围已经完成：
 
-- larger sparse LP validation：已在 curated large-MPS benchmark 范围完成；
-- validate `gfx1100`：已在 W7900 当前项目范围完成；
-- profiling/tuning validation：已由 P10/P11/P12 完成。
+- curated larger sparse LP validation；
+- W7900 / `gfx1100` build 与 validation；
+- P10/P11/P12 profiling 与 tuning validation；
+- P14-A1 repeated current-vs-pre-tuning validation。
 
-可选未来工作：
+有价值的未来扩展包括：
 
-- 增加更多 Netlib LP cases；
-- 增加 infeasible 和 unbounded LP cases；
-- 增加 badly scaled cases；
-- 定期记录 validation snapshots；
-- 有合适 runner 时添加 ROCm CI；
-- W7900 可用后补 P14-A current-vs-before repeated validation；
-- W7900 可用后补 P14-B CSR ALG1-vs-ALG2 repeated validation。
+- 更多 Netlib cases；
+- infeasible 与 unbounded cases；
+- badly scaled cases；
+- toolchain 变化后的周期性 snapshots；
+- 有合适硬件时增加 ROCm CI；
+- 可选 P14-B repeated ALG1-vs-ALG2 evidence；
+- 显式验证 optional presolve/postsolve 行为。
+
+当前提交的主要验证路径保持 HiGHS presolve 关闭。Optional presolve 支持存在，但 nontrivial postsolve 与恢复到原始变量空间不属于当前已验证合同。

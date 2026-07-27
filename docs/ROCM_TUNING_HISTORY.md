@@ -1,214 +1,175 @@
-# ROCm tuning history and ablation results
+# ROCm tuning history
 
-This note documents the ROCm/HIP tuning sequence for the `cuPDLP-C-ROCm` branch and records the benchmark evidence used to evaluate the tuning impact.
+> 中文版：[ROCM_TUNING_HISTORY.zh-CN.md](ROCM_TUNING_HISTORY.zh-CN.md)
 
-The purpose of this document is not to claim final peak performance. It records a reproducible quick ablation workflow that compares selected tuning milestones on the AMD Radeon 890M / gfx1150 ROCm/HIP backend.
+This page records the tuning sequence without mixing old plans with current status. Dated reports and CSV files remain the authoritative experiment artifacts.
 
-## Scope
+## Baseline roles
 
-The current project keeps three backend modes:
+| Role | Reference | Meaning |
+|---|---|---|
+| Pre-tuning anchor | `ae3b683 / pre_tuning` | First-runnable ROCm anchor used for before/current analysis |
+| 890M engineering sequence | milestones after `ae3b683` | Structural-overhead tuning on `gfx1150` |
+| W7900 current branch | `rocm-w7900-gfx1100` | Post-890M-tuning engineering baseline |
+| Accepted W7900 endpoint | P11 policy | `HIPSPARSE_SPMV_CSR_ALG1` default with `csr_alg2` rollback |
 
-| Mode | Role |
+The current W7900 baseline must not be described as an unoptimized first port.
+
+## 890M structural tuning sequence
+
+The early profiling-driven sequence focused on low-risk structural overhead:
+
+| Milestone | Change |
 |---|---|
-| CPU | correctness and portability baseline |
-| CUDA | upstream-compatible NVIDIA baseline |
-| ROCm/HIP | AMD Radeon 890M / gfx1150 target backend |
+| `ae3b683` | pre-tuning anchor |
+| `f9d7f0d` | remove redundant synchronization |
+| `8fed073` | cache HIP device attributes |
+| `fa7e860` | fuse average-iterate updates |
+| `b44c7ab` | reduce movement-interaction scalar copies |
 
-This document focuses only on the ROCm/HIP backend tuning sequence.
+The exact repository history remains the source of code-level details.
 
-## Tuning milestones
+### Why these changes were selected
 
-The ablation uses the following milestone commits:
+Smoke profiling showed high counts of:
 
-| Milestone | Commit | Meaning |
-|---|---|---|
-| `pre_tuning` | `ae3b683` | pre-tuning baseline |
-| `remove_sync` | `f9d7f0d` | remove redundant HIP device synchronize in movement interaction |
-| `cache_attrs` | `8fed073` | cache HIP device attributes in linalg helpers |
-| `fused_average` | `fa7e860` | fuse ROCm average iterate axpy updates |
-| `reduce_scalar_copies` | `b44c7ab` | reduce movement interaction scalar copies |
-| `current` | `c65a20083d8e03ca167164f4142a5c58f863ffbb` | current HEAD at the time of the ablation |
+- kernel launches;
+- small copies;
+- synchronization;
+- stable device-attribute queries;
+- repeated vector updates.
 
-## Benchmark method
+The sequence therefore reduced structural overhead before attempting lower-level sparse or reduction rewrites.
 
-The repeated ablation uses:
+### Validation evidence
 
-- AMD Radeon 890M / gfx1150 ROCm/HIP backend.
-- 6 representative cases.
-- 5 repeated runs per milestone/case pair.
-- `nIterLim=200000000`.
-- `CASE_TIMEOUT_SEC=900`.
-- Median solve time as the primary metric.
-- Mean, standard deviation, min, max, and coefficient of variation retained in CSV for variability analysis.
+The 890M evidence includes:
 
-The quick set intentionally excludes `greenbea`. That case is convergence-sensitive and long-running, so it is tracked separately in the numerical-behavior notes instead of the tuning quick benchmark.
+- six-case repeated ablation;
+- 27-case current-vs-reduce comparison;
+- profiling milestone summaries;
+- CPU/ROCm validation checks.
 
-## Cases
+The six-case history showed useful gains from the combined sequence. The 27-case comparison between the last two close milestones had a base-over-current geometric mean near parity (`0.9995092331107024`), showing why small aggregate differences should not be overinterpreted.
 
-| Case | Tier | Purpose |
-|---|---|---|
-| `afiro` | S | tiny smoke/overhead case |
-| `sc50b` | S | small Netlib case |
-| `lotfi` | M | medium many-iteration case |
-| `80bau3b` | M | medium case with visible GPU timing |
-| `maros-r7` | L | large case but short iteration count |
-| `pilot87` | L | larger representative case |
+Evidence:
 
-## Correctness summary
+- [profiling milestones](../validation/rocm_prof_tuning_milestones_summary.md)
+- [six-case repeated ablation](../validation/rocm_tuning_ablation_6cases_repeats_summary.md)
+- [27-case comparison](../validation/rocm_current_vs_reduce_27cases_repeats_comparison.md)
 
-All repeated runs in the ablation reached `OPTIMAL` with exit code `0`.
+## W7900 validation before tuning
 
-The repeated benchmark therefore supports the conclusion that the tuning sequence did not change termination status, iteration counts, or feasibility/gap values for this quick set.
+W7900 / `gfx1100` first established:
 
-## Median solve time
+1. CPU and ROCm build paths;
+2. `afiro` smoke validation;
+3. Netlib validation;
+4. large-MPS subsets;
+5. non-hard23 with 23/23 `OPTIMAL`;
+6. hard3 separation.
 
-Primary metric: median solve time across 5 repeated runs.
+The W7900 baseline therefore had a correctness and large-case evidence base before platform-specific tuning.
 
-| Milestone | afiro | sc50b | lotfi | 80bau3b | maros-r7 | pilot87 |
-|---|---:|---:|---:|---:|---:|---:|
-| `pre_tuning` | 0.052744 | 0.072827 | 4.537407 | 0.970653 | 0.124608 | 8.690948 |
-| `remove_sync` | 0.059098 | 0.071003 | 3.997434 | 0.915490 | 0.120013 | 8.179166 |
-| `cache_attrs` | 0.060280 | 0.069627 | 3.986371 | 0.912363 | 0.117736 | 8.218034 |
-| `fused_average` | 0.053140 | 0.069351 | 3.825229 | 0.901840 | 0.117184 | 8.000284 |
-| `reduce_scalar_copies` | 0.052801 | 0.066655 | 3.615290 | 0.869338 | 0.116324 | 7.820215 |
-| `current` | 0.052900 | 0.066839 | 3.646848 | 0.874944 | 0.121077 | 7.820457 |
+## P10: targeted profiling
 
-## Current vs pre-tuning
+P10 profiled:
 
-| Case | pre_tuning median | current median | Speedup | Time reduction |
-|---|---:|---:|---:|---:|
-| `afiro` | 0.052744 | 0.052900 | 0.997x | -0.30% |
-| `sc50b` | 0.072827 | 0.066839 | 1.090x | 8.22% |
-| `lotfi` | 4.537407 | 3.646848 | 1.244x | 19.63% |
-| `80bau3b` | 0.970653 | 0.874944 | 1.109x | 9.86% |
-| `maros-r7` | 0.124608 | 0.121077 | 1.029x | 2.83% |
-| `pilot87` | 8.690948 | 7.820457 | 1.111x | 10.02% |
+```text
+thk_48
+square41
+L2CTA3D
+set-cover-model
+tpl-tub-ws1617
+```
 
-Geometric mean speedup for current vs pre-tuning across the 6-case quick set is approximately **1.094x**.
+The main result was that rocSPARSE CSR SpMV dominated the targeted GPU kernel profile, with copies and launch overhead as secondary runtime concerns.
 
-The main gains are visible on the medium and larger cases:
+See [P10 summary](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.md).
 
-- `lotfi`: about 19.6% lower median solve time.
-- `pilot87`: about 10.0% lower median solve time.
-- `80bau3b`: about 9.9% lower median solve time.
-- `sc50b`: about 8.2% lower median solve time.
+## P11: accepted SpMV algorithm policy
 
-`afiro` is dominated by fixed overhead and does not show meaningful improvement.
+P11 introduced a runtime selection policy rather than replacing the sparse library:
 
-## Fastest observed milestone by case
+| Selection | Runtime value |
+|---|---|
+| Current default | `HIPSPARSE_SPMV_CSR_ALG1` |
+| Old-default rollback | `CUPDLP_HIP_SPMV_ALG=csr_alg2` |
+| Library experimental default | `CUPDLP_HIP_SPMV_ALG=default` |
 
-| Case | Fastest milestone | Fastest median solve time |
-|---|---|---:|
-| `afiro` | `pre_tuning` | 0.052744 |
-| `sc50b` | `reduce_scalar_copies` | 0.066655 |
-| `lotfi` | `reduce_scalar_copies` | 3.615290 |
-| `80bau3b` | `reduce_scalar_copies` | 0.869338 |
-| `maros-r7` | `reduce_scalar_copies` | 0.116324 |
-| `pilot87` | `reduce_scalar_copies` | 7.820215 |
+The work included:
 
-The `reduce_scalar_copies` milestone is the fastest observed point for 5 of 6 quick cases.
+- runtime call-site inventory;
+- algorithm switch smoke validation;
+- a five-case algorithm sweep;
+- default-policy smoke validation;
+- a final tuning summary.
 
-The current branch remains faster than the pre-tuning baseline on 5 of 6 cases, but it is not the fastest observed point for every case. This is expected because later commits include backend compatibility, CUDA restoration, CMake cleanup, and documentation work rather than pure ROCm performance tuning only.
+See [P11 summary](../validation/w7900_p11_spmv_tuning_summary_20260617.md).
 
-## Median DeviceMatVecProdTime
+## P12: rejected execution-layer experiment
 
-| Milestone | afiro | sc50b | lotfi | 80bau3b | maros-r7 | pilot87 |
-|---|---:|---:|---:|---:|---:|---:|
-| `pre_tuning` | 0.019731 | 0.021287 | 0.283484 | 0.050591 | 0.019830 | 0.262654 |
-| `remove_sync` | 0.020783 | 0.022891 | 0.235519 | 0.042941 | 0.019717 | 0.226007 |
-| `cache_attrs` | 0.022485 | 0.020762 | 0.224449 | 0.043925 | 0.020229 | 0.242991 |
-| `fused_average` | 0.019422 | 0.022065 | 0.220678 | 0.047636 | 0.020546 | 0.233992 |
-| `reduce_scalar_copies` | 0.020542 | 0.020963 | 0.218564 | 0.046652 | 0.020861 | 0.231445 |
-| `current` | 0.020111 | 0.021583 | 0.233689 | 0.047721 | 0.020473 | 0.222489 |
+P12 aligned the `hipsparseSpMV_bufferSize()` query with the selected execution algorithm. The patch was rejected because `set-cover-model` changed from 7480 to 7600 iterations.
 
-The matvec timing does not explain all solve-time changes. Several tuning commits reduce overhead outside sparse matrix-vector product time, especially movement-interaction synchronization and scalar-copy overhead.
+This result is important:
 
-## Interpretation
+> A change can be locally reasonable and performance-motivated yet still be unsuitable when it changes the numerical trajectory without sufficient benefit.
 
-The ROCm tuning sequence produced measurable improvement on the 6-case quick set.
+See [P12 negative result](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md).
 
-The most important observations are:
+## P14-A1: repeated before/current confirmation
 
-1. The repeated ablation confirms correctness stability: all runs reached `OPTIMAL`.
-2. Median solve time improved for 5 of 6 cases from `pre_tuning` to `current`.
-3. The largest current-vs-baseline improvement is on `lotfi`.
-4. The `reduce_scalar_copies` milestone is the fastest observed point for most cases.
-5. Some later non-performance work may have small overhead or run-to-run noise, so future tuning should compare against both `pre_tuning` and `reduce_scalar_copies`.
+P14-A1 repeated the quick6 comparison between current and `pre_tuning`:
 
-## Limitations
+| Metric | Result |
+|---|---:|
+| Current wins | 6/6 |
+| Geometric-mean speedup | 1.18889 |
+| Median speedup | 1.19502 |
+| Iteration-count changes | 0/6 |
 
-This is a quick ablation, not a final statistically exhaustive performance study.
+See [P14-A1 summary](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md).
 
-Known limitations:
+## Eight-card throughput
 
-- The case set is intentionally small.
-- Each version/case pair is repeated 5 times, which is enough for quick signal but not exhaustive.
-- The test uses wall-clock solve time reported by the solver, not external profiler timing.
-- The benchmark is run on an integrated AMD Radeon 890M environment where system load, power state, and thermal state may affect timing.
-- `greenbea` is excluded because it is a long-running convergence-sensitive case, not a tuning quick benchmark.
+The fast8 experiment measured eight independent MPS jobs:
 
-## Recommended next steps
+```text
+8-card concurrent: 146 s
+one-GPU sequential: 558 s
+```
 
-1. Preserve the repeated raw and aggregated CSV files under `validation/`.
-2. Use `reduce_scalar_copies` as a useful performance reference point for future ROCm tuning.
-3. Use the current branch as the engineering baseline because it restores CPU/CUDA/ROCm three-mode compatibility.
-4. Add a separate numerical-behavior note for `greenbea`.
-5. If future tuning changes are made, compare against both `current` and `reduce_scalar_copies` on the same 6-case repeated benchmark.
+This is batch throughput, not a distributed multi-GPU solver for one LP.
 
-## W7900 follow-up tuning / 2026-06-17
+See [8-card summary](../validation/w7900_8card_batch_fast8_summary_20260616.md).
 
-The original tuning history in this document records the Radeon 890M /
-`gfx1150` tuning sequence. The W7900 / `gfx1100` follow-up has now been
-completed as a separate P10/P11 evidence chain.
+## Current endpoint
 
-W7900 endpoint:
+The accepted current policy is:
 
-- P10 targeted profiling identified SpMV as the primary kernel hotspot.
-- P11 added an opt-in HIP SpMV algorithm switch.
-- P11 five-case sweep validated `csr_alg2`, `default`, and `csr_alg1`.
-- Current W7900 default: `HIPSPARSE_SPMV_CSR_ALG1`.
-- Rollback: `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
+```text
+W7900 default SpMV: HIPSPARSE_SPMV_CSR_ALG1
+fallback: CUPDLP_HIP_SPMV_ALG=csr_alg2
+validation anchor: CPU/ROCm status and numerical checks
+before anchor: ae3b683 / pre_tuning
+```
 
-See `validation/w7900_p11_spmv_tuning_summary_20260617.md`.
+P10, P11, P12, and P14-A1 close the current W7900 tuning evidence chain. A repeated ALG1-vs-ALG2 P14-B study may be added as optional evidence, but it is not unfinished core scope.
 
-## W7900 follow-up status update / 2026-06-17
+## Rules for future tuning
 
-The earlier part of this document records the 890M / `gfx1150` repeated
-tuning ablation. In that quick set, `current` achieved about `1.094x`
-geometric-mean speedup over `pre_tuning`, showing that ROCm/HIP tuning had
-measurable benefit on 890M.
+1. Freeze a before reference and case list.
+2. Record status, residuals, gap, `nIter`, wall time, and solve time.
+3. Use repeated runs for timing claims.
+4. Profile before selecting a patch.
+5. Reject changes that introduce unexplained convergence movement.
+6. Keep hard cases visible and separate.
+7. Do not tune only for smoke cases.
+8. Preserve a runtime rollback for platform-sensitive policy changes.
 
-That result should not be used as a direct substitute for W7900 / `gfx1100`
-performance evidence. W7900 is a different hardware target, and it now has
-its own completed evidence chain:
+## Related documents
 
-- W7900 build, smoke validation, Netlib validation, and large-MPS baseline;
-- P10 targeted rocprof profiling;
-- P11 SpMV algorithm switch, smoke, and five-case sweep;
-- current W7900 default SpMV algorithm:
-  `HIPSPARSE_SPMV_CSR_ALG1`;
-- rollback:
-  `CUPDLP_HIP_SPMV_ALG=csr_alg2`;
-- P12 rejected SpMV buffer algorithm consistency experiment.
-
-If stronger W7900 timing evidence is needed later, add a small
-`current` vs `pre_tuning` repeated validation instead of rerunning the full
-890M-style six-milestone ablation.
-
-## Completed-plan markers / 2026-06-17
-
-Several items from the earlier “recommended next steps” have now been
-completed or superseded by newer W7900 documents:
-
-- W7900 / `gfx1100` platform validation: completed through smoke, Netlib, and
-  large-MPS baseline.
-- W7900 profiling: archived through P10 targeted rocprof.
-- W7900 platform-specific tuning: closed by P11 SpMV tuning.
-- Additional execution-layer candidate: P12 records a rejected experiment.
-- cuPDLP-C vs cuPDLPx comparison: short13 is documented separately with final
-  positioning.
-
-Remaining optional enhancements:
-
-- P14-A: W7900 current-vs-before representative repeated validation.
-- P14-B: W7900 CSR ALG1-vs-ALG2 representative repeated validation.
+- [ROCm profiling notes](ROCM_PROFILING_NOTES.md)
+- [ROCm tuning guide](TUNING_GUIDE_ROCM.md)
+- [W7900 current status](W7900_CURRENT_STATUS.md)
+- [Validation index](../validation/README.md)

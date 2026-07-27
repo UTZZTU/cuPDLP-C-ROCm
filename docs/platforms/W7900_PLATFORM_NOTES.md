@@ -1,187 +1,59 @@
-# Radeon PRO W7900 Platform Notes
+# W7900 platform notes — historical environment record
 
-Date: 2026-06-10
-Host: nb-d2799099
-Project branch: rocm-w7900-gfx1100
-Base branch: rocm-gfx1150
+> **Historical platform record**
+>
+> This page preserves details from the first W7900 / `gfx1100` environment bring-up. It is not the current project-status page and its machine-specific paths must not be treated as portable defaults.
+>
+> Current status: [W7900_CURRENT_STATUS.md](../W7900_CURRENT_STATUS.md)
+>
+> Reproduction workflow: [REPRODUCIBILITY.md](../REPRODUCIBILITY.md)
 
-## Goal
+## Recorded platform role
 
-Port the existing cuPDLP-C ROCm/HIP backend from the gfx1150 validation target to the Radeon PRO W7900 / gfx1100 platform.
+| Item | Recorded value |
+|---|---|
+| GPU | AMD Radeon PRO W7900 |
+| Architecture | `gfx1100` |
+| Project role | First W7900 environment recovery and validation |
+| Current branch focus | W7900 validation, P10 profiling, P11 tuning, P12 negative result, and P14-A1 repeats |
 
-This first stage focuses only on buildability and correctness smoke validation. Performance tuning is intentionally deferred.
+## Environment-specific layout
 
-## Directory layout
+The original W7900 workspace used a nonstandard Python-packaged ROCm SDK and machine-local paths under `/app/cupdlp_w7900`. These paths describe that machine only.
 
-Project root on this machine:
+Typical recorded locations included:
 
+```text
+/opt/python/bin/hipcc
+/opt/python/lib/python3.12/site-packages/_rocm_sdk_core
+/opt/python/lib/python3.12/site-packages/_rocm_sdk_devel
 /app/cupdlp_w7900
-
-Repository path:
-
-/app/cupdlp_w7900/src/cuPDLP-C-ROCm
-
-Suggested local layout:
-
-/app/cupdlp_w7900/
-- src/
-- build/
-- datasets/
-- logs/
-- notes/
-- results/
-
-## CPU and memory
-
-Observed platform:
-
-- CPU: 2x AMD EPYC 9334 32-Core Processor
-- Logical CPUs: 128
-- Sockets: 2
-- Cores per socket: 32
-- Threads per core: 2
-- NUMA nodes: 2
-- Memory: about 1.0 TiB
-
-NUMA layout:
-
-- NUMA node 0 CPUs: 0-31,64-95
-- NUMA node 1 CPUs: 32-63,96-127
-
-## GPU layout
-
-The system exposes one onboard ASPEED VGA device and eight AMD GPUs.
-
-- card0: ASPEED onboard VGA
-- card1-card8: AMD GPUs
-- AMD GPU PCI ID: 1002:744B
-- AMD GPU subsystem device: 0x0e0c
-- Kernel driver: amdgpu
-- Expected ROCm target: gfx1100
-
-NUMA node 0 GPUs:
-
-| DRM card | PCI slot |
-|---|---|
-| card1 | 0000:03:00.0 |
-| card2 | 0000:23:00.0 |
-| card3 | 0000:43:00.0 |
-| card4 | 0000:63:00.0 |
-
-NUMA node 1 GPUs:
-
-| DRM card | PCI slot |
-|---|---|
-| card5 | 0000:83:00.0 |
-| card6 | 0000:a3:00.0 |
-| card7 | 0000:c3:00.0 |
-| card8 | 0000:e3:00.0 |
-
-## Current ROCm state before repair
-
-GPU kernel devices are visible:
-
-- /dev/kfd exists
-- /dev/dri exists
-- card1-card8 are bound to amdgpu
-
-However, the official /opt/rocm development stack is missing:
-
-- /opt/rocm/bin/hipcc: missing
-- /opt/rocm/bin/rocminfo: missing
-- /opt/rocm/bin/rocm_agent_enumerator: missing
-- /opt/rocm/bin/rocm-smi: missing
-
-Currently observed ROCm-related packages are old Ubuntu runtime packages:
-
-- libamdhip64-5 5.7.1
-- libhsa-runtime64-1 5.7.1
-- libhsakmt1 5.7.0
-- libamd-comgr2
-- libdrm-amdgpu1
-
-The following tools exist under /opt/python/bin, but they are treated as Python/vLLM environment tools rather than the official system ROCm development stack:
-
-- /opt/python/bin/hipcc
-- /opt/python/bin/rocminfo
-- /opt/python/bin/rocm_agent_enumerator
-- /opt/python/bin/rocm-smi
-
-## Git setup notes
-
-The repository was cloned from:
-
-https://github.com/UTZZTU/cuPDLP-C-ROCm.git
-
-The working branch is:
-
-rocm-w7900-gfx1100
-
-The pybind11 submodule originally used this SSH URL:
-
-ssh://git@ssh.github.com:443/pybind/pybind11.git
-
-This failed on the remote machine because no GitHub SSH key was configured. The submodule URL was changed to HTTPS:
-
-https://github.com/pybind/pybind11.git
-
-Commit already created:
-
-5d93812 use https URL for pybind11 submodule
-
-## Current diagnosis
-
-The machine has visible AMD GPU kernel devices and the amdgpu driver is bound to all eight AMD GPUs. However, the official ROCm development stack under /opt/rocm is missing.
-
-Before building cuPDLP-C, install or repair the official ROCm userspace development environment and confirm that rocminfo and rocm_agent_enumerator report gfx1100.
-
-## First-stage acceptance criteria
-
-- /opt/rocm/bin/hipcc exists and reports a valid ROCm version.
-- /opt/rocm/bin/rocminfo works.
-- /opt/rocm/bin/rocm_agent_enumerator reports gfx1100.
-- CPU baseline build succeeds.
-- ROCm/HIP build succeeds with CMAKE_HIP_ARCHITECTURES=gfx1100.
-- example/afiro.mps runs successfully on ROCm.
-- Repository smoke validation passes.
-
-<!-- W7900_DOC_SWEEP_20260614_BEGIN -->
-## Updated reproducibility notes after W7900 baseline
-
-The W7900 environment is volatile: `/app` may be reset between sessions. The repository therefore keeps bootstrap and SSH helper scripts in git, while raw `.mps` benchmark files stay outside git.
-
-Recommended recovery flow on a fresh machine:
-
-```bash
-mkdir -p /app/cupdlp_w7900/src
-cd /app/cupdlp_w7900/src
-
-GIT_TERMINAL_PROMPT=0 git clone \
-  --depth 1 \
-  --single-branch \
-  --branch rocm-w7900-gfx1100 \
-  --filter=blob:none \
-  https://github.com/UTZZTU/cuPDLP-C-ROCm.git
-
-cd /app/cupdlp_w7900/src/cuPDLP-C-ROCm
-INSTALL_APT_PACKAGES=0 RUN_BUILD=0 RUN_SMOKE=0 bash scripts/bootstrap_w7900_workspace.sh
 ```
 
-Large-MPS benchmark policy:
+For a fresh machine, use the maintained bootstrap and reproduction documentation instead of copying paths blindly:
 
-- raw MPS files are downloaded to `/app/cupdlp_w7900/datasets/large_mps_baidu`
-- raw MPS files are not committed
-- curated CSV, Markdown summaries, scripts, and SVG charts are committed
-- current stable W7900 large-MPS baseline is `non-hard23`
-- hard3 is tracked separately before full tuning
-<!-- W7900_DOC_SWEEP_20260614_END -->
+```bash
+RUN_BUILD=1 RUN_SMOKE=1 \
+  bash scripts/bootstrap_w7900_workspace.sh
+```
 
-## Next steps
+## Current interpretation
 
-1. Install or repair the official ROCm userspace development stack under /opt/rocm.
-2. Confirm rocminfo and rocm_agent_enumerator report gfx1100.
-3. Build CPU baseline.
-4. Build ROCm/HIP version with CMAKE_HIP_ARCHITECTURES=gfx1100.
-5. Run smoke validation on example/afiro.mps.
-6. Run repository validation scripts.
-7. Commit the W7900 platform notes, build commands, and validation results.
+The first-port stage documented by this page has been superseded by:
+
+- W7900 smoke and Netlib validation;
+- non-hard23 23/23 `OPTIMAL`;
+- P10 targeted profiling;
+- P11 accepted SpMV policy;
+- P12 rejected execution-layer experiment;
+- P14-A1 repeated before/current validation.
+
+No “next step” in this historical note should override the current-status documents.
+
+## Related evidence
+
+- [W7900 first-port record](../W7900_FIRST_PORT.md)
+- [W7900 current status](../W7900_CURRENT_STATUS.md)
+- [ROCm profiling notes](../ROCM_PROFILING_NOTES.md)
+- [ROCm tuning history](../ROCM_TUNING_HISTORY.md)
+- [Validation index](../../validation/README.md)

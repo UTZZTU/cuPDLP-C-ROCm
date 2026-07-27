@@ -12,7 +12,7 @@
 > Validation index: [validation/README.md](validation/README.md)
 > Benchmark index: [docs/benchmarks/README.md](docs/benchmarks/README.md)
 
-This page is a focused quick-start for the currently validated ROCm/HIP target: AMD Radeon 890M / `gfx1150`.
+This page is a focused quick-start for the historical Radeon 890M / `gfx1150` ROCm/HIP milestone. The current primary platform is W7900 / `gfx1100`.
 
 ## Environment
 

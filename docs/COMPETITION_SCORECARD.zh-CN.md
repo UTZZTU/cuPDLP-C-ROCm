@@ -1,69 +1,69 @@
-# 竞赛评分项对照
+# 竞赛评分项与仓库证据对照
 
 > English: [COMPETITION_SCORECARD.md](COMPETITION_SCORECARD.md)
 
-本文把 AMD ROCm/Radeon 赛题要求映射到仓库证据。它是评审视角的检查表，不是项目唯一入口。普通读者应先阅读 [中文主页](../README.md)、[English README](../README.en.md) 和 [文档地图](README.md)。
+本文把竞赛评审关注点映射到仓库当前证据，不是普通读者的主页。普通读者应从[中文主页](../README.md)或[文档地图](README.md)开始。
 
-## 范围
+## 当前范围
 
-项目：在 AMD Radeon 类 GPU 上对大规模线性规划求解器进行 ROCm/HIP 迁移、验证、benchmark 与 profiling。
+**项目：** 将 cuPDLP-C 迁移到 AMD ROCm/HIP，并建立验证、profiling 与保守调优证据链。
 
-当前状态：
-
-- Radeon 890M / `gfx1150`：首个 ROCm 迁移、验证与 tuning 历史平台。
-- Radeon PRO W7900 / `gfx1100`：工作站级验证平台，已有 current non-hard large-MPS baseline。
-- NVIDIA RTX 3090 / RTX 4090D / H100：CUDA 参考设备，用于跨设备对比。
-
-## 评分项对照
-
-| 赛题要求 | 仓库证据 | 当前状态 | 待补工作 |
-|---|---|---|---|
-| 项目背景与挑战 | [COMPETITION_README.zh-CN.md](COMPETITION_README.zh-CN.md)、[CUDA 到 ROCm 迁移案例](CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) | 已说明 CUDA-oriented solver 向 ROCm/HIP 迁移的挑战，以及 LP/HPC 工作负载背景 | 技术论文中需压缩成更清晰的叙事 |
-| 方案与实现 | HIP backend、[ROCM_WORKFLOW.zh-CN.md](ROCM_WORKFLOW.zh-CN.md)、[ROCM_PORTING_GUIDE.zh-CN.md](ROCM_PORTING_GUIDE.zh-CN.md)、README 后端模式说明 | 已记录 CPU、CUDA、ROCm 三种后端模式和构建流程 | 论文/PPT 中需要补模块图与 ROCm 组件映射图 |
-| ROCm 组件使用 | HIP runtime、hipBLAS/hipSPARSE 构建路径、`rocprofv3`/`rocprof` workflow、ROCm device architecture 选择 | 已具备 ROCm/HIP 构建与 profiling workflow | 下次 W7900 实验后补 profiling 结果表 |
-| 性能与资源分析 | [W7900 性能行为分析](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md)、[ROCm tuning 历史](ROCM_TUNING_HISTORY.zh-CN.md)、validation/benchmark CSV | 已提交 W7900 non-hard23 summary 和跨设备参考数据 | 仍需 W7900 `rocprof` starter3、VRAM/telemetry、before/current core6 对比 |
-| 复现与交付 | [REPRODUCIBILITY.zh-CN.md](REPRODUCIBILITY.zh-CN.md)、validation case lists、scripts、curated CSV/Markdown summaries | 已写 fresh W7900 recovery、数据策略、期望输出和 profiling workflow | 已提供轻量 Docker/container skeleton；严格 final image 仍属于最终打包工作 |
-| 功能完整性与代码质量 | 源码目录、scripts、validation summaries、backend mode policy | 主要求解路径已按 build/validation 驱动维护 | 只在必要位置补代码注释，避免无意义大改 |
-| 阶段性成果与规划 | [W7900 当前状态](W7900_CURRENT_STATUS.zh-CN.md)、[W7900 优化基线](W7900_OPTIMIZATION_BASELINES.zh-CN.md)、[W7900 profiling 计划](W7900_ROCM_PROFILING_PLAN.zh-CN.md) | current/before/after 口径已明确 | 继续跑 W7900 profiling、hard3 probes，再做 W7900-specific tuning |
-| 附加分：未支持功能开发 | CUDA-oriented 科学计算求解器的 ROCm/HIP 后端适配 | 已体现非平凡 ROCm 后端迁移 | 暂不声称已有 ROCm 上游 PR |
-| 附加分：性能瓶颈定位与优化 | 890M tuning 历史与 W7900 profiling 计划 | 已记录此前 ROCm 优化历史 | W7900-specific bottleneck 结论必须等待 `rocprof` 实测结果 |
-
-## 当前注意事项
-
-当前 W7900 non-hard23 结果是继承 890M tuning 的工程基线，不是真正未优化 first-runnable ROCm baseline。正式 before/current 对比应使用 `ae3b683 / pre_tuning` 与当前 `rocm-w7900-gfx1100`。
-
-<!-- W7900_LATEST_EXPERIMENTS_20260616_BEGIN -->
-## 2026-06-16 W7900 证据更新
-
-W7900 证据集现在包括：
-
-| 评分/证据方向 | 最新证据 |
+| 平台 | 作用 |
 |---|---|
-| Profiling 与瓶颈证据 | [W7900 rocprof starter3 摘要](../validation/w7900_rocprof_starter3_summary_20260616.zh-CN.md) |
-| Hard-case 处理 | [W7900 hard3 probe2 600s 摘要](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.zh-CN.md) |
-| Before/current 对比 | [W7900 before/current fast-core6 摘要](../validation/w7900_before_current_core6_fast_summary_20260616.zh-CN.md) |
-| 多 GPU 批处理吞吐 | [W7900 8-card fast8 batch 摘要](../validation/w7900_8card_batch_fast8_summary_20260616.zh-CN.md) |
-<!-- W7900_LATEST_EXPERIMENTS_20260616_END -->
+| Radeon PRO W7900 / `gfx1100` | 当前主要 ROCm 验证与调优平台 |
+| Radeon 890M / `gfx1150` | 早期迁移与调优里程碑 |
+| RTX 3090 / RTX 4090D / H100 | CUDA 参考 |
+| CPU | 正确性与可移植性参考 |
 
-## W7900 竞赛口径最终状态 / 2026-06-17
+项目不声称提出新的线性规划算法。核心贡献是后端迁移及其证据驱动的工程方法。
 
-当前仓库范围内，面向竞赛展示的 W7900 工作流已经完成。此前写作“next planned
-work”的 W7900 profiling、before/current analysis 和 W7900-specific tuning
-已由 P10/P11/P12 证据链闭环。
+## 评分项证据表
 
-最终竞赛口径结论：
+| 评审方向 | 仓库证据 | 当前状态与边界 |
+|---|---|---|
+| 项目背景与挑战 | [竞赛入口](COMPETITION_README.zh-CN.md)、[迁移案例](CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) | 仓库叙事已完整；论文/PPT 属于独立展示材料 |
+| 方案与架构 | HIP backend、兼容层、[后端模式](BACKEND_MODES_AND_NAMING.zh-CN.md)、[porting 指南](ROCM_PORTING_GUIDE.zh-CN.md) | CPU、CUDA、ROCm 路径已说明；可选 Python/apps 不属于主要验证合同 |
+| ROCm 组件使用 | HIP runtime、hipBLAS、hipSPARSE、`rocprofv3`、`gfx1100` 构建脚本 | 已在 W7900 上实现并形成证据 |
+| 功能验证 | [验证语义](VALIDATION.zh-CN.md)、[validation 索引](../validation/README.zh-CN.md) | smoke、Netlib、large-MPS non-hard23、困难 case 诊断和重复验证均已归档 |
+| 性能分析 | [W7900 性能行为](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md)、P10 summaries、跨设备 CSV | P10 表明 rocSPARSE CSR SpMV 是主要 GPU 热点；同时保留 aggregate 与 per-case 解释 |
+| 平台调优 | [调优历史](ROCM_TUNING_HISTORY.zh-CN.md)、[P11 summary](../validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md) | P11 接受 `HIPSPARSE_SPMV_CSR_ALG1`；`csr_alg2` 保留为回退 |
+| 保守工程流程 | [P12 negative result](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md) | 因收敛路径变化而拒绝，证明不能只凭运行时间接受执行层修改 |
+| 重复 before/current 证据 | [P14-A1 summary](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md) | current 6/6 胜出；geomean 1.18889；median 1.19502；迭代数一致 |
+| Large-case 结果 | [W7900 当前状态](W7900_CURRENT_STATUS.zh-CN.md) | non-hard23 为 23/23 `OPTIMAL`；hard3 明确单独报告 |
+| 多 GPU 证据 | [8-card fast8 summary](../validation/w7900_8card_batch_fast8_summary_20260616.zh-CN.md) | 仅表示独立任务吞吐，不是单个 LP 的分布式算法 |
+| 可复现性 | [复现指南](REPRODUCIBILITY.zh-CN.md)、脚本、case lists、checksums、curated CSV | 任意主机可检查静态证据；重新验证 W7900 性能需要匹配的 ROCm 主机 |
+| 交付准备 | [提交清单](SUBMISSION_CHECKLIST.zh-CN.md) | 仓库证据已准备；论文、PPT、视频是独立交付物 |
 
-- W7900 / `gfx1100` ROCm build 和 validation 已完成。
-- P10 targeted rocprof profiling 已归档。
-- P11 SpMV tuning 是已接受的 W7900-specific tuning endpoint。
-- 当前 W7900 默认 SpMV algorithm 为
-  `HIPSPARSE_SPMV_CSR_ALG1`。
-- 旧默认可通过 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 恢复。
-- P12 记录了一次被拒绝的 buffer-algorithm consistency patch，说明额外
-  execution-layer 改动也经过了保守验证。
+## 关键数字
 
-推荐最终证据入口：
+| 结论 | 数值 |
+|---|---:|
+| W7900 non-hard23 | 23/23 `OPTIMAL` |
+| Total wall time | 2960.171 s |
+| Total solve time | 2742.940 s |
+| P14-A1 current wins | 6/6 |
+| P14-A1 geomean speedup | 1.18889 |
+| P14-A1 median speedup | 1.19502 |
+| 8 个独立任务 | 8 卡并发 146 s vs 单卡顺序 558 s |
 
-- `docs/W7900_CURRENT_STATUS.zh-CN.md`
-- `validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md`
-- `validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md`
+## 解释规则
+
+评审时必须保持以下边界：
+
+1. 当前 W7900 结果是 post-890M-tuning engineering baseline，不是真正 first-runnable baseline。
+2. W7900 before anchor 是 `ae3b683 / pre_tuning`。
+3. 8 卡结果表示独立任务吞吐。
+4. hard3 不隐藏在 non-hard23 中。
+5. W7900 aggregate time 仍落后于高端 CUDA 参考，但 per-case 竞争力不同。
+6. P12 是被拒绝的实验，不能包装为成功优化。
+7. 可选 P14-B ALG1-vs-ALG2 repeated evidence 是增强项，不是未完成的核心范围。
+
+## 推荐评审路径
+
+1. [竞赛入口](COMPETITION_README.zh-CN.md)
+2. [W7900 当前状态](W7900_CURRENT_STATUS.zh-CN.md)
+3. [P10 targeted profiling](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md)
+4. [P11 SpMV tuning](../validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md)
+5. [P12 negative result](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md)
+6. [P14-A1 repeated validation](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md)
+7. [可复现性指南](REPRODUCIBILITY.zh-CN.md)

@@ -12,7 +12,7 @@
 > 验证数据索引: [validation/README.zh-CN.md](validation/README.zh-CN.md)
 > Benchmark 索引: [docs/benchmarks/README.md](docs/benchmarks/README.md)
 
-本页是当前已经验证的 ROCm/HIP 目标平台 AMD Radeon 890M / `gfx1150` 的快速入口。
+本页是历史 Radeon 890M / `gfx1150` ROCm/HIP milestone 的快速入口；当前主要平台是 W7900 / `gfx1100`。
 
 ## 环境
 

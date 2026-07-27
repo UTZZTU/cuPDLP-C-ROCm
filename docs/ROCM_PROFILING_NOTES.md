@@ -1,312 +1,151 @@
-# ROCm Profiling Notes
+# ROCm profiling notes
 
-This document explains the ROCm/HIP profiling evidence collected for the `cuPDLP-C-ROCm` tuning sequence.
+> 中文版：[ROCM_PROFILING_NOTES.zh-CN.md](ROCM_PROFILING_NOTES.zh-CN.md)
 
-The goal is not only to show that the solver became faster, but also to explain *why* the ROCm tuning sequence improved performance.
+This page consolidates the current profiling interpretation. Dated CSV and Markdown files under `validation/` remain the source evidence.
 
 ## Scope
 
-This document focuses on ROCm/HIP profiling on the Radeon 890M / `gfx1150` development platform.
+The repository contains two profiling stages:
 
-The profiling data was collected with `rocprofv3 --runtime-trace --output-format csv`, which records HIP runtime API traces, kernel dispatch traces, memory copy traces, scratch memory traces, and related runtime information.
-
-The profiled tuning milestones were:
-
-| Milestone | Commit | Meaning |
+| Stage | Platform | Purpose |
 |---|---|---|
-| `pre_tuning` | `ae3b683` | Pre-tuning baseline |
-| `remove_sync` | `f9d7f0d` | Remove redundant HIP device synchronization |
-| `cache_attrs` | `8fed073` | Cache HIP device attributes |
-| `fused_average` | `fa7e860` | Fuse ROCm average-iterate AXPY updates |
-| `reduce_scalar_copies` | `b44c7ab` | Reduce scalar copies in movement interaction |
-| `current` | current HEAD | Current three-backend engineering version |
+| Early structural profiling | Radeon 890M / `gfx1150` | Identify launch, copy, synchronization, and runtime-query overhead |
+| P10 targeted profiling | Radeon PRO W7900 / `gfx1100` | Identify the current large-case W7900 hotspots before platform-specific tuning |
 
-The profiled cases were:
+The 890M stage is historical evidence. P10 is the current W7900 profiling reference.
 
-| Case | Reason |
+## Profiling tools and output policy
+
+The maintained workflow prefers `rocprofv3`, with legacy `rocprof` as a fallback where supported.
+
+Generated raw trace directories are not committed. The repository keeps:
+
+- runtime summaries;
+- HIP API top tables;
+- kernel top tables;
+- memory-copy summaries;
+- compact Markdown interpretation.
+
+Primary W7900 entry:
+
+```bash
+bash scripts/run_w7900_p10_current_targeted_rocprof.sh
+```
+
+Generic smoke profiling remains available:
+
+```bash
+RESULT_ROOT=profiling/results/current \
+  bash scripts/profile_rocm_smoke.sh
+
+python3 scripts/summarize_rocm_profile.py \
+  --input profiling/results/current \
+  --output profiling/results/current/profile_summary.md
+```
+
+## P10 case set
+
+P10 uses five targeted cases selected to cover different runtime shapes:
+
+```text
+thk_48
+square41
+L2CTA3D
+set-cover-model
+tpl-tub-ws1617
+```
+
+Do not confuse this set with the earlier `cases_w7900_rocprof_starter3.txt` workflow. The starter3 artifacts remain useful historical profiling evidence, but they are not the P10 targeted case list.
+
+## Metrics to interpret together
+
+Solver-level:
+
+| Metric | Purpose |
 |---|---|
-| `lotfi` | Medium-size case with clear tuning improvement |
-| `scfxm1` | Case where current-vs-reduce had a small timing difference |
-| `pilot87` | Larger representative case and positive control |
+| Wall time and solve time | End-to-end and solver-loop cost |
+| `nIter` | Convergence-path cost |
+| Feasibility and gap | Correctness |
+| `DeviceMatVecProdTime` | Sparse-matvec contribution |
 
-## Why profiling was needed
+Runtime-level:
 
-Earlier benchmark data already showed that the ROCm tuning sequence improved solve time on the 6-case quick set and that the current engineering version did not systematically regress relative to `reduce_scalar_copies`.
+| Metric | Purpose |
+|---|---|
+| `hipLaunchKernel` | Launch granularity and frequency |
+| `hipMemcpy` / `hipMemcpyAsync` | Host/device and scalar-transfer pressure |
+| Synchronization APIs | Ordering overhead |
+| Allocation APIs | Repeated setup cost |
 
-However, solve time alone does not explain the source of the improvement.
+Kernel-level:
 
-The profiling run was designed to answer:
+| Group | Purpose |
+|---|---|
+| rocSPARSE CSR SpMV | Core sparse work |
+| rocBLAS reductions and vector operations | Level-1 and reduction cost |
+| Custom PDLP update kernels | Solver-specific update cost |
+| ROCclr copy/fill kernels | Hidden memory-operation overhead |
 
-1. Did `remove_sync` reduce runtime or synchronization overhead?
-2. Did `cache_attrs` reduce repeated HIP runtime calls?
-3. Did `fused_average` reduce kernel dispatches?
-4. Did `reduce_scalar_copies` reduce runtime/copy/dispatch overhead?
-5. Did the current three-backend engineering version preserve the optimized trace structure?
+## Historical 890M findings
 
-## Summary of main findings
+Early smoke profiling showed many small GPU operations rather than one isolated custom-kernel bottleneck. That evidence motivated low-risk structural changes:
 
-The main finding is:
+1. remove redundant device synchronization;
+2. cache stable HIP device attributes;
+3. fuse average-iterate AXPY updates;
+4. reduce movement-interaction scalar copies.
 
-> The ROCm tuning sequence improves performance primarily by reducing HIP runtime API overhead and kernel dispatch count, while the current three-backend engineering version preserves the optimized trace structure.
+These changes reduced synchronization, launches, AXPY dispatches, and small copy operations while preserving the validation result. Full historical numbers remain in:
 
-From `pre_tuning` to `current`, the profiled cases showed the following approximate reductions:
+- [profiling tuning milestones](../validation/rocm_prof_tuning_milestones_summary.md)
+- [tuning ablation repeats](../validation/rocm_tuning_ablation_6cases_repeats_summary.md)
+- [current vs reduce comparison](../validation/rocm_current_vs_reduce_27cases_repeats_comparison.md)
 
-| Case | Solve time reduction | HIP API calls reduction | HIP API time reduction | Kernel dispatch reduction | Kernel time reduction |
-|---|---:|---:|---:|---:|---:|
-| `lotfi` | 24.02% | 36.50% | 21.23% | 14.13% | 16.97% |
-| `pilot87` | 17.55% | 31.81% | 14.64% | 11.52% | 7.86% |
-| `scfxm1` | 23.87% | 36.18% | 20.55% | 13.99% | 16.73% |
+## W7900 P10 findings
 
-This indicates that the improvements are not just measurement noise and are not solely caused by a single sparse matrix-vector kernel becoming faster. The changes reduce repeated runtime calls, kernel dispatches, and runtime overhead around the iterative solver loop.
+The P10 evidence shows that rocSPARSE CSR SpMV is the dominant GPU kernel group on the targeted W7900 cases. Runtime overhead from `hipMemcpy`, `hipMemcpyAsync`, and kernel launches also remains visible.
 
-## Milestone-by-milestone interpretation
+Source artifacts:
 
-### `remove_sync`
+- [P10 summary](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.md)
+- [HIP API top table](../validation/w7900_p10_current_targeted_rocprof_20260617_hip_api_top.csv)
+- [kernel top table](../validation/w7900_p10_current_targeted_rocprof_20260617_kernel_top.csv)
+- [memory-copy top table](../validation/w7900_p10_current_targeted_rocprof_20260617_memory_copy_top.csv)
+- [milestone deltas](../validation/w7900_p10_current_targeted_rocprof_20260617_milestone_deltas.csv)
 
-From `pre_tuning` to `remove_sync`, solve time decreased clearly across all three profiled cases.
+The correct conclusion is not “replace hipSPARSE with a custom SpMV.” The evidence justified a controlled comparison of supported hipSPARSE SpMV algorithms.
 
-| Case | Solve time change | HIP API time change | Kernel time change |
-|---|---:|---:|---:|
-| `lotfi` | -12.47% | -13.10% | -3.85% |
-| `pilot87` | -9.00% | -8.60% | -1.26% |
-| `scfxm1` | -10.88% | -11.13% | -1.91% |
+## From profiling to tuning
 
-Interpretation:
+P10 led to P11:
 
-`remove_sync` mainly reduced HIP runtime / synchronization-related overhead. Kernel time changed only modestly, so the main benefit was not a faster SpMV kernel, but less runtime overhead around the GPU work.
+- add a runtime SpMV algorithm switch;
+- compare `CSR_ALG1`, `CSR_ALG2`, and the library default;
+- keep correctness and iteration behavior visible;
+- accept `HIPSPARSE_SPMV_CSR_ALG1` as the current default;
+- retain `CUPDLP_HIP_SPMV_ALG=csr_alg2` as rollback.
 
-This matches the intended change: removing redundant HIP device synchronization should reduce unnecessary host-side waiting and runtime overhead.
+P12 then tested a related buffer-algorithm consistency change. It was rejected because `set-cover-model` changed from 7480 to 7600 iterations. This is evidence that profiling and tuning decisions must include numerical trajectory, not only kernel timing.
 
-### `cache_attrs`
+P14-A1 repeated the current-vs-pre-tuning comparison on quick6 and confirmed 6/6 current wins with unchanged iteration counts.
 
-From `remove_sync` to `cache_attrs`, HIP API call counts dropped substantially:
+## Current profiling conclusion
 
-| Case | HIP API calls change | Solve time change |
-|---|---:|---:|
-| `lotfi` | -15.62% | -1.87% |
-| `pilot87` | -13.53% | -0.10% |
-| `scfxm1` | -15.53% | -1.20% |
-
-Interpretation:
-
-`cache_attrs` did what it was intended to do: reduce repeated HIP runtime queries for device attributes. The solve-time effect is smaller than `remove_sync`, because these API calls are lighter than explicit synchronization, but the trace confirms that the runtime call structure improved.
-
-### `fused_average`
-
-From `cache_attrs` to `fused_average`, kernel dispatch count and HIP API call count decreased:
-
-| Case | Kernel dispatch change | HIP API calls change | Solve time change |
-|---|---:|---:|---:|
-| `lotfi` | -7.04% | -15.98% | -8.10% |
-| `pilot87` | -5.75% | -13.52% | -4.92% |
-| `scfxm1` | -6.99% | -15.81% | -1.94% |
-
-Interpretation:
-
-`fused_average` reduced the number of separate GPU operations in the average-iterate update path. The trace confirms a lower dispatch count, which is the expected effect of fusing vector update operations.
-
-This is important because small and medium LP cases can be sensitive to kernel launch overhead. Reducing dispatch count can improve solve time even if individual kernel implementations are not dramatically faster.
-
-### `reduce_scalar_copies`
-
-From `fused_average` to `reduce_scalar_copies`, the trace showed further reductions in HIP API calls and kernel dispatches:
-
-| Case | HIP API calls change | Kernel dispatch change | Solve time change |
-|---|---:|---:|---:|
-| `lotfi` | -6.38% | -7.63% | -4.52% |
-| `pilot87` | -5.24% | -6.13% | -1.56% |
-| `scfxm1` | -6.26% | -7.53% | -1.88% |
-
-Interpretation:
-
-`reduce_scalar_copies` improved the movement-interaction path by reducing scalar movement and associated runtime work. The profiling data shows that this optimization reduced the runtime and dispatch structure further, especially on the more iteration-heavy `lotfi` case.
-
-### `current`
-
-From `reduce_scalar_copies` to `current`, the trace structure was preserved:
-
-| Case | HIP API calls | Kernel dispatches | Solve time |
-|---|---:|---:|---:|
-| `lotfi` | 0% | 0% | +0.81% |
-| `pilot87` | 0% | 0% | -3.10% |
-| `scfxm1` | 0% | 0% | -10.14% |
-
-Interpretation:
-
-The current engineering version did not add extra HIP API calls or kernel dispatches relative to `reduce_scalar_copies`.
-
-This is an important engineering result. The commits after `reduce_scalar_copies` restored CUDA compatibility, cleaned backend modes, removed the public `BUILD_HIP` option, added documentation, and solidified benchmark artifacts. Profiling shows that these structural changes did not disrupt the optimized ROCm runtime trace pattern.
-
-A concise conclusion is:
-
-> Current HEAD preserves the optimized ROCm runtime trace structure established by `reduce_scalar_copies`.
-
-## Hotspot observations
-
-The top kernel and HIP API traces show that the ROCm/HIP solver path spends time in the following categories:
-
-- rocSPARSE sparse matrix-vector kernels;
-- rocBLAS AXPY, dot, norm, and reduction kernels;
-- movement interaction kernels;
-- primal and dual gradient update kernels;
-- runtime buffer copy operations;
-- HIP memory-copy-related API calls.
-
-Typical hotspot names include:
+For the current project endpoint:
 
 ```text
-__amd_rocclr_copyBuffer
-rocsparse::csrmvn_general_kernel
-rocblas_axpy_kernel
-movement_1_kernel
-movement_2_kernel
-primal_grad_step_kernel
-dual_grad_step_kernel
-rocBLAS dot / reduction kernels
+primary W7900 kernel hotspot: rocSPARSE CSR SpMV
+secondary runtime concerns: copies and launch overhead
+accepted tuning endpoint: CSR_ALG1 default
+required safeguard: correctness and convergence validation
 ```
 
-This suggests that future optimization should focus on:
+No additional long profiling run is required to support the current repository conclusion. Future profiling is optional and should answer a specific question, such as reduction-path cost, scalar readback, or a new GPU architecture.
 
-1. reducing unnecessary runtime calls;
-2. reducing kernel dispatch count where safe;
-3. reducing host-device scalar transfer;
-4. improving vector update fusion;
-5. investigating rocSPARSE SpMV behavior on larger MPS cases;
-6. using W7900 / `gfx1100` profiling to identify platform-specific bottlenecks.
+## Related documents
 
-## Memory-copy trace caveat
-
-The `memory_copy_trace.csv` output can be sparse even when `hipMemcpy` or `hipMemcpyAsync` appears prominently in HIP API traces.
-
-Therefore, this project should interpret memory-copy-related cost primarily through:
-
-- `trace_hip_api_top.csv`;
-- `hipMemcpy` and `hipMemcpyAsync` total time;
-- `hip_api_total_ms`;
-- solver-level copy timing fields where available.
-
-The low-level memory-copy trace and HIP API trace operate at different levels of abstraction. It is safer to write:
-
-> HIP memory-copy-related API time is a major runtime component, while low-level memory-copy trace events may be sparse in this profiling mode.
-
-## Relationship to benchmark results
-
-The profiling results complement the repeated benchmark results:
-
-- The repeated tuning ablation showed that current is faster than the pre-tuning baseline on the quick set.
-- The 27-case current-vs-reduce comparison showed that current has no systematic regression relative to `reduce_scalar_copies`.
-- The rocprofv3 milestone traces explain where the improvement came from: lower HIP API overhead, fewer kernel dispatches, and lower runtime/kernel total time.
-
-Together, these results support the following claim:
-
-> The ROCm/HIP port is not only functional, but also has evidence-backed tuning improvements and preserves those improvements in the current three-backend engineering branch.
-
-## Suggested next profiling steps
-
-### Short term
-
-Keep the current profiling set as the stable milestone trace set:
-
-```text
-lotfi
-scfxm1
-pilot87
-```
-
-These three cases are sufficient for explaining the existing tuning sequence.
-
-### W7900 migration
-
-When Radeon PRO W7900 is available, repeat the same profiling workflow with:
-
-```text
--DCMAKE_HIP_ARCHITECTURES=gfx1100
-```
-
-Recommended first W7900 profiling cases:
-
-```text
-lotfi
-scfxm1
-pilot87
-one medium-large MPS case
-one large MPS case
-```
-
-### Large MPS experiments
-
-For larger MPS cases, focus on:
-
-- SpMV kernel time;
-- rocSPARSE kernel behavior;
-- memory bandwidth behavior;
-- kernel dispatch count per iteration;
-- host-device copy overhead;
-- whether GPU compute time dominates fixed overhead.
-
-### cuPDLP-C vs cuPDLPx
-
-If cuPDLPx is evaluated later, this same profiling format can help compare:
-
-- algorithmic iteration count;
-- total solve time;
-- kernel dispatch count;
-- SpMV time;
-- vector update and reduction time;
-- runtime overhead.
-
-## Files
-
-Profiling data is stored in:
-
-```text
-validation/rocm_prof_tuning_milestones_summary.csv
-validation/rocm_prof_tuning_milestones_deltas.csv
-validation/rocm_prof_tuning_milestones_kernel_top.csv
-validation/rocm_prof_tuning_milestones_hip_api_top.csv
-validation/rocm_prof_tuning_milestones_memory_copy_top.csv
-validation/rocm_prof_tuning_milestones_summary.md
-```
-
-Profiling scripts:
-
-```text
-scripts/profile_rocm_tuning_milestones_rocprofv3.sh
-scripts/summarize_rocprofv3_milestones.py
-```
-
-## Summary
-
-The rocprofv3 milestone trace confirms that the ROCm tuning sequence reduces solve time mainly by reducing HIP runtime API overhead and kernel dispatch count. It also confirms that the current CPU/CUDA/ROCm engineering branch preserves the optimized trace structure established by the tuning milestones.
-
-This gives the project a stronger performance story than solve-time tables alone: the optimization effects are visible in runtime traces, not just in end-to-end benchmark summaries.
-
-## W7900 profiling completion update / 2026-06-17
-
-The W7900 migration mentioned earlier in this document has now been
-completed for the current project stage. Instead of remaining a future
-profiling target, W7900 now has committed P10 targeted rocprof summaries
-and a P11 SpMV tuning endpoint.
-
-Current W7900 profiling/tuning links:
-
-- `validation/w7900_p10_current_targeted_rocprof_20260617_summary.md`
-- `validation/w7900_p11_spmv_alg_sweep_20260617_summary.md`
-- `validation/w7900_p11_spmv_tuning_summary_20260617.md`
-
-The current conclusion is that SpMV is the first completed
-W7900-specific tuning path. Copy-reduction and reduction-kernel work
-remain possible future directions but are not part of the current
-project endpoint.
-
-## cuPDLPx final positioning after W7900 closure
-
-The repository already contains a separate RTX 4090D short13 comparison
-between cuPDLP-C and cuPDLPx. That comparison showed cuPDLPx v0.2.9 was
-stable on the selected short/medium cases and faster on most of them.
-It should be used as an algorithmic reference only.
-
-It should not be merged into W7900 ROCm profiling conclusions because it
-differs in solver algorithm, implementation stack, hardware backend, and
-output conventions. A future cuPDLPx-ROCm study would need a separate
-benchmark protocol.
+- [W7900 current status](W7900_CURRENT_STATUS.md)
+- [ROCm tuning history](ROCM_TUNING_HISTORY.md)
+- [ROCm tuning guide](TUNING_GUIDE_ROCM.md)
+- [Validation index](../validation/README.md)

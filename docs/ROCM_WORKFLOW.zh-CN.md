@@ -264,14 +264,16 @@ tools/emps.c
 large raw MPS files
 ```
 
-## 13. 当前下一步优先级状态
+## 13. 当前维护优先级
 
-原优先级已基本完成：large-MPS benchmark matrix、890M tuning history、W7900 /
-`gfx1100` migration、profiling 和 P11 tuning 均已归档。
+当前仓库范围内，原 large-MPS、W7900 migration、P10 profiling、P11 tuning、P12 negative experiment 和 P14-A1 repeated-validation 任务均已完成。
 
-当前剩余建议：
+当前优先级是：
 
-1. 保持中英文文档和 validation 索引同步。
-2. 只在 W7900 机器可用时补 P14-A current-vs-before repeated validation。
-3. 只在 W7900 机器可用时补 P14-B CSR ALG1-vs-ALG2 repeated validation。
-4. 不再新增深层数值路径优化，除非先重新设计完整验证协议。
+1. 保持中英文当前态文档和索引同步；
+2. 日期化报告作为不可变证据保留，不再追加新的状态块；
+3. 代码、ROCm、编译器或依赖变化后重新运行 W7900 validation；
+4. 只有在回答明确问题时才增加 P14-B repeated ALG1-vs-ALG2 evidence；
+5. 更深层 reduction 或 numerical-path 优化必须先设计新的验证协议。
+
+纯文档工作可以在其他主机完成，但不能描述为 fresh W7900 性能复现。

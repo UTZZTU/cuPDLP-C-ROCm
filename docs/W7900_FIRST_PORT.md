@@ -193,49 +193,25 @@ GPU timing summary:
 
 The W7900 / `gfx1100` ROCm backend matches the CPU baseline termination state on the `afiro` smoke case, and the numerical differences are within a reasonable range for this first-port validation stage.
 
-<!-- W7900_DOC_SWEEP_20260614_BEGIN -->
-## Updated status after large-MPS baseline
+## Historical status
 
-This first-port note is preserved as the historical record of the first W7900 / `gfx1100` smoke milestone.
+This page ends at the first W7900 / `gfx1100` smoke milestone. It is preserved to document the original environment and CPU-vs-ROCm first-port comparison; it is not a current project-status page.
 
-The current branch status has moved beyond first-port smoke validation:
+The first-port stage has since been superseded by:
 
-- smoke validation: completed
-- Netlib 27-case W7900 validation: completed
-- large-MPS `initial17_safe`: completed
-- large-MPS `watchlist6` diagnostic and near-optimal follow-up: completed
-- combined large-MPS `non-hard23`: 23/23 `OPTIMAL`
-- remaining hard3: `dlr1.mps`, `Dual2_5000.mps`, `fhnw-binschedule1.mps`, tracked separately
+- W7900 Netlib validation;
+- large-MPS non-hard23 with 23/23 `OPTIMAL`;
+- P10 targeted profiling;
+- P11 accepted SpMV algorithm policy;
+- P12 rejected execution-layer experiment;
+- P14-A1 repeated current-vs-pre-tuning validation.
 
-Current status page: [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md)
+Current sources:
 
-Hard3 note: [W7900_LARGE_MPS_HARD3_NOTES.md](W7900_LARGE_MPS_HARD3_NOTES.md)
-<!-- W7900_DOC_SWEEP_20260614_END -->
+- [W7900 current status](W7900_CURRENT_STATUS.md)
+- [Reproducibility guide](REPRODUCIBILITY.md)
+- [ROCm profiling notes](ROCM_PROFILING_NOTES.md)
+- [ROCm tuning history](ROCM_TUNING_HISTORY.md)
+- [Validation index](../validation/README.md)
 
-## 9. Known limitations and current completion status
-
-This document is kept as the historical W7900 / `gfx1100` first-port smoke
-milestone. The original first-port limitations have been superseded by later
-W7900 validation and tuning documents:
-
-* extended Netlib validation: completed.
-* large MPS benchmark: non-hard23 baseline completed; hard3 tracked separately.
-* W7900 profiling: P10 targeted rocprof archived.
-* W7900 single-GPU tuning: P11 SpMV tuning completed, with current default
-  `HIPSPARSE_SPMV_CSR_ALG1`.
-* 8-GPU concurrent throughput experiment: fast8 batch throughput archived.
-* cross-device benchmark matrix: curated summaries are available.
-
-The project still should not be described as a production-certified ROCm
-solver release, but it has moved beyond the first-port smoke stage. The
-authoritative status is [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md).
-
-## 10. Next-step status
-
-The original next-step list is now mostly completed. The only remaining
-optional enhancements are:
-
-1. W7900 P14-A: current-vs-before representative repeated validation.
-2. W7900 P14-B: CSR ALG1-vs-ALG2 representative repeated validation.
-
-Deeper numerical-path optimization is not part of the current project endpoint.
+P14-B repeated ALG1-vs-ALG2 evidence remains an optional enhancement, not an unfinished requirement of the first-port milestone.

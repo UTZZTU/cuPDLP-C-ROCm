@@ -212,10 +212,14 @@ The current result is a post-890M-tuning W7900 engineering baseline, not a first
 
 ## 8. P10 targeted profiling
 
-Case list:
+P10 uses five targeted cases:
 
 ```text
-validation/cases_w7900_rocprof_starter3.txt
+thk_48
+square41
+L2CTA3D
+set-cover-model
+tpl-tub-ws1617
 ```
 
 Primary entry point:
@@ -224,7 +228,7 @@ Primary entry point:
 bash scripts/run_w7900_p10_current_targeted_rocprof.sh
 ```
 
-The generic matrix can also be used:
+The earlier generic starter3 workflow remains available for historical comparison:
 
 ```bash
 CASE_LIST=validation/cases_w7900_rocprof_starter3.txt \
@@ -234,9 +238,9 @@ EXTERNAL_TIMEOUT=960 \
 bash scripts/run_w7900_rocprof_smoke_matrix.sh
 ```
 
-The scripts prefer `rocprofv3`, then legacy `rocprof`. Without a profiler, the run is baseline execution only and must not be described as completed profiling.
+Do not describe starter3 as the P10 case list. The scripts prefer `rocprofv3`, then legacy `rocprof`. Without a profiler, a run is baseline execution only and must not be reported as completed profiling.
 
-Compact results:
+Compact P10 results:
 
 ```text
 validation/w7900_p10_current_targeted_rocprof_20260617_*.csv
@@ -334,11 +338,42 @@ They are not the source of the committed W7900 numbers and do not replace valida
 
 ## 14. Checks before sharing
 
+Run the maintained checks:
+
 ```bash
 git status
 git diff --check
 python3 scripts/docs/scan_markdown_format_issues_20260616.py
-python3 scripts/docs/check_markdown_links.py 2>/dev/null || true
+```
+
+The repository does not currently contain a standalone `scripts/docs/check_markdown_links.py`. For a local relative-link check, use:
+
+```bash
+python3 - <<'PY'
+import re
+from pathlib import Path
+from urllib.parse import unquote
+
+root = Path(".").resolve()
+bad = []
+pat = re.compile(r"(?<!!)\[[^\]]*\]\(([^)]+)\)|!\[[^\]]*\]\(([^)]+)\)")
+for src in root.rglob("*.md"):
+    if ".git" in src.parts:
+        continue
+    text = src.read_text(encoding="utf-8", errors="replace")
+    for match in pat.finditer(text):
+        raw = next(x for x in match.groups() if x).strip().split()[0].strip("<>")
+        if raw.startswith(("http://", "https://", "mailto:", "#")):
+            continue
+        target = unquote(raw.split("#", 1)[0])
+        if target and not (src.parent / target).resolve().exists():
+            bad.append((src.relative_to(root), raw))
+if bad:
+    for src, target in bad:
+        print(f"{src}: {target}")
+    raise SystemExit(1)
+print("[OK] repository-internal Markdown links")
+PY
 ```
 
 Confirm that:
@@ -347,5 +382,6 @@ Confirm that:
 - inputs passed SHA256 verification;
 - comparisons use the same case list and limits;
 - non-hard23, hard3, and eight-card meanings are not mixed;
-- current English and Chinese documents are synchronized;
-- raw data and credentials are not staged.
+- English and Chinese current documents are synchronized;
+- raw data and credentials are not staged;
+- a non-W7900 documentation check is not described as fresh W7900 performance reproduction.

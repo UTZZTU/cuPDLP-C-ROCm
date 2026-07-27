@@ -127,21 +127,17 @@ build-*/
 large raw MPS files
 ```
 
-## W7900 completion update / 2026-06-17
+## Current W7900 integration
 
-The cross-device story has been extended beyond the original Netlib and
-890M-only benchmark stage. The current branch now includes W7900 /
-`gfx1100` validation, large-MPS summaries, targeted profiling, and P11
-SpMV tuning documentation.
+The primary tables above preserve the earlier Netlib cross-device matrix, including the Radeon 890M milestone. They should not be read as the complete current W7900 evidence.
 
-The previous “next stage” items are now partially or fully completed for
-the current project scope. The current endpoint is:
+The current branch adds:
 
-- W7900 first-port and baseline documentation completed.
-- P10 targeted rocprof evidence collected.
-- P11 opt-in SpMV algorithm switch implemented.
-- W7900 default SpMV algorithm set to `HIPSPARSE_SPMV_CSR_ALG1`.
-- Rollback path preserved with `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
+- W7900 smoke, Netlib, and large-MPS validation;
+- non-hard23 23/23 `OPTIMAL`;
+- P10 targeted profiling;
+- P11 accepted `HIPSPARSE_SPMV_CSR_ALG1` default;
+- P12 rejected execution-layer experiment;
+- P14-A1 repeated current-vs-pre-tuning confirmation.
 
-See `docs/W7900_CURRENT_STATUS.md` and
-`validation/w7900_p11_spmv_tuning_summary_20260617.md`.
+Use [W7900 current status](W7900_CURRENT_STATUS.md) for current claims and the [validation index](../validation/README.md) for source artifacts. Cross-device aggregate results remain useful context, but per-case convergence and iteration count must be considered.

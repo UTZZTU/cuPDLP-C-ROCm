@@ -473,39 +473,42 @@ cmake -S . -B build-cuda \
 cmake --build build-cuda --target plc -j"$(nproc)"
 ```
 
-## 后续工作
+## 当前完成状态与后续研究方向
 
-项目已经完成基础迁移和初步调优，但仍有后续任务：
+当前仓库范围内，迁移与平台证据已经完成：
 
-1. 补齐中英文双文档；
-2. 用 `rocprofv3` 建立调优前后的时间占比证据；
-3. 引入更大规模 MPS 数据集；
-4. 在 CUDA 环境中对比 cuPDLP-C 与 cuPDLPx；
-5. 迁移到 Radeon PRO W7900 / `gfx1100`；
-6. 针对 W7900 做平台特化 profiling 和优化；
-7. 对 `greenbea` 增加 checkpoint-level trajectory logging；
-8. 将更多验证流程脚本化，形成 CI-lite。
+- 保留 CPU 与 CUDA baselines；
+- ROCm/HIP 已作为第三后端实现；
+- Radeon 890M 保留首次迁移与结构调优历史；
+- Radeon PRO W7900 已有 smoke、Netlib 与 large-MPS 证据；
+- P10 profiling、P11 tuning、P12 negative evidence 和 P14-A1 repeats 均已归档；
+- RTX 4090D 上 cuPDLP-C vs cuPDLPx short13 对比已有文档。
+
+剩余方向不是未完成的迁移步骤，而是未来研究或维护主题：
+
+1. 为 `greenbea` 等收敛敏感 case 增加 trajectory-level diagnostics；
+2. 显式验证 optional presolve/postsolve 与原始变量恢复；
+3. 有合适硬件时增加 ROCm CI；
+4. 在新的验证合同下测试更多 AMD 架构；
+5. profiling 后再研究 reduction 或 scalar-readback 瓶颈；
+6. 通过兼容性保护重构 legacy shared CUDA-style naming；
+7. 比较更新算法路线，但不替代当前迁移 baseline。
 
 ## 总结
 
-这个项目最重要的经验是：
+核心经验是：
 
-> CUDA 到 ROCm/HIP 的迁移不是简单 API 替换，而是一个包含后端边界、构建系统、验证矩阵、性能证据和数值行为解释的完整工程过程。
+> 稳健的 CUDA-to-ROCm 迁移不是机械 API 替换，而是包含后端边界、构建系统、验证、性能证据和数值行为解释的分阶段工程过程。
 
-对本项目而言，成功路线是：
+本仓库的成功路线是：
 
-1. 保留 CPU 和 CUDA baseline；
-2. 增加 ROCm/HIP 作为第三后端；
-3. 建立 backend compatibility layer；
-4. 用 MPS/Netlib case 逐步验证；
-5. 做跨设备 benchmark；
-6. 用 repeated benchmark 证明调优效果；
-7. 用数值行为文档解释 convergence-sensitive case；
-8. 后续再迁移到 W7900 并做平台化优化。
+1. 保留 CPU 与 CUDA 参考；
+2. 增加 ROCm/HIP 第三后端；
+3. 建立 compatibility boundary；
+4. 从 smoke 扩展到代表性 large cases；
+5. profiling 后再 tuning；
+6. 只接受可重复且保持数值行为的修改；
+7. 保留被拒绝实验和困难 case；
+8. 将当前结论与日期化证据分离。
 
-## cuPDLPx 对比收尾说明 / 2026-06-17
-
-本项目已经包含 RTX 4090D short13 上的 cuPDLP-C vs cuPDLPx 对比。该结果表明
-cuPDLPx 作为更新算法路线值得后续关注，但它不替代 cuPDLP-C-ROCm 主线。本文的
-ROCm migration case study 仍以 cuPDLP-C CUDA→ROCm/HIP 迁移、W7900 验证和
-P11 SpMV tuning 为主线。
+cuPDLPx 是有价值的更新算法参考，但不替代本文记录的 cuPDLP-C CUDA-to-ROCm migration baseline。

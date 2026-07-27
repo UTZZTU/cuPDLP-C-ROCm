@@ -266,13 +266,23 @@ Do not remove `cuda_csr_Ax`, `cuda_csc_ATy`, or `cuda_alloc_MVbuffer` without a 
   logs remain outside Git.
 - ROCm CI is not yet available.
 
-## 15. Recommended next-step status
+## 15. Current completion and future maintenance
 
-The original recommended next steps are mostly completed. The only remaining
-optional enhancements are:
+The original migration path is complete for the current project scope:
 
-1. W7900 P14-A: current-vs-before representative repeated validation.
-2. W7900 P14-B: CSR ALG1-vs-ALG2 representative repeated validation.
+- `gfx1150` / 890M preserves the early migration and structural-tuning history;
+- `gfx1100` / W7900 has build, smoke, Netlib, and large-MPS evidence;
+- P10 targeted profiling identified the dominant W7900 hotspot;
+- P11 established the accepted SpMV algorithm policy;
+- P12 preserved a rejected execution-layer experiment;
+- P14-A1 confirmed repeated current-vs-pre-tuning gains.
 
-Beyond these, do not add deeper numerical-path optimization unless a full
-validation protocol is designed first.
+Remaining work is maintenance or optional enhancement:
+
+1. validate new ROCm/compiler/dependency combinations;
+2. add a CMake fatal guard for simultaneous CUDA and ROCm enablement;
+3. extend architecture coverage only with fresh build and validation evidence;
+4. add P14-B repeated ALG1-vs-ALG2 evidence if needed;
+5. refactor legacy CUDA-style shared names only with compatibility wrappers and all-backend tests.
+
+Do not describe optional enhancements as unfinished migration scope.

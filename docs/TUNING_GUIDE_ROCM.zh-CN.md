@@ -1,262 +1,206 @@
 # ROCm 调优指南
 
-> English version: [`TUNING_GUIDE_ROCM.md`](TUNING_GUIDE_ROCM.md)
+> English: [TUNING_GUIDE_ROCM.md](TUNING_GUIDE_ROCM.md)
 
-本文记录 cuPDLP-C ROCm/HIP port 的 profiling 和 tuning notes。
+本文说明如何在不削弱数值可靠性的前提下调优 ROCm/HIP 后端。内容反映已经完成的 890M 与 W7900 证据，不再把旧计划写成当前任务。
 
-## 目标和范围
+## 当前平台策略
 
-| 项目 | 值 |
+| 项目 | 当前值 |
 |---|---|
-| 当前已验证目标 | AMD Radeon 890M |
-| 架构 | `gfx1150` |
-| ROCm | 7.2.1 |
-| Profiler | `rocprofv3` |
-| 构建目标 | `build-rocm-plc/bin/plc` |
+| 主要 ROCm 分支 | `rocm-w7900-gfx1100` |
+| 主要 ROCm 平台 | Radeon PRO W7900 / `gfx1100` |
+| 早期调优里程碑 | Radeon 890M / `gfx1150` |
+| 当前 SpMV 默认 | `HIPSPARSE_SPMV_CSR_ALG1` |
+| 回退 | `CUPDLP_HIP_SPMV_ALG=csr_alg2` |
+| 主要可执行文件 | `plc` |
 
-本文不是宣称 ROCm/HIP backend 已完全调优，而是记录当前 profiling baseline、已完成的低风险 tuning 步骤，以及后续优化方向。
+该后端仍属于研究和工程验证路径，不是生产级认证求解器发行版。
 
-## 为什么需要调优
+## 核心规则
 
-PDLP 类一阶 LP solver 高度依赖重复 sparse matrix-vector product 和 vector operation。重要操作包括：
+一个性能 patch 只有在以下三个问题都有可靠答案时才可接受：
 
-- `Ax`；
-- `Aty`；
-- hipSPARSE / rocSPARSE SpMV；
-- hipBLAS / rocBLAS vector operation；
-- vector update；
-- reduction；
-- projection kernel；
-- residual computation；
-- host/device synchronization；
-- memory allocation；
-- host/device memory transfer。
+1. 输出是否仍然有效？
+2. 收敛轨迹是否足够稳定？
+3. 代表性 case 上的加速是否可重复？
 
-`afiro.mps` 和 `sc50b.mps` 这类小 case 适合 correctness 和 workflow validation，但太小，不代表更大 sparse LP 问题上的最终 GPU 性能。
+只看 kernel 时间不够。
 
-## Profiling 入口
+## 为什么求解器调优不同
 
-运行 smoke profiling：
+端到端求解时间近似为：
+
+```text
+solve time ≈ per-iteration cost × iteration count
+```
+
+每次迭代更快，可能被更多迭代抵消。浮点顺序、reduction、sparse-library policy 和 synchronization 都可能影响 PDHG 路径。
+
+必须同时记录：
+
+- termination status；
+- primal/dual feasibility；
+- relative gap；
+- `nIter`；
+- wall/solve time；
+- 代表性 profiler metrics。
+
+## 固定 baseline
+
+修改前记录：
+
+```bash
+git rev-parse HEAD
+git status
+```
+
+固定并保存：
+
+- before commit；
+- 相同 case list；
+- iteration 与 timeout limits；
+- environment variables；
+- compiler 与 ROCm versions；
+- GPU architecture；
+- warm-up 与 repeat counts。
+
+W7900 before/current 比较应使用 `ae3b683 / pre_tuning` 作为真正 before anchor。不能把当前 post-890M-tuning 分支写成“未优化 baseline”。
+
+## 验证阶梯
+
+| 修改类型 | 必要证据 |
+|---|---|
+| 文档或命名 | Markdown/link 检查 |
+| Runtime query 或 setup cleanup | Smoke 与代表性验证 |
+| Copy、同步或 launch 修改 | Smoke、Netlib subset、重复计时 |
+| Sparse/BLAS algorithm policy | Smoke、targeted cases、iteration/residual 检查、rollback |
+| Reduction 或算法相关代码 | Broad validation 与 trajectory diagnostics |
+| 新架构 | Fresh build、smoke、代表性 large cases、profiling |
+
+当修改可能影响操作顺序或浮点 reduction 时，应提高验证等级。
+
+## Profiling workflow
+
+W7900 targeted 入口：
+
+```bash
+bash scripts/run_w7900_p10_current_targeted_rocprof.sh
+```
+
+P10 cases：
+
+```text
+thk_48
+square41
+L2CTA3D
+set-cover-model
+tpl-tub-ws1617
+```
+
+通用 smoke profiling：
 
 ```bash
 RESULT_ROOT=profiling/results/current \
-  ./scripts/profile_rocm_smoke.sh
+  bash scripts/profile_rocm_smoke.sh
 ```
 
-汇总 `rocprofv3` CSV trace：
+Raw traces 不进入 Git，只提交 compact tables 与解释。
+
+## 根据证据选择 patch
+
+好的 first patch 应：
+
+- 局部；
+- 可回退；
+- 易验证；
+- 来自已测热点；
+- 尽量不改变数学语义。
+
+890M sequence 遵循该原则，先减少同步、稳定 runtime query、重复 AXPY launch 和 scalar copy，再考虑更深层 kernel 修改。
+
+W7900 P10 识别出 SpMV 主要热点，因此 P11 比较 hipSPARSE 已支持的算法，而不是直接整体替换 hipSPARSE。
+
+## 当前 SpMV switch
+
+| 模式 | 配置 |
+|---|---|
+| 当前默认 | 不设置环境变量；`HIPSPARSE_SPMV_CSR_ALG1` |
+| 回退旧策略 | `CUPDLP_HIP_SPMV_ALG=csr_alg2` |
+| 尝试 library default | `CUPDLP_HIP_SPMV_ALG=default` |
+
+示例：
 
 ```bash
-python3 scripts/summarize_rocm_profile.py \
-  --input profiling/results/current \
-  --output profiling/results/current/profile_summary.md
+CUPDLP_HIP_SPMV_ALG=csr_alg2 \
+  ./build-rocm-w7900/bin/plc \
+  -fname /path/to/case.mps \
+  -out /tmp/case.json \
+  -nIterLim 200000000
 ```
 
-Copy/copyBuffer 分析：
+日志与结果 metadata 中应保留环境设置。
 
-```bash
-python3 scripts/analyze_rocm_copy_trace.py \
-  --input profiling/results/current/sc50b_rocprofv3 \
-  | tee profiling/results/current/sc50b_copy_analysis.md
-```
+## 正确做重复计时
 
-Profiling 输出是生成 artifact，不应提交。
+性能结论应：
 
-## 初始 profiling 观察
+1. 使用相同 binary/case configuration；
+2. 必要时先 warm-up；
+3. 收集多个 measured repeats；
+4. 报告 median 或 geomean speedup；
+5. 展示 per-case 结果，而不只展示 aggregate；
+6. 核对迭代数与数值字段。
 
-`afiro` 和 `sc50b` 的初始 `rocprofv3` runtime trace 显示，小 case runtime 由大量小 GPU 操作主导，而不是由单个 custom kernel 主导。
+P14-A1 是当前模板：quick6 repeated current-vs-pre-tuning，current 6/6 胜出，geomean 1.18889，median 1.19502，迭代数不变。
 
-观察到的热点包括：
+## 拒绝标准
 
-- `hipLaunchKernel`；
-- `hipMemcpyAsync`；
-- `hipMemcpy`；
-- `hipDeviceSynchronize`；
-- `hipStreamSynchronize`；
-- `hipMalloc` / `hipFree`；
-- `__amd_rocclr_copyBuffer`；
-- `__amd_rocclr_fillBufferAligned`；
-- rocSPARSE SpMV kernels；
-- rocBLAS AXPY、dot、norm 和 scaling kernels；
-- custom PDLP update 和 movement kernels。
+以下情况应拒绝或暂缓 patch：
 
-第一阶段结论：
+- status 改变；
+- feasibility/gap 超出验证合同；
+- 迭代数变化且缺少合理解释与足够收益；
+- repeats 中加速不稳定；
+- 小 case 加速但代表性 large case 退化；
+- 平台敏感 policy 没有 rollback；
+- profiler 证据不能支持 patch 动机。
+
+P12 是标准 negative example：buffer-algorithm consistency 修改让 `set-cover-model` 从 7480 变为 7600 iterations，因此被拒绝。
+
+## 记录要求
+
+每个接受或拒绝的实验应记录：
 
 ```text
-对小 smoke case，先优化结构性开销：launch、copy、synchronization 和 repeated runtime query。
-不要一开始就做低层 instruction tuning 或 custom SpMV 重写。
+before reference
+after reference
+平台与软件环境
+case list 与 limits
+status 与数值比较
+iteration counts
+timing repeats
+profiler evidence
+decision
+rollback method
 ```
 
-## 需要跟踪的指标
+Raw run directories 保留在 Git 外，只提交 curated CSV/Markdown summaries。
 
-Solver-level metrics：
+## 当前终点与可选工作
 
-| 指标 | 作用 |
-|---|---|
-| Wall-clock time | 用户可见端到端 runtime |
-| Solve time | 主 solver loop runtime |
-| Iteration count | 算法推进程度 |
-| Iterations per second | 粗粒度吞吐 |
-| Matvec time | Sparse linear algebra 贡献 |
-| Feasibility and gap | 正确性和收敛质量 |
-
-Runtime-level metrics：
-
-| 指标 | 作用 |
-|---|---|
-| `hipLaunchKernel` count/time | Kernel launch 粒度 |
-| `hipMemcpyAsync` count/time | 异步内存传输频率 |
-| `hipMemcpy` count/time | 同步内存传输频率 |
-| `hipDeviceSynchronize` count/time | 全局同步开销 |
-| `hipStreamSynchronize` count/time | Stream 同步开销 |
-| `hipMalloc` / `hipFree` count | 重复分配开销 |
-| `hipGetDevice` / attribute query count | 重复 runtime query 开销 |
-
-Kernel-level metrics：
-
-| Kernel group | 作用 |
-|---|---|
-| rocSPARSE SpMV kernels | PDLP 核心 sparse matvec 工作 |
-| rocBLAS AXPY kernels | Vector update 开销 |
-| rocBLAS dot/norm kernels | Reduction 开销 |
-| Custom gradient kernels | PDLP update 成本 |
-| Movement kernels | Restart 和 movement interaction 成本 |
-| ROCclr copy/fill kernels | 隐式 copy/fill 开销 |
-
-## 已完成 profiling-driven optimizations
-
-当前 tuning pass 在 Radeon 890M / `gfx1150` 上完成了四个低风险优化。
-
-### 1. 移除冗余 device synchronization
-
-从 ROCm/HIP movement interaction 路径中移除了一个冗余 `hipDeviceSynchronize()`。最终 blocking device-to-host copy 已经能提供 host 读取 scalar result 所需的顺序保证。
-
-Smoke-profile 效果：
-
-| Case | Before | After |
-|---|---:|---:|
-| `afiro` `hipDeviceSynchronize` calls | 203 | 3 |
-| `sc50b` `hipDeviceSynchronize` calls | 564 | 3 |
-
-### 2. 缓存 HIP device attributes
-
-在 HIP linear algebra helper 路径中缓存重复查询的 device attributes。
-
-这会减少 runtime API noise，避免反复查询 multiprocessor count 和 warp size 等稳定属性。
-
-### 3. 融合 average-iterate AXPY updates
-
-两个每迭代 average-iterate AXPY update 被融合到一个 custom ROCm/HIP kernel：
-
-```text
-update_average_kernel
-```
-
-观察效果：
-
-| 指标 | `afiro` before | `afiro` after | `sc50b` before | `sc50b` after |
-|---|---:|---:|---:|---:|
-| `hipLaunchKernel` calls | 2667 | 2468 | 6071 | 5511 |
-| `rocblas_axpy_kernel` dispatches | 506 | 108 | 1270 | 150 |
-| `update_average_kernel` dispatches | 0 | 199 | 0 | 560 |
-
-### 4. 减少 movement interaction scalar D2D copies
-
-`cupdlp_movement_interaction_cuda()` 中两个小的 device-to-device scalar copy 被替换为一个小 custom kernel：
-
-```text
-save_movement_xy_kernel
-```
-
-Smoke-profile 效果：
-
-| 指标 | `afiro` before | `afiro` after | `sc50b` before | `sc50b` after |
-|---|---:|---:|---:|---:|
-| `hipMemcpyAsync` calls | 1136 | 736 | 2485 | 1363 |
-| `__amd_rocclr_copyBuffer` dispatches | 1444 | 1044 | 3182 | 2060 |
-| `save_movement_xy_kernel` dispatches | 0 | 200 | 0 | 561 |
-
-这减少了许多 tiny copyBuffer dispatch，同时保持 validation 结果。
-
-## 当前优化后 profile 形态
-
-剩余热点包括：
-
-- `hipLaunchKernel`；
-- remaining `hipMemcpy` / `hipMemcpyAsync`；
-- remaining `__amd_rocclr_copyBuffer`；
-- rocBLAS dot 和 norm reductions；
-- rocSPARSE SpMV kernels。
-
-AXPY 路径不再是主要 rocBLAS 问题。剩余 rocBLAS 热点主要是 reduction 类操作，替换风险更高。
-
-## 不应随意修改什么
-
-没有更大 validation 和 profiling 前，避免以下变化：
-
-- 删除 legacy C/HIP compatibility symbols；
-- 重写 sparse matrix storage；
-- 用 custom kernel 替换所有 rocBLAS 调用；
-- 用 custom SpMV 替换所有 rocSPARSE 调用；
-- 没有严谨数值验证就替换 dot/norm reductions；
-- 对 solver loop 做完整 HIP Graph capture；
-- 只为 `afiro` 或 `sc50b` 调优。
-
-## Large-case profiling 策略
-
-下一阶段 profiling 应使用更大的 MPS case。建议首批 large-case profiling targets 包括：
-
-- 一个 ROCm 有竞争力的 case；
-- 一个 ROCm 更慢的 case；
-- 一个 SpMV 主导的大 sparse case；
-- 如果日志稳定，选择一个 convergence-sensitive case。
-
-用 large-case profiling 判断下一个瓶颈是 launch count、SpMV、BLAS reductions、memory movement 还是 convergence trajectory。
-
-## 后续 tuning 工作
-
-- 添加 large MPS case profiling 模板。
-- 添加 solver phase 的 ROCTx range。
-- 更清晰地区分 setup time 和 main iteration time。
-- 调查剩余 scalar readback 和 synchronization。
-- 在 validation 覆盖更大后再调查 reduction kernel。
-- 调查 SpMV descriptor 和 buffer reuse。
-- W7900 迁移后比较 `gfx1150` 和 `gfx1100`。
-
-## 总结
-
-当前 ROCm/HIP port 已经足以开始 profiling 和受控 tuning，但还不足以宣称最终性能。早期 tuning 应聚焦：
-
-```text
-launch count + synchronization + memory copies + SpMV + BLAS level-1 reductions
-```
-
-每个 tuning change 都必须配套 validation 和 before/after profiling 或 benchmark 证据。
-
-## W7900 tuning 终点 / 2026-06-17
-
-本指南最初围绕 Radeon 890M / `gfx1150` 调优序列编写。当前项目范围内，
-W7900 / `gfx1100` follow-up 已经完成。
-
-当前 W7900 策略：
-
-- 默认 HIP SpMV algorithm：`HIPSPARSE_SPMV_CSR_ALG1`
-- 回退旧默认：`CUPDLP_HIP_SPMV_ALG=csr_alg2`
-- 实验 hipSPARSE default：`CUPDLP_HIP_SPMV_ALG=default`
-
-当前项目终点不需要继续追加长 profiling。后续若继续调优，应作为未来工作，
-并重点关注需要严格验证的 scalar-copy 或 reduction-path 改动。
-
-## P14-A1 后的 W7900 tuning-guide 最终状态 / 2026-06-18
-
-本指南最初围绕 890M / `gfx1150` tuning 编写。W7900 / `gfx1100` follow-up
-现在已有独立收口证据：
+当前 W7900 tuning 证据链已经完成：
 
 - P10 targeted profiling；
-- P11 SpMV algorithm policy，当前默认 `HIPSPARSE_SPMV_CSR_ALG1`；
-- P12 rejected buffer-algorithm consistency experiment；
-- P14-A1 quick6 repeated current-vs-pre_tuning validation。
+- P11 accepted SpMV policy；
+- P12 rejected execution-layer experiment；
+- P14-A1 repeated before/current confirmation。
 
-P14-A1 显示 `current` 在 quick6 的 `6/6` 个 case 上更快，geomean speedup
-为 `1.18889`，median speedup 为 `1.19502`。
+未来工作应回答明确的新问题，例如 repeated ALG1-vs-ALG2、reduction-path profiling、scalar-readback analysis 或新 AMD 架构验证。它们是增强项，不是未完成的核心范围。
 
-当前项目收尾不再需要额外 W7900 实验。
+## 相关文档
+
+- [ROCm profiling 记录](ROCM_PROFILING_NOTES.zh-CN.md)
+- [ROCm 调优历史](ROCM_TUNING_HISTORY.zh-CN.md)
+- [验证语义](VALIDATION.zh-CN.md)
+- [W7900 当前状态](W7900_CURRENT_STATUS.zh-CN.md)
