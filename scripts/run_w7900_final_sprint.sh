@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# Integrated W7900 final-sprint experiment runner, v2.
+# Integrated W7900 final-sprint experiment runner, v2.1.
 #
 # Required public modes:
 #   status
@@ -35,9 +35,13 @@ REPO_DIR="${REPO_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
 DATA_ROOT="${DATA_ROOT:-${WORK_ROOT}/datasets/large_mps_baidu/cupdlp-large-mps-benchmark}"
 MPS_DIR="${MPS_DIR:-${DATA_ROOT}/mps}"
 GPU_ID="${GPU_ID:-0}"
-SAMPLE_INTERVAL="${SAMPLE_INTERVAL:-1}"
+SAMPLE_INTERVAL="${SAMPLE_INTERVAL:-0.5}"
 SOLVER_BASELINE_COMMIT="${SOLVER_BASELINE_COMMIT:-735764807d8698ff30811d1a6fcc45d4a3fd4817}"
 EXPECTED_BRANCH="${EXPECTED_BRANCH:-rocm-w7900-gfx1100}"
+RESULT_TOOL="${RESULT_TOOL:-${REPO_DIR}/scripts/w7900_final_sprint_results.py}"
+PROFILE_TOLERANCE="${PROFILE_TOLERANCE:-1e-4}"
+SOLVER_VALIDATION_FACTOR="${SOLVER_VALIDATION_FACTOR:-50}"
+ACCESS_DEADLINE="${ACCESS_DEADLINE:-}"
 
 BASELINE_REPEATS="${BASELINE_REPEATS:-2}"
 PRECISION_REPEATS="${PRECISION_REPEATS:-2}"
@@ -157,8 +161,14 @@ cleanup_sampler() {
 trap cleanup_sampler EXIT INT TERM
 
 remaining_seconds() {
-  local now elapsed total
+  local now elapsed total deadline_epoch
   now="$(date +%s)"
+  if [[ -n "${ACCESS_DEADLINE}" ]]; then
+    deadline_epoch="$(date -d "${ACCESS_DEADLINE}" +%s 2>/dev/null)" \
+      || die "invalid ACCESS_DEADLINE=${ACCESS_DEADLINE}"
+    echo $((deadline_epoch - now))
+    return 0
+  fi
   elapsed=$((now - SESSION_START_EPOCH))
   total=$((WINDOW_MINUTES * 60))
   echo $((total - elapsed))
@@ -223,6 +233,8 @@ source_environment() {
   [[ -x "${PLC}" ]] || die "ROCm plc missing: ${PLC}"
   [[ -x /usr/bin/time ]] || die "/usr/bin/time missing"
   command -v rocm-smi >/dev/null 2>&1 || die "rocm-smi missing"
+  [[ -x "${RESULT_TOOL}" ]] || die "v2.1 result tool missing: ${RESULT_TOOL}"
+  python3 "${RESULT_TOOL}" self-test >/dev/null
 }
 
 create_directories() {
@@ -278,13 +290,17 @@ write_manifest_once() {
 import json
 from pathlib import Path
 payload = {
-    "schema_version": 2,
+    "schema_version": 3,
+    "harness_version": "2.1",
     "planned_mode": "${PLAN_MODE}",
     "run_root": "${RUN_ROOT}",
     "created_at": "$(date -Is)",
     "hostname": "$(hostname)",
     "gpu_id": "${GPU_ID}",
     "sample_interval_seconds": float("${SAMPLE_INTERVAL}"),
+    "access_deadline": "${ACCESS_DEADLINE}",
+    "profile_tolerance": "${PROFILE_TOLERANCE}",
+    "solver_validation_factor": float("${SOLVER_VALIDATION_FACTOR}"),
     "window_minutes": int("${WINDOW_MINUTES}"),
     "reserve_minutes": int("${RESERVE_MINUTES}"),
     "baseline_repeats": int("${BASELINE_REPEATS}"),
@@ -359,9 +375,29 @@ PY
   copy_smoke_evidence
 }
 
+runner_cases_for_scope() {
+  local scope="$1"
+  case "${scope}" in
+    mini) printf '%s\n' qap15 ;;
+    pilot) printf '%s\n' set-cover-model square41 ;;
+    nonhard23) baseline_cases ;;
+    precision5) precision_cases ;;
+    profile5) profile_cases ;;
+    *) die "unsupported runner dataset scope: ${scope}" ;;
+  esac
+}
+
 verify_dataset() {
   local scope="$1"
+  local cases_file="${MANIFEST_DIR}/planned_cases_${scope}.txt"
   bash scripts/download_w7900_large_mps.sh verify "${scope}"
+  runner_cases_for_scope "${scope}" > "${cases_file}"
+  python3 "${RESULT_TOOL}" verify-dataset \
+    --scope "${scope}" \
+    --cases-file "${cases_file}" \
+    --mps-dir "${MPS_DIR}" \
+    --manifest "${DATA_ROOT}/h100_large_mps_manifest.sha256" \
+    --output-dir "${MANIFEST_DIR}"
 }
 
 record_command() {
@@ -378,7 +414,7 @@ start_sampler() {
 
   (
     while true; do
-      echo "===== sample $(date -Is) ====="
+      echo "===== sample $(date -Ins) ====="
       rocm-smi -d "${GPU_ID}" \
         --showmeminfo vram \
         --showuse \
@@ -398,17 +434,18 @@ status_is_complete() {
   local status_file="$1" json_file="$2"
   [[ -s "${status_file}" ]] || return 1
 
-  if grep -q '^runtime_status=DONE$' "${status_file}"; then
-    [[ -s "${json_file}" ]]
-    return
-  fi
-
   if grep -q '^runtime_status=TIMEOUT$' "${status_file}"; then
     [[ "${RERUN_TIMEOUTS}" != "1" ]]
     return
   fi
 
-  return 1
+  grep -q '^runtime_status=DONE$' "${status_file}" || return 1
+  [[ -s "${json_file}" ]] || return 1
+  python3 "${RESULT_TOOL}" validate-solver \
+    --status-file "${status_file}" \
+    --json-file "${json_file}" \
+    --relative-factor "${SOLVER_VALIDATION_FACTOR}" \
+    --quiet
 }
 
 estimate_baseline_seconds() {
@@ -552,13 +589,29 @@ PY
     echo "command_file=${command_file}"
   } > "${status_file}"
 
+  if python3 "${RESULT_TOOL}" validate-solver \
+      --status-file "${status_file}" \
+      --json-file "${json}" \
+      --relative-factor "${SOLVER_VALIDATION_FACTOR}" \
+      --update-status; then
+    echo "[validation] ${case_name}: PASS"
+  else
+    echo "[validation] ${case_name}: FAIL; preserved for diagnosis and resume"
+  fi
+
   echo "[done] ${case_name}: ${runtime_status}, rc=${rc}, wall=${wall}s"
 }
 
 profile_status_is_complete() {
-  local exit_file="$1"
-  [[ -s "${exit_file}" ]] || return 1
-  [[ "$(cat "${exit_file}")" == "0" ]]
+  local exit_file="$1" status_file="$2" json_file="$3" trace_dir="$4"
+  [[ -s "${exit_file}" && -s "${status_file}" && -s "${json_file}" ]] || return 1
+  python3 "${RESULT_TOOL}" validate-profile \
+    --exit-file "${exit_file}" \
+    --status-file "${status_file}" \
+    --json-file "${json_file}" \
+    --trace-dir "${trace_dir}" \
+    --relative-factor "${SOLVER_VALIDATION_FACTOR}" \
+    --quiet
 }
 
 run_profile_one() {
@@ -575,19 +628,24 @@ run_profile_one() {
   local metrics="${case_dir}/${case_name}_rocm.rocm_smi_raw.txt"
 
   [[ -s "${mps}" ]] || die "profile MPS missing: ${mps}"
-  mkdir -p "${trace_dir}"
+  mkdir -p "${case_dir}"
 
-  if profile_status_is_complete "${exit_file}"; then
+  if profile_status_is_complete "${exit_file}" "${status_file}" "${json}" "${trace_dir}"; then
     echo "[resume skip profile] ${case_name}"
     return 0
   fi
+
+  rm -rf "${trace_dir}"
+  mkdir -p "${trace_dir}"
 
   printf 'HIP_VISIBLE_DEVICES=%q ROCR_VISIBLE_DEVICES=%q timeout --foreground %qs /usr/bin/time -v -o %q ' \
     "${GPU_ID}" "${GPU_ID}" "${PROFILE_EXTERNAL_TIMEOUT}" "${time_log}" > "${command_file}"
   printf 'rocprofv3 --runtime-trace --output-format csv --output-directory %q --output-file trace -- ' \
     "${trace_dir}" >> "${command_file}"
   printf '%q ' "${PLC}" -fname "${mps}" -out "${json}" \
-    -nIterLim 1000000000 -dTimeLim "${PROFILE_SOLVER_TIME_LIMIT}" >> "${command_file}"
+    -nIterLim 1000000000 -dTimeLim "${PROFILE_SOLVER_TIME_LIMIT}" \
+    -dPrimalTol "${PROFILE_TOLERANCE}" -dDualTol "${PROFILE_TOLERANCE}" \
+    -dGapTol "${PROFILE_TOLERANCE}" >> "${command_file}"
   printf '\n' >> "${command_file}"
 
   local start_iso start_epoch end_iso end_epoch rc wall
@@ -614,6 +672,9 @@ run_profile_one() {
         -out "${json}" \
         -nIterLim 1000000000 \
         -dTimeLim "${PROFILE_SOLVER_TIME_LIMIT}" \
+        -dPrimalTol "${PROFILE_TOLERANCE}" \
+        -dDualTol "${PROFILE_TOLERANCE}" \
+        -dGapTol "${PROFILE_TOLERANCE}" \
       > "${log}" 2>&1
   rc=$?
   set -e
@@ -633,6 +694,7 @@ PY
     echo "case=${case_name}"
     echo "mps=${mps}"
     echo "gpu_id=${GPU_ID}"
+    echo "tolerance=${PROFILE_TOLERANCE}"
     echo "start=${start_iso}"
     echo "end=${end_iso}"
     echo "wall_seconds=${wall}"
@@ -646,6 +708,18 @@ PY
     echo "command_file=${command_file}"
   } > "${status_file}"
 
+  if python3 "${RESULT_TOOL}" validate-profile \
+      --exit-file "${exit_file}" \
+      --status-file "${status_file}" \
+      --json-file "${json}" \
+      --trace-dir "${trace_dir}" \
+      --relative-factor "${SOLVER_VALIDATION_FACTOR}" \
+      --update-status; then
+    echo "[profile validation] ${case_name}: PASS"
+  else
+    echo "[profile validation] ${case_name}: FAIL; trace preserved for diagnosis"
+  fi
+
   local profile_bytes
   profile_bytes="$(du -sb "${PROFILE_DIR}" 2>/dev/null | awk '{print $1}' || echo 0)"
   echo "[profile done] ${case_name}: rc=${rc}, wall=${wall}s, profile_bytes=${profile_bytes}"
@@ -656,155 +730,33 @@ PY
 
 parse_results() {
   msg "Parse solver/resource results"
-
-  python3 - "${RUN_ROOT}" "${PARSED_DIR}/final_sprint_summary.csv" <<'PY'
-from __future__ import annotations
-
-import csv
-import json
-import re
-import sys
-from pathlib import Path
-from statistics import mean
-
-root = Path(sys.argv[1])
-out = Path(sys.argv[2])
-
-def find_key(obj, key):
-    if isinstance(obj, dict):
-        if key in obj:
-            return obj[key]
-        for value in obj.values():
-            found = find_key(value, key)
-            if found is not None:
-                return found
-    elif isinstance(obj, list):
-        for value in obj:
-            found = find_key(value, key)
-            if found is not None:
-                return found
-    return None
-
-def read_env(path: Path):
-    data = {}
-    for line in path.read_text(errors="replace").splitlines():
-        if "=" in line:
-            k, v = line.split("=", 1)
-            data[k] = v
-    return data
-
-def floats(patterns, text):
-    values = []
-    for pattern in patterns:
-        values.extend(float(x) for x in re.findall(pattern, text, flags=re.I))
-    return values
-
-solver_keys = [
-    "terminationCode", "terminationIterate", "primalCode", "dualCode",
-    "nIter", "nAxCalls", "nAtyCalls", "dSolvingTime", "dScalingTime",
-    "DeviceMatVecProdTime", "dPrimalObj", "dDualObj",
-    "dRelPrimalFeas", "dRelDualFeas", "dRelDualityGap",
-]
-
-rows = []
-for status_path in sorted(root.rglob("*.status.env")):
-    if ".profile.status.env" in status_path.name:
-        continue
-    status = read_env(status_path)
-    json_path = Path(status.get("json", ""))
-    payload = {}
-    if json_path.exists() and json_path.stat().st_size:
-        try:
-            payload = json.loads(json_path.read_text())
-        except Exception as exc:
-            status["json_parse_error"] = repr(exc)
-
-    row = dict(status)
-    for key in solver_keys:
-        row[key] = find_key(payload, key)
-
-    metrics_path = Path(status.get("metrics", ""))
-    if metrics_path.exists():
-        text = metrics_path.read_text(errors="replace")
-        vram = floats([
-            r"VRAM Total Used Memory \(B\):\s*([0-9.]+)",
-            r"VRAM.*Used.*?([0-9]+)\s*$",
-        ], text)
-        gpu = floats([
-            r"GPU use \(%\):\s*([0-9.]+)",
-            r"GPU use:\s*([0-9.]+)%",
-        ], text)
-        memuse = floats([
-            r"GPU Memory Allocated \(%\):\s*([0-9.]+)",
-            r"Memory use \(%\):\s*([0-9.]+)",
-        ], text)
-        power = floats([
-            r"Average Graphics Package Power \(W\):\s*([0-9.]+)",
-            r"Average Graphics Package Power:\s*([0-9.]+)\s*W",
-        ], text)
-        temp = floats([
-            r"Temperature.*?\(C\):\s*([0-9.]+)",
-            r"Temperature.*?:\s*([0-9.]+)c",
-        ], text)
-
-        row["resource_samples"] = max(len(vram), len(gpu), len(power), len(temp))
-        row["peak_vram_used_bytes"] = max(vram) if vram else None
-        row["min_vram_used_bytes"] = min(vram) if vram else None
-        row["peak_vram_delta_bytes"] = (max(vram) - min(vram)) if vram else None
-        row["avg_gpu_use_pct"] = mean(gpu) if gpu else None
-        row["max_gpu_use_pct"] = max(gpu) if gpu else None
-        row["avg_memory_use_pct"] = mean(memuse) if memuse else None
-        row["max_memory_use_pct"] = max(memuse) if memuse else None
-        row["avg_power_w"] = mean(power) if power else None
-        row["max_power_w"] = max(power) if power else None
-        row["max_temperature_c"] = max(temp) if temp else None
-
-    time_path = Path(status.get("time_log", ""))
-    if time_path.exists():
-        time_text = time_path.read_text(errors="replace")
-        rss = re.search(r"Maximum resident set size \(kbytes\):\s*([0-9]+)", time_text)
-        row["max_rss_kbytes"] = int(rss.group(1)) if rss else None
-
-    rows.append(row)
-
-fields = [
-    "group", "case", "tolerance", "repeat", "gpu_id",
-    "start", "end", "runtime_status", "exit_code", "wall_seconds",
-    *solver_keys,
-    "resource_samples", "peak_vram_used_bytes", "min_vram_used_bytes",
-    "peak_vram_delta_bytes", "avg_gpu_use_pct", "max_gpu_use_pct",
-    "avg_memory_use_pct", "max_memory_use_pct", "avg_power_w", "max_power_w",
-    "max_temperature_c", "max_rss_kbytes",
-    "mps", "json", "log", "time_log", "metrics", "command_file",
-]
-
-out.parent.mkdir(parents=True, exist_ok=True)
-with out.open("w", newline="") as f:
-    writer = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
-    writer.writeheader()
-    writer.writerows(rows)
-
-print(f"[OK] parsed_rows={len(rows)}")
-print(f"[OK] summary={out}")
-print("case,tol,rep,status,termination,nIter,wall,solve,peak_vram_delta,max_gpu,avg_power")
-for row in rows:
-    print(
-        row.get("case", ""), row.get("tolerance", ""), row.get("repeat", ""),
-        row.get("runtime_status", ""), row.get("terminationCode", ""),
-        row.get("nIter", ""), row.get("wall_seconds", ""),
-        row.get("dSolvingTime", ""), row.get("peak_vram_delta_bytes", ""),
-        row.get("max_gpu_use_pct", ""), row.get("avg_power_w", ""), sep=","
-    )
-PY
+  python3 "${RESULT_TOOL}" parse-run \
+    --run-root "${RUN_ROOT}" \
+    --output-csv "${PARSED_DIR}/final_sprint_summary.csv" \
+    --resource-samples-csv "${PARSED_DIR}/resource_samples.csv" \
+    --validation-json "${PARSED_DIR}/run_validation_summary.json" \
+    --relative-factor "${SOLVER_VALIDATION_FACTOR}"
 }
 
 summarize_profiles() {
+  local summary_status="${PROFILE_DIR}/profile_summary.status"
   if find "${PROFILE_DIR}" -type f -name '*_kernel_trace.csv' -print -quit 2>/dev/null | grep -q .; then
-    python3 scripts/summarize_rocprofv3_milestones.py "${PROFILE_DIR}" \
-      2>&1 | tee "${LOG_DIR}/profile_summary.log" || true
+    if python3 scripts/summarize_rocprofv3_milestones.py "${PROFILE_DIR}" \
+        2>&1 | tee "${LOG_DIR}/profile_summary.log"; then
+      echo PASS > "${summary_status}"
+    else
+      echo FAIL > "${summary_status}"
+      echo "[profile] milestone summarizer failed; archive will preserve diagnostics"
+    fi
   else
-    echo "[profile] no trace CSV found to summarize"
+    echo NOT_AVAILABLE > "${summary_status}"
+    echo "[profile] no kernel trace CSV found"
   fi
+
+  python3 "${RESULT_TOOL}" validate-profiles \
+    --run-root "${RUN_ROOT}" \
+    --output-json "${PARSED_DIR}/profile_validation_summary.json" \
+    --output-csv "${PARSED_DIR}/profile_validation_summary.csv"
 }
 
 generate_throughput() {
@@ -813,45 +765,10 @@ generate_throughput() {
   local summary="${PARSED_DIR}/final_sprint_summary.csv"
 
   if [[ -s "${summary}" ]]; then
-    python3 - "${summary}" "${THROUGHPUT_DIR}/single_card_throughput.csv" <<'PY'
-import csv, sys
-from collections import defaultdict
-from pathlib import Path
-
-src, out = map(Path, sys.argv[1:])
-groups = defaultdict(list)
-with src.open(newline="") as f:
-    for row in csv.DictReader(f):
-        if row.get("group") not in {"nonhard23_baseline", "mini_baseline", "large_mps_pilot_baseline"}:
-            continue
-        if row.get("runtime_status") != "DONE":
-            continue
-        groups[(row.get("group", ""), row.get("repeat", ""))].append(row)
-
-fields = [
-    "group", "repeat", "completed_cases", "wall_seconds_sum", "solve_seconds_sum",
-    "cases_per_hour", "solve_seconds_per_elapsed_hour",
-]
-rows = []
-for (group, repeat), items in sorted(groups.items()):
-    wall = sum(float(x.get("wall_seconds") or 0) for x in items)
-    solve = sum(float(x.get("dSolvingTime") or 0) for x in items)
-    rows.append({
-        "group": group,
-        "repeat": repeat,
-        "completed_cases": len(items),
-        "wall_seconds_sum": wall,
-        "solve_seconds_sum": solve,
-        "cases_per_hour": (len(items) * 3600 / wall) if wall else "",
-        "solve_seconds_per_elapsed_hour": (solve * 3600 / wall) if wall else "",
-    })
-
-with out.open("w", newline="") as f:
-    w = csv.DictWriter(f, fieldnames=fields)
-    w.writeheader()
-    w.writerows(rows)
-print(out)
-PY
+    python3 "${RESULT_TOOL}" throughput \
+      --run-root "${RUN_ROOT}" \
+      --summary-csv "${summary}" \
+      --output-csv "${THROUGHPUT_DIR}/single_card_throughput.csv"
   else
     echo "[throughput] parsed solver summary is absent"
   fi
@@ -867,7 +784,7 @@ PY
     cat > "${THROUGHPUT_DIR}/legacy_8card_fast8/BOUNDARY.txt" <<'TXT'
 This is reused historical evidence for eight independent MPS jobs running concurrently.
 It is NOT distributed multi-GPU solving of one LP.
-No new 8-card experiment is launched by the v2 final-sprint runner.
+No new 8-card experiment is launched by the v2.1 final-sprint runner.
 TXT
   fi
 }
@@ -1002,9 +919,10 @@ run_precision() {
   local repeat tol case_name estimate
   for ((repeat=1; repeat<=PRECISION_REPEATS; repeat++)); do
     echo "[precision] begin complete matrix repeat ${repeat}/${PRECISION_REPEATS}"
-    for tol in ${PRECISION_LEVELS}; do
-      echo "[precision] repeat=${repeat}, tolerance=${tol}"
-      while IFS= read -r case_name; do
+    while IFS= read -r case_name; do
+      (( STOP_REQUESTED == 0 )) || return 0
+      echo "[precision] repeat=${repeat}, case=${case_name}"
+      for tol in ${PRECISION_LEVELS}; do
         (( STOP_REQUESTED == 0 )) || return 0
         estimate="$(estimate_precision_seconds "${case_name}" "${tol}")"
         require_budget_or_stop "${estimate}" \
@@ -1012,8 +930,8 @@ run_precision() {
         run_solver_one "precision_sensitivity" "${case_name}" "${tol}" "${repeat}" \
           "${PRECISION_DIR}/${case_name}/tol_${tol}/rep_${repeat}" \
           "${PRECISION_TIME_LIMIT}" "${PRECISION_EXTERNAL_TIMEOUT}"
-      done < <(precision_cases)
-    done
+      done
+    done < <(precision_cases)
     echo "[precision] complete matrix repeat ${repeat}/${PRECISION_REPEATS}"
   done
 }
@@ -1116,6 +1034,9 @@ echo "planned_mode=${PLAN_MODE}"
 echo "run_root=${RUN_ROOT}"
 echo "window_minutes=${WINDOW_MINUTES}"
 echo "reserve_minutes=${RESERVE_MINUTES}"
+echo "access_deadline=${ACCESS_DEADLINE}"
+echo "sample_interval=${SAMPLE_INTERVAL}"
+echo "profile_tolerance=${PROFILE_TOLERANCE}"
 
 case "${PLAN_MODE}" in
   mini|pilot) verify_solver_state 0 ;;

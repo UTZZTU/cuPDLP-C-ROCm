@@ -1,6 +1,42 @@
-# W7900 决赛冲刺运行手册（v2）
+# W7900 决赛冲刺运行手册（v2.1）
 
 本手册固化 fresh-machine 恢复、百度网盘 large-MPS 下载、正式基线、精度敏感性、资源采样、targeted profiling、throughput 后处理、断点恢复、归档与发布流程。
+
+
+## 0. v2.1 修订与正式运行门槛
+
+v2.1 保留 v2 的下载、求解、断点恢复和归档主链，修正正式测量与验收合同：
+
+- 资源采样默认间隔改为 `0.5` 秒，时间戳使用纳秒精度；
+- `rocm-smi` 按 `===== sample ... =====` 分块解析，温度三传感器不再造成 sample count 三倍错误；
+- summary 同时保留 VRAM、功耗、GPU/显存利用率、SCLK/MCLK/FCLK 和三类温度；
+- `DONE` 只有在 JSON 可解析、`OPTIMAL + FEASIBLE + FEASIBLE` 且相对指标通过宽松验收时才标记 `solver_validation_status=PASS`；
+- throughput 只有完整 case matrix、无重复且全部验证通过时才标记 `throughput_valid=true`；
+- profile 显式固定 `1e-4` 容差，失败重跑前清理旧 trace，并要求非空 kernel trace；
+- 每个 run 包含 planned case、逐 case 数据集 SHA256 验证 TSV/JSON、逐 sample CSV 和 run validation JSON；
+- precision 顺序改为 `repeat -> case -> tolerance`，使同一实例三档精度相邻；
+- 支持 `ACCESS_DEADLINE`，可按真实访问结束时间动态停止启动新任务。
+
+正式 `baseline23` 或 `precision/profile` 前，必须先重新执行一次 v2.1 `mini`，并确认：
+
+```text
+4 条 qap15 solver 记录全部 DONE + OPTIMAL + solver_validation_status=PASS
+profile_validation_status=PASS
+resource_sample_count 按 sample 标记计数
+run_validation_summary.json 无结构性错误
+archive 与 .sha256 均存在
+```
+
+推荐按实际访问结束时刻设置预算。例如访问将在 `2026-07-30 18:00:00` 结束：
+
+```bash
+ACCESS_DEADLINE="2026-07-30 18:00:00" \
+RESERVE_MINUTES=35 \
+BASELINE_REPEATS=2 \
+bash scripts/run_w7900_final_sprint.sh baseline23
+```
+
+未设置 `ACCESS_DEADLINE` 时，继续使用 `WINDOW_MINUTES`。不要再把旧版固定 `165` 分钟理解为所有访问窗口的唯一值；应在下载、build 和 smoke 完成后按真实剩余时间启动 runner。
 
 ## 1. 冻结边界
 
@@ -16,6 +52,7 @@
 scripts/prepare_w7900_final_sprint.sh
 scripts/download_w7900_large_mps.sh
 scripts/run_w7900_final_sprint.sh
+scripts/w7900_final_sprint_results.py
 scripts/publish_w7900_final_sprint.sh
 docs/W7900_FINAL_SPRINT_RUNBOOK.zh-CN.md
 ```
@@ -75,11 +112,14 @@ chmod +x \
   scripts/prepare_w7900_final_sprint.sh \
   scripts/download_w7900_large_mps.sh \
   scripts/run_w7900_final_sprint.sh \
+  scripts/w7900_final_sprint_results.py \
   scripts/publish_w7900_final_sprint.sh
 
 bash -n scripts/prepare_w7900_final_sprint.sh
 bash -n scripts/download_w7900_large_mps.sh
 bash -n scripts/run_w7900_final_sprint.sh
+python3 -m py_compile scripts/w7900_final_sprint_results.py
+python3 scripts/w7900_final_sprint_results.py self-test
 bash -n scripts/publish_w7900_final_sprint.sh
 ```
 

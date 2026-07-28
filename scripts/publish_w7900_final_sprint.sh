@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# Validate the v2 harness, require a successful qap15 mini run, commit only the
+# Validate the v2.1 harness, require a successful qap15 mini run, commit only the
 # whitelisted harness files, and push the current branch.
 
 WORK_ROOT="${WORK_ROOT:-/app/cupdlp_w7900}"
 REPO_DIR="${REPO_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
 SOLVER_BASELINE_COMMIT="${SOLVER_BASELINE_COMMIT:-735764807d8698ff30811d1a6fcc45d4a3fd4817}"
 EXPECTED_BRANCH="${EXPECTED_BRANCH:-rocm-w7900-gfx1100}"
-COMMIT_MESSAGE="${COMMIT_MESSAGE:-scripts: add resumable W7900 final sprint harness v2}"
+COMMIT_MESSAGE="${COMMIT_MESSAGE:-scripts: harden W7900 final sprint harness v2.1}"
 PUSH_REMOTE="${PUSH_REMOTE:-origin}"
 PUSH="${PUSH:-1}"
 
@@ -22,6 +22,7 @@ allowed=(
   scripts/prepare_w7900_final_sprint.sh
   scripts/download_w7900_large_mps.sh
   scripts/run_w7900_final_sprint.sh
+  scripts/w7900_final_sprint_results.py
   scripts/publish_w7900_final_sprint.sh
   docs/W7900_FINAL_SPRINT_RUNBOOK.zh-CN.md
 )
@@ -39,12 +40,24 @@ die() {
 }
 
 msg "Static validation"
-for file in "${allowed[@]:0:4}"; do
+for file in "${allowed[@]}"; do
   [[ -f "${file}" ]] || die "missing ${file}"
-  bash -n "${file}"
-  echo "[OK] bash -n ${file}"
+  case "${file}" in
+    *.sh)
+      bash -n "${file}"
+      echo "[OK] bash -n ${file}"
+      ;;
+    *.py)
+      python3 - "${file}" <<'PY'
+from pathlib import Path
+import sys
+compile(Path(sys.argv[1]).read_text(encoding="utf-8"), sys.argv[1], "exec")
+PY
+      python3 "${file}" self-test
+      echo "[OK] python validation ${file}"
+      ;;
+  esac
 done
-[[ -f "${allowed[4]}" ]] || die "missing ${allowed[4]}"
 
 [[ "$(git branch --show-current)" == "${EXPECTED_BRANCH}" ]] \
   || die "expected branch ${EXPECTED_BRANCH}"
@@ -97,6 +110,7 @@ manifest = root / "00_manifest/run_manifest.json"
 summary = root / "parsed/final_sprint_summary.csv"
 archive_hint = root.parent.parent / f"{root.name}.tar.gz"
 profile_exit = root / "04_profile/current/qap15/qap15_rocm.exitcode"
+profile_validation = root / "04_profile/current/qap15/qap15_rocm.profile.status.env"
 
 if not manifest.exists() or json.loads(manifest.read_text()).get("planned_mode") != "mini":
     raise SystemExit("mini manifest missing or invalid")
@@ -107,7 +121,9 @@ rows = list(csv.DictReader(summary.open(newline="")))
 qap = [r for r in rows if r.get("case") == "qap15"]
 done_optimal = [
     r for r in qap
-    if r.get("runtime_status") == "DONE" and r.get("terminationCode") == "OPTIMAL"
+    if r.get("runtime_status") == "DONE"
+    and r.get("terminationCode") == "OPTIMAL"
+    and r.get("solver_validation_status") == "PASS"
 ]
 tols = {r.get("tolerance") for r in done_optimal if r.get("group") == "mini_precision"}
 if len(done_optimal) < 4:
@@ -116,6 +132,8 @@ if not {"1e-3", "1e-4", "1e-5"}.issubset(tols):
     raise SystemExit(f"mini precision levels incomplete: {sorted(tols)}")
 if not profile_exit.exists() or profile_exit.read_text().strip() != "0":
     raise SystemExit("qap15 mini profile did not exit 0")
+if not profile_validation.exists() or "profile_validation_status=PASS" not in profile_validation.read_text():
+    raise SystemExit("qap15 mini profile validation did not pass")
 if not archive_hint.exists() or not Path(str(archive_hint) + ".sha256").exists():
     raise SystemExit("mini archive or SHA256 sidecar missing")
 print(f"[OK] mini run: {root}")
@@ -123,7 +141,7 @@ print(f"[OK] qap15 DONE+OPTIMAL rows: {len(done_optimal)}")
 print(f"[OK] archive: {archive_hint}")
 PY
 
-msg "Commit harness v2"
+msg "Commit harness v2.1"
 git add -- "${allowed[@]}"
 
 git diff --cached --check
