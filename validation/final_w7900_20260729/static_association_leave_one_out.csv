@@ -1,0 +1,5 @@
+feature,feature_zh,metric,metric_zh,rho_full,rho_leave_one_out_min,rho_leave_one_out_median,rho_leave_one_out_max
+file_bytes,MPS 文件字节数,wall_seconds_median,墙钟时间,0.7183794466403163,0.6781479390175044,0.7131564088085828,0.777526821005082
+file_bytes,MPS 文件字节数,overhead_seconds_median,非求解开销,0.974308300395257,0.9706380575945794,0.9728966685488425,0.9841897233201583
+matrix_nnz,矩阵非零元数,vram_peak_sampled_bytes_median,采样峰值显存,0.882411067193676,0.865612648221344,0.8814229249011858,0.9277244494635801
+columns,变量列数,time_per_iteration_seconds_median,单迭代时间,0.608695652173913,0.5527950310559007,0.6126482213438735,0.6905702992659515

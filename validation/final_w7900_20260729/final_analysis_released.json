@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "released_at": "2026-07-29T17:11:51.487427+08:00",
+  "formal_completion_record": "/data/cupdlp_final_evidence/registry/FORMAL_W7900_EXPERIMENTS_COMPLETE.json",
+  "window1_archive_sha256": "d2ce13091072a7c40c2c89bdd988e94c2fca36772da38e0af87de6332e7cd94a",
+  "window2_archive_sha256": "7f8fbcd45591f4dbe0899d18df76329b1f9a17ff433b6dcd3c06d743aaead0db",
+  "window1_curated_dir": "/data/cupdlp_final_evidence/curated/d2ce13091072_20260729_035237_b5b9a6ffc1a0_nb-d2799099_baseline23",
+  "window2_curated_dir": "/data/cupdlp_final_evidence/curated/7f8fbcd45591_20260729_075842_b5b9a6ffc1a0_nb-a72a2dc7_session2",
+  "permitted_next_work": [
+    "curated data merge",
+    "descriptive statistical analysis",
+    "static-runtime association analysis",
+    "precision sensitivity analysis",
+    "resource and profile analysis",
+    "final result figures",
+    "human-reviewed final claims"
+  ]
+}

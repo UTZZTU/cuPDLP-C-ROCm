@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "formal_branch": "rocm-w7900-gfx1100",
+  "solver_source_baseline": "735764807d8698ff30811d1a6fcc45d4a3fd4817",
+  "formal_harness_commit": "b5b9a6ffc1a041a48a0e051568d0134a3822556c",
+  "formal_solver_rows": 76,
+  "validated_formal_solver_rows": 76,
+  "mean_throughput": 28.061610653547298,
+  "median_wall_cv_pct": 0.37704853183088,
+  "under_2_pct": 22,
+  "iteration_consistent": 23,
+  "top3_share_pct": 82.22063833559586,
+  "quality_ratio_max": 0.9980786689999999,
+  "time_ratio_min": 1.0098888820087468,
+  "time_ratio_max": 4.01154321596714,
+  "iteration_ratio_min": 2.017041996348144,
+  "iteration_ratio_max": 11.581395348837209
+}

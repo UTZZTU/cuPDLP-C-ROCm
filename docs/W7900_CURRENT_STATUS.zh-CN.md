@@ -1,147 +1,122 @@
 # W7900 当前状态
 
 > English: [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md)
+> 最终结果：[W7900_FINAL_RESULTS_20260729.zh-CN.md](W7900_FINAL_RESULTS_20260729.zh-CN.md)
 
-本文是 Radeon PRO W7900 / `gfx1100` 的权威当前状态页。日期化实验过程保留在 `validation/`，本页只维护已验证结论、解释边界和主要证据入口。
+本文是 Radeon PRO W7900 / `gfx1100` 的权威当前状态页。日期化历史报告继续
+保存在 `validation/`；本页只维护当前结论和边界。
 
-## 当前结论
+## 最终结论
 
-- W7900 ROCm/HIP build、smoke、Netlib 和 large-MPS 验证已经完成当前阶段闭环。
-- large-MPS 主结果使用 `non-hard23`：23/23 `OPTIMAL`；hard3 单独报告。
-- P10 targeted profiling 确认 rocSPARSE CSR SpMV 是主要 GPU kernel 热点。
-- P11 接受可运行时选择的 SpMV 策略，并将 `HIPSPARSE_SPMV_CSR_ALG1` 设为当前默认。
-- 旧策略可以通过 `CUPDLP_HIP_SPMV_ALG=csr_alg2` 恢复。
-- P12 的 buffer-algorithm consistency patch 因改变迭代轨迹而被拒绝。
-- P14-A1 repeated validation 在 quick6 上得到 6/6 current wins，并保持 pre/current 迭代数一致。
+W7900 正式实验、证据 QC 和离线分析发布已经闭环：
 
-当前分支不是“未优化 first port”。正确口径是：
+- nonhard23：23 例 × 2 次，46/46 `VALIDATED_OPTIMAL`；
+- 目标精度实验：5 例 × 3 档 × 2 次，30/30 `VALIDATED_OPTIMAL`；
+- targeted profiling：5/5 `PASS`；
+- 静态结构分析：23/23 `PASS`；
+- 正式 solver 记录合计：**76/76**；
+- 最终标志：
+  `FORMAL_W7900_EXPERIMENTS_COMPLETE`、
+  `FINAL_ANALYSIS_RELEASED`。
 
-| 角色 | 版本 | 含义 |
-|---|---|---|
-| Pre-tuning anchor | `ae3b683` / `pre_tuning` | 首个可运行 ROCm 锚点 |
-| Current engineering baseline | 当前 `rocm-w7900-gfx1100` | 继承 890M 调优后的 W7900 工程版本 |
-| Accepted W7900 endpoint | P11 policy | 默认 `CSR_ALG1`，保留 `csr_alg2` 回退 |
-| Rejected experiment | P12 | 未进入当前分支行为的负向实验 |
+不再需要为当前发布重跑 W7900。只有出现新的、预先定义的研究问题时，才应
+重新申请 W7900。
 
-## Large-MPS non-hard23
+## 正式身份
 
-| Metric | Value |
+| 角色 | 值 |
+|---|---|
+| 正式分支 | `rocm-w7900-gfx1100` |
+| 冻结 solver | `735764807d8698ff30811d1a6fcc45d4a3fd4817` |
+| 正式 harness | `b5b9a6ffc1a041a48a0e051568d0134a3822556c` |
+| Window 1 SHA256 | `d2ce13091072a7c40c2c89bdd988e94c2fca36772da38e0af87de6332e7cd94a` |
+| Window 2 SHA256 | `7f8fbcd45591f4dbe0899d18df76329b1f9a17ff433b6dcd3c06d743aaead0db` |
+
+求解器边界 `CMakeLists.txt`、`cmake/`、`cupdlp/`、`interface/` 在正式
+harness 中与冻结基线一致。
+
+## 核心数字
+
+| 指标 | 正式结果 |
 |---|---:|
-| Cases | 23 |
-| Termination | 23/23 `OPTIMAL` |
-| W7900 total wall time | 2960.171 s |
-| W7900 total solve time | 2742.940 s |
-| Source groups | `initial17_safe` 17；`near_optimal2_1800s` 2；`watchlist6_900s` 4 |
+| 两轮完整 23 例总时间 | 2950.625997 s / 2950.674611 s |
+| 两轮单卡顺序吞吐 | 28.061842 / 28.061379 cases/hour |
+| 吞吐均值 | **28.061611 cases/hour** |
+| 总时间 CV 中位数 | **0.377%** |
+| CV < 2% | **22/23** |
+| 两轮迭代数一致 | **23/23** |
+| Top-3 总时间占比 | **82.22%** |
+| precision 总时间倍率 | **1.01×–4.01×** |
+| precision 迭代倍率 | **2.02×–11.58×** |
+| 最大实际误差/目标精度 | **0.998079** |
 
-主要证据：
+## 工作负载解释
 
-- [non-hard23 中文汇总](../validation/w7900_large_mps_nonhard23_20260613.zh-CN.md)
-- [solver CSV](../validation/w7900_large_mps_nonhard23_20260613.csv)
-- [runtime CSV](../validation/w7900_large_mps_nonhard23_20260613_runtime.csv)
+最终数据支持两类主要工作负载：
 
-![W7900 non-hard23 wall comparison](assets/w7900/w7900_nonhard23_wall_compare.svg)
+1. **迭代/计算主导：** `s100`、`Primal2_1000`、`thk_63`、
+   `square41` 等；
+2. **读取/初始化主导：** `L2CTA3D` 是最清楚的代表，其矩阵规模很大但
+   迭代数很少，求解阶段只占总时间小部分。
 
-![W7900 non-hard23 solve comparison](assets/w7900/w7900_nonhard23_solve_compare.svg)
+因此，W7900 上的总时间不能只用 GPU 峰值解释：
 
-## 同 23 个 case 的跨设备参考
+```text
+总时间 ≈ 读取/初始化/收尾 + 单迭代成本 × 迭代次数
+```
 
-| Device | Backend | Wall time sum | Solve time sum |
-|---|---|---:|---:|
-| H100 | CUDA | 1701.350 s | 1433.577 s |
-| RTX 3090 | CUDA | 1898.370 s | 1513.214 s |
-| RTX 4090D | CUDA | 2730.760 s | 1329.789 s |
-| W7900 | ROCm/HIP | 2960.171 s | 2742.940 s |
-| Radeon 890M | ROCm/HIP | 5015.740 s | 4842.987 s |
+完整分析见
+[W7900 性能行为](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md)。
 
-正确解释是：
+## Profiling 与调优终点
 
-- W7900 相比 890M 有明显提升；
-- W7900 在部分 case 上具有 per-case 竞争力；
-- aggregate solve time 仍落后于本项目中的高端 CUDA 参考；
-- 结论不能只根据硬件峰值或单个 case 推广。
+历史 P10 compact evidence 表明：
 
-完整 case 分类见 [W7900 性能行为分析](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md)。
+- rocSPARSE CSR SpMV 是多个 targeted case 的主要 GPU kernel group；
+- `hipMemcpy`、`hipMemcpyAsync` 和 launch 开销也需要关注。
 
-## P10–P12 profiling 与 tuning 证据链
-
-### P10：targeted profiling
-
-5 个代表 case 的 compact profiling 表明：
-
-- rocSPARSE CSR SpMV 是多个 case 的主要 GPU kernel 热点；
-- `hipMemcpy`、`hipMemcpyAsync` 和 `hipLaunchKernel` 在较长 case 中也占有明显成本；
-- 后续优化应优先考虑 SpMV 策略、launch 数量和窄范围 copy reduction；
-- 不应在没有验证的情况下改变 residual、restart、termination、scaling 或浮点更新顺序。
-
-证据：[P10 中文汇总](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.zh-CN.md)。
-
-### P11：接受的 SpMV tuning
-
-P11 先建立 runtime 调用点清单和候选优先级，再实现 opt-in SpMV algorithm switch、smoke 和五 case sweep。最终接受：
+P11 接受：
 
 ```text
 default: HIPSPARSE_SPMV_CSR_ALG1
 fallback: CUPDLP_HIP_SPMV_ALG=csr_alg2
 ```
 
-证据：
+P12 的 buffer-algorithm consistency 修改改变了 `set-cover-model` 的
+迭代轨迹，因此被拒绝。P14-A1 随后确认 quick6 上 current 6/6 胜出且迭代
+数一致。
 
-- [P11 tuning 总结](../validation/w7900_p11_spmv_tuning_summary_20260617.zh-CN.md)
-- [algorithm sweep](../validation/w7900_p11_spmv_alg_sweep_20260617_summary.zh-CN.md)
-- [default ALG1 smoke](../validation/w7900_p11_default_spmv_alg1_smoke_20260617_summary.zh-CN.md)
+最终 session2 再次完成五例 profile 采集与 trace 验证，但 raw trace 不进入
+Git，也不从 trace 文件数量推导新的热点比例。
 
-### P12：被拒绝的执行层修改
+## 历史结果的角色
 
-P12 尝试让 `hipsparseSpMV_bufferSize()` 与执行阶段使用同一选择算法。该修改使 `set-cover-model` 的迭代数由 7480 变为 7600，因此没有进入接受终点。
+以下证据继续保留，但不取代最终正式发布：
 
-这说明“只改执行层”并不等于“数值行为一定不变”。证据：[P12 negative finding](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.zh-CN.md)。
+- 2026-06-13 单轮 non-hard23；
+- P10 profiling；
+- P11 accepted tuning；
+- P12 negative experiment；
+- P14-A1 repeated before/current；
+- 8-card fast8 independent-task throughput；
+- hard3 diagnostics。
 
-## P14-A1 repeated validation
+## 当前边界
 
-quick6 repeated validation 对比 `ae3b683 / pre_tuning` 与当前分支：
-
-| Metric | Result |
-|---|---:|
-| Cases | 6 |
-| Current wins | 6/6 |
-| Geometric-mean speedup | 1.18889 |
-| Median speedup | 1.19502 |
-| Iteration-count consistency | pre/current 一致 |
-
-证据：
-
-- [P14-A1 中文汇总](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.zh-CN.md)
-- [comparison CSV](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_comparison.csv)
-- [aggregated CSV](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_aggregated.csv)
-
-## hard3 与 8 卡实验边界
-
-hard3：
-
-```text
-dlr1.mps
-Dual2_5000.mps
-fhnw-binschedule1.mps
-```
-
-它们单独用于困难 case 诊断，不混入 non-hard23 主结果。见 [hard3 说明](W7900_LARGE_MPS_HARD3_NOTES.zh-CN.md) 和 [probe2 汇总](../validation/w7900_large_mps_hard3_probe2_600s_summary_20260616.zh-CN.md)。
-
-8 卡 fast8 的 146 s 对比单卡顺序 558 s，表示 8 个独立 MPS 作业的并发吞吐。它不是把一个 LP 分解到 8 张 GPU。见 [8-card fast8 汇总](../validation/w7900_8card_batch_fast8_summary_20260616.zh-CN.md)。
-
-## 已知限制
-
-- 当前实现和 tuning 结论主要针对 `gfx1100`，并继承部分 `gfx1150` 经验。
-- 自定义 kernel 的参数和 reduction 假设尚未构成广泛 AMD 架构认证。
-- aggregate 性能仍受迭代次数、收敛路径和 host/device overhead 共同影响。
-- 当前没有单问题分布式多 GPU 求解能力。
-- Docker 只是环境骨架，W7900 已提交数字来自实际主机运行。
-- 任何新的优化都必须同时检查 termination、feasibility、gap、迭代数和重复运行性能。
+- 当前项目没有单问题分布式多 GPU 求解能力。
+- 8 卡结果只表示独立任务吞吐。
+- precision 结果只覆盖五例。
+- 静态相关为探索性，不证明因果。
+- hard3 不混入 nonhard23。
+- Docker 是环境骨架，不是正式性能数字来源。
+- 当前主要验证保持 presolve 关闭；nontrivial postsolve 与原变量恢复未纳入
+  正式合同。
+- 本项目不声称提出新的 PDLP 算法或认证所有 AMD GPU。
 
 ## 继续阅读
 
-- [可复现性指南](REPRODUCIBILITY.zh-CN.md)
+- [最终结果](W7900_FINAL_RESULTS_20260729.zh-CN.md)
+- [最终复现指南](FINAL_REPRODUCTION_GUIDE.zh-CN.md)
+- [Profiling 记录](ROCM_PROFILING_NOTES.zh-CN.md)
 - [Validation 索引](../validation/README.zh-CN.md)
-- [ROCm profiling 记录](ROCM_PROFILING_NOTES.zh-CN.md)
-- [ROCm tuning 历史](ROCM_TUNING_HISTORY.zh-CN.md)
-- [W7900 性能行为分析](W7900_PERFORMANCE_BEHAVIOR.zh-CN.md)
-- [优化基线说明](W7900_OPTIMIZATION_BASELINES.zh-CN.md)
+- [最终 compact evidence](../validation/final_w7900_20260729/README.zh-CN.md)

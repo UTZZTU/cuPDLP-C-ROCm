@@ -2,124 +2,94 @@
 
 > English: [README.en.md](README.en.md)
 > 文档地图：[docs/README.md](docs/README.md)
-> 竞赛评审入口：[docs/COMPETITION_README.zh-CN.md](docs/COMPETITION_README.zh-CN.md)
+> 最终 W7900 结果：[docs/W7900_FINAL_RESULTS_20260729.zh-CN.md](docs/W7900_FINAL_RESULTS_20260729.zh-CN.md)
+> 最终复现指南：[docs/FINAL_REPRODUCTION_GUIDE.zh-CN.md](docs/FINAL_REPRODUCTION_GUIDE.zh-CN.md)
 
-`cuPDLP-C-ROCm` 是上游 [cuPDLP-C](README_UPSTREAM.md) 的 ROCm/HIP 移植、验证与性能分析分支。项目保留 CPU 和上游兼容 CUDA 路径，并新增 AMD GPU 后端，重点记录科学计算求解器从 CUDA 迁移到 ROCm 时的工程边界、数值验证和性能证据。
+`cuPDLP-C-ROCm` 是上游 [cuPDLP-C](README_UPSTREAM.md) 的 ROCm/HIP
+移植、验证与性能分析分支。项目保留 CPU 与上游兼容 CUDA 路径，并新增
+AMD GPU 后端。项目贡献是科学计算求解器迁移、数值验证、性能剖析和
+证据链工程，不是提出新的线性规划算法。
 
-## 项目定位
+## 最终发布状态
 
-本项目的贡献不是提出新的线性规划算法，而是：
-
-- 将 cuPDLP-C 的 GPU 执行路径迁移到 ROCm/HIP；
-- 维护 CPU、CUDA、ROCm 三种后端模式；
-- 为 smoke、Netlib、large-MPS、profiling 和 tuning 建立可追溯证据链；
-- 记录性能优化与数值收敛相互影响的正向和负向实验；
-- 提供可复用的 CUDA-to-ROCm 科学计算迁移经验。
-
-| 项目 | 当前状态 |
+| 项目 | 最终状态 |
 |---|---|
-| 当前主分支 | `rocm-w7900-gfx1100` |
-| 当前主要 ROCm 平台 | Radeon PRO W7900 / `gfx1100` |
-| 早期 ROCm 里程碑 | Radeon 890M / `gfx1150` |
-| 参考后端 | CPU、CUDA（RTX 3090、RTX 4090D、H100） |
-| 当前 W7900 SpMV 默认策略 | `HIPSPARSE_SPMV_CSR_ALG1` |
-| 回退策略 | `CUPDLP_HIP_SPMV_ALG=csr_alg2` |
-| 发布属性 | 研究与工程验证项目；不是生产级、广泛认证的求解器发行版 |
+| 默认分支 | `rocm-w7900-gfx1100` |
+| 冻结求解器源码 | `735764807d8698ff30811d1a6fcc45d4a3fd4817` |
+| 正式实验 harness | `b5b9a6ffc1a041a48a0e051568d0134a3822556c` |
+| 主要 ROCm 平台 | Radeon PRO W7900 / `gfx1100` |
+| 正式 W7900 实验 | **76/76 `VALIDATED_OPTIMAL`** |
+| 最终证据状态 | `FORMAL_W7900_EXPERIMENTS_COMPLETE`、`FINAL_ANALYSIS_RELEASED` |
+| 发布属性 | 研究与工程验证项目；不是生产级通用求解器发行版 |
 
-## 关键结果
+求解器源码边界固定在 `CMakeLists.txt`、`cmake/`、`cupdlp/` 和
+`interface/`。最终 harness 提交只增加实验、验证和归档能力，不改变冻结
+求解器源码。
 
-| 证据 | 结果 | 说明 |
-|---|---|---|
-| W7900 large-MPS non-hard23 | 23/23 `OPTIMAL` | wall time 2960.171 s；solve time 2742.940 s |
-| P10 targeted profiling | rocSPARSE CSR SpMV 为主要 GPU 热点 | `hipMemcpy`、`hipMemcpyAsync` 和 kernel launch 也值得关注 |
-| P11 SpMV tuning | 接受 `CSR_ALG1` 作为当前默认 | 保留 `csr_alg2` 环境变量回退路径 |
-| P12 negative experiment | patch 被拒绝 | `set-cover-model` 迭代数由 7480 变为 7600，说明执行层修改也可能改变数值轨迹 |
-| P14-A1 quick6 repeats | current 6/6 胜出 | geomean speedup 1.18889；median 1.19502；迭代数保持一致 |
-| 8-card fast8 batch | 146 s vs 单卡顺序 558 s | 这是 8 个独立 MPS 任务的吞吐实验，不是单个 LP 的分布式多 GPU 求解 |
+## 正式 W7900 结果
 
-完整结果、边界条件和证据链接见 [W7900 当前状态](docs/W7900_CURRENT_STATUS.zh-CN.md) 与 [Validation 索引](validation/README.zh-CN.md)。
+| 证据 | 正式结果 | 口径 |
+|---|---:|---|
+| nonhard23 基线 | 23 例 × 2 次，46/46 验证通过 | 单卡、顺序独立 MPS |
+| 两轮完整总时间 | 2950.626 s / 2950.675 s | 每轮完整 23 例 |
+| 单卡吞吐 | 28.061842 / 28.061379 cases/hour | 均值 **28.061611** |
+| 精度敏感性 | 5 例 × 3 档 × 2 次，30/30 验证通过 | `1e-3`、`1e-4`、`1e-5` |
+| Profiling | 5/5 `PASS` | 每例有 trace CSV 与 kernel trace |
+| 静态结构分析 | 23/23 通过 | rows、columns、nnz、密度和不规则性 |
+| 数值质量 | 30/30 实际误差不高于目标精度 | 最大 `error/tolerance=0.998079` |
 
-## 求解与执行流程
+主要发现：
 
-```text
-MPS input
-  -> HiGHS parsing / optional presolve
-  -> cuPDLP model and scaling
-  -> CSR + CSC sparse matrices
-  -> CPU / CUDA / ROCm backend
-  -> PDHG iterations
-  -> feasibility, gap and termination checks
-  -> JSON / solution output
-```
+- `s100`、`Primal2_1000`、`thk_63` 占完整基线总时间的
+  **82.22%**，性能呈明显长尾；
+- 23 例总时间 CV 中位数为 **0.377%**，
+  **22/23** 低于 2%，23/23 两轮迭代数一致；
+- 从 `1e-3` 收紧到 `1e-5`，五例总时间成本为
+  **1.01×–
+  4.01×**，
+  迭代成本为
+  **2.02×–
+  11.58×**；
+- `matrix_nnz` 与采样峰值显存的探索性 Spearman 相关系数为
+  **0.882**；静态相关不代表因果。
 
-当前提交的主要验证路径使用 HiGHS 解析，并保持 presolve 关闭。代码中存在 optional presolve 路径，但 nontrivial postsolve 与恢复到原始变量空间尚未纳入当前验证合同，因此不能把它描述为已经完整验证的主流程。
+完整数据、图和边界见
+[最终结果页](docs/W7900_FINAL_RESULTS_20260729.zh-CN.md)。
 
-核心工作负载包括 `Ax`、`Aᵀy` 稀疏矩阵向量乘、向量更新、投影、归约、步长调整和 restart。端到端性能通常可以理解为：
+## 快速检查最终证据
 
-```text
-total time ≈ per-iteration cost × number of iterations
-```
-
-因此，GPU kernel 更快不一定自动带来总求解时间更短；浮点顺序和执行层变化也可能改变收敛路径。
-
-## 后端模式
-
-| 模式 | CMake 选项 | 用途 |
-|---|---|---|
-| CPU | `BUILD_CUDA=OFF`, `BUILD_ROCM=OFF` | 正确性与可移植性基线 |
-| CUDA | `BUILD_CUDA=ON`, `BUILD_ROCM=OFF` | NVIDIA 参考后端 |
-| ROCm/HIP | `BUILD_CUDA=OFF`, `BUILD_ROCM=ON` | AMD GPU 后端 |
-
-`BUILD_CUDA` 与 `BUILD_ROCM` 不应同时开启。不同后端应使用独立构建目录。
-
-## 快速开始
-
-### 1. 克隆仓库
+无需 W7900，也可以在普通 Linux 主机检查提交的 compact evidence：
 
 ```bash
-git clone --recurse-submodules \
-  --branch rocm-w7900-gfx1100 \
-  https://github.com/UTZZTU/cuPDLP-C-ROCm.git
-cd cuPDLP-C-ROCm
+python3 scripts/analysis/generate_final_w7900_release.py --check-only
+bash scripts/verify_final_repository_release.sh
 ```
 
-### 2. 在任意主机检查已提交证据
-
-没有 W7900 时仍可检查仓库中已提交的 CSV、Markdown 和 SVG：
-
-```bash
-python3 - <<'PY'
-import csv
-from pathlib import Path
-
-rows = list(csv.DictReader(
-    Path("validation/w7900_large_mps_nonhard23_20260613.csv").open()
-))
-print("cases:", len(rows))
-print("termination:", sorted({r["terminationCode"] for r in rows}))
-print("wall:", sum(float(r["wall_seconds"]) for r in rows))
-print("solve:", sum(float(r["dSolvingTime"]) for r in rows))
-PY
-```
-
-预期为 23 个 case，且 termination 全部为 `OPTIMAL`。
-
-### 3. 在 W7900 上恢复、构建并运行 smoke
-
-仓库的 bootstrap 脚本默认管理 `/app/cupdlp_w7900` 工作区，并会在其中克隆或更新固定分支、准备 HiGHS、构建 CPU/ROCm 版本。一次完成恢复、构建和 smoke：
-
-```bash
-RUN_BUILD=1 RUN_SMOKE=1 \
-  bash scripts/bootstrap_w7900_workspace.sh
-```
-
-完成后，脚本管理的仓库位于：
+预期标志：
 
 ```text
-/app/cupdlp_w7900/src/cuPDLP-C-ROCm
+FINAL_W7900_RELEASE_DATA_PASS
+FINAL_REPOSITORY_RELEASE_PASS
 ```
 
-在已经激活依赖与 ROCm 环境的现有 checkout 中，也可以只运行：
+重新生成正式图表：
+
+```bash
+python3 scripts/analysis/generate_final_w7900_release.py
+```
+
+## 构建与最小运行
+
+### CPU
+
+```bash
+cmake -S . -B build-cpu -G Ninja   -DCMAKE_BUILD_TYPE=Release   -DBUILD_CUDA=OFF   -DBUILD_ROCM=OFF
+cmake --build build-cpu -j"$(nproc)"
+```
+
+### W7900 / ROCm
+
+在匹配的 W7900 环境中：
 
 ```bash
 bash scripts/build_w7900_cpu.sh
@@ -127,60 +97,53 @@ bash scripts/build_w7900_rocm.sh
 bash scripts/run_w7900_smoke.sh
 ```
 
-维护脚本使用：
-
-```text
-build-cpu/bin/plc
-build-rocm-w7900/bin/plc
-```
-
-`plc` 的最小调用形式为：
-
-```bash
-./build-rocm-w7900/bin/plc \
-  -fname ./example/afiro.mps \
-  -out /tmp/afiro_rocm.json \
-  -nIterLim 200
-```
-
-环境、数据集、profiling 和 repeated-validation 细节见[可复现性指南](docs/REPRODUCIBILITY.zh-CN.md)。
-
-## 文档入口
-
-| 需求 | 中文 | English |
-|---|---|---|
-| 完整文档导航 | [文档地图](docs/README.md) | [Documentation map](docs/README.md) |
-| 构建和运行 | [ROCm 工作流](docs/ROCM_WORKFLOW.zh-CN.md) | [ROCm workflow](docs/ROCM_WORKFLOW.md) |
-| 复现实验 | [可复现性指南](docs/REPRODUCIBILITY.zh-CN.md) | [Reproducibility](docs/REPRODUCIBILITY.md) |
-| 验证语义 | [验证说明](docs/VALIDATION.zh-CN.md) | [Validation semantics](docs/VALIDATION.md) |
-| 当前 W7900 结论 | [W7900 当前状态](docs/W7900_CURRENT_STATUS.zh-CN.md) | [W7900 current status](docs/W7900_CURRENT_STATUS.md) |
-| 性能与调优 | [性能行为](docs/W7900_PERFORMANCE_BEHAVIOR.zh-CN.md)、[调优历史](docs/ROCM_TUNING_HISTORY.zh-CN.md) | [Performance behavior](docs/W7900_PERFORMANCE_BEHAVIOR.md), [tuning history](docs/ROCM_TUNING_HISTORY.md) |
-| 原始汇总索引 | [Validation 索引](validation/README.zh-CN.md) | [Validation index](validation/README.md) |
-| CUDA-to-ROCm 迁移 | [迁移案例](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) | [Migration case study](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) |
-| 竞赛评审 | [竞赛入口](docs/COMPETITION_README.zh-CN.md) | [Competition entry](docs/COMPETITION_README.md) |
+完整 fresh-machine、数据集、mini gate、`baseline23`、`session2`、归档和
+常见故障处理见
+[最终复现指南](docs/FINAL_REPRODUCTION_GUIDE.zh-CN.md)。
 
 ## 结果与数据策略
 
-原始 large-MPS 文件、原始 profiler trace、机器本地构建目录和临时运行目录不进入 Git。仓库提交：
+Git 仓库提交：
 
-- case lists 和 manifests；
-- curated CSV；
+- case lists、manifests 和 checksums；
+- compact curated CSV/JSON；
 - Markdown summaries；
-- 小型 SVG 图表；
-- 可复现脚本；
-- 接受和拒绝的调优结论。
+- 小型 PNG/SVG；
+- 验证、分析与复现脚本。
 
-历史日期化报告保留为证据，但当前结论只在主页、`docs/W7900_CURRENT_STATUS*` 和索引文档中维护。
+以下内容不进入 Git：
 
-## 已知限制
+- 原始 MPS；
+- raw profiler trace；
+- 本地 build 和临时运行目录；
+- Cookie、SSH key 或其他凭据。
 
-- 当前 ROCm 实现和参数主要在 `gfx1150`、`gfx1100` 上验证，不能等同于所有 AMD 架构均已认证。
-- W7900 aggregate performance 仍落后于本项目中的高端 CUDA 参考；竞争力需要结合具体 case 和收敛路径解释。
-- hard3 与 non-hard23 分开报告，不能把 hard3 隐藏或混入主结果。
-- 8 卡结果是独立任务并发吞吐，不是单问题多 GPU 算法。
-- Docker 文件是环境骨架，不是当前 W7900 性能数字的来源。
-- Python/apps 等可选路径不是当前 ROCm 主验证路径。
+## 重要边界
+
+- 单卡吞吐表示顺序处理独立 MPS，不是单个 LP 的多 GPU 求解。
+- 历史 8 卡 fast8 表示 8 个独立任务并发，不是分布式 LP 算法。
+- precision 结论只覆盖五个代表实例。
+- 静态相关是探索性关联，不证明因果。
+- hard3 与 nonhard23 分开报告。
+- Docker 文件是环境骨架，正式数字来自真实 W7900 主机。
+- `presolve` 关闭是当前主要验证合同；nontrivial postsolve 和原变量恢复未
+  纳入本轮正式验证。
+
+## 文档入口
+
+| 需求 | 文档 |
+|---|---|
+| 最终结果与结论 | [W7900 最终结果](docs/W7900_FINAL_RESULTS_20260729.zh-CN.md) |
+| 当前权威状态 | [W7900 当前状态](docs/W7900_CURRENT_STATUS.zh-CN.md) |
+| 最终复现 | [最终复现指南](docs/FINAL_REPRODUCTION_GUIDE.zh-CN.md) |
+| 验证语义 | [验证说明](docs/VALIDATION.zh-CN.md) |
+| 性能解释 | [性能行为](docs/W7900_PERFORMANCE_BEHAVIOR.zh-CN.md) |
+| Profiling | [Profiling 记录](docs/ROCM_PROFILING_NOTES.zh-CN.md) |
+| compact evidence | [最终 validation 包](validation/final_w7900_20260729/README.zh-CN.md) |
+| 竞赛评审 | [竞赛入口](docs/COMPETITION_README.zh-CN.md) |
+| 完整导航 | [文档地图](docs/README.md) |
 
 ## 上游与许可证
 
-上游 README 快照保存在 [README_UPSTREAM.md](README_UPSTREAM.md)，用于说明原始项目背景。除非相应文件另有说明，本仓库遵循 [MIT License](LICENSE)。
+上游 README 快照见 [README_UPSTREAM.md](README_UPSTREAM.md)。除非相应
+文件另有说明，本仓库遵循 [MIT License](LICENSE)。

@@ -1,61 +1,54 @@
-# Submission checklist
+# Final Submission Checklist
 
-> 中文: [SUBMISSION_CHECKLIST.zh-CN.md](SUBMISSION_CHECKLIST.zh-CN.md)
+> 中文：[SUBMISSION_CHECKLIST.zh-CN.md](SUBMISSION_CHECKLIST.zh-CN.md)
 
-This checklist separates repository-verifiable material from external submission artifacts. The actual status of the paper, slides, and video is maintained by the project owner at submission time so that the repository does not preserve stale “not started” or “in progress” claims.
-
-## Repository engineering material
+## In-repository material
 
 | Item | Status | Entry |
 |---|---|---|
-| English and Chinese homepages | Available | [English](../README.en.md), [中文](../README.md) |
-| Documentation map | Available | [docs/README.md](README.md) |
-| W7900 current status | Available | [W7900_CURRENT_STATUS.md](W7900_CURRENT_STATUS.md) |
-| Reproducibility guide | Available | [REPRODUCIBILITY.md](REPRODUCIBILITY.md) |
-| Validation evidence index | Available | [validation/README.md](../validation/README.md) |
-| Competition reviewer path | Available | [COMPETITION_README.md](COMPETITION_README.md) |
-| Score mapping | Available; update when rules change | [COMPETITION_SCORECARD.md](COMPETITION_SCORECARD.md) |
-| Architecture and evidence maps | Available | [architecture](assets/competition/project_architecture.svg), [evidence map](assets/competition/evidence_map.svg) |
-| Docker/container | Environment skeleton | [Docker notes](../docker/README_DOCKER_W7900.md) |
-| Raw-data policy | Defined | `.mps` files and raw traces stay outside Git |
+| Chinese and English homepages | Updated | Root READMEs |
+| Documentation map | Updated | `docs/README.md` |
+| Final formal results | Complete | `W7900_FINAL_RESULTS_20260729*` |
+| Current W7900 status | Updated | `W7900_CURRENT_STATUS*` |
+| Final reproduction guide | Complete | `FINAL_REPRODUCTION_GUIDE*` |
+| Validation semantics | Final contract added | `VALIDATION*` |
+| Performance/workload analysis | Updated | `W7900_PERFORMANCE_BEHAVIOR*` |
+| Profiling notes | Updated | `ROCM_PROFILING_NOTES*` |
+| Validation indexes | Updated | `validation/README*` |
+| Final compact evidence | Complete | `validation/final_w7900_20260729/` |
+| Final PNG/SVG | Generated | `docs/assets/w7900/final20260729/` |
+| Analysis and verification scripts | Added | `scripts/analysis/`, `scripts/docs/` |
+| Release notes | Added | `RELEASE_NOTES_FINAL_20260729.md` |
 
-## W7900 evidence closure
+## Evidence closure
 
-| Item | Status | Evidence |
-|---|---|---|
-| build and smoke | Closed for current stage | [smoke summary](../validation/w7900_smoke_summary_20260611.md) |
-| Netlib / 27-case | Complete | [27-case baseline](../validation/w7900_27cases_baseline_20260611.md) |
-| non-hard23 | 23/23 `OPTIMAL` | [summary](../validation/w7900_large_mps_nonhard23_20260613.md) |
-| hard3 | Reported separately | [notes](W7900_LARGE_MPS_HARD3_NOTES.md) |
-| P10 profiling | Complete | [summary](../validation/w7900_p10_current_targeted_rocprof_20260617_summary.md) |
-| P11 tuning | `CSR_ALG1` default accepted | [summary](../validation/w7900_p11_spmv_tuning_summary_20260617.md) |
-| P12 negative result | Patch rejected and documented | [negative finding](../validation/w7900_p12_spmv_buffer_alg_consistency_negative_20260617.md) |
-| P14-A1 repeats | current wins 6/6 | [summary](../validation/w7900_p14a1_quick6_current_vs_pretuning_repeats_20260618_summary.md) |
-| 8-card fast8 | independent-MPS throughput | [summary](../validation/w7900_8card_batch_fast8_summary_20260616.md) |
+- [x] formal branch `rocm-w7900-gfx1100`
+- [x] frozen solver `735764807d8698ff30811d1a6fcc45d4a3fd4817`
+- [x] formal harness `b5b9a6ffc1a041a48a0e051568d0134a3822556c`
+- [x] Window 1: 46/46
+- [x] Window 2 precision: 30/30
+- [x] Window 2 profiles: 5/5
+- [x] dataset and internal checksums PASS
+- [x] resource coverage for every solver row
+- [x] final analysis released
+- [x] no raw MPS, raw traces, or credentials in Git
 
-## External submission artifacts
+## External-material review
 
-The owner completes these checks before final submission; their status is not permanently hard-coded in the repository:
+- [ ] Paper uses final figures and final numbers.
+- [ ] Slides do not mix the June single-run results with the July formal repeats.
+- [ ] Poster defines throughput as sequential independent MPS cases.
+- [ ] Video distinguishes real W7900 execution from offline evidence inspection.
+- [ ] Defense does not call fast8 one-LP distributed solving.
+- [ ] Tolerance conclusions remain limited to five cases.
+- [ ] Static correlations are described as exploratory.
+- [ ] Repository paths and commit references resolve.
 
-| Artifact | Final check |
-|---|---|
-| Technical paper | Title, contribution boundaries, numbers, figures, and repository citations agree |
-| Presentation slides | Do not overclaim algorithmic novelty or describe eight-card throughput as one-problem multi-GPU |
-| Demo video | Show an actual build/run or explicitly identify committed-evidence inspection |
-| Submission form | Branch, commit, environment, dataset source, and license are accurate |
-| Optional container | Clearly distinguish an environment skeleton from a fully validated reproduction image |
+## Before push
 
-## Final consistency checks
-
-- [ ] Main branch and commit are recorded.
-- [ ] English and Chinese homepages agree with the W7900 current-status pages.
-- [ ] non-hard23 is reported as 23/23 `OPTIMAL`, with hard3 separate.
-- [ ] The current default is `HIPSPARSE_SPMV_CSR_ALG1`; fallback is `CUPDLP_HIP_SPMV_ALG=csr_alg2`.
-- [ ] The rejected P12 experiment remains discoverable.
-- [ ] P14-A1 is reported as 6/6 current wins, geometric mean 1.18889, median 1.19502.
-- [ ] Eight-card results are described as eight independent MPS jobs.
-- [ ] No claim is made of a new PDLP algorithm.
-- [ ] No claim is made that W7900 beats CUDA on every case.
-- [ ] Raw MPS, raw traces, build directories, and credentials are not staged.
-- [ ] `git diff --check` and Markdown/link checks pass.
-- [ ] Repository links and file paths cited by submission materials are accessible.
+```bash
+git diff --check
+python3 scripts/docs/check_markdown_links.py
+python3 scripts/analysis/generate_final_w7900_release.py --check-only
+bash scripts/verify_final_repository_release.sh
+```

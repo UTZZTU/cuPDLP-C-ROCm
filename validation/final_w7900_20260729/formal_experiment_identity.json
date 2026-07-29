@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "release_date": "2026-07-29",
+  "repository": "UTZZTU/cuPDLP-C-ROCm",
+  "formal_branch": "rocm-w7900-gfx1100",
+  "solver_source_baseline": "735764807d8698ff30811d1a6fcc45d4a3fd4817",
+  "formal_harness_commit": "b5b9a6ffc1a041a48a0e051568d0134a3822556c",
+  "window1": {
+    "mode": "baseline23",
+    "archive_sha256": "d2ce13091072a7c40c2c89bdd988e94c2fca36772da38e0af87de6332e7cd94a",
+    "solver_rows": 46,
+    "validated_solver_rows": 46,
+    "cases": 23,
+    "repeats": 2
+  },
+  "window2": {
+    "mode": "session2",
+    "archive_sha256": "7f8fbcd45591f4dbe0899d18df76329b1f9a17ff433b6dcd3c06d743aaead0db",
+    "solver_rows": 30,
+    "validated_solver_rows": 30,
+    "cases": 5,
+    "tolerances": [
+      "1e-3",
+      "1e-4",
+      "1e-5"
+    ],
+    "repeats": 2,
+    "profiles": 5,
+    "validated_profiles": 5
+  },
+  "final_analysis_handoff_sha256": "361904acc594e807517556d03e6f8520ea889bc491149aa50ae99ffc79478593",
+  "formal_solver_rows": 76,
+  "validated_formal_solver_rows": 76,
+  "final_analysis_released": true
+}

@@ -1,0 +1,25 @@
+feature_or_family,type,definition_zh_CN
+constraint_rows,count,ROWS 中 E/L/G 约束行数量；所有 N 行不计入约束。
+columns,count,COLUMNS/BOUNDS 中出现的唯一变量数量。
+matrix_nnz,count,同一列内重复位置聚合后，约束矩阵 A 的最终非零元数量。
+matrix_density,ratio,matrix_nnz / (constraint_rows × columns)。
+equality_rows,count,ROWS 中 E 类型约束数量。
+less_equal_rows,count,ROWS 中 L 类型约束数量。
+greater_equal_rows,count,ROWS 中 G 类型约束数量。
+row_degree_*,distribution,每条约束行的最终非零元数量分布。
+column_degree_*,distribution,每个变量列的最终非零元数量分布。
+row_degree_gini,ratio,行非零度分布的 Gini 系数；越高表示负载越偏斜。
+column_degree_gini,ratio,列非零度分布的 Gini 系数。
+coefficient_abs_*,distribution,A 中最终非零系数绝对值分布；分位数为有界确定性样本近似。
+coefficient_dynamic_range,ratio,max(|a_ij|)/min(|a_ij|)，是数值尺度代理，不是条件数。
+rhs_*,distribution,选定的第一个 RHS set 的统计；隐式 RHS 为 0。
+objective_*,distribution,目标行系数的最终非零统计。
+default_nonnegative_variables,count,没有显式 BOUNDS，采用 0≤x<∞ 默认边界的变量数量。
+free_variables,count,下界为 -∞ 且上界为 +∞ 的变量数量。
+fixed_variables,count,有限且相等上下界的变量数量。
+integer_marker_variables,count,由 INTORG/INTEND marker 声明为整数的变量数量。
+declared_binary_variables,count,由 BV bound card 明确声明的二进制变量数量；不从 0/1 边界猜测。
+connected_component_count_nonisolated,count,A 的约束—变量二部图中含边连通分量数量。
+largest_component_edge_ratio,ratio,最大连通分量所含边数占总 nnz 的比例。
+duplicate_matrix_entries,count,同一列内重复 row/column 位置的原始额外记录数量。
+zero_after_aggregation_count,count,重复系数求和后变为 0、因此不计入 nnz 的位置数量。

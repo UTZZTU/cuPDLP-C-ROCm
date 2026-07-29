@@ -1,5 +1,25 @@
 # W7900 决赛冲刺运行手册（v2.1）
 
+<!-- FINAL_SPRINT_COMPLETED_20260729 -->
+
+> **运行手册状态：已完成。**
+>
+> 本手册记录 v2.1 正式实验流程。该流程已在 2026-07-29 完成：
+>
+> - mini hardware gate：PASS；
+> - Window 1 baseline23：46/46；
+> - Window 2 precision：30/30；
+> - Window 2 profile：5/5；
+> - 两个正式 archive 均完成 SHA、dataset、identity 和 Stage B+D QC；
+> - `FORMAL_W7900_EXPERIMENTS_COMPLETE`；
+> - `FINAL_ANALYSIS_RELEASED`。
+>
+> 当前发布不需要再次申请 W7900。查看结果请进入
+> [W7900 最终结果](W7900_FINAL_RESULTS_20260729.zh-CN.md)；需要检查或重跑时，
+> 使用[最终复现指南](FINAL_REPRODUCTION_GUIDE.zh-CN.md)。
+> 本文其余内容作为已验证的历史执行手册保留。
+
+
 本手册固化 fresh-machine 恢复、百度网盘 large-MPS 下载、正式基线、精度敏感性、资源采样、targeted profiling、throughput 后处理、断点恢复、归档与发布流程。
 
 

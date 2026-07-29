@@ -1,0 +1,46 @@
+{
+  "generated_at": "2026-07-28T21:46:37.822819+08:00",
+  "status": "PASS",
+  "case_count": 23,
+  "issues": [],
+  "inventory_crosscheck": {
+    "inventory_headers": [
+      "name",
+      "size_bytes",
+      "size_mb",
+      "path"
+    ],
+    "detected_columns": {
+      "case": "name",
+      "bytes": "size_bytes",
+      "sha256": null,
+      "rows": null,
+      "columns": null,
+      "nnz": null
+    },
+    "inventory_rows": 26,
+    "matched_cases": 23,
+    "mismatch_cases": 0,
+    "status": "PASS"
+  },
+  "selection_source": {
+    "status": "PASS",
+    "runner": "/data/cuPDLP-C-ROCm/scripts/run_w7900_final_sprint.sh",
+    "runner_sha256": "a8315d8b80019c6d9bb6a5baefc1fbe8486d68f4a9628893beaabeb2829acb61",
+    "precision5": [
+      "L2CTA3D.mps",
+      "set-cover-model.mps",
+      "thk_48.mps",
+      "square41.mps",
+      "tpl-tub-ws1617.mps"
+    ],
+    "profile5": [
+      "thk_48.mps",
+      "square41.mps",
+      "L2CTA3D.mps",
+      "set-cover-model.mps",
+      "tpl-tub-ws1617.mps"
+    ],
+    "harness_commit": "b5b9a6ffc1a041a48a0e051568d0134a3822556c"
+  }
+}

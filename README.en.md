@@ -1,125 +1,96 @@
 # cuPDLP-C-ROCm
 
-> 中文主页: [README.md](README.md)
+> 中文：[README.md](README.md)
 > Documentation map: [docs/README.md](docs/README.md)
-> Competition reviewer entry: [docs/COMPETITION_README.md](docs/COMPETITION_README.md)
+> Final W7900 results: [docs/W7900_FINAL_RESULTS_20260729.md](docs/W7900_FINAL_RESULTS_20260729.md)
+> Final reproduction guide: [docs/FINAL_REPRODUCTION_GUIDE.md](docs/FINAL_REPRODUCTION_GUIDE.md)
 
-`cuPDLP-C-ROCm` is a ROCm/HIP port, validation, and performance-analysis branch of upstream [cuPDLP-C](README_UPSTREAM.md). It preserves the CPU path and the upstream-compatible CUDA path, adds an AMD GPU backend, and records the engineering, numerical-validation, and performance evidence required for a scientific-computing migration from CUDA to ROCm.
+`cuPDLP-C-ROCm` is the ROCm/HIP port, validation, and performance-analysis
+branch of upstream [cuPDLP-C](README_UPSTREAM.md). It preserves CPU and
+upstream-compatible CUDA paths while adding an AMD GPU backend. The contribution
+is engineering migration, numerical validation, profiling, and evidence
+management—not a new linear-programming algorithm.
 
-## Project scope
+## Final release status
 
-This project does not introduce a new linear-programming algorithm. Its contributions are:
-
-- porting the cuPDLP-C GPU execution path to ROCm/HIP;
-- maintaining CPU, CUDA, and ROCm backend modes;
-- building a traceable evidence chain for smoke, Netlib, large-MPS, profiling, and tuning;
-- recording both accepted optimizations and rejected experiments that affect convergence behavior;
-- documenting reusable CUDA-to-ROCm migration lessons for scientific software.
-
-| Item | Current status |
+| Item | Final status |
 |---|---|
-| Main branch | `rocm-w7900-gfx1100` |
-| Current primary ROCm platform | Radeon PRO W7900 / `gfx1100` |
-| Earlier ROCm milestone | Radeon 890M / `gfx1150` |
-| Reference backends | CPU and CUDA on RTX 3090, RTX 4090D, and H100 |
-| Current W7900 SpMV default | `HIPSPARSE_SPMV_CSR_ALG1` |
-| Fallback | `CUPDLP_HIP_SPMV_ALG=csr_alg2` |
-| Release status | Research and engineering validation project; not a broadly certified production solver release |
+| Default branch | `rocm-w7900-gfx1100` |
+| Frozen solver source | `735764807d8698ff30811d1a6fcc45d4a3fd4817` |
+| Formal experiment harness | `b5b9a6ffc1a041a48a0e051568d0134a3822556c` |
+| Main ROCm platform | Radeon PRO W7900 / `gfx1100` |
+| Formal W7900 runs | **76/76 `VALIDATED_OPTIMAL`** |
+| Evidence state | `FORMAL_W7900_EXPERIMENTS_COMPLETE`, `FINAL_ANALYSIS_RELEASED` |
+| Release character | Research and engineering validation; not a production-grade general solver release |
 
-## Key results
+The solver-source boundary is frozen across `CMakeLists.txt`, `cmake/`,
+`cupdlp/`, and `interface/`. The final harness commit adds experiment,
+validation, and archival support without changing that frozen solver source.
 
-| Evidence | Result | Interpretation |
-|---|---|---|
-| W7900 large-MPS non-hard23 | 23/23 `OPTIMAL` | 2960.171 s wall time; 2742.940 s solve time |
-| P10 targeted profiling | rocSPARSE CSR SpMV is the dominant GPU hotspot | `hipMemcpy`, `hipMemcpyAsync`, and kernel launch overhead also matter |
-| P11 SpMV tuning | `CSR_ALG1` accepted as the current default | `csr_alg2` remains available as a runtime fallback |
-| P12 negative experiment | patch rejected | `set-cover-model` changed from 7480 to 7600 iterations, showing that execution-layer changes can alter the numerical trajectory |
-| P14-A1 quick6 repeats | current wins 6/6 | geometric-mean speedup 1.18889; median 1.19502; iteration counts unchanged |
-| 8-card fast8 batch | 146 s versus 558 s sequential on one GPU | throughput for eight independent MPS jobs, not distributed solution of one LP |
+## Formal W7900 results
 
-See [W7900 current status](docs/W7900_CURRENT_STATUS.md) and the [validation index](validation/README.md) for boundaries and source artifacts.
+| Evidence | Formal result | Scope |
+|---|---:|---|
+| nonhard23 baseline | 23 cases × 2 repeats, 46/46 validated | One GPU, sequential independent MPS cases |
+| Complete-repeat total time | 2950.626 s / 2950.675 s | Full 23-case repeat |
+| Single-card throughput | 28.061842 / 28.061379 cases/hour | Mean **28.061611** |
+| Tolerance sensitivity | 5 cases × 3 tolerances × 2 repeats, 30/30 validated | `1e-3`, `1e-4`, `1e-5` |
+| Profiling | 5/5 `PASS` | Non-empty trace CSV and kernel trace per case |
+| Static structure analysis | 23/23 validated | Rows, columns, nnz, density, irregularity |
+| Numerical quality | 30/30 achieved errors do not exceed requested tolerance | Maximum `error/tolerance=0.998079` |
 
-## Solver and execution flow
+Key findings:
 
-```text
-MPS input
-  -> HiGHS parsing / optional presolve
-  -> cuPDLP model and scaling
-  -> CSR + CSC sparse matrices
-  -> CPU / CUDA / ROCm backend
-  -> PDHG iterations
-  -> feasibility, gap, and termination checks
-  -> JSON / solution output
-```
+- `s100`, `Primal2_1000`, and `thk_63` account for **82.22%**
+  of complete baseline total time;
+- median total-time CV is **0.377%**; **22/23**
+  cases are below 2%, and all 23 cases have identical iteration counts across
+  the two repeats;
+- tightening from `1e-3` to `1e-5` costs
+  **1.01×–
+  4.01×** in total time and
+  **2.02×–
+  11.58×** in iterations;
+- the exploratory Spearman correlation between `matrix_nnz` and sampled peak
+  VRAM is **0.882**; association is not causation.
 
-The primary committed validation path uses HiGHS parsing with presolve disabled. An optional presolve path exists in the code, but nontrivial postsolve and recovery to the original variable space are not part of the current validated contract.
+See the [final results page](docs/W7900_FINAL_RESULTS_20260729.md) for compact
+data, figures, and claim boundaries.
 
-The main workload consists of `Ax` and `Aᵀy` sparse matrix-vector products, vector updates, projections, reductions, step-size adaptation, and restart logic. End-to-end behavior is usefully summarized as:
+## Inspect the committed final evidence
 
-```text
-total time ≈ per-iteration cost × number of iterations
-```
-
-A faster GPU kernel therefore does not guarantee a shorter solve. Floating-point order and execution-layer changes can also alter the convergence path.
-
-## Backend modes
-
-| Mode | CMake options | Purpose |
-|---|---|---|
-| CPU | `BUILD_CUDA=OFF`, `BUILD_ROCM=OFF` | Correctness and portability baseline |
-| CUDA | `BUILD_CUDA=ON`, `BUILD_ROCM=OFF` | NVIDIA reference backend |
-| ROCm/HIP | `BUILD_CUDA=OFF`, `BUILD_ROCM=ON` | AMD GPU backend |
-
-`BUILD_CUDA` and `BUILD_ROCM` should not be enabled together. Use separate build directories for each backend.
-
-## Quick start
-
-### 1. Clone
+A W7900 is not required to inspect the committed compact evidence:
 
 ```bash
-git clone --recurse-submodules \
-  --branch rocm-w7900-gfx1100 \
-  https://github.com/UTZZTU/cuPDLP-C-ROCm.git
-cd cuPDLP-C-ROCm
+python3 scripts/analysis/generate_final_w7900_release.py --check-only
+bash scripts/verify_final_repository_release.sh
 ```
 
-### 2. Inspect committed evidence on any host
-
-A W7900 is not required to inspect committed CSV, Markdown, and SVG artifacts:
-
-```bash
-python3 - <<'PY'
-import csv
-from pathlib import Path
-
-rows = list(csv.DictReader(
-    Path("validation/w7900_large_mps_nonhard23_20260613.csv").open()
-))
-print("cases:", len(rows))
-print("termination:", sorted({r["terminationCode"] for r in rows}))
-print("wall:", sum(float(r["wall_seconds"]) for r in rows))
-print("solve:", sum(float(r["dSolvingTime"]) for r in rows))
-PY
-```
-
-The expected result is 23 cases with `OPTIMAL` termination.
-
-### 3. Recover, build, and run smoke on W7900
-
-The bootstrap script manages a `/app/cupdlp_w7900` workspace by default. It clones or updates the fixed branch, prepares HiGHS, and builds the CPU and ROCm paths. To perform recovery, build, and smoke once:
-
-```bash
-RUN_BUILD=1 RUN_SMOKE=1 \
-  bash scripts/bootstrap_w7900_workspace.sh
-```
-
-The managed checkout is then located at:
+Expected markers:
 
 ```text
-/app/cupdlp_w7900/src/cuPDLP-C-ROCm
+FINAL_W7900_RELEASE_DATA_PASS
+FINAL_REPOSITORY_RELEASE_PASS
 ```
 
-In an existing checkout with dependencies and the ROCm environment already activated, run only:
+Regenerate the committed result figures with:
+
+```bash
+python3 scripts/analysis/generate_final_w7900_release.py
+```
+
+## Build and minimal execution
+
+### CPU
+
+```bash
+cmake -S . -B build-cpu -G Ninja   -DCMAKE_BUILD_TYPE=Release   -DBUILD_CUDA=OFF   -DBUILD_ROCM=OFF
+cmake --build build-cpu -j"$(nproc)"
+```
+
+### W7900 / ROCm
+
+On a matching W7900 environment:
 
 ```bash
 bash scripts/build_w7900_cpu.sh
@@ -127,61 +98,56 @@ bash scripts/build_w7900_rocm.sh
 bash scripts/run_w7900_smoke.sh
 ```
 
-The maintained scripts use:
+For fresh-machine recovery, dataset identity, mini gate, `baseline23`,
+`session2`, archiving, and troubleshooting, use the
+[final reproduction guide](docs/FINAL_REPRODUCTION_GUIDE.md).
 
-```text
-build-cpu/bin/plc
-build-rocm-w7900/bin/plc
-```
+## Repository data policy
 
-A minimal `plc` invocation is:
+Committed:
 
-```bash
-./build-rocm-w7900/bin/plc \
-  -fname ./example/afiro.mps \
-  -out /tmp/afiro_rocm.json \
-  -nIterLim 200
-```
-
-See the [reproducibility guide](docs/REPRODUCIBILITY.md) for environment, dataset, profiling, and repeated-validation details.
-
-## Documentation
-
-| Need | English | 中文 |
-|---|---|---|
-| Full navigation | [Documentation map](docs/README.md) | [文档地图](docs/README.md) |
-| Build and run | [ROCm workflow](docs/ROCM_WORKFLOW.md) | [ROCm 工作流](docs/ROCM_WORKFLOW.zh-CN.md) |
-| Reproduce experiments | [Reproducibility](docs/REPRODUCIBILITY.md) | [可复现性指南](docs/REPRODUCIBILITY.zh-CN.md) |
-| Validation semantics | [Validation](docs/VALIDATION.md) | [验证说明](docs/VALIDATION.zh-CN.md) |
-| Current W7900 conclusions | [W7900 current status](docs/W7900_CURRENT_STATUS.md) | [W7900 当前状态](docs/W7900_CURRENT_STATUS.zh-CN.md) |
-| Performance and tuning | [Performance behavior](docs/W7900_PERFORMANCE_BEHAVIOR.md), [tuning history](docs/ROCM_TUNING_HISTORY.md) | [性能行为](docs/W7900_PERFORMANCE_BEHAVIOR.zh-CN.md)、[调优历史](docs/ROCM_TUNING_HISTORY.zh-CN.md) |
-| Raw-summary index | [Validation index](validation/README.md) | [Validation 索引](validation/README.zh-CN.md) |
-| CUDA-to-ROCm migration | [Migration case study](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.md) | [迁移案例](docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md) |
-| Competition review | [Competition entry](docs/COMPETITION_README.md) | [竞赛入口](docs/COMPETITION_README.zh-CN.md) |
-
-## Evidence and data policy
-
-Raw large-MPS files, raw profiler traces, machine-local build directories, and temporary run directories are not committed. The repository keeps:
-
-- case lists and manifests;
-- curated CSV summaries;
+- case lists, manifests, and checksums;
+- compact curated CSV/JSON;
 - Markdown summaries;
-- compact SVG figures;
-- reproducibility scripts;
-- accepted and rejected tuning conclusions.
+- small PNG/SVG figures;
+- validation, analysis, and reproduction scripts.
 
-Dated experiment reports remain as evidence. Current conclusions are maintained only in the homepages, `docs/W7900_CURRENT_STATUS*`, and index documents.
+Not committed:
 
-## Known limitations
+- raw MPS inputs;
+- raw profiler traces;
+- local build and temporary run directories;
+- cookies, SSH keys, or other credentials.
 
-- The ROCm implementation and tuning policy have primarily been validated on `gfx1150` and `gfx1100`; this is not certification for every AMD architecture.
-- W7900 aggregate performance remains behind the high-end CUDA references in this repository; competitiveness must be interpreted per case and together with convergence behavior.
-- hard3 is reported separately from non-hard23 and must not be hidden or merged into the primary result.
-- The eight-GPU result is independent-job throughput, not a multi-GPU algorithm for one LP.
-- The Docker files are an environment skeleton, not the source of the committed W7900 performance numbers.
-- Optional Python/apps paths are not part of the primary ROCm validation path.
-- Optional presolve exists, but nontrivial postsolve and original-variable recovery are not validated as the primary path.
+## Claim boundaries
+
+- Single-card throughput means sequential independent MPS cases, not one LP
+  distributed across multiple GPUs.
+- Historical fast8 means eight independent jobs, not a distributed LP method.
+- Tolerance conclusions cover only the five targeted cases.
+- Static correlations are exploratory and non-causal.
+- hard3 remains separate from nonhard23.
+- Docker files are an environment skeleton; formal numbers came from a real
+  W7900 host.
+- Presolve-off is the primary validation contract; nontrivial postsolve and
+  original-variable recovery are not part of the formal release evidence.
+
+## Documentation entry points
+
+| Need | Document |
+|---|---|
+| Final results | [W7900 final results](docs/W7900_FINAL_RESULTS_20260729.md) |
+| Authoritative status | [W7900 current status](docs/W7900_CURRENT_STATUS.md) |
+| Reproduction | [Final reproduction guide](docs/FINAL_REPRODUCTION_GUIDE.md) |
+| Validation semantics | [Validation](docs/VALIDATION.md) |
+| Performance interpretation | [Performance behavior](docs/W7900_PERFORMANCE_BEHAVIOR.md) |
+| Profiling | [Profiling notes](docs/ROCM_PROFILING_NOTES.md) |
+| Compact evidence | [Final validation package](validation/final_w7900_20260729/README.md) |
+| Competition review | [Competition entry](docs/COMPETITION_README.md) |
+| Full navigation | [Documentation map](docs/README.md) |
 
 ## Upstream and license
 
-The upstream README snapshot is preserved in [README_UPSTREAM.md](README_UPSTREAM.md). Unless a file states otherwise, this repository is distributed under the [MIT License](LICENSE).
+The upstream README snapshot is retained in
+[README_UPSTREAM.md](README_UPSTREAM.md). Unless a file states otherwise, this
+repository follows the [MIT License](LICENSE).

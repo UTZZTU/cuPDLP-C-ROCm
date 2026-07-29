@@ -1,384 +1,159 @@
-# W7900 视频演示指南
+# 最终视频演示指南
 
-本文件用于准备比赛演示视频。比赛视频要求：
+> 最终结果：[W7900_FINAL_RESULTS_20260729.zh-CN.md](W7900_FINAL_RESULTS_20260729.zh-CN.md)
+> 竞赛入口：[COMPETITION_README.zh-CN.md](COMPETITION_README.zh-CN.md)
 
-* 分辨率不小于 `1920x1080`
-* 文件大小不超过 `100MB`
-* 时长不超过 `5 分钟`
-* 格式为 `avi`、`mp4`、`wmv` 之一
-* 内容应包括：作品原理及创新点、结构介绍、功能演示三部分
+本指南用于项目最终演示视频。W7900 正式实验已经完成，视频不再申请临时
+W7900，也不为了录屏重跑长实验。视频以以下内容为准：
 
-建议使用 OBS 录制，推荐录制格式为 `mp4`，画面分辨率为 `1920x1080`，帧率为 `30 FPS`，视频码率建议控制在 `2200 Kbps` 左右，音频码率建议 `96 Kbps` 或 `128 Kbps`。视频总时长建议控制在 `4 分 30 秒` 左右，避免超过 100MB。
+1. 真实项目结构和迁移代码；
+2. 4090/普通主机上的 compact evidence inspection；
+3. 已提交的正式 W7900 数据和精确图表；
+4. 已保存的真实 W7900 运行画面或日志；
+5. 清楚说明哪些是硬件实测、哪些是离线证据检查。
 
-## 1. 视频整体结构
+视频时长、分辨率、格式和文件大小以提交时最新官方要求为准。仓库不长期固化
+可能变化的赛事数字。
 
-建议视频按以下顺序录制：
+## 推荐三分钟结构
 
-| 时间        | 内容        | 画面                                                       |
-| --------- | --------- | -------------------------------------------------------- |
-| 0:00-0:25 | 项目背景与目标   | GitHub 主页、项目 README                                      |
-| 0:25-1:35 | 作品原理及创新点  | 架构图、ROCm/HIP 迁移说明、W7900 当前状态                             |
-| 1:35-2:25 | 项目结构介绍    | `cupdlp/hip`、`scripts`、`validation`、`docs`、`docs/assets` |
-| 2:25-4:10 | 功能演示      | 从恢复环境到构建 `plc`，运行一个简单 MPS 样例并查看结果                        |
-| 4:10-4:50 | 实验结果展示与总结 | 展示 W7900 图表、P11/P14/P5 结果和结论                             |
+| 时间 | 内容 | 画面 |
+|---|---|---|
+| 0:00–0:20 | 问题与目标 | 项目标题、CUDA-to-ROCm 挑战 |
+| 0:20–0:55 | 架构与贡献 | CPU/CUDA/ROCm 后端、验证链 |
+| 0:55–1:25 | 工程演示 | 仓库结构、构建脚本、compact evidence 检查 |
+| 1:25–2:20 | 正式结果 | 76/76、工作负载画像、精度—时间—显存 |
+| 2:20–2:45 | Profiling 与安全调优 | P10、P11、P12、P14-A1 |
+| 2:45–3:00 | 边界与总结 | 不夸大多 GPU、算法创新和适用范围 |
 
-视频重点不要放在长时间 benchmark，而应展示完整工程链路：
+## 录制前准备
 
-1. 能恢复环境；
-2. 能从 GitHub 或 bundle 恢复仓库；
-3. 能构建 ROCm/HIP 版本 `plc`；
-4. 能运行一个简单 MPS 样例；
-5. 能查看输出结果；
-6. 能展示已提交的 W7900 profiling、调优和多卡吞吐图表。
-
-## 2. OBS 推荐设置
-
-OBS 推荐设置：
-
-| 项目                       | 建议                      |
-| ------------------------ | ----------------------- |
-| Base Canvas Resolution   | `1920x1080`             |
-| Output Scaled Resolution | `1920x1080`             |
-| FPS                      | `30`                    |
-| Recording Format         | `mp4`                   |
-| Encoder                  | H.264 / x264 / 硬件 H.264 |
-| Rate Control             | CBR                     |
-| Video Bitrate            | `2200 Kbps`             |
-| Audio Bitrate            | `96 Kbps` 或 `128 Kbps`  |
-| 录制时长                     | 建议 `4 分 30 秒` 以内        |
-
-录制前建议先录 30 秒测试文件大小。如果 30 秒文件明显超过 10MB，应降低视频码率；如果终端文字不清楚，优先放大终端字体，而不是提高码率。
-
-## 3. 录制前准备
-
-W7900 机器的工作目录约定为：
+在 4090 主机更新最终仓库后：
 
 ```bash
-/app/cupdlp_w7900
-```
-
-仓库目录为：
-
-```bash
-/app/cupdlp_w7900/src/cuPDLP-C-ROCm
-```
-
-当前分支为：
-
-```bash
-rocm-w7900-gfx1100
-```
-
-目标演示命令只使用短命令，不运行大 MPS benchmark，避免视频等待时间过长。
-
-## 4. W7900 新机器恢复：修 DNS / 网络
-
-如果 W7900 新机器无法访问 GitHub 或百度，先修 DNS：
-
-```bash
-cd /app
-
-cp /etc/resolv.conf /etc/resolv.conf.bak.$(date +%Y%m%d_%H%M%S) 2>/dev/null || true
-
-cat > /etc/resolv.conf <<'EOF'
-nameserver 223.5.5.5
-nameserver 119.29.29.29
-options timeout:2 attempts:2
-EOF
-
-getent hosts github.com || true
-curl -I --connect-timeout 10 https://github.com || true
-curl -I --connect-timeout 10 https://www.baidu.com || true
-```
-
-如果 GitHub 能访问，继续从 GitHub clone。
-如果 GitHub 仍然不稳定，则使用 890M 上生成的 bundle 恢复仓库。
-
-## 5. 从 GitHub 恢复仓库
-
-在 W7900 上执行：
-
-```bash
-mkdir -p /app/cupdlp_w7900/src /app/cupdlp_w7900/logs /app/cupdlp_w7900/results
-
-cd /app/cupdlp_w7900/src
-
-rm -rf cuPDLP-C-ROCm
-
-GIT_TERMINAL_PROMPT=0 git clone \
-  --branch rocm-w7900-gfx1100 \
-  https://github.com/UTZZTU/cuPDLP-C-ROCm.git \
-  cuPDLP-C-ROCm
-
-cd /app/cupdlp_w7900/src/cuPDLP-C-ROCm
-
-git log --oneline --decorate -8
-git status --short
-```
-
-如果 GitHub clone 失败，则使用下一节的 bundle 方案。
-
-## 6. 从 890M 生成 bundle 并上传到 W7900
-
-如果 W7900 无法稳定访问 GitHub，可以在 890M 上生成最新 bundle。
-
-890M 上的最新 W7900 仓库路径为：
-
-```bash
-/home/bjut316/rocm_dir/pdlp/cuPDLP-C-ROCm/cuPDLP-C-ROCm-w7900
-```
-
-在 890M 上执行：
-
-```bash
-cd /home/bjut316/rocm_dir/pdlp/cuPDLP-C-ROCm/cuPDLP-C-ROCm-w7900
-
-git switch rocm-w7900-gfx1100
-git pull --ff-only origin rocm-w7900-gfx1100
-
-git log --oneline --decorate -8
+cd /data/cuPDLP-C-ROCm
+git branch --show-current
+git rev-parse HEAD
 git status --short
 
-mkdir -p "$HOME/下载"
-
-COMMIT="$(git rev-parse --short HEAD)"
-BUNDLE="$HOME/下载/cupdlp_w7900_rocm-w7900-gfx1100_${COMMIT}_$(date +%Y%m%d_%H%M%S).bundle"
-
-git bundle create "$BUNDLE" HEAD rocm-w7900-gfx1100
-
-git bundle verify "$BUNDLE"
-git bundle list-heads "$BUNDLE"
-
-ls -lh "$BUNDLE"
-echo "$BUNDLE"
+python3 scripts/analysis/generate_final_w7900_release.py --check-only
+bash scripts/verify_final_repository_release.sh
 ```
 
-然后把生成的 bundle 文件上传到 W7900 的 `/app/` 目录。
-
-在 W7900 上用 bundle 恢复：
-
-```bash
-mkdir -p /app/cupdlp_w7900/src /app/cupdlp_w7900/logs /app/cupdlp_w7900/results
-
-cd /app/cupdlp_w7900/src
-
-rm -rf cuPDLP-C-ROCm
-
-git clone /app/cupdlp_w7900_rocm-w7900-gfx1100_*.bundle cuPDLP-C-ROCm
-
-cd cuPDLP-C-ROCm
-
-git switch rocm-w7900-gfx1100 || true
-
-git log --oneline --decorate -8
-git status --short
-```
-
-如果看到：
+画面中可以展示：
 
 ```text
-warning: remote HEAD refers to nonexistent ref, unable to checkout
+FINAL_W7900_RELEASE_DATA_PASS
+FINAL_REPOSITORY_RELEASE_PASS
 ```
 
-不用慌，继续执行：
+这表示已提交 compact evidence 通过检查，不表示 4090 重新测量了 W7900。
 
-```bash
-git switch rocm-w7900-gfx1100
-```
-
-即可。
-
-## 7. 恢复 W7900 环境
-
-进入仓库后执行：
-
-```bash
-cd /app/cupdlp_w7900/src/cuPDLP-C-ROCm
-
-INSTALL_APT_PACKAGES=0 RUN_BUILD=0 RUN_SMOKE=0 \
-bash scripts/bootstrap_w7900_workspace.sh \
-  2>&1 | tee /app/cupdlp_w7900/logs/bootstrap_video_demo_$(date +%Y%m%d_%H%M%S).log
-```
-
-激活环境：
-
-```bash
-source /app/cupdlp_w7900/activate_w7900.sh
-
-echo "HIGHS_HOME=$HIGHS_HOME"
-"$HIGHS_HOME/bin/highs" --version || true
-
-hipcc --version | head -20
-rocm_agent_enumerator
-rocm-smi
-```
-
-视频里可以展示 `rocm_agent_enumerator` 输出 8 个 `gfx1100`，证明 W7900 多卡环境被识别。
-
-## 8. 构建 `plc`
-
-先检查是否已有可执行文件：
-
-```bash
-cd /app/cupdlp_w7900/src/cuPDLP-C-ROCm
-source /app/cupdlp_w7900/activate_w7900.sh
-
-find . -maxdepth 3 -type f -name plc -print
-```
-
-如果没有 `./build-rocm-w7900/bin/plc`，则重新构建：
-
-```bash
-cd /app/cupdlp_w7900/src/cuPDLP-C-ROCm
-source /app/cupdlp_w7900/activate_w7900.sh
-
-bash scripts/build_w7900_cpu.sh \
-  2>&1 | tee /app/cupdlp_w7900/logs/build_w7900_cpu_video_demo_$(date +%Y%m%d_%H%M%S).log
-
-bash scripts/build_w7900_rocm.sh \
-  2>&1 | tee /app/cupdlp_w7900/logs/build_w7900_rocm_video_demo_$(date +%Y%m%d_%H%M%S).log
-
-find . -maxdepth 3 -type f -name plc -print
-```
-
-演示时不一定要完整录下所有编译过程。如果编译时间较长，可以录制构建命令开始、构建完成和 `plc` 文件存在即可。
-
-## 9. 运行一个简单样例
-
-推荐使用仓库自带的 `example/afiro.mps`，不要在视频里跑 large MPS。
-
-```bash
-cd /app/cupdlp_w7900/src/cuPDLP-C-ROCm
-source /app/cupdlp_w7900/activate_w7900.sh
-
-mkdir -p /app/cupdlp_w7900/results/video_demo
-
-./build-rocm-w7900/bin/plc \
-  -fname ./example/afiro.mps \
-  -out /app/cupdlp_w7900/results/video_demo/afiro_rocm_demo.json \
-  -nIterLim 100000 \
-  -dTimeLim 60 \
-  2>&1 | tee /app/cupdlp_w7900/results/video_demo/afiro_rocm_demo.log
-```
-
-这个命令用于证明 ROCm/HIP 版 `plc` 能读取 MPS 文件并完成求解流程。
-
-## 10. 查看样例结果
-
-运行结束后查看输出文件：
-
-```bash
-ls -lh /app/cupdlp_w7900/results/video_demo
-
-echo "===== log tail ====="
-tail -80 /app/cupdlp_w7900/results/video_demo/afiro_rocm_demo.log
-
-echo "===== json head ====="
-head -80 /app/cupdlp_w7900/results/video_demo/afiro_rocm_demo.json
-```
-
-如果要快速查找状态字段，可执行：
-
-```bash
-grep -niE "termination|optimal|iter|time|gap|primal|dual" \
-  /app/cupdlp_w7900/results/video_demo/afiro_rocm_demo.log \
-  /app/cupdlp_w7900/results/video_demo/afiro_rocm_demo.json \
-  | head -80
-```
-
-视频里重点展示：
-
-1. `plc` 成功运行；
-2. 输出了 `.json`；
-3. log 中出现 solver timing、iteration、termination 等信息；
-4. 结果文件可追溯。
-
-## 11. 展示已有实验图表
-
-运行样例之后，不需要再跑长实验。直接打开 GitHub 页面展示已提交图表：
+## 建议展示的仓库路径
 
 ```text
-validation/w7900_latest_experiment_figures_20260616.zh-CN.md
-docs/W7900_CURRENT_STATUS.zh-CN.md
-validation/w7900_8card_batch_fast8_summary_20260616.zh-CN.md
-validation/w7900_p14a1_quick6_repeat_summary_20260618.zh-CN.md
+README.md
+docs/W7900_FINAL_RESULTS_20260729.zh-CN.md
+docs/CUDA_TO_ROCM_MIGRATION_CASE_STUDY.zh-CN.md
+docs/W7900_PERFORMANCE_BEHAVIOR.zh-CN.md
+docs/ROCM_PROFILING_NOTES.zh-CN.md
+validation/final_w7900_20260729/
+docs/assets/w7900/final20260729/
+scripts/analysis/generate_final_w7900_release.py
 ```
 
-重点讲：
+## 正式结果画面
 
-* 8-card fast8：8 个独立 MPS 任务，单 GPU 顺序 `558s`，8 卡并发 `146s`，约 `3.82x` batch makespan speedup；
-* before/current fast-core6：用于分析调优前后表现；
-* rocprof starter3：展示 profiling 和 kernel 热点；
-* P11/P14-A1：展示 W7900 SpMV tuning 与 repeated validation。
+推荐依次展示：
 
-## 12. 视频讲解建议话术
+1. `baseline_total_time.zh-CN.svg`
+   - 解释 23 例耗时长尾；
+   - 强调前三例贡献约 82.22%。
+2. `baseline_repeatability.zh-CN.svg`
+   - 总时间 CV 中位数约 0.377%；
+   - 22/23 低于 2%。
+3. `workload_profile.zh-CN.svg`
+   - 区分迭代/计算主导和读取/初始化主导。
+4. `precision_cost.zh-CN.svg`
+   - 收紧目标精度的成本具有实例依赖性。
+5. `precision_resource_tradeoff.zh-CN.svg`
+   - 同一实例跨精度显存较稳定，时间变化更明显。
+6. `precision_quality.zh-CN.svg`
+   - 30/30 实际误差不高于目标精度。
 
-可以按下面方式讲：
+## 建议口播数字
 
 ```text
-本作品基于上游 cuPDLP-C 线性规划求解器，完成了面向 AMD ROCm/HIP 平台的迁移、验证和调优。项目保留 CPU 与上游兼容路径，同时新增 AMD Radeon 平台的 ROCm/HIP 后端。当前分支重点验证了 Radeon 890M/gfx1150 和 W7900/gfx1100 平台。
-
-在结构上，cupdlp/hip 保存 HIP 后端代码，scripts 保存构建、恢复、实验和分析脚本，validation 保存 compact CSV 和 Markdown 实验摘要，docs 和 docs/assets 保存说明文档和图表。仓库通过 README、validation index 和 W7900 current status 页面组织证据链。
-
-功能演示中，首先恢复 W7900 环境并识别 8 张 gfx1100 GPU，然后构建 ROCm/HIP 版本 plc，最后运行 example/afiro.mps 这一简单 MPS 样例，生成 JSON 和 log 输出，证明求解流程可运行、可复现。
-
-实验方面，项目已经完成 rocprof profiling、hard case 诊断、before/current 对比、SpMV tuning 和 8 卡批处理吞吐验证。其中 8 个独立 MPS 任务在单 GPU 顺序运行时需要 558 秒，而在 8 张 W7900 上并发运行只需要 146 秒，体现了多卡节点在批量独立优化任务上的工程价值。
+正式 W7900 solver 运行：76/76 验证通过
+nonhard23：23 例双重复，共 46 条
+精度实验：5 例、3 档、双重复，共 30 条
+targeted profile：5/5 通过
+单卡顺序吞吐均值：约 28.0616 cases/hour
+基线前三例总时间占比：约 82.22%
+目标精度从 1e-3 收紧到 1e-5：
+总时间成本约 1.01× 到 4.01×
 ```
 
-## 13. 视频录制注意事项
+## Profiling 与调优叙事
 
-录制时建议：
-
-* 终端字体调大；
-* 浏览器页面缩放到 `125%` 或 `150%`；
-* 不展示账号 cookies、SSH 私钥、token；
-* 不展示百度网盘 cookies；
-* 不现场跑 large MPS；
-* 不录制长时间编译等待；
-* 录制前先试录 30 秒；
-* 最终文件检查分辨率、时长、大小。
-
-检查视频文件大小和时长可用：
-
-```bash
-ls -lh your_video.mp4
-```
-
-如果安装了 `ffprobe`，可进一步检查：
-
-```bash
-ffprobe -hide_banner your_video.mp4
-```
-
-## 14. 890M 上提交本文档到 GitHub
-
-如果本文档是在 890M 上创建的，使用以下命令提交：
-
-```bash
-cd /home/bjut316/rocm_dir/pdlp/cuPDLP-C-ROCm/cuPDLP-C-ROCm-w7900
-
-git switch rocm-w7900-gfx1100
-git pull --ff-only origin rocm-w7900-gfx1100
-
-python3 scripts/docs/scan_markdown_format_issues_20260616.py
-git diff --check
-git status --short
-git diff --stat
-
-git add docs/VIDEO_DEMO_GUIDE.zh-CN.md
-
-git commit -m "docs: add Chinese video demo guide"
-
-git push origin rocm-w7900-gfx1100
-
-git log --oneline --decorate -6
-git status --short
-```
-
-如果后续需要英文版，可再创建：
+用一条完整证据链讲清楚：
 
 ```text
-docs/VIDEO_DEMO_GUIDE.md
+P10 profiling
+→ 定位 CSR SpMV、copy、launch
+→ P11 接受 CSR_ALG1 默认
+→ P12 因迭代轨迹变化拒绝 patch
+→ P14-A1 重复验证 current 收益
+→ 最终 session2 5/5 trace 完整性 PASS
 ```
 
-但比赛视频准备阶段，中文版即可。
+不要只讲“更快”，要强调性能修改必须同时保护数值行为。
+
+## 真实运行画面
+
+优先使用此前已经保存的真实 W7900：
+
+- build/smoke 终端；
+- `gfx1100` 设备识别；
+- solver 输出；
+- profile trace 生成；
+- archive 和 SHA 校验。
+
+若没有可用素材，可以展示仓库中的正式 manifest、日志摘要、QC JSON 和 compact
+CSV，但必须口播：
+
+> 这里展示的是已提交 W7900 证据的离线检查，不是当前主机重新运行 W7900。
+
+不要伪造 W7900 终端，也不要把 4090 输出剪辑成 W7900。
+
+## 必须保留的边界
+
+- 项目贡献是迁移、验证和证据驱动调优，不是新 PDLP 算法；
+- 吞吐是单卡顺序独立 MPS；
+- 8 卡 fast8 是八个独立任务；
+- precision 结论只覆盖五例；
+- static correlation 是探索性；
+- hard3 单独报告；
+- Docker 是环境骨架；
+- W7900 aggregate 不应被包装成在所有 case 上超过 CUDA。
+
+## 画面规范
+
+- 使用简体中文；
+- 图表标题不加“图 1/图 2”；
+- 不使用“墙钟时间”，统一写“总时间”；
+- 字体、字号和数字口径与论文/PPT一致；
+- 不使用图片生成模型重新绘制数据点；
+- 数据图直接使用仓库提交的 SVG/PNG；
+- 代码和终端字体足够大；
+- 不展示 Cookie、token、SSH key、用户名隐私或本地绝对凭据路径。
+
+## 最后检查
+
+- [ ] 视频数字来自最终结果页；
+- [ ] 没有引用六月单轮 2960.171 s 作为当前主结果；
+- [ ] 76/76、46/46、30/30、5/5 口径一致；
+- [ ] 吞吐语义正确；
+- [ ] W7900 实测与离线检查画面明确区分；
+- [ ] 图表使用最终 CSV 驱动版本；
+- [ ] 仓库链接和 commit 可访问。

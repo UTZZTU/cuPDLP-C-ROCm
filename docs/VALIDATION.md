@@ -1,7 +1,29 @@
 # ROCm validation
 
-> 中文版: [VALIDATION.zh-CN.md](VALIDATION.zh-CN.md)  
-> Documentation map: [README.md](README.md)  
+<!-- FINAL_W7900_VALIDATION_20260729 -->
+
+> **Final formal-evidence update (2026-07-29)**
+>
+> The authoritative W7900 validation state is:
+>
+> - formal branch: `rocm-w7900-gfx1100`
+> - frozen solver: `735764807d8698ff30811d1a6fcc45d4a3fd4817`
+> - formal harness: `b5b9a6ffc1a041a48a0e051568d0134a3822556c`
+> - baseline23: 46/46 `VALIDATED_OPTIMAL`
+> - precision: 30/30 `VALIDATED_OPTIMAL`
+> - profiles: 5/5 `PASS`
+> - total formal solver records: 76/76
+> - final state: `FORMAL_W7900_EXPERIMENTS_COMPLETE`,
+>   `FINAL_ANALYSIS_RELEASED`
+>
+> See the [final W7900 results](W7900_FINAL_RESULTS_20260729.md) and
+> [final compact validation package](../validation/final_w7900_20260729/README.md).
+> The smoke, Netlib, and comparison semantics below remain the general
+> validation rules.
+
+
+> 中文版: [VALIDATION.zh-CN.md](VALIDATION.zh-CN.md)
+> Documentation map: [README.md](README.md)
 > Validation result index: [../validation/README.md](../validation/README.md)
 
 This document defines how `cuPDLP-C-ROCm` validates the ROCm/HIP backend against the CPU baseline.

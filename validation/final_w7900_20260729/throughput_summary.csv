@@ -1,0 +1,3 @@
+archive_id,group,scope,repeat,expected_cases,validated_optimal_cases,matrix_complete,throughput_valid,wall_seconds_sum,solve_seconds_sum,cases_per_hour,throughput_semantics
+d2ce13091072_20260729_035237_b5b9a6ffc1a0_nb-d2799099_baseline23,nonhard23_baseline,nonhard23,1,23,23,true,true,2950.6259970000001,2733.8558579999999,28.061841820747706,single-card sequential independent MPS cases
+d2ce13091072_20260729_035237_b5b9a6ffc1a0_nb-d2799099_baseline23,nonhard23_baseline,nonhard23,2,23,23,true,true,2950.6746109999999,2729.9931569999999,28.061379486346894,single-card sequential independent MPS cases

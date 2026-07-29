@@ -1,0 +1,22 @@
+metric,value,scope_or_note
+formal_branch,rocm-w7900-gfx1100,Final formal branch
+solver_source_baseline,735764807d8698ff30811d1a6fcc45d4a3fd4817,Frozen solver source boundary
+formal_harness_commit,b5b9a6ffc1a041a48a0e051568d0134a3822556c,Final sprint harness v2.1
+baseline_cases,23,nonhard23
+baseline_repeats,2,Complete repeats
+baseline_solver_rows,46,46/46 validated
+precision_cases,5,Targeted representative cases
+precision_tolerances,3,"1e-3, 1e-4, 1e-5"
+precision_repeats,2,Complete repeats
+precision_solver_rows,30,30/30 validated
+validated_profiles,5,5/5 with trace CSV and kernel trace
+mean_single_card_cases_per_hour,28.061610654,Sequential independent MPS
+mean_baseline_total_seconds,2950.650304,Mean of two complete repeats
+mean_baseline_solver_seconds,2731.924507,Mean of two complete repeats
+baseline_total_time_cv_median_pct,0.377049,Across 23 cases
+top3_total_time_share_pct,82.220638,"s100, Primal2_1000, thk_63"
+precision_total_time_ratio_min_1e-5_over_1e-3,1.009888882,Across five cases
+precision_total_time_ratio_max_1e-5_over_1e-3,4.011543216,Across five cases
+precision_iteration_ratio_min_1e-5_over_1e-3,2.017041996,Across five cases
+precision_iteration_ratio_max_1e-5_over_1e-3,11.581395349,Across five cases
+max_achieved_error_over_requested_tolerance,0.998078669,set-cover-model tolerance=1e-05

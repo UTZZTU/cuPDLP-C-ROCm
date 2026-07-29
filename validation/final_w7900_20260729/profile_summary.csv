@@ -1,0 +1,6 @@
+archive_id,case,runtime_status,exit_code,profile_validation_status,trace_csv_count,kernel_trace_count,status_path
+7f8fbcd45591_20260729_075842_b5b9a6ffc1a0_nb-a72a2dc7_session2,L2CTA3D,DONE,0,PASS,5,1,04_profile/current/L2CTA3D/L2CTA3D_rocm.profile.status.env
+7f8fbcd45591_20260729_075842_b5b9a6ffc1a0_nb-a72a2dc7_session2,set-cover-model,DONE,0,PASS,5,1,04_profile/current/set-cover-model/set-cover-model_rocm.profile.status.env
+7f8fbcd45591_20260729_075842_b5b9a6ffc1a0_nb-a72a2dc7_session2,square41,DONE,0,PASS,5,1,04_profile/current/square41/square41_rocm.profile.status.env
+7f8fbcd45591_20260729_075842_b5b9a6ffc1a0_nb-a72a2dc7_session2,thk_48,DONE,0,PASS,5,1,04_profile/current/thk_48/thk_48_rocm.profile.status.env
+7f8fbcd45591_20260729_075842_b5b9a6ffc1a0_nb-a72a2dc7_session2,tpl-tub-ws1617,DONE,0,PASS,5,1,04_profile/current/tpl-tub-ws1617/tpl-tub-ws1617_rocm.profile.status.env
