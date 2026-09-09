@@ -1,6 +1,17 @@
 #include "mps_lp.h"
 #include "wrapper_highs.h"
 #include "../cupdlp/cupdlp_backend_compat.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+static cupdlp_bool phase_timing_enabled(void) {
+  const char *value = getenv("CUPDLP_PHASE_TIMING");
+  return value != NULL && atoi(value) != 0;
+}
+
+static void print_phase_timing(const char *name, cupdlp_float seconds) {
+  printf("PHASE_TIMING\t%s\t%.6f\n", name, (double)seconds);
+}
 
 /*
   HiGHS IO for cuPDLP.
@@ -13,6 +24,21 @@
 */
 cupdlp_retcode main(int argc, char **argv) {
   cupdlp_retcode retcode = RETCODE_OK;
+
+  const cupdlp_bool ifPhaseTiming = phase_timing_enabled();
+  const cupdlp_float phase_total_start = getTimeStamp();
+  cupdlp_float phase_mps_load_model = 0.0;
+  cupdlp_float phase_presolve = 0.0;
+  cupdlp_float phase_formulate = 0.0;
+  cupdlp_float phase_init_scaling = 0.0;
+  cupdlp_float phase_gpu_setup = 0.0;
+  cupdlp_float phase_csc_host_build = 0.0;
+  cupdlp_float phase_scaling = 0.0;
+  cupdlp_float phase_problem_alloc = 0.0;
+  cupdlp_float phase_solver_setup = 0.0;
+  cupdlp_float phase_solver_and_json = 0.0;
+  cupdlp_float phase_output = 0.0;
+  cupdlp_float phase_cleanup_start = 0.0;
 
   char *fname = "./example/afiro.mps";
   char *fout = "./solution-sum.json";
@@ -113,8 +139,10 @@ cupdlp_retcode main(int argc, char **argv) {
   CUPDLP_CALL(getUserParam(argc, argv, ifChangeIntParam, intParam,
                            ifChangeFloatParam, floatParam));
 
+  cupdlp_float phase_start = getTimeStamp();
   model = createModel_highs();
   CUPDLP_CALL(loadMps_highs(model, fname));
+  phase_mps_load_model = getTimeStamp() - phase_start;
   getModelSize_highs(model, &nCols_org, &nRows_org, NULL);
   nCols = nCols_org;
 
@@ -153,13 +181,18 @@ cupdlp_retcode main(int argc, char **argv) {
     nCols = nCols_pre;
   }
   presolve_time = getTimeStamp() - presolve_time;
+  phase_presolve = presolve_time;
 
+  phase_start = getTimeStamp();
   CUPDLP_CALL(formulateLP_highs(model2solve, &cost, &nCols_pdlp, &nRows_pdlp,
                                 &nnz_pdlp, &nEqs_pdlp, &csc_beg, &csc_idx,
                                 &csc_val, &rhs, &lower, &upper, &offset, &sense,
                                 &nCols, &constraint_new_idx, &constraint_type));
+  phase_formulate = getTimeStamp() - phase_start;
 
+  phase_start = getTimeStamp();
   CUPDLP_CALL(Init_Scaling(scaling, nCols_pdlp, nRows_pdlp, cost, rhs));
+  phase_init_scaling = getTimeStamp() - phase_start;
   cupdlp_int ifScaling = 1;
 
   if (ifChangeIntParam[IF_SCALING]) {
@@ -187,8 +220,10 @@ cupdlp_retcode main(int argc, char **argv) {
   CHECK_CUSPARSE(CUPDLP_SPARSE_CREATE(&w->cusparsehandle));
   CHECK_CUBLAS(CUPDLP_BLAS_CREATE(&w->cublashandle));
   cuda_prepare_time = getTimeStamp() - cuda_prepare_time;
+  phase_gpu_setup = cuda_prepare_time;
 #endif
 
+  phase_start = getTimeStamp();
   CUPDLP_CALL(problem_create(&prob));
 
   // currently, only supprot that input matrix is CSC, and store both CSC and
@@ -206,27 +241,33 @@ cupdlp_retcode main(int argc, char **argv) {
 #if !(CUPDLP_CPU)
   csc_cpu->cuda_csc = NULL;
 #endif
+  phase_csc_host_build = getTimeStamp() - phase_start;
 
   cupdlp_float scaling_time = getTimeStamp();
   CUPDLP_CALL(PDHG_Scale_Data(csc_cpu, ifScaling, scaling, cost, lower, upper, rhs));
   scaling_time = getTimeStamp() - scaling_time;
+  phase_scaling = scaling_time;
 
   cupdlp_float alloc_matrix_time = 0.0;
   cupdlp_float copy_vec_time = 0.0;
 
+  phase_start = getTimeStamp();
   CUPDLP_CALL(problem_alloc(prob, nRows_pdlp, nCols_pdlp, nEqs_pdlp, cost,
                             offset, sense, csc_cpu, src_matrix_format,
                             dst_matrix_format, rhs, lower, upper,
                             &alloc_matrix_time, &copy_vec_time));
+  phase_problem_alloc = getTimeStamp() - phase_start;
 
   // solve
   w->problem = prob;
   w->scaling = scaling;
+  phase_start = getTimeStamp();
   PDHG_Alloc(w);
   w->timers->dScalingTime = scaling_time;
   w->timers->dPresolveTime = presolve_time;
   CUPDLP_COPY_VEC(w->rowScale, scaling->rowScale, cupdlp_float, nRows_pdlp);
   CUPDLP_COPY_VEC(w->colScale, scaling->colScale, cupdlp_float, nCols_pdlp);
+  phase_solver_setup = getTimeStamp() - phase_start;
 
 #if !(CUPDLP_CPU)
   w->timers->AllocMem_CopyMatToDeviceTime += alloc_matrix_time;
@@ -260,11 +301,13 @@ cupdlp_retcode main(int argc, char **argv) {
     row_dual = row_dual_org;
   }
 
+  phase_start = getTimeStamp();
   CUPDLP_CALL(LP_SolvePDHG(w, ifChangeIntParam, intParam, ifChangeFloatParam,
                            floatParam, fout, nCols, col_value, col_dual,
                            row_value, row_dual, &value_valid, &dual_valid, 0,
                            fout_sol, constraint_new_idx, constraint_type,
                            &status_pdlp));
+  phase_solver_and_json = getTimeStamp() - phase_start;
 
   // // postsolve
   // if (ifPresolve) {
@@ -289,15 +332,19 @@ cupdlp_retcode main(int argc, char **argv) {
 
     if (ifPresolve) {
       // currently no postsolve
+      phase_start = getTimeStamp();
       writeSol(fout_sol, nCols_pre, nRows_pre, col_value_pre, col_dual_pre,
                row_value_pre, row_dual_pre);
     } else {
+      phase_start = getTimeStamp();
       writeSol(fout_sol, nCols_org, nRows_org, col_value_org, col_dual_org,
                row_value_org, row_dual_org);
     }
+    phase_output = getTimeStamp() - phase_start;
   }
 
 exit_cleanup:
+  phase_cleanup_start = getTimeStamp();
   // free model and solution
   deleteModel_highs(model);
   if (ifPresolve) {
@@ -337,6 +384,22 @@ exit_cleanup:
   #if !(CUPDLP_CPU)
     CHECK_CUDA(CUPDLP_DEVICE_RESET())
   #endif
+
+  if (ifPhaseTiming) {
+    print_phase_timing("mps_load_model", phase_mps_load_model);
+    print_phase_timing("presolve", phase_presolve);
+    print_phase_timing("formulate_lp", phase_formulate);
+    print_phase_timing("init_scaling", phase_init_scaling);
+    print_phase_timing("gpu_setup", phase_gpu_setup);
+    print_phase_timing("csc_host_build", phase_csc_host_build);
+    print_phase_timing("scaling", phase_scaling);
+    print_phase_timing("problem_alloc", phase_problem_alloc);
+    print_phase_timing("solver_setup", phase_solver_setup);
+    print_phase_timing("solver_and_json", phase_solver_and_json);
+    print_phase_timing("output", phase_output);
+    print_phase_timing("cleanup", getTimeStamp() - phase_cleanup_start);
+    print_phase_timing("total_process", getTimeStamp() - phase_total_start);
+  }
 
   return retcode;
 }

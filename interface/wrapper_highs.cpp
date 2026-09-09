@@ -4,9 +4,23 @@
 #include <string>
 
 #include "Highs.h"
+#include <chrono>
+#include <cstdlib>
 // using namespace std;
 using std::cout;
 using std::endl;
+
+static bool phase_timing_enabled_highs() {
+  const char *value = std::getenv("CUPDLP_PHASE_TIMING");
+  return value != nullptr && std::atoi(value) != 0;
+}
+
+static double phase_seconds_highs(
+    const std::chrono::steady_clock::time_point &start) {
+  return std::chrono::duration<double>(
+             std::chrono::steady_clock::now() - start)
+      .count();
+}
 
 extern "C" void *createModel_highs() { return new Highs(); }
 
@@ -17,6 +31,7 @@ extern "C" void deleteModel_highs(void *model) {
 
 extern "C" int loadMps_highs(void *model, const char *filename) {
   string str = string(filename);
+  const bool if_phase_timing = phase_timing_enabled_highs();
   // model is lhs <= Ax <= rhs, l <= x <= u
   cout << "--------------------------------------------------" << endl;
   cout << "reading file..." << endl;
@@ -24,7 +39,12 @@ extern "C" int loadMps_highs(void *model, const char *filename) {
   cout << "--------------------------------------------------" << endl;
 
   HighsStatus return_status = HighsStatus::kOk;
+  const auto read_model_start = std::chrono::steady_clock::now();
   return_status = ((Highs *)model)->readModel(str);
+  if (if_phase_timing) {
+    printf("PHASE_TIMING\tmps_read_model\t%.6f\n",
+           phase_seconds_highs(read_model_start));
+  }
 
   if (return_status != HighsStatus::kOk) {
     printf("Error: readModel return status = %d\n", (int)return_status);
@@ -34,10 +54,16 @@ extern "C" int loadMps_highs(void *model, const char *filename) {
   // relax MIP to LP
   const HighsLp &lp = ((Highs *)model)->getLp();
   if (lp.integrality_.size()) {
+    const auto relax_integrality_start =
+        std::chrono::steady_clock::now();
     for (int i = 0; i < lp.num_col_; i++) {
       if (lp.integrality_[i] != HighsVarType::kContinuous) {
         ((Highs *)model)->changeColIntegrality(i, HighsVarType::kContinuous);
       }
+    }
+    if (if_phase_timing) {
+      printf("PHASE_TIMING\tmps_relax_integrality\t%.6f\n",
+             phase_seconds_highs(relax_integrality_start));
     }
   }
 
