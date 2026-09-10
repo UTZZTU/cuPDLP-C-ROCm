@@ -991,7 +991,21 @@ cupdlp_retcode timers_Alloc(CUPDLPtimers *timers) {
   timers->nAtyCalls = 0;
   timers->nAxCalls = 0;
   timers->nComputeResidualsCalls = 0;
+  timers->nInfeasibilityChecks = 0;
   timers->nUpdateIterateCalls = 0;
+  timers->nLineSearchSteps = 0;
+  timers->nLineSearchRetries = 0;
+  timers->nRestartChecks = 0;
+  timers->nRestartActions = 0;
+  timers->nMovementCalls = 0;
+  timers->nPrimalGradientCalls = 0;
+  timers->nDualGradientCalls = 0;
+  timers->nAverageUpdateCalls = 0;
+  timers->dMovementTime = 0.0;
+  timers->dPrimalGradientTime = 0.0;
+  timers->dDualGradientTime = 0.0;
+  timers->dAverageUpdateTime = 0.0;
+  timers->dInfeasibilityTime = 0.0;
 #endif
 #if !(CUPDLP_CPU)
   // GPU timers
@@ -1589,6 +1603,35 @@ void writeJson(const char *fout, CUPDLPwork *work) {
   fprintf(fptr, "\"nIter\":%d,", work->timers->nIter);
   fprintf(fptr, "\"nAtyCalls\":%d,", work->timers->nAtyCalls);
   fprintf(fptr, "\"nAxCalls\":%d,", work->timers->nAxCalls);
+  fprintf(fptr, "\"nComputeResidualsCalls\":%d,",
+          work->timers->nComputeResidualsCalls);
+  fprintf(fptr, "\"nInfeasibilityChecks\":%d,",
+          work->timers->nInfeasibilityChecks);
+  fprintf(fptr, "\"nLineSearchSteps\":%d,",
+          work->timers->nLineSearchSteps);
+  fprintf(fptr, "\"nLineSearchRetries\":%d,",
+          work->timers->nLineSearchRetries);
+  fprintf(fptr, "\"nRestartChecks\":%d,",
+          work->timers->nRestartChecks);
+  fprintf(fptr, "\"nRestartActions\":%d,",
+          work->timers->nRestartActions);
+  fprintf(fptr, "\"nMovementCalls\":%d,",
+          work->timers->nMovementCalls);
+  fprintf(fptr, "\"nPrimalGradientCalls\":%d,",
+          work->timers->nPrimalGradientCalls);
+  fprintf(fptr, "\"nDualGradientCalls\":%d,",
+          work->timers->nDualGradientCalls);
+  fprintf(fptr, "\"nAverageUpdateCalls\":%d,",
+          work->timers->nAverageUpdateCalls);
+  fprintf(fptr, "\"dMovementTime\":%f,", work->timers->dMovementTime);
+  fprintf(fptr, "\"dPrimalGradientTime\":%f,",
+          work->timers->dPrimalGradientTime);
+  fprintf(fptr, "\"dDualGradientTime\":%f,",
+          work->timers->dDualGradientTime);
+  fprintf(fptr, "\"dAverageUpdateTime\":%f,",
+          work->timers->dAverageUpdateTime);
+  fprintf(fptr, "\"dInfeasibilityTime\":%f,",
+          work->timers->dInfeasibilityTime);
   fprintf(fptr, "\"dSolvingBeg\":%f,", work->timers->dSolvingBeg);
   fprintf(fptr, "\"dSolvingTime\":%f,", work->timers->dSolvingTime);
   fprintf(fptr, "\"dPresolveTime\":%f,", work->timers->dPresolveTime);

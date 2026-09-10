@@ -17,6 +17,10 @@ void PDHG_primalGradientStep(CUPDLPwork *work, CUPDLPvec *xUpdate,
                              const CUPDLPvec *x, const CUPDLPvec *ATy,
                              cupdlp_float dPrimalStepSize) {
   CUPDLPproblem *problem = work->problem;
+#if PDHG_USE_TIMERS
+  cupdlp_float begin = getTimeStamp();
+  ++work->timers->nPrimalGradientCalls;
+#endif
 
 #if defined(CUPDLP_USE_ROCM) && USE_KERNELS
   cupdlp_pgrad_cuda(xUpdate->data, x->data, problem->cost,
@@ -37,6 +41,9 @@ void PDHG_primalGradientStep(CUPDLPwork *work, CUPDLPvec *xUpdate,
   cupdlp_projub(xUpdate->data, problem->upper, problem->nCols);
   cupdlp_projlb(xUpdate->data, problem->lower, problem->nCols);
 #endif
+#if PDHG_USE_TIMERS
+  work->timers->dPrimalGradientTime += getTimeStamp() - begin;
+#endif
 }
 
 // y^{k+1} = proj_{Y}(y^k + dDualStep * (b - A * (2x^{k+1} - x^{k})))
@@ -44,6 +51,10 @@ void PDHG_dualGradientStep(CUPDLPwork *work, CUPDLPvec *yUpdate,
                            const CUPDLPvec *y, const CUPDLPvec *Ax,
                            const CUPDLPvec *AxUpdate, cupdlp_float dDualStepSize) {
   CUPDLPproblem *problem = work->problem;
+#if PDHG_USE_TIMERS
+  cupdlp_float begin = getTimeStamp();
+  ++work->timers->nDualGradientCalls;
+#endif
 
 #if defined(CUPDLP_USE_ROCM) && USE_KERNELS
   cupdlp_dgrad_cuda(yUpdate->data, y->data, problem->rhs, Ax->data,
@@ -65,6 +76,9 @@ void PDHG_dualGradientStep(CUPDLPwork *work, CUPDLPvec *yUpdate,
   cupdlp_axpy(work, problem->nRows, &alpha, Ax->data, yUpdate->data);
 
   cupdlp_projPos(yUpdate->data + problem->nEqs, problem->nRows - problem->nEqs);
+#endif
+#if PDHG_USE_TIMERS
+  work->timers->dDualGradientTime += getTimeStamp() - begin;
 #endif
 }
 
@@ -205,6 +219,10 @@ cupdlp_retcode PDHG_Update_Iterate_Adaptive_Step_Size(CUPDLPwork *pdhg) {
   while (!isDone) {
     ++stepsize->nStepSizeIter;
     ++stepIterThis;
+#if PDHG_USE_TIMERS
+    ++pdhg->timers->nLineSearchSteps;
+    if (stepIterThis > 1) ++pdhg->timers->nLineSearchRetries;
+#endif
 
     cupdlp_float dPrimalStepUpdate = dStepSizeUpdate / sqrt(stepsize->dBeta);
     cupdlp_float dDualStepUpdate = dStepSizeUpdate * sqrt(stepsize->dBeta);
@@ -222,7 +240,14 @@ cupdlp_retcode PDHG_Update_Iterate_Adaptive_Step_Size(CUPDLPwork *pdhg) {
     cupdlp_float dMovement = 0.0;
     cupdlp_float dInteraction = 0.0;
 
+#if PDHG_USE_TIMERS
+    cupdlp_float movement_begin = getTimeStamp();
+    ++pdhg->timers->nMovementCalls;
+#endif
     cupdlp_compute_interaction_and_movement(pdhg, &dMovement, &dInteraction);
+#if PDHG_USE_TIMERS
+    pdhg->timers->dMovementTime += getTimeStamp() - movement_begin;
+#endif
 
 #if CUPDLP_DUMP_LINESEARCH_STATS && CUPDLP_DEBUG
     cupdlp_float dInteractiony = 0.0;
@@ -371,6 +396,10 @@ void PDHG_Update_Average(CUPDLPwork *work) {
   CUPDLPdata *lp = problem->data;
   CUPDLPstepsize *stepsize = work->stepsize;
   CUPDLPiterates *iterates = work->iterates;
+#if PDHG_USE_TIMERS
+  cupdlp_float begin = getTimeStamp();
+  ++work->timers->nAverageUpdateCalls;
+#endif
 
   cupdlp_int iter = work->timers->nIter;
   CUPDLPvec *xUpdate = iterates->x[(iter + 1) % 2];
@@ -392,6 +421,9 @@ void PDHG_Update_Average(CUPDLPwork *work) {
 
   stepsize->dSumPrimalStep += dMeanStepSize;
   stepsize->dSumDualStep += dMeanStepSize;
+#if PDHG_USE_TIMERS
+  work->timers->dAverageUpdateTime += getTimeStamp() - begin;
+#endif
 }
 
 cupdlp_retcode PDHG_Update_Iterate(CUPDLPwork *pdhg) {

@@ -13,6 +13,62 @@ static void print_phase_timing(const char *name, cupdlp_float seconds) {
   printf("PHASE_TIMING\t%s\t%.6f\n", name, (double)seconds);
 }
 
+static cupdlp_bool research_stats_enabled(void) {
+  const char *value = getenv("CUPDLP_RESEARCH_STATS");
+  return value != NULL && atoi(value) != 0;
+}
+
+static int compare_cupdlp_int(const void *lhs, const void *rhs) {
+  const cupdlp_int a = *(const cupdlp_int *)lhs;
+  const cupdlp_int b = *(const cupdlp_int *)rhs;
+  return (a > b) - (a < b);
+}
+
+static void print_nnz_distribution(const char *name,
+                                   const cupdlp_int *values,
+                                   cupdlp_int count) {
+  if (count <= 0) return;
+  cupdlp_int *sorted =
+      (cupdlp_int *)malloc((size_t)count * sizeof(cupdlp_int));
+  if (sorted == NULL) return;
+  memcpy(sorted, values, (size_t)count * sizeof(cupdlp_int));
+  qsort(sorted, (size_t)count, sizeof(cupdlp_int), compare_cupdlp_int);
+  cupdlp_int p95_index = (95 * count + 99) / 100 - 1;
+  if (p95_index < 0) p95_index = 0;
+  long long sum = 0;
+  for (cupdlp_int i = 0; i < count; ++i) sum += sorted[i];
+  printf("RESEARCH_MATRIX\t%s\tcount=%d\tmin=%d\tmean=%.6f\tp95=%d\tmax=%d\n",
+         name, count, sorted[0], (double)sum / (double)count,
+         sorted[p95_index], sorted[count - 1]);
+  free(sorted);
+}
+
+static void print_matrix_statistics(cupdlp_int nRows, cupdlp_int nCols,
+                                    cupdlp_int nnz, const int *csc_beg,
+                                    const int *csc_idx) {
+  cupdlp_int *row_nnz =
+      (cupdlp_int *)calloc((size_t)nRows, sizeof(cupdlp_int));
+  cupdlp_int *col_nnz =
+      (cupdlp_int *)malloc((size_t)nCols * sizeof(cupdlp_int));
+  if (row_nnz == NULL || col_nnz == NULL) {
+    free(row_nnz);
+    free(col_nnz);
+    return;
+  }
+  for (cupdlp_int col = 0; col < nCols; ++col) {
+    col_nnz[col] = csc_beg[col + 1] - csc_beg[col];
+    for (int pos = csc_beg[col]; pos < csc_beg[col + 1]; ++pos) {
+      if (csc_idx[pos] >= 0 && csc_idx[pos] < nRows) ++row_nnz[csc_idx[pos]];
+    }
+  }
+  printf("RESEARCH_MATRIX\tshape\trows=%d\tcols=%d\tnnz=%d\n", nRows, nCols,
+         nnz);
+  print_nnz_distribution("row_nnz", row_nnz, nRows);
+  print_nnz_distribution("column_nnz", col_nnz, nCols);
+  free(row_nnz);
+  free(col_nnz);
+}
+
 /*
   HiGHS IO for cuPDLP.
 
@@ -242,6 +298,9 @@ cupdlp_retcode main(int argc, char **argv) {
   csc_cpu->cuda_csc = NULL;
 #endif
   phase_csc_host_build = getTimeStamp() - phase_start;
+  if (research_stats_enabled()) {
+    print_matrix_statistics(nRows_pdlp, nCols_pdlp, nnz_pdlp, csc_beg, csc_idx);
+  }
 
   cupdlp_float scaling_time = getTimeStamp();
   CUPDLP_CALL(PDHG_Scale_Data(csc_cpu, ifScaling, scaling, cost, lower, upper, rhs));

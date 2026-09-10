@@ -385,7 +385,21 @@ struct CUPDLP_TIMERS {
   cupdlp_int nAtyCalls;
   cupdlp_int nAxCalls;
   cupdlp_int nComputeResidualsCalls;
+  cupdlp_int nInfeasibilityChecks;
   cupdlp_int nUpdateIterateCalls;
+  cupdlp_int nLineSearchSteps;
+  cupdlp_int nLineSearchRetries;
+  cupdlp_int nRestartChecks;
+  cupdlp_int nRestartActions;
+  cupdlp_int nMovementCalls;
+  cupdlp_int nPrimalGradientCalls;
+  cupdlp_int nDualGradientCalls;
+  cupdlp_int nAverageUpdateCalls;
+  cupdlp_float dMovementTime;
+  cupdlp_float dPrimalGradientTime;
+  cupdlp_float dDualGradientTime;
+  cupdlp_float dAverageUpdateTime;
+  cupdlp_float dInfeasibilityTime;
 #endif
 #if !(CUPDLP_CPU)
   // GPU timers

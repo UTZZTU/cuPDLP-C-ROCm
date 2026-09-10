@@ -73,6 +73,9 @@ void PDHG_Project_Bounds(CUPDLPwork *work, cupdlp_float *r) {
 // }
 
 void PDHG_Restart_Iterate(CUPDLPwork *pdhg) {
+#if PDHG_USE_TIMERS
+  ++pdhg->timers->nRestartChecks;
+#endif
   switch (pdhg->settings->eRestartMethod) {
     case PDHG_WITHOUT_RESTART:
       break;
@@ -96,6 +99,9 @@ void PDHG_Restart_Iterate_GPU(CUPDLPwork *pdhg) {
   PDHG_restart_choice restart_choice = PDHG_Check_Restart_GPU(pdhg);
 
   if (restart_choice == PDHG_NO_RESTART) return;
+#if PDHG_USE_TIMERS
+  ++timers->nRestartActions;
+#endif
 
   cupdlp_int iter = pdhg->timers->nIter;
   CUPDLPvec *x = iterates->x[iter % 2];

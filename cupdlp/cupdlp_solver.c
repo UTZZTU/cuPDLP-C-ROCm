@@ -11,6 +11,13 @@
 #include "cupdlp_utils.h"
 #include "glbopts.h"
 
+#include <stdlib.h>
+
+static cupdlp_bool research_stats_enabled(void) {
+  const char *value = getenv("CUPDLP_RESEARCH_STATS");
+  return value != NULL && atoi(value) != 0;
+}
+
 void PDHG_Compute_Primal_Feasibility(CUPDLPwork *work, cupdlp_float *primalResidual,
                                      const cupdlp_float *ax, const cupdlp_float *x,
                                      cupdlp_float *dPrimalFeasibility,
@@ -428,8 +435,8 @@ void PDHG_Compute_Dual_Infeasibility(CUPDLPwork *work, const cupdlp_float *x,
 // must be called after PDHG_Compute_Residuals(CUPDLPwork *work)
 // because it needs resobj->dSlackPos and resobj->dSlackNeg
 void PDHG_Compute_Infeas_Residuals(CUPDLPwork *work) {
-#if problem_USE_TIMERS
-  ++problem->nComputeResidualsCalls;
+#if PDHG_USE_TIMERS
+  ++work->timers->nInfeasibilityChecks;
   double dStartTime = getTimeStamp();
 #endif
   CUPDLPiterates *iterates = work->iterates;
@@ -461,17 +468,17 @@ void PDHG_Compute_Infeas_Residuals(CUPDLPwork *work) {
       resobj->dPrimalObjAverage, &resobj->dDualInfeasObjAverage,
       &resobj->dDualInfeasResAverage);
 
-#if problem_USE_TIMERS
-  problem->dComputeResidualsTime += getTimeStamp() - dStartTime;
+#if PDHG_USE_TIMERS
+  work->timers->dInfeasibilityTime += getTimeStamp() - dStartTime;
 #endif
 }
 
 void PDHG_Compute_Residuals(CUPDLPwork *work) {
-#if problem_USE_TIMERS
-  ++problem->nComputeResidualsCalls;
+  CUPDLPproblem *problem = work->problem;
+#if PDHG_USE_TIMERS
+  ++work->timers->nComputeResidualsCalls;
   double dStartTime = getTimeStamp();
 #endif
-  CUPDLPproblem *problem = work->problem;
   CUPDLPdata *lp = problem->data;
   CUPDLPresobj *resobj = work->resobj;
   CUPDLPiterates *iterates = work->iterates;
@@ -517,8 +524,8 @@ void PDHG_Compute_Residuals(CUPDLPwork *work) {
       fabs(resobj->dPrimalObjAverage - resobj->dDualObjAverage) /
       (1.0 + fabs(resobj->dPrimalObjAverage) + fabs(resobj->dDualObjAverage));
 
-#if problem_USE_TIMERS
-  problem->dComputeResidualsTime += getTimeStamp() - dStartTime;
+#if PDHG_USE_TIMERS
+  work->timers->dComputeResidualsTime += getTimeStamp() - dStartTime;
 #endif
 }
 
@@ -1085,6 +1092,23 @@ cupdlp_retcode PDHG_Solve(CUPDLPwork *pdhg) {
                 timers->dComputeResidualsTime, timers->nComputeResidualsCalls);
   cupdlp_printf("%21s %e in %d calls\n", "UpdateIterates",
                 timers->dUpdateIterateTime, timers->nUpdateIterateCalls);
+  if (research_stats_enabled()) {
+    cupdlp_printf(
+        "RESEARCH_STATS\titer=%d\tline_search_steps=%d\tline_search_retries=%d\t"
+        "restart_checks=%d\trestart_actions=%d\tresidual_checks=%d\t"
+        "infeasibility_checks=%d\tmovement_calls=%d\tprimal_gradient_calls=%d\t"
+        "dual_gradient_calls=%d\taverage_update_calls=%d\tmovement_seconds=%.9f\t"
+        "primal_gradient_seconds=%.9f\tdual_gradient_seconds=%.9f\t"
+        "average_update_seconds=%.9f\tinfeasibility_seconds=%.9f\n",
+        timers->nIter, timers->nLineSearchSteps, timers->nLineSearchRetries,
+        timers->nRestartChecks, timers->nRestartActions,
+        timers->nComputeResidualsCalls, timers->nInfeasibilityChecks,
+        timers->nMovementCalls, timers->nPrimalGradientCalls,
+        timers->nDualGradientCalls, timers->nAverageUpdateCalls,
+        (double)timers->dMovementTime, (double)timers->dPrimalGradientTime,
+        (double)timers->dDualGradientTime, (double)timers->dAverageUpdateTime,
+        (double)timers->dInfeasibilityTime);
+  }
 #endif
 
 #if !(CUPDLP_CPU)
