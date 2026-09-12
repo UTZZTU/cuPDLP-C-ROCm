@@ -436,6 +436,58 @@ __global__ void sum_kernel(cupdlp_float * __restrict__ res, const cupdlp_float *
   }
 }
 
+// Combined reduction for the three independent movement streams. Each stream
+// keeps the original sum_kernel logical grid, so its floating-point order is unchanged.
+__global__ void sum3_kernel(
+    cupdlp_float * __restrict__ res_x, const cupdlp_float * __restrict__ x, int n_x, int blocks_x,
+    cupdlp_float * __restrict__ res_y, const cupdlp_float * __restrict__ y, int n_y, int blocks_y,
+    cupdlp_float * __restrict__ res_i, const cupdlp_float * __restrict__ i, int n_i, int blocks_i) {
+  __shared__ cupdlp_float shared_x[32];
+  __shared__ cupdlp_float shared_y[32];
+  __shared__ cupdlp_float shared_i[32];
+  cupdlp_float val_x = 0.0, val_y = 0.0, val_i = 0.0;
+  if (blockIdx.x < (unsigned)blocks_x) {
+    for (int j = blockDim.x * blockIdx.x + threadIdx.x; j < n_x;
+         j += blockDim.x * blocks_x) val_x += x[j];
+  }
+  if (blockIdx.x < (unsigned)blocks_y) {
+    for (int j = blockDim.x * blockIdx.x + threadIdx.x; j < n_y;
+         j += blockDim.x * blocks_y) val_y += y[j];
+  }
+  if (blockIdx.x < (unsigned)blocks_i) {
+    for (int j = blockDim.x * blockIdx.x + threadIdx.x; j < n_i;
+         j += blockDim.x * blocks_i) val_i += i[j];
+  }
+  for (int offset = 16; offset > 0; offset >>= 1) {
+    val_x += __shfl_down_sync(0xFFFFFFFFFFFFFFFFULL, val_x, offset);
+    val_y += __shfl_down_sync(0xFFFFFFFFFFFFFFFFULL, val_y, offset);
+    val_i += __shfl_down_sync(0xFFFFFFFFFFFFFFFFULL, val_i, offset);
+  }
+  int lane = threadIdx.x & 31;
+  int wid = threadIdx.x >> 5;
+  if (lane == 0) {
+    shared_x[wid] = val_x;
+    shared_y[wid] = val_y;
+    shared_i[wid] = val_i;
+  }
+  __syncthreads();
+  if (wid == 0) {
+    val_x = (threadIdx.x < blockDim.x / 32) ? shared_x[lane] : 0.0;
+    val_y = (threadIdx.x < blockDim.x / 32) ? shared_y[lane] : 0.0;
+    val_i = (threadIdx.x < blockDim.x / 32) ? shared_i[lane] : 0.0;
+    for (int offset = 8; offset > 0; offset >>= 1) {
+      val_x += __shfl_down_sync(0xFFFFFFFFFFFFFFFFULL, val_x, offset);
+      val_y += __shfl_down_sync(0xFFFFFFFFFFFFFFFFULL, val_y, offset);
+      val_i += __shfl_down_sync(0xFFFFFFFFFFFFFFFFULL, val_i, offset);
+    }
+    if (threadIdx.x == 0) {
+      if (blockIdx.x < (unsigned)blocks_x) res_x[blockIdx.x] = val_x;
+      if (blockIdx.x < (unsigned)blocks_y) res_y[blockIdx.x] = val_y;
+      if (blockIdx.x < (unsigned)blocks_i) res_i[blockIdx.x] = val_i;
+    }
+  }
+}
+
 
 __global__ void save_movement_xy_kernel(cupdlp_float * __restrict__ dst,
                                         const cupdlp_float * __restrict__ x_norm,

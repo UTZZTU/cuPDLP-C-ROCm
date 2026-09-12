@@ -261,6 +261,11 @@ __global__ void movement_2_kernel(cupdlp_float * __restrict__ res,
 
 __global__ void sum_kernel(cupdlp_float * __restrict__ res, const cupdlp_float * __restrict__ x, int n);
 
+__global__ void sum3_kernel(
+    cupdlp_float * __restrict__ res_x, const cupdlp_float * __restrict__ x, int n_x, int blocks_x,
+    cupdlp_float * __restrict__ res_y, const cupdlp_float * __restrict__ y, int n_y, int blocks_y,
+    cupdlp_float * __restrict__ res_i, const cupdlp_float * __restrict__ i, int n_i, int blocks_i);
+
 __global__ void save_movement_xy_kernel(cupdlp_float * __restrict__ dst,
                                        const cupdlp_float * __restrict__ x_norm,
                                        const cupdlp_float * __restrict__ interaction);

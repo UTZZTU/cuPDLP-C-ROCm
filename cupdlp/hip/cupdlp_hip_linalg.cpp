@@ -459,6 +459,37 @@ static cupdlp_float *reduce_movement_partials(cupdlp_float *buffer,
   return src;
 }
 
+static void reduce_movement_partials_fused(
+    cupdlp_float *buffer, cupdlp_float **x_src, int *x_n, int x_slot0, int x_slot1,
+    cupdlp_float **y_src, int *y_n, int y_slot0, int y_slot1,
+    cupdlp_float **i_src, int *i_n, int i_slot0, int i_slot1, int bufSize) {
+  int x_slot = x_slot0, y_slot = y_slot0, i_slot = i_slot0;
+  while (*x_n > 1 || *y_n > 1 || *i_n > 1) {
+    int next_x = *x_n > 1 ? (*x_n + 1023) / 1024 : 0;
+    int next_y = *y_n > 1 ? (*y_n + 1023) / 1024 : 0;
+    int next_i = *i_n > 1 ? (*i_n + 1023) / 1024 : 0;
+    int launch_blocks = std::max(next_x, std::max(next_y, next_i));
+    cupdlp_float *x_dst = next_x ? buffer + x_slot * bufSize : *x_src;
+    cupdlp_float *y_dst = next_y ? buffer + y_slot * bufSize : *y_src;
+    cupdlp_float *i_dst = next_i ? buffer + i_slot * bufSize : *i_src;
+    sum3_kernel<<<launch_blocks, 512>>>(
+        x_dst, *x_src, *x_n, next_x, y_dst, *y_src, *y_n, next_y,
+        i_dst, *i_src, *i_n, next_i);
+    if (next_x) { *x_n = next_x; *x_src = x_dst; x_slot = x_slot == x_slot0 ? x_slot1 : x_slot0; }
+    if (next_y) { *y_n = next_y; *y_src = y_dst; y_slot = y_slot == y_slot0 ? y_slot1 : y_slot0; }
+    if (next_i) { *i_n = next_i; *i_src = i_dst; i_slot = i_slot == i_slot0 ? i_slot1 : i_slot0; }
+  }
+}
+
+static int cupdlp_fused_movement_reduction_enabled() {
+  static int enabled = -1;
+  if (enabled < 0) {
+    const char *value = std::getenv("CUPDLP_FUSED_MOVEMENT_REDUCTION");
+    enabled = value != nullptr && std::atoi(value) != 0;
+  }
+  return enabled;
+}
+
 void cupdlp_movement_interaction_fused_cuda(
     cupdlp_float *dX2, cupdlp_float *dY2, cupdlp_float *dInter,
     cupdlp_float *buffer, const cupdlp_float *movementX,
@@ -468,22 +499,39 @@ void cupdlp_movement_interaction_fused_cuda(
   constexpr int blockSize = 256;
   int nBlocksX = nBlocks1024(nCols);
   int nBlocksY = nBlocks1024(nRows);
+  int nBlocksI = nBlocksX;
   int maxBlocks = std::max(nBlocksX, std::max(nBlocksY, nBlocks1024(nCols)));
   int bufSize = 256 * ((maxBlocks + 255) / 256);
   bufSize = std::max(bufSize, 256);
 
-  cupdlp_float *xScalar = reduce_movement_partials(buffer, const_cast<cupdlp_float *>(movementX),
-                                                   nBlocksX, 0, 1, bufSize);
-  cupdlp_float *yScalar = reduce_movement_partials(buffer, const_cast<cupdlp_float *>(movementY),
-                                                   nBlocksY, 2, 3, bufSize);
-
+  cupdlp_float *xScalar;
+  cupdlp_float *yScalar;
+  cupdlp_float *interScalar;
   cupdlp_float *interPartials = buffer + 4 * bufSize;
-  movement_interaction_only_kernel<<<nBlocksX, blockSize>>>(
-      interPartials, xUpdate, x, atyUpdate, aty, nCols);
-  cupdlp_float *interScalar = reduce_movement_partials(
-      buffer, interPartials, nBlocksX, 6, 7, bufSize);
+  if (cupdlp_fused_movement_reduction_enabled()) {
+    movement_interaction_only_kernel<<<nBlocksX, blockSize>>>(
+        interPartials, xUpdate, x, atyUpdate, aty, nCols);
+    xScalar = const_cast<cupdlp_float *>(movementX);
+    yScalar = const_cast<cupdlp_float *>(movementY);
+    interScalar = interPartials;
+    reduce_movement_partials_fused(
+        buffer, &xScalar, &nBlocksX, 0, 1, &yScalar, &nBlocksY, 2, 3,
+        &interScalar, &nBlocksI, 5, 6, bufSize);
+  } else {
+    xScalar = reduce_movement_partials(
+        buffer, const_cast<cupdlp_float *>(movementX), nBlocksX, 0, 1, bufSize);
+    yScalar = reduce_movement_partials(
+        buffer, const_cast<cupdlp_float *>(movementY), nBlocksY, 2, 3, bufSize);
+    movement_interaction_only_kernel<<<nBlocksX, blockSize>>>(
+        interPartials, xUpdate, x, atyUpdate, aty, nCols);
+    interScalar = reduce_movement_partials(
+        buffer, interPartials, nBlocksX, 6, 7, bufSize);
+  }
 
   cupdlp_float *scalars = buffer + 5 * bufSize;
+  if (interScalar == buffer + 5 * bufSize) {
+    scalars = buffer + 6 * bufSize;
+  }
   save_movement_fused_kernel<<<1, 1>>>(scalars, xScalar, yScalar, interScalar);
   cupdlp_float res[3];
   CHECK_HIP_STRICT(hipMemcpy(res, scalars, 3 * sizeof(cupdlp_float), hipMemcpyDeviceToHost))
