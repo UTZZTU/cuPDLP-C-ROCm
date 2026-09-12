@@ -349,6 +349,10 @@ cupdlp_int PDHG_Clear(CUPDLPwork *w) {
   CHECK_CUDA(CUPDLP_DEVICE_FREE(w->dBuffer_csr_Ax))
   if (w->buffer2) CUPDLP_FREE_VEC(w->buffer2);
   if (w->buffer3) CUPDLP_FREE_VEC(w->buffer3);
+#if defined(CUPDLP_USE_ROCM)
+  if (w->fusedMovementX) CUPDLP_FREE_VEC(w->fusedMovementX);
+  if (w->fusedMovementY) CUPDLP_FREE_VEC(w->fusedMovementY);
+#endif
 #endif
   if (w->colScale) CUPDLP_FREE_VEC(w->colScale);
   if (w->rowScale) CUPDLP_FREE_VEC(w->rowScale);
@@ -1051,6 +1055,14 @@ cupdlp_retcode PDHG_Alloc(CUPDLPwork *w) {
   CUPDLP_CALL(vec_Alloc(w->buffer, w->problem->data->nRows));
   CUPDLP_INIT_ZERO_VEC(w->buffer2,
                        MAX(2048, MAX(w->problem->data->nCols, w->problem->data->nRows)));
+#if defined(CUPDLP_USE_ROCM)
+  w->fusedMovementX = NULL;
+  w->fusedMovementY = NULL;
+  CUPDLP_INIT_ZERO_VEC(w->fusedMovementX,
+                       MAX(1, (w->problem->data->nCols + 255) / 256));
+  CUPDLP_INIT_ZERO_VEC(w->fusedMovementY,
+                       MAX(1, (w->problem->data->nRows + 255) / 256));
+#endif
 #if CUPDLP_CPU || !(USE_KERNELS) || (CUPDLP_DUMP_LINESEARCH_STATS && CUPDLP_DEBUG)
   CUPDLP_INIT_ZERO_VEC(w->buffer3,
                        MAX(2048, MAX(w->problem->data->nCols, w->problem->data->nRows)));

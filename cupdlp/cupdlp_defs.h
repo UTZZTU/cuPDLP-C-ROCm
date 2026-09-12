@@ -424,6 +424,11 @@ struct CUPDLP_WORK {
   CUPDLPvec *buffer;
   cupdlp_float *buffer2;
   cupdlp_float *buffer3;
+#if !(CUPDLP_CPU)
+  // Dedicated block partials for the opt-in fused movement experiment.
+  cupdlp_float *fusedMovementX;
+  cupdlp_float *fusedMovementY;
+#endif
 
   cupdlp_float *rowScale;
   cupdlp_float *colScale;

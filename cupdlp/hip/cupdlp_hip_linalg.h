@@ -128,6 +128,18 @@ void cupdlp_dgrad_cuda(cupdlp_float *yUpdate,
                        const cupdlp_float *Ax, const cupdlp_float *AxUpdate,
                        cupdlp_float dDualStep, int nRows, int nEqs);
 
+int cupdlp_fused_movement_enabled(void);
+
+void cupdlp_pgrad_fused_movement_cuda(
+    cupdlp_float *xUpdate, const cupdlp_float *x, const cupdlp_float *cost,
+    const cupdlp_float *ATy, const cupdlp_float *lb, const cupdlp_float *ub,
+    cupdlp_float dPrimalStep, cupdlp_float *movementX, int nCols);
+
+void cupdlp_dgrad_fused_movement_cuda(
+    cupdlp_float *yUpdate, const cupdlp_float *y, const cupdlp_float *b,
+    const cupdlp_float *Ax, const cupdlp_float *AxUpdate,
+    cupdlp_float dDualStep, cupdlp_float *movementY, int nRows, int nEqs);
+
 void cupdlp_update_average_cuda(cupdlp_float *xSum,
                                 const cupdlp_float *xUpdate,
                                 cupdlp_float *ySum,
@@ -147,6 +159,13 @@ void cupdlp_movement_interaction_cuda(
     const cupdlp_float *yUpdate, const cupdlp_float *y,
     const cupdlp_float *atyUpdate, const cupdlp_float *aty,
     int nRows, int nCols);
+
+void cupdlp_movement_interaction_fused_cuda(
+    cupdlp_float *dX2, cupdlp_float *dY2, cupdlp_float *dInter,
+    cupdlp_float *buffer, const cupdlp_float *movementX,
+    const cupdlp_float *movementY, const cupdlp_float *xUpdate,
+    const cupdlp_float *x, const cupdlp_float *yUpdate, const cupdlp_float *y,
+    const cupdlp_float *atyUpdate, const cupdlp_float *aty, int nRows, int nCols);
 
 cupdlp_int print_cuda_info(hipsparseHandle_t handle);
 

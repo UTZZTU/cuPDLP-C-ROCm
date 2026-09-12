@@ -23,9 +23,16 @@ void PDHG_primalGradientStep(CUPDLPwork *work, CUPDLPvec *xUpdate,
 #endif
 
 #if defined(CUPDLP_USE_ROCM) && USE_KERNELS
-  cupdlp_pgrad_cuda(xUpdate->data, x->data, problem->cost,
-                    ATy->data, problem->lower, problem->upper, dPrimalStepSize,
-                    (int)problem->nCols);
+  if (cupdlp_fused_movement_enabled()) {
+    cupdlp_pgrad_fused_movement_cuda(
+        xUpdate->data, x->data, problem->cost, ATy->data, problem->lower,
+        problem->upper, dPrimalStepSize, work->fusedMovementX,
+        (int)problem->nCols);
+  } else {
+    cupdlp_pgrad_cuda(xUpdate->data, x->data, problem->cost,
+                      ATy->data, problem->lower, problem->upper,
+                      dPrimalStepSize, (int)problem->nCols);
+  }
 #else
   // cupdlp_copy(xUpdate, x, cupdlp_float, problem->nCols);
   CUPDLP_COPY_VEC(xUpdate->data, x->data, cupdlp_float, problem->nCols);
@@ -57,9 +64,16 @@ void PDHG_dualGradientStep(CUPDLPwork *work, CUPDLPvec *yUpdate,
 #endif
 
 #if defined(CUPDLP_USE_ROCM) && USE_KERNELS
-  cupdlp_dgrad_cuda(yUpdate->data, y->data, problem->rhs, Ax->data,
-                    AxUpdate->data, dDualStepSize, (int)problem->nRows,
-                    (int)problem->nEqs);
+  if (cupdlp_fused_movement_enabled()) {
+    cupdlp_dgrad_fused_movement_cuda(
+        yUpdate->data, y->data, problem->rhs, Ax->data, AxUpdate->data,
+        dDualStepSize, work->fusedMovementY, (int)problem->nRows,
+        (int)problem->nEqs);
+  } else {
+    cupdlp_dgrad_cuda(yUpdate->data, y->data, problem->rhs, Ax->data,
+                      AxUpdate->data, dDualStepSize, (int)problem->nRows,
+                      (int)problem->nEqs);
+  }
 #else
   // cupdlp_copy(yUpdate, y, cupdlp_float, problem->nRows);
   CUPDLP_COPY_VEC(yUpdate->data, y->data, cupdlp_float, problem->nRows);

@@ -190,6 +190,103 @@ __global__ void dual_grad_step_kernel(cupdlp_float * __restrict__ yUpdate,
   }
 }
 
+// These kernels keep the original update equations and additionally emit one
+// movement partial per update block. The output is consumed only by the
+// opt-in movement path; the default kernels above remain unchanged.
+__global__ void primal_grad_step_fused_movement_kernel(
+    cupdlp_float *__restrict__ xUpdate, const cupdlp_float *__restrict__ x,
+    const cupdlp_float *__restrict__ cost, const cupdlp_float *__restrict__ ATy,
+    const cupdlp_float *__restrict__ lb, const cupdlp_float *__restrict__ ub,
+    cupdlp_float dPrimalStep, cupdlp_float *__restrict__ movementX, int nCols) {
+  __shared__ cupdlp_float shared[32];
+  cupdlp_float partial = 0.0;
+  for (int i = blockDim.x * blockIdx.x + threadIdx.x; i < nCols;
+       i += blockDim.x * gridDim.x) {
+    cupdlp_float updated = min(max(cupdlp_fma_rn(dPrimalStep, ATy[i] - cost[i], x[i]),
+                                   lb[i]), ub[i]);
+    xUpdate[i] = updated;
+    cupdlp_float dx = updated - x[i];
+    partial = cupdlp_fma_rn(dx, dx, partial);
+  }
+  for (int offset = 16; offset > 0; offset >>= 1)
+    partial += __shfl_down_sync(0xFFFFFFFFFFFFFFFFULL, partial, offset);
+  int lane = threadIdx.x & 31;
+  int wid = threadIdx.x >> 5;
+  if (lane == 0) shared[wid] = partial;
+  __syncthreads();
+  if (wid == 0) {
+    partial = (threadIdx.x < blockDim.x / 32) ? shared[lane] : 0.0;
+    for (int offset = 16; offset > 0; offset >>= 1)
+      partial += __shfl_down_sync(0xFFFFFFFFFFFFFFFFULL, partial, offset);
+    if (threadIdx.x == 0) movementX[blockIdx.x] = partial;
+  }
+}
+
+__global__ void dual_grad_step_fused_movement_kernel(
+    cupdlp_float *__restrict__ yUpdate, const cupdlp_float *__restrict__ y,
+    const cupdlp_float *__restrict__ b, const cupdlp_float *__restrict__ Ax,
+    const cupdlp_float *__restrict__ AxUpdate, cupdlp_float dDualStep,
+    cupdlp_float *__restrict__ movementY, int nRows, int nEqs) {
+  __shared__ cupdlp_float shared[32];
+  cupdlp_float partial = 0.0;
+  for (int i = blockDim.x * blockIdx.x + threadIdx.x; i < nRows;
+       i += blockDim.x * gridDim.x) {
+    cupdlp_float updated = cupdlp_fma_rn(dDualStep, b[i] - 2 * AxUpdate[i] + Ax[i], y[i]);
+    updated = i >= nEqs ? max(updated, 0.0) : updated;
+    yUpdate[i] = updated;
+    cupdlp_float dy = updated - y[i];
+    partial = cupdlp_fma_rn(dy, dy, partial);
+  }
+  for (int offset = 16; offset > 0; offset >>= 1)
+    partial += __shfl_down_sync(0xFFFFFFFFFFFFFFFFULL, partial, offset);
+  int lane = threadIdx.x & 31;
+  int wid = threadIdx.x >> 5;
+  if (lane == 0) shared[wid] = partial;
+  __syncthreads();
+  if (wid == 0) {
+    partial = (threadIdx.x < blockDim.x / 32) ? shared[lane] : 0.0;
+    for (int offset = 16; offset > 0; offset >>= 1)
+      partial += __shfl_down_sync(0xFFFFFFFFFFFFFFFFULL, partial, offset);
+    if (threadIdx.x == 0) movementY[blockIdx.x] = partial;
+  }
+}
+
+__global__ void movement_interaction_only_kernel(
+    cupdlp_float *__restrict__ res,
+    const cupdlp_float *__restrict__ xUpdate, const cupdlp_float *__restrict__ x,
+    const cupdlp_float *__restrict__ atyUpdate, const cupdlp_float *__restrict__ aty,
+    int nCols) {
+  __shared__ cupdlp_float shared[32];
+  cupdlp_float partial = 0.0;
+  for (int i = blockDim.x * blockIdx.x + threadIdx.x; i < nCols;
+       i += blockDim.x * gridDim.x) {
+    cupdlp_float dx = xUpdate[i] - x[i];
+    partial = cupdlp_fma_rn(atyUpdate[i] - aty[i], dx, partial);
+  }
+  for (int offset = 16; offset > 0; offset >>= 1)
+    partial += __shfl_down_sync(0xFFFFFFFFFFFFFFFFULL, partial, offset);
+  int lane = threadIdx.x & 31;
+  int wid = threadIdx.x >> 5;
+  if (lane == 0) shared[wid] = partial;
+  __syncthreads();
+  if (wid == 0) {
+    partial = (threadIdx.x < blockDim.x / 32) ? shared[lane] : 0.0;
+    for (int offset = 16; offset > 0; offset >>= 1)
+      partial += __shfl_down_sync(0xFFFFFFFFFFFFFFFFULL, partial, offset);
+    if (threadIdx.x == 0) res[blockIdx.x] = partial;
+  }
+}
+
+__global__ void save_movement_fused_kernel(
+    cupdlp_float *__restrict__ dst, const cupdlp_float *__restrict__ x,
+    const cupdlp_float *__restrict__ y, const cupdlp_float *__restrict__ inter) {
+  if (blockIdx.x == 0 && threadIdx.x == 0) {
+    dst[0] = *x;
+    dst[1] = *y;
+    dst[2] = *inter;
+  }
+}
+
 /*
 // z = x - y
 __global__ void naive_sub_kernel(cupdlp_float *z, const cupdlp_float *x,
@@ -362,4 +459,3 @@ __global__ void update_average_kernel(cupdlp_float * __restrict__ x_sum,
     y_sum[i] += alpha * y_update[i];
   }
 }
-

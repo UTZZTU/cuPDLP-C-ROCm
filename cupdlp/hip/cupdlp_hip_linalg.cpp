@@ -33,7 +33,20 @@ inline int nBlocks256(int n) {
   return std::min((n + 256 - 1) / 256, BLOCKS_PER_SM * cupdlp_get_hip_num_sms());
 }
 
+inline int nBlocks1024(int n) {
+  return std::max(1, (n + 1024 - 1) / 1024);
+}
+
 extern "C" {
+
+int cupdlp_fused_movement_enabled(void) {
+  static int enabled = -1;
+  if (enabled < 0) {
+    const char *value = std::getenv("CUPDLP_FUSED_MOVEMENT");
+    enabled = value != nullptr && std::atoi(value) != 0;
+  }
+  return enabled;
+}
 
 static hipsparseSpMVAlg_t cupdlp_hip_spmv_alg(void) {
   const char *env = std::getenv("CUPDLP_HIP_SPMV_ALG");
@@ -302,6 +315,22 @@ void cupdlp_dgrad_cuda(cupdlp_float *yUpdate,
   dual_grad_step_kernel<<<nBlocks256(nRows), 256>>>(yUpdate, y, b, Ax, AxUpdate, dDualStep, nRows, nEqs);
 }
 
+void cupdlp_pgrad_fused_movement_cuda(
+    cupdlp_float *xUpdate, const cupdlp_float *x, const cupdlp_float *cost,
+    const cupdlp_float *ATy, const cupdlp_float *lb, const cupdlp_float *ub,
+    cupdlp_float dPrimalStep, cupdlp_float *movementX, int nCols) {
+  primal_grad_step_fused_movement_kernel<<<nBlocks1024(nCols), 256>>>(
+      xUpdate, x, cost, ATy, lb, ub, dPrimalStep, movementX, nCols);
+}
+
+void cupdlp_dgrad_fused_movement_cuda(
+    cupdlp_float *yUpdate, const cupdlp_float *y, const cupdlp_float *b,
+    const cupdlp_float *Ax, const cupdlp_float *AxUpdate,
+    cupdlp_float dDualStep, cupdlp_float *movementY, int nRows, int nEqs) {
+  dual_grad_step_fused_movement_kernel<<<nBlocks1024(nRows), 256>>>(
+      yUpdate, y, b, Ax, AxUpdate, dDualStep, movementY, nRows, nEqs);
+}
+
 void cupdlp_update_average_cuda(cupdlp_float *xSum,
                                 const cupdlp_float *xUpdate,
                                 cupdlp_float *ySum,
@@ -409,6 +438,59 @@ void cupdlp_movement_interaction_cuda(
   *dX2 = res[0];
   *dY2 = res[2];
   *dInter = res[1];
+}
+
+static cupdlp_float *reduce_movement_partials(cupdlp_float *buffer,
+                                               cupdlp_float *partial, int n,
+                                               int slot0, int slot1, int bufSize) {
+  if (n <= 1) return partial;
+  cupdlp_float *src = partial;
+  cupdlp_float *dst = buffer + slot0 * bufSize;
+  int current = n;
+  int slot = slot0;
+  while (current > 1) {
+    int next = (current + 1023) / 1024;
+    sum_kernel<<<next, 512>>>(dst, src, current);
+    current = next;
+    src = dst;
+    slot = slot == slot0 ? slot1 : slot0;
+    dst = buffer + slot * bufSize;
+  }
+  return src;
+}
+
+void cupdlp_movement_interaction_fused_cuda(
+    cupdlp_float *dX2, cupdlp_float *dY2, cupdlp_float *dInter,
+    cupdlp_float *buffer, const cupdlp_float *movementX,
+    const cupdlp_float *movementY, const cupdlp_float *xUpdate,
+    const cupdlp_float *x, const cupdlp_float *yUpdate, const cupdlp_float *y,
+    const cupdlp_float *atyUpdate, const cupdlp_float *aty, int nRows, int nCols) {
+  constexpr int blockSize = 256;
+  int nBlocksX = nBlocks1024(nCols);
+  int nBlocksY = nBlocks1024(nRows);
+  int maxBlocks = std::max(nBlocksX, std::max(nBlocksY, nBlocks1024(nCols)));
+  int bufSize = 256 * ((maxBlocks + 255) / 256);
+  bufSize = std::max(bufSize, 256);
+
+  cupdlp_float *xScalar = reduce_movement_partials(buffer, const_cast<cupdlp_float *>(movementX),
+                                                   nBlocksX, 0, 1, bufSize);
+  cupdlp_float *yScalar = reduce_movement_partials(buffer, const_cast<cupdlp_float *>(movementY),
+                                                   nBlocksY, 2, 3, bufSize);
+
+  cupdlp_float *interPartials = buffer + 4 * bufSize;
+  movement_interaction_only_kernel<<<nBlocksX, blockSize>>>(
+      interPartials, xUpdate, x, atyUpdate, aty, nCols);
+  cupdlp_float *interScalar = reduce_movement_partials(
+      buffer, interPartials, nBlocksX, 6, 7, bufSize);
+
+  cupdlp_float *scalars = buffer + 5 * bufSize;
+  save_movement_fused_kernel<<<1, 1>>>(scalars, xScalar, yScalar, interScalar);
+  cupdlp_float res[3];
+  CHECK_HIP_STRICT(hipMemcpy(res, scalars, 3 * sizeof(cupdlp_float), hipMemcpyDeviceToHost))
+  CHECK_HIP_LAST();
+  *dX2 = res[0];
+  *dY2 = res[1];
+  *dInter = res[2];
 }
 
 cupdlp_int print_cuda_info(hipsparseHandle_t handle)

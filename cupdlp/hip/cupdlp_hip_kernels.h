@@ -222,6 +222,28 @@ __global__ void dual_grad_step_kernel(cupdlp_float * __restrict__ yUpdate,
                                       const cupdlp_float * __restrict__ AxUpdate,
                                       cupdlp_float dDualStep, int nRows, int nEqs);
 
+__global__ void primal_grad_step_fused_movement_kernel(
+    cupdlp_float *__restrict__ xUpdate, const cupdlp_float *__restrict__ x,
+    const cupdlp_float *__restrict__ cost, const cupdlp_float *__restrict__ ATy,
+    const cupdlp_float *__restrict__ lb, const cupdlp_float *__restrict__ ub,
+    cupdlp_float dPrimalStep, cupdlp_float *__restrict__ movementX, int nCols);
+
+__global__ void dual_grad_step_fused_movement_kernel(
+    cupdlp_float *__restrict__ yUpdate, const cupdlp_float *__restrict__ y,
+    const cupdlp_float *__restrict__ b, const cupdlp_float *__restrict__ Ax,
+    const cupdlp_float *__restrict__ AxUpdate, cupdlp_float dDualStep,
+    cupdlp_float *__restrict__ movementY, int nRows, int nEqs);
+
+__global__ void movement_interaction_only_kernel(
+    cupdlp_float *__restrict__ res,
+    const cupdlp_float *__restrict__ xUpdate, const cupdlp_float *__restrict__ x,
+    const cupdlp_float *__restrict__ atyUpdate, const cupdlp_float *__restrict__ aty,
+    int nCols);
+
+__global__ void save_movement_fused_kernel(
+    cupdlp_float *__restrict__ dst, const cupdlp_float *__restrict__ x,
+    const cupdlp_float *__restrict__ y, const cupdlp_float *__restrict__ inter);
+
 /*
 __global__ void naive_sub_kernel(cupdlp_float *z, const cupdlp_float *x,
                                  const cupdlp_float *y, int n);
